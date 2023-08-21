@@ -8,8 +8,9 @@ find_maximum_block_size <- function(x, m = 50){
   block_size
 }
 
-# examples
 
+# # example 1
+# 
 # x <- rnorm(n = 1000)
 # m <- 40
 # 
