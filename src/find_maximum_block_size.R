@@ -10,9 +10,9 @@ find_maximum_block_size <- function(x, m = 50){
 
 # examples
 
-x <- rnorm(n = 1000)
-m <- 40
-
-result <- find_maximum_block_size(x, m)
-
-result
+# x <- rnorm(n = 1000)
+# m <- 40
+# 
+# result <- find_maximum_block_size(x, m)
+# 
+# result
