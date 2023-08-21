@@ -2,7 +2,6 @@
 #library(EnvStats)
 
 
-
 find_minimum_block_size <- function(x){
   # x: vector of observations
   
