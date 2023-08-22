@@ -8,7 +8,6 @@ extract_nlargest_sample <- function(x, n = 10){
   # extract the n-largest values from the vector x
   nlargest_sample <- x[position]
 
-  
   nlargest_sample
 }
 
