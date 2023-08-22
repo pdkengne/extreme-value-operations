@@ -15,7 +15,7 @@ extract_block_maxima <- function(x, block_size = 1){
   block_maxima[1] <- max(x[1:block_size])
   
   # update the last block maxima value
-  block_maxima[m] <- max(x[((m-1)*block_size):n])
+  block_maxima[m] <- max(x[((m-1)*block_size + 1):n])
   
   # update the intermediate block maxima values
   block_maxima[2:(m-1)]<- sapply(1:(m-2), function(k) max(x[(k*block_size + 1):((k + 1)*block_size)]))
