@@ -29,7 +29,7 @@ plot_block_maxima <- function(x, block_size = 1, xlab = "Index", ylab = "Values"
   abline(v = block_intervals, lty = "dotted", lwd = 2)
   
   # mark the block maxima
-  points(block_maxima_indexes, block_maxima, pch = 10, col = 2, lwd = 2)
+  points(block_maxima_indexes, block_maxima, pch = 16, col = 2, lwd = 2)
   
 }
 
