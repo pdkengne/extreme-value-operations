@@ -19,7 +19,7 @@ find_minimum_block_size <- function(x){
 
 # # example 1
 # 
-# x <- c(rexp(n = 1000))
+# x <- rexp(n = 1000)
 # 
 # result <- find_minimum_block_size(x)
 # 
@@ -28,7 +28,7 @@ find_minimum_block_size <- function(x){
 # 
 # # example 2
 # 
-# x <- c(rnorm(n = 1000))
+# x <- rnorm(n = 1000)
 # 
 # result <- find_minimum_block_size(x)
 # 
@@ -51,7 +51,3 @@ find_minimum_block_size <- function(x){
 # result <- find_minimum_block_size(x)
 # 
 # result
-
-
-
-
