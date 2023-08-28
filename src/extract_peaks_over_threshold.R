@@ -3,9 +3,9 @@ extract_peaks_over_threshold <- function(x, threshold){
   # threshold: threshold to consider
   
   # get the peaks over threshold
-  peak_over_threshold <- x[x > threshold]
+  peaks_over_threshold <- x[x > threshold]
   
-  peak_over_threshold
+  peaks_over_threshold
 }
 
 
