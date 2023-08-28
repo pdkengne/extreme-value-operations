@@ -1,13 +1,14 @@
-# library(extRemes)
+# library(evd)
 
 calculate_gp_pdf <- function(x, scale = 1, shape = 0, threshold = 0){
   # x: vector of observations
   # scale, shape, threshold: scale, shape and threshold parameters of the considered gp distribution
   
-  gp_pdf <- extRemes::devd(x, scale, shape, threshold, type = "GP")
+  gp_pdf <- evd::dgpd(x, scale, shape, loc = threshold)
   
   gp_pdf
 }
+
 
 
 # # example 1
@@ -19,6 +20,13 @@ calculate_gp_pdf <- function(x, scale = 1, shape = 0, threshold = 0){
 # 
 # # example 2
 # 
-# result <- calculate_gp_pdf(x = 2:4, scale = 0.5, shape = 0.8, threshold = 0)
+# result <- calculate_gp_pdf(x = 2:4, scale = 0.5, shape = 0, threshold = 1)
+# 
+# result
+# 
+# 
+# # example 3
+# 
+# result <- calculate_gp_pdf(x = 2:4, scale = 0.5, shape = -0.2, threshold = 1)
 # 
 # result
