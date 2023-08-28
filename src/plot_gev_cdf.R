@@ -1,9 +1,9 @@
 # library(EnvStats)
 
 source("./src/estimate_gev_parameters.R")
-source("./src/calculate_gev_pdf.R")
+source("./src/calculate_gev_cdf.R")
 
-plot_gev_pdf <- function(gev_model, xlab = "Quantile", ylab = "Density", main = "Probability Density Function (PDF) Plot"){
+plot_gev_cdf <- function(gev_model, xlab = "Quantile", ylab = "Cumulative Probability", main = "Cumulative Distribution Function (CDF) Plot"){
   # gev_model: an object associated with a result of the function "estimate_gev_parameters()"
   # xlab: label of the x-axis
   # ylab: label of the y-axis
@@ -15,29 +15,29 @@ plot_gev_pdf <- function(gev_model, xlab = "Quantile", ylab = "Density", main = 
   # extract train data
   uvdata <- gev_model$data
   
-  # calculate empirical pdf
-  empirical_density_object <- EnvStats::epdfPlot(x = uvdata, plot.it = FALSE)
+  # calculate empirical cdf
+  empirical_probability_object <- EnvStats::ecdfPlot(x = uvdata, prob.method ="plot.pos", plot.pos.con = 0.375, plot.it = FALSE)
   
   # extract ordered quantiles
-  ordered_quantiles <- empirical_density_object$x
+  ordered_quantiles <- empirical_probability_object$Order.Statistics
   
-  # extract empirical pdf
-  empirical_pdf <- empirical_density_object$f.x
+  # extract empirical cdf
+  empirical_cdf <- empirical_probability_object$Cumulative.Probabilities
   
-  # calculate theoretical pdf
-  theoretical_pdf <- calculate_gev_pdf(x = ordered_quantiles, 
+  # calculate theoretical cdf
+  theoretical_cdf <- calculate_gev_cdf(q = ordered_quantiles, 
                                        loc = gev_model_parameters["loc"], 
                                        scale = gev_model_parameters["scale"], 
                                        shape = gev_model_parameters["shape"])
   
-  # get the pdf range
-  pdf_range <- range(c(theoretical_pdf, empirical_pdf))
+  # get the cdf range
+  cdf_range <- range(c(theoretical_cdf, empirical_cdf))
   
   # plot densities
   plot(x = ordered_quantiles, 
-       y = empirical_pdf, 
+       y = empirical_cdf, 
        type = "l", 
-       ylim = pdf_range,
+       ylim = cdf_range,
        col = 4,
        lwd = 2,
        cex.axis = 1,
@@ -48,12 +48,13 @@ plot_gev_pdf <- function(gev_model, xlab = "Quantile", ylab = "Density", main = 
        main = main
   )
   
-  lines(ordered_quantiles, theoretical_pdf, col = 2, lwd = 2)
+  lines(ordered_quantiles, theoretical_cdf, col = 2, lwd = 2)
   
   abline(h = 0, lty = "dotted", lwd = 1)
+  abline(h = 1, lty = "dotted", lwd = 1)
   
-  legend(x = "topright", 
-         legend = c("Empirical PDF", "Theoretical PDF"),
+  legend(x = "right", 
+         legend = c("Empirical CDF", "Theoretical CDF"),
          lty = c(1, 1),
          col = c(4, 2),
          lwd = 2,
@@ -72,7 +73,7 @@ plot_gev_pdf <- function(gev_model, xlab = "Quantile", ylab = "Density", main = 
 # 
 # gev_model <- estimate_gev_parameters(x, nsloc = NULL)
 # 
-# plot_gev_pdf(gev_model)
+# plot_gev_cdf(gev_model)
 # 
 # 
 # # example 2
@@ -83,7 +84,7 @@ plot_gev_pdf <- function(gev_model, xlab = "Quantile", ylab = "Density", main = 
 # 
 # gev_model <- estimate_gev_parameters(x, nsloc = NULL)
 # 
-# plot_gev_pdf(gev_model)
+# plot_gev_cdf(gev_model)
 # 
 # 
 # # example 3
@@ -94,4 +95,4 @@ plot_gev_pdf <- function(gev_model, xlab = "Quantile", ylab = "Density", main = 
 # 
 # gev_model <- estimate_gev_parameters(x, nsloc = NULL)
 # 
-# plot_gev_pdf(gev_model)
+# plot_gev_cdf(gev_model)
