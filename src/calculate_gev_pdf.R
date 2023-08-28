@@ -1,13 +1,14 @@
-# library(extRemes)
+# library(evd)
 
 calculate_gev_pdf <- function(x, loc = 0, scale = 1, shape = 0){
   # x: vector of observations
   # loc, scale, shape: location, scale and shape parameters of the considered gev distribution
   
-  gev_pdf <- extRemes::devd(x, loc, scale, shape, type = "GEV")
+  gev_pdf <- evd::dgev(x, loc, scale, shape)
   
   gev_pdf
 }
+
 
 
 # # example 1

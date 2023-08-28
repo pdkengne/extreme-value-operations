@@ -1,8 +1,10 @@
+# library(evd)
+
 generate_gev_sample <- function(n = 1, loc = 0, scale = 1, shape = 0){
   # n: vnumber of observations to generate
   # loc, scale, shape: location, scale and shape parameters of the considered gev distribution
   
-  gev_sample <- extRemes::revd(n, loc, scale, shape, type = "GEV")
+  gev_sample <- evd::rgev(n, loc, scale, shape)
   
   gev_sample
 }
