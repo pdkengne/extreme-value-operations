@@ -30,7 +30,7 @@ plot_gev_quantile <- function(gev_model, xlab = "Theoretical Quantile", ylab = "
                                                      scale = gev_model_parameters["scale"], 
                                                      shape = gev_model_parameters["shape"])
   
-  # get the pdf range
+  # get the quantile range
   quantile_range <- range(c(theoretical_quantiles, empirical_quantiles)) 
   
   # plot quantile
