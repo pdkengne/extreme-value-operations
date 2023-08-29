@@ -64,34 +64,34 @@ plot_gev_quantile <- function(gev_model, xlab = "Theoretical Quantile", ylab = "
 
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-
-x <- generate_gev_sample(n = 100, loc = 1, scale = 0.5, shape = +0.2)
-
-gev_model <- estimate_gev_parameters(x, nsloc = NULL)
-
-plot_gev_quantile(gev_model)
-
-
-# example 2
-
-source("./src/generate_gev_sample.R")
-
-x <- generate_gev_sample(n = 100, loc = 1, scale = 0.5, shape = -0.2)
-
-gev_model <- estimate_gev_parameters(x, nsloc = NULL)
-
-plot_gev_quantile(gev_model)
-
-
-# example 3
-
-source("./src/generate_gev_sample.R")
-
-x <- generate_gev_sample(n = 100, loc = 1, scale = 0.5, shape = 0)
-
-gev_model <- estimate_gev_parameters(x, nsloc = NULL)
-
-plot_gev_quantile(gev_model)
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 100, loc = 1, scale = 0.5, shape = +0.2)
+# 
+# gev_model <- estimate_gev_parameters(x, nsloc = NULL)
+# 
+# plot_gev_quantile(gev_model)
+# 
+# 
+# # example 2
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 100, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# gev_model <- estimate_gev_parameters(x, nsloc = NULL)
+# 
+# plot_gev_quantile(gev_model)
+# 
+# 
+# # example 3
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 100, loc = 1, scale = 0.5, shape = 0)
+# 
+# gev_model <- estimate_gev_parameters(x, nsloc = NULL)
+# 
+# plot_gev_quantile(gev_model)
