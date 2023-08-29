@@ -30,10 +30,15 @@ plot_gev_probability <- function(gev_model, xlab = "Theoretical Probability", yl
                                        scale = gev_model_parameters["scale"], 
                                        shape = gev_model_parameters["shape"])
   
-  # plot densities
+  # get the probability range
+  probability_range <- range(c(theoretical_cdf, empirical_cdf)) 
+  
+  # plot probability
   plot(x = theoretical_cdf, 
        y = empirical_cdf, 
        type = "p", 
+       ylim = probability_range,
+       xlim = probability_range,
        pch = 20,
        col = 4,
        lwd = 2,
