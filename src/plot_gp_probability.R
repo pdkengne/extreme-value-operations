@@ -69,43 +69,43 @@ plot_gp_probability <- function(gp_model, xlab = "Theoretical Probability", ylab
 
 
 
-# example 1
-
-source("./src/generate_gp_sample.R")
-source("./src/find_minimum_threshold.R")
-
-x <- generate_gp_sample(n = 100, loc = 1, scale = 0.5, shape = +0.2)
-
-threshold <- find_minimum_threshold(x)
-
-gp_model <- estimate_gp_parameters(x, threshold)
-
-plot_gp_probability(gp_model)
-
-
-# example 2
-
-source("./src/generate_gp_sample.R")
-source("./src/find_minimum_threshold.R")
-
-x <- generate_gp_sample(n = 100, loc = 1, scale = 0.5, shape = -0.2)
-
-threshold <- find_minimum_threshold(x)
-
-gp_model <- estimate_gp_parameters(x, threshold)
-
-plot_gp_probability(gp_model)
-
-
-# example 3
-
-source("./src/generate_gp_sample.R")
-source("./src/find_minimum_threshold.R")
-
-x <- generate_gp_sample(n = 100, loc = 1, scale = 0.5, shape = 0)
-
-threshold <- find_minimum_threshold(x)
-
-gp_model <- estimate_gp_parameters(x, threshold)
-
-plot_gp_probability(gp_model)
+# # example 1
+# 
+# source("./src/generate_gp_sample.R")
+# source("./src/find_minimum_threshold.R")
+# 
+# x <- generate_gp_sample(n = 100, loc = 1, scale = 0.5, shape = +0.2)
+# 
+# threshold <- find_minimum_threshold(x)
+# 
+# gp_model <- estimate_gp_parameters(x, threshold)
+# 
+# plot_gp_probability(gp_model)
+# 
+# 
+# # example 2
+# 
+# source("./src/generate_gp_sample.R")
+# source("./src/find_minimum_threshold.R")
+# 
+# x <- generate_gp_sample(n = 100, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# threshold <- find_minimum_threshold(x)
+# 
+# gp_model <- estimate_gp_parameters(x, threshold)
+# 
+# plot_gp_probability(gp_model)
+# 
+# 
+# # example 3
+# 
+# source("./src/generate_gp_sample.R")
+# source("./src/find_minimum_threshold.R")
+# 
+# x <- generate_gp_sample(n = 100, loc = 1, scale = 0.5, shape = 0)
+# 
+# threshold <- find_minimum_threshold(x)
+# 
+# gp_model <- estimate_gp_parameters(x, threshold)
+# 
+# plot_gp_probability(gp_model)
