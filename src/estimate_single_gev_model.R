@@ -47,47 +47,114 @@ estimate_single_gev_model <- function(x, block_size = 1, nsloc = NULL){
   output[["normalized_gev_parameters"]] <- normalized_gev_parameters
   
   
-
   output
 }
 
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-
-x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = +0.2)
-
-block_size <- 25
-
-results<- estimate_single_gev_model(x, block_size, nsloc = NULL)
-
-#results
-names(results)
-
-# get the block size
-results$block_size
-
-# get the extremal index
-results$extremal_index
-
-# get the normalized gev parameters
-results$normalized_gev_parameters
-
-# get gev model
-model<- results$gev_model
-
-model
-
-names(model)
-
-# get block maxima
-model$data
-
-# get block maxima indexes
-results$block_maxima_indexes
-
-
-
-
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = +0.2)
+# 
+# block_size <- 25
+# 
+# results<- estimate_single_gev_model(x, block_size, nsloc = NULL)
+# 
+# #results
+# names(results)
+# 
+# # get the block size
+# results$block_size
+# 
+# # get the extremal index
+# results$extremal_index
+# 
+# # get the normalized gev parameters
+# results$normalized_gev_parameters
+# 
+# # get gev model
+# model<- results$gev_model
+# 
+# model
+# 
+# names(model)
+# 
+# # get block maxima
+# model$data
+# 
+# # get block maxima indexes
+# results$block_maxima_indexes
+# 
+# 
+# # example 2
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# block_size <- 25
+# 
+# results<- estimate_single_gev_model(x, block_size, nsloc = NULL)
+# 
+# #results
+# names(results)
+# 
+# # get the block size
+# results$block_size
+# 
+# # get the extremal index
+# results$extremal_index
+# 
+# # get the normalized gev parameters
+# results$normalized_gev_parameters
+# 
+# # get gev model
+# model<- results$gev_model
+# 
+# model
+# 
+# names(model)
+# 
+# # get block maxima
+# model$data
+# 
+# # get block maxima indexes
+# results$block_maxima_indexes
+# 
+# 
+# # example 3
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = 0)
+# 
+# block_size <- 40
+# 
+# results<- estimate_single_gev_model(x, block_size, nsloc = NULL)
+# 
+# #results
+# names(results)
+# 
+# # get the block size
+# results$block_size
+# 
+# # get the extremal index
+# results$extremal_index
+# 
+# # get the normalized gev parameters
+# results$normalized_gev_parameters
+# 
+# # get gev model
+# model<- results$gev_model
+# 
+# model
+# 
+# names(model)
+# 
+# # get block maxima
+# model$data
+# 
+# # get block maxima indexes
+# results$block_maxima_indexes
