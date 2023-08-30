@@ -7,11 +7,14 @@ plot_block_maxima <- function(x, block_size = 1, xlab = "Index", ylab = "Values"
   # ylab: label of the y-axis
   # main: title of the plot
   
+  # extract the vector of block maxima with indexes
+  block_maxima_with_indexes <- extract_block_maxima_with_indexes(x, block_size)
+  
   # extract the vector of block maxima
-  block_maxima <- extract_block_maxima_with_indexes(x, block_size)
+  block_maxima <- block_maxima_with_indexes$block_maxima
   
   # get the index of block maxima
-  block_maxima_indexes <- as.numeric(attributes(block_maxima)$names)
+  block_maxima_indexes <- block_maxima_with_indexes$block_maxima_indexes
   
   # get the total number of blocks
   m <- length(block_maxima)
