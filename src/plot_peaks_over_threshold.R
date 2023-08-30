@@ -7,11 +7,14 @@ plot_peaks_over_threshold <- function(x, threshold, xlab = "Index", ylab = "Valu
   # ylab: label of the y-axis
   # main: title of the plot
   
+  # extract the vector of peaks over threshold with indexes
+  peaks_over_threshold_with_indexes <- extract_peaks_over_threshold_with_indexes(x, threshold)
+  
   # extract the vector of peaks over threshold
-  peaks_over_threshold <- extract_peaks_over_threshold_with_indexes(x, threshold)
+  peaks_over_threshold <- peaks_over_threshold_with_indexes$peaks_over_threshold
   
   # get the index of peaks over threshold
-  peaks_over_threshold_indexes <- as.numeric(attributes(peaks_over_threshold)$names)
+  peaks_over_threshold_indexes <- peaks_over_threshold_with_indexes$peaks_over_threshold_indexes
   
   # plot the observed values
   plot(x, xaxt = "n", type = "h", col = 4, 
@@ -29,49 +32,47 @@ plot_peaks_over_threshold <- function(x, threshold, xlab = "Index", ylab = "Valu
 
 
 
-# example 1
-
-source("./src/find_threshold_associated_with_given_number_of_largest_values.R")
-
-x <- rnorm(n = 1000)
-
-threshold <- find_threshold_associated_with_given_number_of_largest_values(x, k = 50)
-threshold
-
-plot_peaks_over_threshold(x, threshold = threshold, xlab = "Index", ylab = "Values", main = "Peaks over threshold")
-
-
-# example 2
-
-x <- rexp(n = 1000)
-
-threshold <- find_threshold_associated_with_given_number_of_largest_values(x, k = 100)
-threshold
-
-plot_peaks_over_threshold(x, threshold = threshold, xlab = "Index", ylab = "Values", main = "Peaks over threshold")
-
-
-# example 3
-
-source("./src/find_minimum_threshold.R")
-
-x <- EnvStats::rzmnorm(n = 1000, mean = 0, sd = 1, p.zero = 0.5)
-
-threshold <- find_minimum_threshold(x)
-threshold
-
-plot_peaks_over_threshold(x, threshold = threshold, xlab = "Index", ylab = "Values", main = "Peaks over threshold")
-
-
-# example 4
-
-source("./src/find_minimum_block_size.R")
-
-x <- rgamma(n = 1000, shape = 5, rate = 1)
-
-threshold <- find_minimum_threshold(x)
-threshold
-
-plot_peaks_over_threshold(x, threshold = threshold, xlab = "Index", ylab = "Values", main = "Peaks over threshold")
-
-
+# # example 1
+# 
+# source("./src/find_threshold_associated_with_given_number_of_largest_values.R")
+# 
+# x <- rnorm(n = 1000)
+# 
+# threshold <- find_threshold_associated_with_given_number_of_largest_values(x, k = 50)
+# threshold
+# 
+# plot_peaks_over_threshold(x, threshold = threshold, xlab = "Index", ylab = "Values", main = "Peaks over threshold")
+# 
+# 
+# # example 2
+# 
+# x <- rexp(n = 1000)
+# 
+# threshold <- find_threshold_associated_with_given_number_of_largest_values(x, k = 100)
+# threshold
+# 
+# plot_peaks_over_threshold(x, threshold = threshold, xlab = "Index", ylab = "Values", main = "Peaks over threshold")
+# 
+# 
+# # example 3
+# 
+# source("./src/find_minimum_threshold.R")
+# 
+# x <- EnvStats::rzmnorm(n = 1000, mean = 0, sd = 1, p.zero = 0.5)
+# 
+# threshold <- find_minimum_threshold(x)
+# threshold
+# 
+# plot_peaks_over_threshold(x, threshold = threshold, xlab = "Index", ylab = "Values", main = "Peaks over threshold")
+# 
+# 
+# # example 4
+# 
+# source("./src/find_minimum_block_size.R")
+# 
+# x <- rgamma(n = 1000, shape = 5, rate = 1)
+# 
+# threshold <- find_minimum_threshold(x)
+# threshold
+# 
+# plot_peaks_over_threshold(x, threshold = threshold, xlab = "Index", ylab = "Values", main = "Peaks over threshold")
