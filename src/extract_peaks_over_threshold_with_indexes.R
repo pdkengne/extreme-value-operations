@@ -2,6 +2,9 @@ extract_peaks_over_threshold_with_indexes <- function(x, threshold){
   # x: vector of observations
   # threshold: threshold to consider
   
+  # create an empty output object
+  output <- list()
+  
   # get the total number of observations
   n <- length(x)
   
@@ -11,7 +14,14 @@ extract_peaks_over_threshold_with_indexes <- function(x, threshold){
   # get the peaks over threshold
   peaks_over_threshold <- x[x > threshold]
   
-  peaks_over_threshold
+  # get the peaks over threshold indexes
+  peaks_over_threshold_indexes <- names(peaks_over_threshold)
+  
+  # update the output object
+  output[["peaks_over_threshold"]] <- peaks_over_threshold
+  output[["peaks_over_threshold_indexes"]] <- peaks_over_threshold_indexes
+  
+  output
 }
 
 

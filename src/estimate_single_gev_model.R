@@ -14,8 +14,14 @@ estimate_single_gev_model <- function(x, block_size = 1, nsloc = NULL){
   # create an empty output object
   output <- list()
   
+  # extract the vector of block maxima with indexes
+  block_maxima_with_indexes <- extract_block_maxima_with_indexes(x, block_size)
+  
   # extract block maxima
-  block_maxima <- extract_block_maxima_with_indexes(x, block_size)
+  block_maxima <- block_maxima_with_indexes$block_maxima
+  
+  # get the index of block maxima
+  block_maxima_indexes <- block_maxima_with_indexes$block_maxima_indexes
   
   # calculate the extremal index
   threshold <- find_threshold_associated_with_given_block_size(x, block_size)
@@ -34,6 +40,7 @@ estimate_single_gev_model <- function(x, block_size = 1, nsloc = NULL){
   # update the output object
   output[["data"]] <- x
   output[["covariates"]] <- nsloc
+  output[["block_maxima_indexes"]] <- block_maxima_indexes
   output[["gev_model"]] <- gev_model
   output[["block_size"]] <- block_size
   output[["extremal_index"]] <- extremal_index
@@ -77,6 +84,9 @@ names(model)
 
 # get block maxima
 model$data
+
+# get block maxima indexes
+results$block_maxima_indexes
 
 
 
