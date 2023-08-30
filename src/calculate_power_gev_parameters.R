@@ -1,7 +1,7 @@
 calculate_power_gev_parameters <- function(loc = 0, scale = 1, shape = 0, exponent = 1){
   # loc, scale, shape: location, scale and shape parameters of the base GEV model
   # exponent: the exponent to consider
-  # Note: Let G denote a GEV distribution function. The output is a vector containing the parameters
+  # Note: Let G denotes a GEV distribution function. The output is a vector containing the parameters
   #       loc_star, scale_star, shape_star such that [G(.; loc, scale, shape)]^(exponent) = G(.; loc_star, scale_star, shape_star).
   
   if (shape == 0){

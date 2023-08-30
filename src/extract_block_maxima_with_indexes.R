@@ -2,6 +2,9 @@ extract_block_maxima_with_indexes <- function(x, block_size = 1){
   # x: vector of observations
   # block_size: size of blocks to consider
   
+  # create an empty output object
+  output <- list()
+  
   # get the total number of observations
   n <- length(x)
   
@@ -27,9 +30,12 @@ extract_block_maxima_with_indexes <- function(x, block_size = 1){
       k*block_size + which.max(x[(k*block_size + 1):((k + 1)*block_size)])[1])
   }
   
-  names(block_maxima) <- block_maxima_indexes
   
-  block_maxima
+  # update the output object
+  output[["block_maxima"]] <- block_maxima
+  output[["block_maxima_indexes"]] <- block_maxima_indexes
+  
+  output
 }
 
 
@@ -40,8 +46,7 @@ extract_block_maxima_with_indexes <- function(x, block_size = 1){
 # results <- extract_block_maxima_with_indexes(x, block_size = 50)
 # 
 # results
-# 
-# attributes(results)$names
+# names(results)
 # 
 # # example 2
 # 
@@ -50,5 +55,4 @@ extract_block_maxima_with_indexes <- function(x, block_size = 1){
 # results <- extract_block_maxima_with_indexes(x, block_size = 50)
 # 
 # results
-# 
-# attributes(results)$names
+# names(results)

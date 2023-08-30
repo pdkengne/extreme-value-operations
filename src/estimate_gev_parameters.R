@@ -3,7 +3,7 @@
 options(digits = 15)
 
 estimate_gev_parameters <- function(x, nsloc = NULL){
-  # x: vector of observations
+  # x: vector of observations (assumed to be block maxima)
   # nsloc: dataframe of covariates for linear modeling of the location parameter
   
   gev_model <- evd::fgev(x, nsloc = nsloc, prob = NULL, std.err = TRUE,
