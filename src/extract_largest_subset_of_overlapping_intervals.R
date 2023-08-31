@@ -27,7 +27,7 @@ extract_largest_subset_of_overlapping_intervals<- function(table_of_intervals){
   # extract the largest subset of overlapping intervals
   largest_subset_of_overlapping_intervals <- table_of_intervals[interval_selector, ]
   
-  # extract the common value to all intervals from the largest subset of overlapping intervals
+  # extract a common value to all intervals from the largest subset of overlapping intervals
   common_value <- elements[position_of_most_common_value]
   
   # update the output object

@@ -21,6 +21,9 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
   selector_object <- extract_largest_subset_of_overlapping_intervals(estimated_mean_confidence_intervals[c(1, 3)])
   selector <- selector_object$interval_selector
   
+  # extract a common value to all intervals from the largest subset of overlapping intervals
+  common_value <- selector_object$common_value
+  
   # extract equivalent estimates
   selected <- estimated_mean_confidence_intervals[selector, ]
   
@@ -31,6 +34,7 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
   output[["estimates"]] <- estimated_mean_confidence_intervals
   output[["selected"]] <- selected
   output[["rejected"]] <- rejected
+  output[["common_value"]] <- common_value
   
   output 
 }
@@ -64,6 +68,8 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
 # # unselected estimates
 # results$rejected
 # 
+# # common value
+# results$common_value
 # 
 # 
 # # example 2
@@ -95,6 +101,9 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
 # # unselected estimates
 # results$rejected
 # 
+# # common value
+# results$common_value
+# 
 # 
 # # example 3
 # 
@@ -124,3 +133,6 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
 # 
 # # unselected estimates
 # results$rejected
+# 
+# # common value
+# results$common_value
