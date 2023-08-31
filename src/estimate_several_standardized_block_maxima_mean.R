@@ -18,9 +18,20 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
 
 # example 1
 
-x <- rnorm(n = 10000)
+source("./src/find_minimum_block_size.R")
+source("./src/find_block_size_associated_with_given_number_of_blocks.R")
 
-results <- estimate_several_standardized_block_maxima_mean(x, block_sizes = 1:150, confidence_level = 0.95)
+x <- rnorm(n = 1000)
+
+minimum_block_size <- find_minimum_block_size(x)
+minimum_block_size
+
+maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+maximum_block_size
+
+block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+
+results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 
 head(results)
 tail(results)
