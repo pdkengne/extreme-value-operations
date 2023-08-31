@@ -21,8 +21,8 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
   selector_object <- extract_largest_subset_of_overlapping_intervals(estimated_mean_confidence_intervals[c(1, 3)])
   selector <- selector_object$interval_selector
   
-  # extract a common value to all intervals from the largest subset of overlapping intervals
-  common_value <- selector_object$common_value
+  # extract a common interval to all intervals from the largest subset of overlapping intervals
+  common_interval <- selector_object$common_interval
   
   # extract equivalent estimates
   selected <- estimated_mean_confidence_intervals[selector, ]
@@ -34,105 +34,105 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
   output[["estimates"]] <- estimated_mean_confidence_intervals
   output[["selected"]] <- selected
   output[["rejected"]] <- rejected
-  output[["common_value"]] <- common_value
+  output[["common_interval"]] <- common_interval
   
   output 
 }
 
 
-# # example 1
-# 
-# source("./src/find_minimum_block_size.R")
-# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-# 
-# x <- rnorm(n = 10000)
-# 
-# minimum_block_size <- find_minimum_block_size(x)
-# minimum_block_size
-# 
-# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
-# maximum_block_size
-# 
-# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
-# 
-# results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
-# 
-# names(results)
-# 
-# # all estimates
-# results$estimates
-# 
-# # equivalent estimates
-# results$selected
-# 
-# # unselected estimates
-# results$rejected
-# 
-# # common value
-# results$common_value
-# 
-# 
-# # example 2
-# 
-# source("./src/find_minimum_block_size.R")
-# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-# source("./src/generate_gev_sample.R")
-# 
-# x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = 0)
-# 
-# minimum_block_size <- find_minimum_block_size(x)
-# minimum_block_size
-# 
-# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
-# maximum_block_size
-# 
-# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
-# 
-# results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
-# 
-# names(results)
-# 
-# # all estimates
-# results$estimates
-# 
-# # equivalent estimates
-# results$selected
-# 
-# # unselected estimates
-# results$rejected
-# 
-# # common value
-# results$common_value
-# 
-# 
-# # example 3
-# 
-# source("./src/find_minimum_block_size.R")
-# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-# source("./src/generate_gev_sample.R")
-# 
-# x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = -0.2)
-# 
-# minimum_block_size <- find_minimum_block_size(x)
-# minimum_block_size
-# 
-# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
-# maximum_block_size
-# 
-# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
-# 
-# results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
-# 
-# names(results)
-# 
-# # all estimates
-# results$estimates
-# 
-# # equivalent estimates
-# results$selected
-# 
-# # unselected estimates
-# results$rejected
-# 
-# # common value
-# results$common_value
+# example 1
+
+source("./src/find_minimum_block_size.R")
+source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+
+x <- rnorm(n = 10000)
+
+minimum_block_size <- find_minimum_block_size(x)
+minimum_block_size
+
+maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+maximum_block_size
+
+block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+
+results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+
+names(results)
+
+# all estimates
+results$estimates
+
+# equivalent estimates
+results$selected
+
+# unselected estimates
+results$rejected
+
+# common interval
+results$common_interval
+
+
+# example 2
+
+source("./src/find_minimum_block_size.R")
+source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+source("./src/generate_gev_sample.R")
+
+x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = 0)
+
+minimum_block_size <- find_minimum_block_size(x)
+minimum_block_size
+
+maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+maximum_block_size
+
+block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+
+results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+
+names(results)
+
+# all estimates
+results$estimates
+
+# equivalent estimates
+results$selected
+
+# unselected estimates
+results$rejected
+
+# common interval
+results$common_interval
+
+
+# example 3
+
+source("./src/find_minimum_block_size.R")
+source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+source("./src/generate_gev_sample.R")
+
+x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = -0.2)
+
+minimum_block_size <- find_minimum_block_size(x)
+minimum_block_size
+
+maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+maximum_block_size
+
+block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+
+results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+
+names(results)
+
+# all estimates
+results$estimates
+
+# equivalent estimates
+results$selected
+
+# unselected estimates
+results$rejected
+
+# common interval
+results$common_interval
