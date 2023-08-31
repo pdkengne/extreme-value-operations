@@ -6,7 +6,7 @@
 library(future.apply)
 
 
-findOverlappingIntervals<- function(table = cbind(rep(0, 100), rep(1, 100)) ){
+find_overlapping_intervals<- function(table = cbind(rep(0, 100), rep(1, 100)) ){
   
   doBootstrapTest<- function(trial){
 
@@ -40,14 +40,19 @@ findOverlappingIntervals<- function(table = cbind(rep(0, 100), rep(1, 100)) ){
 }
 
 
-# test this function!
 
-# output<- findOverlappingIntervals(table = cbind(rep(0, 1000), rep(1, 1000)))
-# 
-# output
-# 
-# output<- findOverlappingIntervals(table = rbind(c(0, 1), c(0.5,2),c(1.5, 2),c(-1, -0.5), c(-0.75,1)))
-# output
+# example 1
+
+result<- find_overlapping_intervals(table = cbind(rep(0, 1000), rep(1, 1000)))
+
+result
+
+
+# example 2
+
+result<- find_overlapping_intervals(table = rbind(c(0, 1), c(0.5,2),c(1.5, 2),c(-1, -0.5), c(-0.75,1)))
+
+result
 
 
 
