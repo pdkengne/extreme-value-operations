@@ -20,14 +20,15 @@ plot_several_standardized_block_maxima_mean <- function(x,
   
   if (equivalent == TRUE){
     estimated_mean_confidence_intervals <- estimated_mean_confidence_intervals_object$selected
+    block_sizes <- as.numeric(rownames(estimated_mean_confidence_intervals))
     main <- paste("Equivalent", main)
   }
   else{
     estimated_mean_confidence_intervals <- estimated_mean_confidence_intervals_object$estimates
   }
   
-  # extract a common value to all intervals from the largest subset of overlapping intervals
-  common_value <- estimated_mean_confidence_intervals_object$common_value
+  # extract a common interval to all intervals from the largest subset of overlapping intervals
+  common_interval <- estimated_mean_confidence_intervals_object$common_interval
   
   # plot the estimated mean of each required standardized block maxima
   plot(x = block_sizes, 
@@ -48,7 +49,9 @@ plot_several_standardized_block_maxima_mean <- function(x,
   lines(block_sizes, estimated_mean_confidence_intervals$lower_bound, col = 2, lwd = 2)
   lines(block_sizes, estimated_mean_confidence_intervals$upper_bound, col = 3, lwd = 2)
   
-  abline(h = common_value, lty = "dotted", lwd = 2, col = 7)
+  if (equivalent == TRUE){
+    abline(h = common_interval, lty = "dotted", lwd = 1, col = 7)
+  }
   
   legend(x = "topleft", 
          legend = c("CI Lower Bound", "Estimate", "CI Upper Bound"),
@@ -64,56 +67,79 @@ plot_several_standardized_block_maxima_mean <- function(x,
 }
 
 
-# example 1
-
-source("./src/find_minimum_block_size.R")
-source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-
-x <- rnorm(n = 10000)
-
-minimum_block_size <- find_minimum_block_size(x)
-minimum_block_size
-
-maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
-maximum_block_size
-
-block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
-
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-
-
-# example 2
-
-source("./src/find_minimum_block_size.R")
-source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-source("./src/generate_gev_sample.R")
-
-x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = +0.2)
-
-minimum_block_size <- find_minimum_block_size(x)
-minimum_block_size
-
-maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
-maximum_block_size
-
-block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
-
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
-
-
-# example 3
-
-source("./src/find_minimum_block_size.R")
-source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-
-x <- EnvStats::rzmnorm(n = 10000, mean = 0, sd = 1, p.zero = 0.5)
-
-minimum_block_size <- find_minimum_block_size(x)
-minimum_block_size
-
-maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
-maximum_block_size
-
-block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
-
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# # example 1
+# 
+# source("./src/find_minimum_block_size.R")
+# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# 
+# x <- rnorm(n = 10000)
+# 
+# minimum_block_size <- find_minimum_block_size(x)
+# minimum_block_size
+# 
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+# maximum_block_size
+# 
+# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# 
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# 
+# 
+# # example 2
+# 
+# source("./src/find_minimum_block_size.R")
+# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = +0.2)
+# 
+# minimum_block_size <- find_minimum_block_size(x)
+# minimum_block_size
+# 
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+# maximum_block_size
+# 
+# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# 
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# 
+# 
+# # example 3
+# 
+# source("./src/find_minimum_block_size.R")
+# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# minimum_block_size <- find_minimum_block_size(x)
+# minimum_block_size
+# 
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+# maximum_block_size
+# 
+# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# 
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# 
+# 
+# # example 4
+# 
+# source("./src/find_minimum_block_size.R")
+# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# 
+# x <- EnvStats::rzmnorm(n = 10000, mean = 0, sd = 1, p.zero = 0.5)
+# 
+# minimum_block_size <- find_minimum_block_size(x)
+# minimum_block_size
+# 
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+# maximum_block_size
+# 
+# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# 
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
