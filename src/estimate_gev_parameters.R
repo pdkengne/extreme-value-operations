@@ -6,7 +6,7 @@ estimate_gev_parameters <- function(x, nsloc = NULL){
   # x: vector of observations (assumed to be block maxima)
   # nsloc: dataframe of covariates for linear modeling of the location parameter
   
-  gev_model <- evd::fgev(x, nsloc = nsloc, prob = NULL, std.err = TRUE,
+  gev_model <- evd::fgev(x, nsloc = nsloc, prob = NULL, std.err = FALSE,
                         corr = FALSE, method = "BFGS", warn.inf = TRUE)
   
   gev_model
