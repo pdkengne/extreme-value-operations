@@ -1,8 +1,7 @@
 source("./src/check_whether_an_element_belongs_to_several_intervals.R")
 
-
 extract_largest_subset_of_overlapping_intervals<- function(table_of_intervals){
-  # function to identify the largest subset of intervals which overlaps.
+  # function to identify the largest subset of intervals which overlap.
   # Intervals are specified as a table (table_of_intervals) having two columns.
   # In this table, the first and the second components of each row are respectively the lower and upper bounds of an interval.
   
@@ -38,7 +37,6 @@ extract_largest_subset_of_overlapping_intervals<- function(table_of_intervals){
   
   output
 }
-
 
 
 # # example 1

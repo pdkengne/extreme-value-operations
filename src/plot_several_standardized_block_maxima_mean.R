@@ -3,12 +3,17 @@ source("./src/estimate_several_standardized_block_maxima_mean.R")
 plot_several_standardized_block_maxima_mean <- function(x, 
                                                         block_sizes, 
                                                         confidence_level = 0.95,
+                                                        equivalent = FALSE,
                                                         xlab = "Block Sizes", 
                                                         ylab = "Estimated Values", 
                                                         main = "Mean Standardized Block Maxima Plot"){
   # x: vector of observations
   # block_sizes: vector containing the sizes of blocks to consider
   # confidence_interval_level: desired confidence level
+  # equivalent: a boolean which indicates whether the equivalent estimates are returned or not
+  # xlab: label of the x-axis
+  # ylab: label of the y-axis
+  # main: title of the plot
   
   # estimate the mean of each required standardized block maxima
   estimated_mean_confidence_intervals <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level)
