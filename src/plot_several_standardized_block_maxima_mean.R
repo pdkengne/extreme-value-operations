@@ -38,6 +38,8 @@ plot_several_standardized_block_maxima_mean <- function(x,
          col = c(2, 4, 3),
          lwd = 2,
          box.lty = 2,
+         box.lwd = 1, 
+         box.col = 1,
          title = "Legend"
   )
 
