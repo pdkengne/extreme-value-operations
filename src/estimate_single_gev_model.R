@@ -46,7 +46,6 @@ estimate_single_gev_model <- function(x, block_size = 1, nsloc = NULL){
   output[["extremal_index"]] <- extremal_index
   output[["normalized_gev_parameters"]] <- normalized_gev_parameters
   
-  
   output
 }
 
