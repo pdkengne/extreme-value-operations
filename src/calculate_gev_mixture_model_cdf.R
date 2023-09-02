@@ -6,14 +6,12 @@ calculate_gev_mixture_model_cdf <- function(q, locations, scales, shapes, weight
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
   # The vectors of parameters must have the same number of elements
   
-  p <- length(weights)
+  S <- sapply(1:length(weights), function(j) calculate_gev_cdf(q = q, 
+                                                               loc = locations[j], 
+                                                               scale = scales[j], 
+                                                               shape = scales[j])^(weights[j]))
   
-  S <- sapply(1:p, function(j) weights[j]*log(calculate_gev_cdf(q = q, 
-                                                                loc = locations[j], 
-                                                                scale = scales[j], 
-                                                                shape = scales[j])))
-  
-  G <- exp(sum(S))
+  G <- prod(S)
   
   G
 }
