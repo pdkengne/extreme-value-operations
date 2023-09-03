@@ -8,30 +8,26 @@ calculate_gev_mixture_model_pdf <- function(x, locations, scales, shapes, weight
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
   # The vectors of parameters must have the same number of elements
   
-  output <- sapply(x, function(x){
-    S <- sapply(1:length(weights), function(j) {
-      dens <- calculate_gev_pdf(x = x, 
-                                loc = locations[j], 
-                                scale = scales[j], 
-                                shape = shapes[j])
-      
-      prob <- calculate_gev_mixture_model_cdf(q = x, 
-                                              locations = locations[-j], 
-                                              scales = scales[-j], 
-                                              shapes = shapes[-j], 
-                                              weights = weights[-j])
-      
-      out <- weights[j]*dens*prob
-      
-      out
-    })
+  S <- sapply(1:length(weights), function(j) {
+    dens <- calculate_gev_pdf(x = x, 
+                              loc = locations[j], 
+                              scale = scales[j], 
+                              shape = shapes[j])
     
-    g <- sum(S)
+    prob <- calculate_gev_mixture_model_cdf(q = x, 
+                                            locations = locations[-j], 
+                                            scales = scales[-j], 
+                                            shapes = shapes[-j], 
+                                            weights = weights[-j])
     
-    g
+    out <- weights[j]*dens*prob
+    
+    out
   })
   
-  output
+  g <- apply(S, 1, sum)
+  
+  g
 }
 
 
