@@ -14,66 +14,69 @@ calculate_gev_mixture_model_pdf <- function(x, locations, scales, shapes, weight
                               scale = scales[j], 
                               shape = shapes[j])
     
-    prob <- calculate_gev_mixture_model_cdf(q = x, 
-                                            locations = locations[-j], 
-                                            scales = scales[-j], 
-                                            shapes = shapes[-j], 
-                                            weights = weights[-j])
+    prob <- calculate_gev_cdf(q = x, 
+                              loc = locations[j], 
+                              scale = scales[j], 
+                              shape = shapes[j])
     
-    out <- weights[j]*dens*prob
+    dens[prob == 0] <- 0
+    prob[prob == 0] <- 1
+    
+    out <- weights[j]*dens/prob
     
     out
   })
   
-  g <- apply(S, 1, sum)
+  cdf <- calculate_gev_mixture_model_cdf(q = x, 
+                                         locations = locations, 
+                                         scales = scales, 
+                                         shapes = shapes, 
+                                         weights = weights)
   
-  g
+  if (length(x) == 1){
+    output <- sum(S)*cdf
+  }
+  else{
+    output <- apply(S, 1, sum)*cdf
+  }
+  
+  output
 }
 
 
-# example 1
-
-p <- 10
-
-y <- runif(p)
-weights <- y/sum(y)
-
-shapes <- runif(n = p, min = -0.5, max = +0.5)
-scales <- rexp(n = p)
-locations <- rnorm(n = p)
-
-results <- calculate_gev_mixture_model_pdf(x = 1:2, locations, scales, shapes, weights)
-
-results
-
-
-# example 2
-
-p <- 100
-
-y <- runif(p)
-weights <- y/sum(y)
-
-shapes <- runif(n = p, min = -0.5, max = +0.5)
-scales <- rexp(n = p)
-locations <- rnorm(n = p)
-
-results <- calculate_gev_mixture_model_pdf(x = c(2, 3, 5, 7, 11, 13, 17, 19), locations, scales, shapes, weights)
-
-results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# # example 1
+# 
+# p <- 10
+# 
+# y <- runif(p)
+# weights <- y/sum(y)
+# 
+# shapes <- runif(n = p, min = -0.5, max = +0.5)
+# scales <- rexp(n = p)
+# locations <- rnorm(n = p)
+# 
+# x <- 1
+# 
+# results <- calculate_gev_mixture_model_pdf(x = x, locations, scales, shapes, weights)
+# 
+# results
+# 
+# 
+# # example 2
+# 
+# p <- 100
+# 
+# y <- runif(p)
+# weights <- y/sum(y)
+# 
+# shapes <- runif(n = p, min = -0.1, max = +0.1)
+# scales <- rexp(n = p)
+# locations <- rnorm(n = p)
+# 
+# x <- seq(from = 1, to = 5, length.out = 500)
+# 
+# results <- calculate_gev_mixture_model_pdf(x = x, locations, scales, shapes, weights)
+# 
+# #results
+# 
+# plot(x, results, type = "l")
