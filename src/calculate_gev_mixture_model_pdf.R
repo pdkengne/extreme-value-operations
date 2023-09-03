@@ -51,7 +51,7 @@ calculate_gev_mixture_model_pdf <- function(x, locations, scales, shapes, weight
 # y <- runif(p)
 # weights <- y/sum(y)
 # 
-# shapes <- runif(n = p, min = -0.5, max = +0.5)
+# shapes <- runif(n = p, min = -0.2, max = +0.2)
 # scales <- rexp(n = p)
 # locations <- rnorm(n = p)
 # 
