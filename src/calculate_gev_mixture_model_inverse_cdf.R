@@ -3,11 +3,13 @@
 source(("./src/calculate_gev_inverse_cdf.R"))
 source("./src/calculate_gev_mixture_model_cdf.R")
 
-calculate_gev_mixture_model_inverse_cdf <- function(p, locations, scales, shapes, weights){
+calculate_gev_mixture_model_inverse_cdf <- function(p, locations, scales, shapes, weights, ntry = 50, quiet = FALSE){
   # p: vector of probabilities
   # weights: vector of weights
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
   # The vectors of parameters must have the same number of elements
+  # ntry: number of random initial guesses to generate
+  # quiet: boolean value which indicates whether messages about convergence success or failure should be suppressed
   
   output <- sapply(p, function(p){
     # define the nonlinear equation to solve
@@ -20,18 +22,23 @@ calculate_gev_mixture_model_inverse_cdf <- function(p, locations, scales, shapes
     q_initial_guesses <- sapply(1:length(weights), function(j) calculate_gev_inverse_cdf(p = p, 
                                                                                          loc = locations[j], 
                                                                                          scale = scales[j], 
-                                                                                         shape = shapes[j]))  
-    
+                                                                                         shape = shapes[j])) 
+    # generate some initial guesses for the root of the nonlinear equation to solve
+    random_q_initial_guesses <- seq(from = min(q_initial_guesses), to = max(q_initial_guesses), length.out = ntry)
+    random_q_initial_guesses_matrix <- matrix(data = random_q_initial_guesses, nrow = ntry, ncol = 1)
+
     # estimate the root of the nonlinear equation to solve
-    q_initial_guess <- sort(q_initial_guesses, decreasing = TRUE)
-    answer_object <- BB::BBsolve(par = q_initial_guess[1], fn = nle, control=list(trace=FALSE))
-    k <- 2
-    while (answer_object$convergence != 0 & k <= length(weights)){
-      answer_object <- BB::BBsolve(par = q_initial_guess[k], fn = nle, control=list(trace=FALSE))
-      k <- k + 1
-    }
-    answer <- answer_object$par
-    names(answer) <- answer_object$message
+    answer_object <- BB::multiStart(par = random_q_initial_guesses_matrix, 
+                                    fn = nle, 
+                                    action = "solve", 
+                                    quiet = quiet,
+                                    control = list(trace=FALSE))
+    
+    # extract the exact root of the nonlinear equation to solve
+    answer_object_converged <- answer_object$par[answer_object$converged, ]
+    answer <- ifelse(test = length(answer_object_converged) >= 1,
+                     yes = answer_object_converged[1],
+                     no = NA)
     
     answer
   })
@@ -51,9 +58,9 @@ calculate_gev_mixture_model_inverse_cdf <- function(p, locations, scales, shapes
 # scales <- rexp(n = m)
 # locations <- rnorm(n = m)
 # 
-# p <- seq(from = 0.1, to = 0.9, length.out = 9)
+# p <- seq(from = 0.01, to = 0.09, length.out = 9)
 # 
-# results <- calculate_gev_mixture_model_inverse_cdf(p = p, locations, scales, shapes, weights)
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p, locations, scales, shapes, weights, ntry = 50, quiet = FALSE)
 # 
 # results
 # 
@@ -72,9 +79,9 @@ calculate_gev_mixture_model_inverse_cdf <- function(p, locations, scales, shapes
 # scales <- rexp(n = m)
 # locations <- rnorm(n = m)
 # 
-# p <- seq(from = 0.1, to = 0.9, length.out = 21)
+# p <- seq(from = 0.90, to = 0.99, length.out = 10)
 # 
-# results <- calculate_gev_mixture_model_inverse_cdf(p = p, locations, scales, shapes, weights)
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p, locations, scales, shapes, weights, ntry = 50, quiet = TRUE)
 # 
 # results
 # 
