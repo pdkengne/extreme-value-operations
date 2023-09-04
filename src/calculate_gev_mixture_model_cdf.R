@@ -7,7 +7,7 @@ calculate_gev_mixture_model_cdf <- function(q, locations, scales, shapes, weight
   # The vectors of parameters must have the same number of elements
   
   output <- sapply(q, function(q) {
-    S <- sapply(1:length(weights), function(j) {
+    S <- sapply(1:length(shapes), function(j) {
       prob <- calculate_gev_cdf(q = q, 
                                 loc = locations[j], 
                                 scale = scales[j], 
