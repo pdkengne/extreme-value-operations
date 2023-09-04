@@ -1,15 +1,14 @@
 # library(BB)
 
+source("./src/calculate_gev_cdf.R")
 source("./src/calculate_gev_mixture_model_cdf.R")
 source("./src/estimate_gev_mixture_model_pessimistic_weights.R")
 source("./src/estimate_gev_mixture_model_identic_weights.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
 
-estimate_gev_mixture_model_automatic_weights <- function(gev_models){
+estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRUE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
-  
-  # create an empty output object
-  output <- list()
+  # trace: boolean value which indicates whether to print information on the progress of optimization
   
   # get the normalized gev parameters
   normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
@@ -17,11 +16,11 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models){
   scales <- normalized_gev_parameters$scale_star
   locations <- normalized_gev_parameters$loc_star
   
-  # extract large data to use
+  # extract the largest data to use
   x <- gev_models$data
-  block_size <- max(gev_models$block_sizes)
-  threshold <- find_threshold_associated_with_given_block_size(x, block_size)
-  y <- x[x > threshold]
+  block_size_max <- max(gev_models$block_sizes)
+  threshold_max <- find_threshold_associated_with_given_block_size(x, block_size_max)
+  y <- x[x > threshold_max]
   
   # estimate the empirical distribution function
   Fn <- ecdf(x)
@@ -47,6 +46,15 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models){
                                   initial_weights_pessimistic_weights_loc,
                                   initial_weights_identic)
   
+  v <- runif(n = p)
+  weights_1 <- v/sum(v)
+  v <- runif(n = p)
+  weights_2 <- v/sum(v)
+  v <- runif(n = p)
+  weights_3 <- v/sum(v)
+  
+  # initial_weights_matrix <- rbind(weights_1, weights_2, weights_3)
+  
   # define the error function to optimize
   nlf <- function(w, y){
     theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w)
@@ -58,30 +66,51 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models){
     loss <- sum(errors)
     
     loss
-    }
+  }
+  
+  # define the gradient of error function 
+  
+  nlf_gradient <- function(w, y){
+    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w)
     
+    empirical_cdf <- Fn(y)
+    
+    errors <- theoretical_cdf - empirical_cdf
+    
+    gradient_object <- sapply(1:p, function(j) errors*log(calculate_gev_cdf(q = y, 
+                                                                            loc = locations[j], 
+                                                                            scale = scales[j], 
+                                                                            shape = shapes[j])))
+    
+    gradient <- 2*apply(gradient_object, 2, sum)
+    
+    gradient
+  }
+  
   # # minimize the error function
-  # answer <- BB::BBoptim(par = initial_weights_identic, 
-  #                       fn = nlf, 
+  # answer <- BB::BBoptim(par = weights_1,
+  #                       fn = nlf,
+  #                       gr = nlf_gradient,
   #                       y = y,
-  #                       lower = lower, 
-  #                       upper = upper, 
-  #                       control = list(maximize = FALSE, trace = TRUE))
+  #                       lower = lower,
+  #                       upper = upper,
+  #                       project = "projectLinear",
+  #                       projectArgs=list(A = matrix(1, nrow = 1, ncol = p), b = 1, meq = 1),
+  #                       control = list(maximize = FALSE, trace = trace, checkGrad = FALSE))
   
   # minimize the error function
-  answer <- BB::multiStart(par = initial_weights_matrix, 
-                          fn = nlf, 
+  answer <- BB::multiStart(par = initial_weights_matrix,
+                          fn = nlf,
+                          gr = nlf_gradient,
                           action="optimize",
                           y = y,
-                          lower = lower, 
-                          upper = upper, 
-                          control = list(maximize = FALSE, trace = TRUE))
+                          lower = lower,
+                          upper = upper,
+                          project = "projectLinear",
+                          projectArgs=list(A = matrix(1, nrow = 1, ncol = p), b = 1, meq = 1),
+                          control = list(maximize = FALSE, trace = trace, checkGrad = FALSE))
   
-  
-  # update the output object
-  output[["automatic_weights"]] <- automatic_weights
-  
-  output
+  answer
 }
 
 
@@ -108,7 +137,9 @@ equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$sele
 
 gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 
-results <- estimate_gev_mixture_model_automatic_weights(gev_models)
+results <- estimate_gev_mixture_model_automatic_weights(gev_models, trace = TRUE)
 
 results
+
+sum(results$par)
 
