@@ -8,7 +8,7 @@ generate_gev_mixture_model_sample <- function(n = 1, locations, scales, shapes, 
   # ntry: number of random initial guesses to generate
   # quiet: boolean value which indicates whether messages about convergence success or failure should be suppressed
   
-  p <- runif(n)
+  p <- runif(n, min = c(0, 0.25, 0.50, 0.75), max = c(0.25, 0.50, 0.75, 1))
   
   output <- calculate_gev_mixture_model_inverse_cdf(p = p, locations, scales, shapes, weights, ntry, quiet)
   
