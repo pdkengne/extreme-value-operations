@@ -49,7 +49,7 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models){
   
   # define the error function to optimize
   nlf <- function(w, y){
-    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w/sum(w))
+    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w)
     
     empirical_cdf <- Fn(y)
     
