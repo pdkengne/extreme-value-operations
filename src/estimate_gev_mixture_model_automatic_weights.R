@@ -8,9 +8,6 @@ source("./src/find_threshold_associated_with_given_block_size.R")
 estimate_gev_mixture_model_automatic_weights <- function(gev_models){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
   
-  # create an empty output object
-  output <- list()
-  
   # get the normalized gev parameters
   normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
   shapes <- normalized_gev_parameters$shape_star
@@ -47,9 +44,18 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models){
                                   initial_weights_pessimistic_weights_loc,
                                   initial_weights_identic)
   
+  z <- runif(n = p)
+  weights_1 <- z/sum(z)
+  z <- runif(n = p)
+  weights_2 <- z/sum(z)
+  z <- runif(n = p)
+  weights_3 <- z/sum(z)
+  
+  initial_weights_matrix <- rbind(weights_1, weights_2, weights_3)
+  
   # define the error function to optimize
   nlf <- function(w, y){
-    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w/sum(w))
+    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w)
     
     empirical_cdf <- Fn(y)
     
@@ -77,11 +83,7 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models){
                           upper = upper, 
                           control = list(maximize = FALSE, trace = TRUE))
   
-  
-  # update the output object
-  output[["automatic_weights"]] <- automatic_weights
-  
-  output
+  answer
 }
 
 
