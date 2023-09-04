@@ -11,7 +11,7 @@ calculate_gev_mixture_model_cdf <- function(q, locations, scales, shapes, weight
       prob <- calculate_gev_cdf(q = q, 
                                 loc = locations[j], 
                                 scale = scales[j], 
-                                shape = scales[j])
+                                shape = shapes[j])
       
       out <- prob^(weights[j])
       
