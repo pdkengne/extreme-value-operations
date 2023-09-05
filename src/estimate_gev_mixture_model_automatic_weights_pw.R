@@ -1,0 +1,167 @@
+source("./src/calculate_gev_cdf.R")
+source("./src/find_threshold_associated_with_given_block_size.R")
+
+estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models, trace = TRUE){
+  # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
+  # trace: boolean value which indicates whether to print information on the progress of optimization
+  
+  # create an empty output object
+  output <- list()
+  
+  # get the normalized gev parameters
+  normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
+  shapes <- normalized_gev_parameters$shape_star
+  scales <- normalized_gev_parameters$scale_star
+  locations <- normalized_gev_parameters$loc_star
+  
+  # extract the largest data to use
+  x <- gev_models$data
+  block_sizes <- gev_models$block_sizes
+  block_size_max <- max(block_sizes)
+  threshold_max <- find_threshold_associated_with_given_block_size(x, block_size_max)
+  y <- x[x > threshold_max]
+  
+  # estimate the empirical distribution function
+  Fn <- ecdf(x)
+  
+  # get the number of gev models
+  p <- nrow(normalized_gev_parameters)
+  
+  # define the constraints on the unknown weights
+  lower <- rep(0, 3*p)
+  upper <- rep(1, 3*p)
+  
+  # define an initial vector of weights
+  initial_weights <- rep(1, 3*p)/p
+  
+  # define the error function to optimize
+  nlf <- function(w, y){
+    weights_shape <- w[1:p]
+    weights_scale <- w[(p+1):(2*p)]
+    weights_location <- w[(2*p+1):(3*p)]
+    
+    shape <- sum(weights_shape*shapes)
+    scale <- sum(weights_scale*scales)
+    location <- sum(weights_location*locations)
+    
+    theoretical_cdf <- calculate_gev_cdf(q = y, loc = location, scale = scale, shape = shape)
+    
+    empirical_cdf <- Fn(y)
+    
+    errors <- (theoretical_cdf - empirical_cdf)^2
+    
+    loss <- sum(errors)
+    
+    loss
+  }
+  
+  # minimize the error function
+  data_A <- c(rep(1, p), rep(0, p), rep(0, p),
+               rep(0, p), rep(1, p), rep(0, p),
+               rep(0, p), rep(0, p), rep(1, p))
+  
+  matrix_A <- matrix(data = data_A, nrow = 3, ncol = 3*p, byrow = TRUE)
+  
+  b <- c(1, 1, 1)
+  
+  meq <- 3
+  
+  answer <- BB::BBoptim(par = initial_weights,
+                        fn = nlf,
+                        y = y,
+                        lower = lower,
+                        upper = upper,
+                        project = "projectLinear",
+                        projectArgs = list(A = matrix_A, b = b, meq = meq),
+                        control = list(maximize = FALSE, trace = trace, checkGrad = FALSE))
+  
+  # extract the weights associated with each of the gev model parameters
+  automatic_weights_shape <- answer$par[1:p]
+  names(automatic_weights_shape) <- block_sizes
+  
+  automatic_weights_scale <- answer$par[(p+1):(2*p)]
+  names(automatic_weights_scale) <- block_sizes
+  
+  automatic_weights_loc <- answer$par[(2*p+1):(3*p)]
+  names(automatic_weights_loc) <- block_sizes
+  
+  # update the output object
+  output[["automatic_weights_shape"]] <- automatic_weights_shape
+  output[["automatic_weights_scale"]] <- automatic_weights_scale
+  output[["automatic_weights_loc"]] <- automatic_weights_loc
+  output[["function_value"]] <- answer$value
+  output[["gradient_value"]] <- answer$gradient
+  output[["function_reduction"]] <- answer$fn.reduction
+  output[["number_iterations"]] <- answer$iter
+  output[["convergence"]] <- answer$convergence
+  output[["message"]] <- answer$message
+
+  output
+}
+
+
+# # example 1
+# 
+# source("./src/estimate_several_gev_models.R")
+# source("./src/find_minimum_block_size.R")
+# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# source("./src/generate_gev_sample.R")
+# source("./src/estimate_several_standardized_block_maxima_mean.R")
+# 
+# x <- generate_gev_sample(n = 2000, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# minimum_block_size <- find_minimum_block_size(x)
+# minimum_block_size
+# 
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+# maximum_block_size
+# 
+# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# 
+# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+# 
+# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
+# 
+# results <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, trace = TRUE)
+# 
+# results
+# 
+# names(results)
+# 
+# sum(results$automatic_weights_shape)
+# sum(results$automatic_weights_scale)
+# sum(results$automatic_weights_loc)
+# 
+# 
+# # example 2
+# 
+# source("./src/estimate_several_gev_models.R")
+# source("./src/find_minimum_block_size.R")
+# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# source("./src/estimate_several_standardized_block_maxima_mean.R")
+# 
+# x <- rnorm(n = 2000)
+# 
+# minimum_block_size <- find_minimum_block_size(x)
+# minimum_block_size
+# 
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+# maximum_block_size
+# 
+# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# 
+# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+# 
+# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
+# 
+# results <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, trace = TRUE)
+# 
+# results
+# 
+# names(results)
+# 
+# sum(results$automatic_weights_shape)
+# sum(results$automatic_weights_scale)
+# sum(results$automatic_weights_loc)
