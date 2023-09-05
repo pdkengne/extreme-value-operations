@@ -6,10 +6,11 @@ source("./src/estimate_extremal_index.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
 
 
-estimate_single_gev_model <- function(x, block_size = 1, nsloc = NULL){
+estimate_single_gev_model <- function(x, block_size = 1, nsloc = NULL, std.err = FALSE){
   # x: vector of observations
   # block_size: size of blocks to consider
   # nsloc: dataframe of covariates for linear modeling of the location parameter
+  # std.err: a boolean which indicates whether the standard errors are returned or not
   
   # create an empty output object
   output <- list()
@@ -28,7 +29,7 @@ estimate_single_gev_model <- function(x, block_size = 1, nsloc = NULL){
   extremal_index <- estimate_extremal_index(x, threshold, run = 0)
   
   # estimate gev model
-  gev_model <- estimate_gev_parameters(x = block_maxima, nsloc)
+  gev_model <- estimate_gev_parameters(x = block_maxima, nsloc, std.err)
   
   # calculate the normalized gev parameters
   gev_parameters <- gev_model$estimate

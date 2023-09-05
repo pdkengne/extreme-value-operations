@@ -137,7 +137,7 @@ estimate_gev_mixture_model_pessimistic_weights <- function(gev_models){
 # y <- apply(y_df, 1, max)
 # 
 # plot(names(results$pessimistic_weights_shape), y, ylim = range(y_df),
-#      type = "h", xlab = "block sizes", ylab = "weights", 
+#      type = "h", xlab = "block sizes", ylab = "weights",
 #      main = "estimated weights: shape (blue), scale (green), location (red) and model (yellow)")
 # 
 # points(names(results$pessimistic_weights_shape), results$pessimistic_weights_shape, col = 4, pch = 20)

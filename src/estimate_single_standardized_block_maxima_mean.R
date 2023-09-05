@@ -5,7 +5,7 @@ source("./src/estimate_gev_parameters.R")
 estimate_single_standardized_block_maxima_mean <- function(x, block_size = 1, confidence_level = 0.95){
   # x: vector of observations
   # block_size: size of blocks to consider
-  # confidence_interval_level: desired confidence level
+  # confidence_level: desired confidence level
   
   # extract block maxima
   block_maxima <- extract_block_maxima(x, block_size)

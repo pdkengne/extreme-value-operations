@@ -4,7 +4,7 @@ source("./src/extract_largest_subset_of_overlapping_intervals.R")
 estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, confidence_level = 0.95){
   # x: vector of observations
   # block_sizes: vector containing the sizes of blocks to consider
-  # confidence_interval_level: desired confidence level
+  # confidence_level: desired confidence level
   
   # create an empty output object
   output <- list()
