@@ -2,13 +2,14 @@
 
 source("./src/calculate_gev_cdf.R")
 source("./src/calculate_gev_mixture_model_cdf.R")
-source("./src/estimate_gev_mixture_model_pessimistic_weights.R")
-source("./src/estimate_gev_mixture_model_identic_weights.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
 
 estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRUE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
   # trace: boolean value which indicates whether to print information on the progress of optimization
+  
+  # create an empty output object
+  output <- list()
   
   # get the normalized gev parameters
   normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
@@ -18,7 +19,8 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
   
   # extract the largest data to use
   x <- gev_models$data
-  block_size_max <- max(gev_models$block_sizes)
+  block_sizes <- gev_models$block_sizes
+  block_size_max <- max(block_sizes)
   threshold_max <- find_threshold_associated_with_given_block_size(x, block_size_max)
   y <- x[x > threshold_max]
   
@@ -32,28 +34,8 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
   lower <- rep(0, p)
   upper <- rep(1, p)
   
-  # define some initial vectors of weights
-  initial_weights_object <- estimate_gev_mixture_model_pessimistic_weights(gev_models)
-  
-  initial_weights_pessimistic_weights_shape <- initial_weights_object$pessimistic_weights_shape
-  initial_weights_pessimistic_weights_scale <- initial_weights_object$pessimistic_weights_scale
-  initial_weights_pessimistic_weights_loc <- initial_weights_object$pessimistic_weights_loc
-  
-  initial_weights_identic <- estimate_gev_mixture_model_identic_weights(gev_models)
-  
-  initial_weights_matrix <- rbind(initial_weights_pessimistic_weights_shape,
-                                  initial_weights_pessimistic_weights_scale,
-                                  initial_weights_pessimistic_weights_loc,
-                                  initial_weights_identic)
-  
-  v <- runif(n = p)
-  weights_1 <- v/sum(v)
-  v <- runif(n = p)
-  weights_2 <- v/sum(v)
-  v <- runif(n = p)
-  weights_3 <- v/sum(v)
-  
-  # initial_weights_matrix <- rbind(weights_1, weights_2, weights_3)
+  # define an initial vector of weights
+  initial_weights <- rep(1, p)/p
   
   # define the error function to optimize
   nlf <- function(w, y){
@@ -88,7 +70,7 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
   }
   
   # minimize the error function
-  answer <- BB::BBoptim(par = initial_weights_identic,
+  answer <- BB::BBoptim(par = initial_weights,
                         fn = nlf,
                         gr = nlf_gradient,
                         y = y,
@@ -97,20 +79,20 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
                         project = "projectLinear",
                         projectArgs=list(A = matrix(1, nrow = 1, ncol = p), b = 1, meq = 1),
                         control = list(maximize = FALSE, trace = trace, checkGrad = FALSE))
+
+  automatic_weights <- answer$par
+  names(automatic_weights) <- block_sizes
   
-  # # minimize the error function
-  # answer <- BB::multiStart(par = initial_weights_matrix,
-  #                         fn = nlf,
-  #                         gr = nlf_gradient,
-  #                         action="optimize",
-  #                         y = y,
-  #                         lower = lower,
-  #                         upper = upper,
-  #                         project = "projectLinear",
-  #                         projectArgs=list(A = matrix(1, nrow = 1, ncol = p), b = 1, meq = 1),
-  #                         control = list(maximize = FALSE, trace = trace, checkGrad = FALSE))
+  # update the output object
+  output[["automatic_weights"]] <- automatic_weights
+  output[["function_value"]] <- answer$value
+  output[["gradient_value"]] <- answer$gradient
+  output[["function_reduction"]] <- answer$fn.reduction
+  output[["number_iterations"]] <- answer$iter
+  output[["convergence"]] <- answer$convergence
+  output[["message"]] <- answer$message
   
-  answer
+  output
 }
 
 
@@ -141,7 +123,7 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
 # 
 # results
 # 
-# sum(results$par)
+# sum(results$automatic_weights)
 # 
 # 
 # # example 2
@@ -156,7 +138,7 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
 # minimum_block_size <- find_minimum_block_size(x)
 # minimum_block_size
 # 
-# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 100)
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
 # maximum_block_size
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
@@ -170,4 +152,4 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
 # 
 # results
 # 
-# sum(results$par)
+# sum(results$automatic_weights)
