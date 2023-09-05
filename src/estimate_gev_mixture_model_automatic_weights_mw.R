@@ -4,7 +4,7 @@ source("./src/calculate_gev_cdf.R")
 source("./src/calculate_gev_mixture_model_cdf.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
 
-estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRUE){
+estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models, trace = TRUE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
   # trace: boolean value which indicates whether to print information on the progress of optimization
   
@@ -104,7 +104,7 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
 # source("./src/generate_gev_sample.R")
 # source("./src/estimate_several_standardized_block_maxima_mean.R")
 # 
-# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
+# x <- generate_gev_sample(n = 2000, loc = 1, scale = 0.5, shape = -0.2)
 # 
 # minimum_block_size <- find_minimum_block_size(x)
 # minimum_block_size
@@ -119,7 +119,7 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights(gev_models, trace = TRUE)
+# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = TRUE)
 # 
 # results
 # 
@@ -133,7 +133,7 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
 # source("./src/find_block_size_associated_with_given_number_of_blocks.R")
 # source("./src/estimate_several_standardized_block_maxima_mean.R")
 # 
-# x <- rnorm(n = 1000)
+# x <- rnorm(n = 2000)
 # 
 # minimum_block_size <- find_minimum_block_size(x)
 # minimum_block_size
@@ -148,7 +148,7 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models, trace = TRU
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights(gev_models, trace = TRUE)
+# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = TRUE)
 # 
 # results
 # 
