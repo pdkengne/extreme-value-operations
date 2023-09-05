@@ -4,6 +4,9 @@ estimate_gev_mixture_model_pessimistic_weights <- function(gev_models){
   # create an empty output object
   output <- list()
   
+  # get the considered sizes of blocks
+  block_sizes <- gev_models$block_sizes
+  
   # get the normalized gev parameters
   normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
   
@@ -12,23 +15,33 @@ estimate_gev_mixture_model_pessimistic_weights <- function(gev_models){
   normalized_gev_parameters_shape_cdf <- ecdf(normalized_gev_parameters_shape)
   normalized_gev_parameters_shape_cdf_estimates <- normalized_gev_parameters_shape_cdf(normalized_gev_parameters_shape)
   pessimistic_weights_shape <- normalized_gev_parameters_shape_cdf_estimates/sum(normalized_gev_parameters_shape_cdf_estimates)
-  names(pessimistic_weights_shape) <- rownames(normalized_gev_parameters)
+  names(pessimistic_weights_shape) <- block_sizes
   
   # calculate the pessimistic weights associated with the scale parameter
   normalized_gev_parameters_scale <- normalized_gev_parameters$scale_star
   normalized_gev_parameters_scale_cdf <- ecdf(normalized_gev_parameters_scale)
   normalized_gev_parameters_scale_cdf_estimates <- normalized_gev_parameters_scale_cdf(normalized_gev_parameters_scale)
   pessimistic_weights_scale <- normalized_gev_parameters_scale_cdf_estimates/sum(normalized_gev_parameters_scale_cdf_estimates)
-  names(pessimistic_weights_scale) <- rownames(normalized_gev_parameters)
+  names(pessimistic_weights_scale) <- block_sizes
   
   # calculate the pessimistic weights associated with the location parameter
   normalized_gev_parameters_loc <- normalized_gev_parameters$loc_star
   normalized_gev_parameters_loc_cdf <- ecdf(normalized_gev_parameters_loc)
   normalized_gev_parameters_loc_cdf_estimates <- normalized_gev_parameters_loc_cdf(normalized_gev_parameters_loc)
   pessimistic_weights_loc <- normalized_gev_parameters_loc_cdf_estimates/sum(normalized_gev_parameters_loc_cdf_estimates)
-  names(pessimistic_weights_loc) <- rownames(normalized_gev_parameters)
+  names(pessimistic_weights_loc) <- block_sizes
+  
+  # calculate the pessimistic weights associated with the considered gev models
+  pessimistic_weights_models_object <- cbind(normalized_gev_parameters_shape_cdf_estimates,
+                                             normalized_gev_parameters_scale_cdf_estimates,
+                                             normalized_gev_parameters_loc_cdf_estimates)
+  
+  pessimistic_weights_models <- apply(pessimistic_weights_models_object, 1, max)
+  pessimistic_weights <- pessimistic_weights_models/sum(pessimistic_weights_models)
+  names(pessimistic_weights) <- block_sizes
   
   # update the output object
+  output[["pessimistic_weights"]] <- pessimistic_weights
   output[["pessimistic_weights_shape"]] <- pessimistic_weights_shape
   output[["pessimistic_weights_scale"]] <- pessimistic_weights_scale
   output[["pessimistic_weights_loc"]] <- pessimistic_weights_loc
@@ -67,20 +80,24 @@ estimate_gev_mixture_model_pessimistic_weights <- function(gev_models){
 # lapply(results, function(weights) range(weights))
 # lapply(results, function(weights) sum(weights))
 # 
-# y_df <- cbind(results$pessimistic_weights_shape, 
+# y_df <- cbind(results$pessimistic_weights_shape,
 #               results$pessimistic_weights_scale,
-#               results$pessimistic_weights_loc)
+#               results$pessimistic_weights_loc,
+#               results$pessimistic_weights)
 # 
 # y <- apply(y_df, 1, max)
 # 
-# plot(names(results$pessimistic_weights_shape), y, ylim = range(y_df), 
-#      type = "h", xlab = "block sizes", ylab = "weights", main = "weights of the shape (blue), scale (green) and location (red) parameters")
+# plot(names(results$pessimistic_weights_shape), y, ylim = range(y_df),
+#      type = "h", xlab = "block sizes", ylab = "weights", 
+#      main = "estimated weights: shape (blue), scale (green), location (red) and model (yellow)")
 # 
 # points(names(results$pessimistic_weights_shape), results$pessimistic_weights_shape, col = 4, pch = 20)
 # 
 # points(names(results$pessimistic_weights_scale), results$pessimistic_weights_scale, col = 3, pch = 20)
 # 
 # points(names(results$pessimistic_weights_loc), results$pessimistic_weights_loc, col = 2, pch = 20)
+# 
+# points(names(results$pessimistic_weights_loc), results$pessimistic_weights, col = 7, pch = 20)
 # 
 # 
 # # example 2
@@ -112,17 +129,21 @@ estimate_gev_mixture_model_pessimistic_weights <- function(gev_models){
 # lapply(results, function(weights) range(weights))
 # lapply(results, function(weights) sum(weights))
 # 
-# y_df <- cbind(results$pessimistic_weights_shape, 
+# y_df <- cbind(results$pessimistic_weights_shape,
 #               results$pessimistic_weights_scale,
-#               results$pessimistic_weights_loc)
+#               results$pessimistic_weights_loc,
+#               results$pessimistic_weights)
 # 
 # y <- apply(y_df, 1, max)
 # 
-# plot(names(results$pessimistic_weights_shape), y, ylim = range(y_df), 
-#      type = "h", xlab = "block sizes", ylab = "weights", main = "weights of the shape (blue), scale (green) and location (red) parameters")
+# plot(names(results$pessimistic_weights_shape), y, ylim = range(y_df),
+#      type = "h", xlab = "block sizes", ylab = "weights", 
+#      main = "estimated weights: shape (blue), scale (green), location (red) and model (yellow)")
 # 
 # points(names(results$pessimistic_weights_shape), results$pessimistic_weights_shape, col = 4, pch = 20)
 # 
 # points(names(results$pessimistic_weights_scale), results$pessimistic_weights_scale, col = 3, pch = 20)
 # 
 # points(names(results$pessimistic_weights_loc), results$pessimistic_weights_loc, col = 2, pch = 20)
+# 
+# points(names(results$pessimistic_weights_loc), results$pessimistic_weights, col = 7, pch = 20)
