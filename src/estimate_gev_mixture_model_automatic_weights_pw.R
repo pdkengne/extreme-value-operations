@@ -17,9 +17,9 @@ estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models, trace = 
   # extract the largest data to use
   x <- gev_models$data
   block_sizes <- gev_models$block_sizes
-  block_size_max <- max(block_sizes)
-  threshold_max <- find_threshold_associated_with_given_block_size(x, block_size_max)
-  y <- x[x > threshold_max]
+  block_size <- min(block_sizes)
+  threshold <- find_threshold_associated_with_given_block_size(x, block_size)
+  y <- x[x > threshold]
   
   # estimate the empirical distribution function
   Fn <- ecdf(x)

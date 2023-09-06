@@ -156,8 +156,8 @@ estimate_gev_mixture_model_parameters <- function(x,
 source("./src/generate_gev_sample.R")
 source("./src/plot_several_standardized_block_maxima_mean.R")
 
-n <- 100000
-nlargest <- 10000
+n <- 1000
+nlargest <- 1000
 
 # x <- rnorm(n = n)
 x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)

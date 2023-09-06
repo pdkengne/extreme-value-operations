@@ -15,7 +15,11 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
   # ylab: label of the y-axis
   # main: title of the plot
   
+  # extract train data
+  uvdata <- gev_mixture_model$data_largest
   
+  # calculate empirical pdf
+  empirical_density_object <- EnvStats::epdfPlot(x = uvdata, plot.it = FALSE)
   
   
   
