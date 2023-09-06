@@ -9,8 +9,14 @@ get_candidate_thresholds <- function(x, k = 50){
   minimum_threshold <- find_minimum_threshold(x)
   maximum_threshold <- find_threshold_associated_with_given_number_of_largest_values(x, k)
   
-  # deduce candidate thresholds
-  candidate_thresholds <- sort(x[(x >= minimum_threshold) & (x <= maximum_threshold)])
+  if (maximum_threshold <= minimum_threshold){
+    print(paste("The provided minimum number of largest values,", k, "is too large! Please, consider using a smaller number."))
+    candidate_thresholds <- minimum_threshold
+  }
+  else{
+    # deduce candidate thresholds
+    candidate_thresholds <- sort(x[(x >= minimum_threshold) & (x <= maximum_threshold)])
+  }
   
   candidate_thresholds
 }
@@ -31,3 +37,13 @@ get_candidate_thresholds <- function(x, k = 50){
 # 
 # result <- get_candidate_thresholds(x, k = 50)
 # result
+# 
+# 
+# # example 3
+# 
+# x <- 1:100
+# x
+# 
+# result <- get_candidate_thresholds(x, k = 52)
+# result
+

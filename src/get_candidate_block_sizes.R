@@ -11,7 +11,7 @@ get_candidate_block_sizes <- function(x, m = 50){
   
   if (maximum_block_size <= minimum_block_size){
     print(paste("The provided minimum number of blocks,", m, "is too large! Please, consider using a smaller number."))
-    maximum_block_size <- max(minimum_block_size + 1, maximum_block_size)
+    maximum_block_size <- minimum_block_size
   }
   
   

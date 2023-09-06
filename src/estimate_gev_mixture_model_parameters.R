@@ -10,7 +10,8 @@ source("./src/get_candidate_block_sizes.R")
 estimate_gev_mixture_model_parameters <- function(x, 
                                                   nsloc = NULL, 
                                                   std.err = FALSE, 
-                                                  block_sizes = NULL, 
+                                                  block_sizes = NULL,
+                                                  minimum_nblocks = 50,
                                                   nlargest = Inf,
                                                   confidence_level = 0.95,
                                                   trace = TRUE){
@@ -21,6 +22,8 @@ estimate_gev_mixture_model_parameters <- function(x,
   # std.err: a boolean which indicates whether the standard errors are returned or not
   # confidence_level: desired confidence level
   # nlargest: number of largest values to focus on. Note that the whole vector x is use unless, nlargest != Inf.
+  # minimum_nblocks: desired minimum number of blocks. Note that this number is used to infer the largest block size.
+  #                   Moreover, this number is ignored if block_sizes != NULL.
   
   
   
