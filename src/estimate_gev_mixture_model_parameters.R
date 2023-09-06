@@ -52,14 +52,25 @@ estimate_gev_mixture_model_parameters <- function(x,
                                             block_sizes = equivalent_block_sizes, 
                                             nsloc = nsloc)
   
+  # get all gev models
+  gev_models_object <- gev_models$gev_models_object
+  
+  # get the block maxima indexes
+  block_maxima_indexes_object <- gev_models$block_maxima_indexes_object
+  
+  # get the extremal indexes
+  extremal_indexes <- gev_models$extremal_indexes
+  
   # estimate the identic weights
   identic_weights_mw <- estimate_gev_mixture_model_identic_weights(gev_models)
   
   # estimate the pessimistic weights
   pessimistic_weights_object <- estimate_gev_mixture_model_pessimistic_weights(gev_models)
+  pessimistic_weights_mw <- pessimistic_weights_object$pessimistic_weights
   
   # estimate model wise automatic weights 
   automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = trace)
+  automatic_weights_mw <- automatic_weights_mw_object$automatic_weights
   automatic_weights_mw_statistics <- list(function_value = automatic_weights_mw_object$function_value,
                                           gradient_value = automatic_weights_mw_object$gradient_value,
                                           function_reduction = automatic_weights_mw_object$function_reduction,
@@ -76,6 +87,35 @@ estimate_gev_mixture_model_parameters <- function(x,
                                           convergence = automatic_weights_pw_object$convergence,
                                           message = automatic_weights_pw_object$message)
   
+  # get the normalized gev model parameters
+  normalized_gev_parameters_object <- gev_models$normalized_gev_parameters_object
+  
+  # calculate the identic weighted normalized gev model parameters
+  identic_weighted_normalized_gev_parameters_object <- apply(normalized_gev_parameters_object, 2, mean)
+  
+  # calculate the pessimistic weighted normalized gev model parameters
+  pessimistic_weights_pw_shape <- pessimistic_weights_object$pessimistic_weights_shape
+  pessimistic_weights_pw_scale <- pessimistic_weights_object$pessimistic_weights_scale
+  pessimistic_weights_pw_loc <- pessimistic_weights_object$pessimistic_weights_loc
+  pessimistic_weighted_normalized_gev_parameters_object <- c(sum(pessimistic_weights_pw_loc*normalized_gev_parameters_object$loc_star),
+                                                             sum(pessimistic_weights_pw_scale*normalized_gev_parameters_object$scale_star),
+                                                             sum(pessimistic_weights_pw_shape*normalized_gev_parameters_object$shape_star))
+  
+  # calculate the automatic weighted normalized gev model parameters
+  automatic_weights_pw_shape <- automatic_weights_pw_object$automatic_weights_shape
+  automatic_weights_pw_scale <- automatic_weights_pw_object$automatic_weights_scale
+  automatic_weights_pw_loc <- automatic_weights_pw_object$automatic_weights_loc
+  automatic_weighted_normalized_gev_parameters_object <- c(sum(automatic_weights_pw_loc*normalized_gev_parameters_object$loc_star),
+                                                           sum(automatic_weights_pw_scale*normalized_gev_parameters_object$scale_star),
+                                                           sum(automatic_weights_pw_shape*normalized_gev_parameters_object$shape_star))
+  
+  # calculate the weighted normalized gev model parameters
+  weighted_normalized_gev_parameters_object <- data.frame(rbind(identic_weighted_normalized_gev_parameters_object,
+                                                                pessimistic_weighted_normalized_gev_parameters_object,
+                                                                automatic_weighted_normalized_gev_parameters_object))
+  names(weighted_normalized_gev_parameters_object) <- names(normalized_gev_parameters_object)
+  rownames(weighted_normalized_gev_parameters_object) <- c("identic_weights", "pessimistic_weights", "automatic_weights")
+  
   # update the output object
   output[["data"]] <- x
   output[["data_largest"]] <- data_largest
@@ -84,25 +124,26 @@ estimate_gev_mixture_model_parameters <- function(x,
   output[["block_sizes"]] <- block_sizes
   output[["equivalent_block_sizes"]] <- equivalent_block_sizes
   output[["rejected_block_sizes"]] <- rejected_block_sizes
-  output[["block_maxima_indexes_object"]] <- gev_models$block_maxima_indexes_object
+  output[["block_maxima_indexes_object"]] <- block_maxima_indexes_object
   
-  output[["gev_models_object"]] <- gev_models$gev_models_object
-  output[["extremal_indexes"]] <- gev_models$extremal_indexes
-  output[["normalized_gev_parameters_object"]] <- gev_models$normalized_gev_parameters_object
+  output[["gev_models_object"]] <- gev_models_object
+  output[["extremal_indexes"]] <- extremal_indexes
+  output[["normalized_gev_parameters_object"]] <- normalized_gev_parameters_object
+  output[["weighted_normalized_gev_parameters_object"]] <- weighted_normalized_gev_parameters_object
   
   output[["identic_weights_mw"]] <- identic_weights_mw
-  output[["pessimistic_weights_mw"]] <- pessimistic_weights_object$pessimistic_weights
+  output[["pessimistic_weights_mw"]] <- pessimistic_weights_mw
   
-  output[["pessimistic_weights_pw_shape"]] <- pessimistic_weights_object$pessimistic_weights_shape
-  output[["pessimistic_weights_pw_scale"]] <- pessimistic_weights_object$pessimistic_weights_scale
-  output[["pessimistic_weights_pw_loc"]] <- pessimistic_weights_object$pessimistic_weights_loc
+  output[["pessimistic_weights_pw_shape"]] <- pessimistic_weights_pw_shape
+  output[["pessimistic_weights_pw_scale"]] <- pessimistic_weights_pw_scale
+  output[["pessimistic_weights_pw_loc"]] <- pessimistic_weights_pw_loc
   
-  output[["automatic_weights_mw"]] <- automatic_weights_mw_object$automatic_weights
+  output[["automatic_weights_mw"]] <- automatic_weights_mw
   output[["automatic_weights_mw_statistics"]] <- automatic_weights_mw_statistics
   
-  output[["automatic_weights_pw_shape"]] <- automatic_weights_pw_object$automatic_weights_shape
-  output[["automatic_weights_pw_scale"]] <- automatic_weights_pw_object$automatic_weights_scale
-  output[["automatic_weights_pw_loc"]] <- automatic_weights_pw_object$automatic_weights_loc
+  output[["automatic_weights_pw_shape"]] <- automatic_weights_pw_shape
+  output[["automatic_weights_pw_scale"]] <- automatic_weights_pw_scale
+  output[["automatic_weights_pw_loc"]] <- automatic_weights_pw_loc
   output[["automatic_weights_pw_statistics"]] <- automatic_weights_pw_statistics
   
   output 
@@ -110,54 +151,50 @@ estimate_gev_mixture_model_parameters <- function(x,
 
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-
-x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
-
-results <- estimate_gev_mixture_model_parameters(x, 
-                                                 nsloc = NULL, 
-                                                 std.err = FALSE, 
-                                                 block_sizes = NULL,
-                                                 minimum_nblocks = 50,
-                                                 nlargest = Inf,
-                                                 confidence_level = 0.95,
-                                                 trace = TRUE)
-
-#results
-names(results)
-
-# "data"                             "data_largest"                     "block_sizes"                     
-# "equivalent_block_sizes"           "rejected_block_sizes"             "block_maxima_indexes_object"     
-# "gev_models_object"                "extremal_indexes"                 "normalized_gev_parameters_object"
-# "identic_weights_mw"               "pessimistic_weights_mw"           "pessimistic_weights_pw_shape"    
-# "pessimistic_weights_pw_scale"     "pessimistic_weights_pw_loc"       "automatic_weights_mw"            
-# "automatic_weights_mw_statistics"  "automatic_weights_pw_shape"       "automatic_weights_pw_scale"      
-# "automatic_weights_pw_loc"         "automatic_weights_pw_statistics" 
-
-
-# get the block sizes
-results$block_sizes
-
-# get the extremal indexes
-results$extremal_indexes
-
-# get the normalized gev parameters
-results$normalized_gev_parameters_object
-
-# get model wise automatic weights
-results$automatic_weights_mw
-
-results$gev_models_object
-
-results$automatic_weights_pw_shape
-
-
-
-
-
-
-
-
-
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# # x <- rnorm(n = 10000)
+# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = 0.1)
+# 
+# 
+# results <- estimate_gev_mixture_model_parameters(x, 
+#                                                  nsloc = NULL, 
+#                                                  std.err = FALSE, 
+#                                                  block_sizes = NULL,
+#                                                  minimum_nblocks = 50,
+#                                                  nlargest = Inf,
+#                                                  confidence_level = 0.95,
+#                                                  trace = TRUE)
+# 
+# #results
+# names(results)
+# 
+# # "data"                                      "data_largest"                              "block_sizes"                              
+# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_indexes_object"              
+# # "gev_models_object"                         "extremal_indexes"                          "normalized_gev_parameters_object"         
+# # "weighted_normalized_gev_parameters_object" "identic_weights_mw"                        "pessimistic_weights_mw"                   
+# # "pessimistic_weights_pw_shape"              "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"               
+# # "automatic_weights_mw"                      "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"               
+# # "automatic_weights_pw_scale"                "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+# 
+# 
+# # get the block sizes
+# results$block_sizes
+# 
+# # get the extremal indexes
+# results$extremal_indexes
+# 
+# # get the normalized gev parameters
+# results$normalized_gev_parameters_object
+# 
+# # get model wise automatic weights
+# results$automatic_weights_mw
+# 
+# # get the weighted normalized gev parameters
+# results$weighted_normalized_gev_parameters_object
+# 
+# # get the statistics about the estimation of weights
+# results$automatic_weights_mw_statistics
+# results$automatic_weights_pw_statistics
