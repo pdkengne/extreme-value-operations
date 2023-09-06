@@ -151,50 +151,75 @@ estimate_gev_mixture_model_parameters <- function(x,
 
 
 
-# # example 1
-# 
-# source("./src/generate_gev_sample.R")
-# 
-# # x <- rnorm(n = 10000)
-# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = 0.1)
-# 
-# 
-# results <- estimate_gev_mixture_model_parameters(x, 
-#                                                  nsloc = NULL, 
-#                                                  std.err = FALSE, 
-#                                                  block_sizes = NULL,
-#                                                  minimum_nblocks = 50,
-#                                                  nlargest = Inf,
-#                                                  confidence_level = 0.95,
-#                                                  trace = TRUE)
-# 
-# #results
-# names(results)
-# 
-# # "data"                                      "data_largest"                              "block_sizes"                              
-# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_indexes_object"              
-# # "gev_models_object"                         "extremal_indexes"                          "normalized_gev_parameters_object"         
-# # "weighted_normalized_gev_parameters_object" "identic_weights_mw"                        "pessimistic_weights_mw"                   
-# # "pessimistic_weights_pw_shape"              "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"               
-# # "automatic_weights_mw"                      "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"               
-# # "automatic_weights_pw_scale"                "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
-# 
-# 
-# # get the block sizes
-# results$block_sizes
-# 
-# # get the extremal indexes
-# results$extremal_indexes
-# 
-# # get the normalized gev parameters
-# results$normalized_gev_parameters_object
-# 
-# # get model wise automatic weights
-# results$automatic_weights_mw
-# 
-# # get the weighted normalized gev parameters
-# results$weighted_normalized_gev_parameters_object
-# 
-# # get the statistics about the estimation of weights
-# results$automatic_weights_mw_statistics
-# results$automatic_weights_pw_statistics
+# example 1
+
+source("./src/generate_gev_sample.R")
+source("./src/plot_several_standardized_block_maxima_mean.R")
+
+n <- 100000
+nlargest <- 10000
+
+# x <- rnorm(n = n)
+x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
+
+
+results <- estimate_gev_mixture_model_parameters(x,
+                                                 nsloc = NULL,
+                                                 std.err = FALSE,
+                                                 block_sizes = NULL,
+                                                 minimum_nblocks = 50,
+                                                 nlargest = nlargest,
+                                                 confidence_level = 0.95,
+                                                 trace = TRUE)
+
+#results
+names(results)
+
+# "data"                                      "data_largest"                              "block_sizes"
+# "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_indexes_object"
+# "gev_models_object"                         "extremal_indexes"                          "normalized_gev_parameters_object"
+# "weighted_normalized_gev_parameters_object" "identic_weights_mw"                        "pessimistic_weights_mw"
+# "pessimistic_weights_pw_shape"              "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"
+# "automatic_weights_mw"                      "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"
+# "automatic_weights_pw_scale"                "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+
+
+# get the block sizes
+results$block_sizes
+
+# get the extremal indexes
+results$extremal_indexes
+
+# get the normalized gev parameters
+results$normalized_gev_parameters_object
+
+# get model wise automatic weights
+results$automatic_weights_mw
+
+# get the weighted normalized gev parameters
+results$weighted_normalized_gev_parameters_object
+
+# get the statistics about the estimation of weights
+results$automatic_weights_mw_statistics
+results$automatic_weights_pw_statistics
+
+# plot the mean standardized block maxima
+plot_several_standardized_block_maxima_mean(x = results$data_largest, 
+                                            block_sizes = results$block_sizes, 
+                                            confidence_level = 0.95,
+                                            equivalent = FALSE,
+                                            xlab = "Block Sizes", 
+                                            ylab = "Estimated Values", 
+                                            main = "Mean Standardized Block Maxima Plot")
+
+# plot the mean standardized block maxima (only equivalent models)
+plot_several_standardized_block_maxima_mean(x = results$data_largest, 
+                                            block_sizes = results$block_sizes, 
+                                            confidence_level = 0.95,
+                                            equivalent = TRUE,
+                                            xlab = "Block Sizes", 
+                                            ylab = "Estimated Values", 
+                                            main = "Mean Standardized Block Maxima Plot")
+# get the rejected block sizes
+results$rejected_block_sizes
+

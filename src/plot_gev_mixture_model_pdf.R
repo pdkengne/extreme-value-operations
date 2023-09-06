@@ -1,0 +1,26 @@
+# library(EnvStats)
+
+source("./src/calculate_gev_mixture_model_pdf.R")
+
+plot_gev_mixture_model_pdf <- function(gev_mixture_model, 
+                                       type = NULL,
+                                       xlab = "Quantile", 
+                                       ylab = "Density", 
+                                       main = "Probability Density Function (PDF) Plot"){
+  # gev_mixture_model: an object associated with a result of the function "estimate_gev_parameters()"
+  # type: type of gev mixture model to consider. It is one of the following elements
+  #       ("identic_weights_pw", "pessimistic_weights_pw", "automatic_weights_pw",
+  #        "identic_weights_mw", "pessimistic_weights_mw", "automatic_weights_mw").
+  # xlab: label of the x-axis
+  # ylab: label of the y-axis
+  # main: title of the plot
+  
+  
+  
+  
+  
+  
+}
+
+type = c("identic_weights_pw", "pessimistic_weights_pw", "automatic_weights_pw",
+         "identic_weights_mw", "pessimistic_weights_mw", "automatic_weights_mw")
