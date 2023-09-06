@@ -12,29 +12,26 @@ estimate_gev_mixture_model_pessimistic_weights <- function(gev_models){
   
   # calculate the pessimistic weights associated with the shape parameter
   normalized_gev_parameters_shape <- normalized_gev_parameters$shape_star
-  normalized_gev_parameters_shape_cdf <- ecdf(normalized_gev_parameters_shape)
-  normalized_gev_parameters_shape_cdf_estimates <- normalized_gev_parameters_shape_cdf(normalized_gev_parameters_shape)
-  pessimistic_weights_shape <- normalized_gev_parameters_shape_cdf_estimates/sum(normalized_gev_parameters_shape_cdf_estimates)
+  normalized_gev_parameters_shape_exp <- exp(normalized_gev_parameters_shape)
+  pessimistic_weights_shape <- normalized_gev_parameters_shape_exp/sum(normalized_gev_parameters_shape_exp)
   names(pessimistic_weights_shape) <- block_sizes
   
   # calculate the pessimistic weights associated with the scale parameter
   normalized_gev_parameters_scale <- normalized_gev_parameters$scale_star
-  normalized_gev_parameters_scale_cdf <- ecdf(normalized_gev_parameters_scale)
-  normalized_gev_parameters_scale_cdf_estimates <- normalized_gev_parameters_scale_cdf(normalized_gev_parameters_scale)
-  pessimistic_weights_scale <- normalized_gev_parameters_scale_cdf_estimates/sum(normalized_gev_parameters_scale_cdf_estimates)
+  normalized_gev_parameters_scale_exp <- exp(normalized_gev_parameters_scale)
+  pessimistic_weights_scale <- normalized_gev_parameters_scale_exp/sum(normalized_gev_parameters_scale_exp)
   names(pessimistic_weights_scale) <- block_sizes
   
   # calculate the pessimistic weights associated with the location parameter
   normalized_gev_parameters_loc <- normalized_gev_parameters$loc_star
-  normalized_gev_parameters_loc_cdf <- ecdf(normalized_gev_parameters_loc)
-  normalized_gev_parameters_loc_cdf_estimates <- normalized_gev_parameters_loc_cdf(normalized_gev_parameters_loc)
-  pessimistic_weights_loc <- normalized_gev_parameters_loc_cdf_estimates/sum(normalized_gev_parameters_loc_cdf_estimates)
+  normalized_gev_parameters_loc_exp <- exp(normalized_gev_parameters_loc)
+  pessimistic_weights_loc <- normalized_gev_parameters_loc_exp/sum(normalized_gev_parameters_loc_exp)
   names(pessimistic_weights_loc) <- block_sizes
   
   # calculate the pessimistic weights associated with the considered gev models
-  pessimistic_weights_models_object <- cbind(normalized_gev_parameters_shape_cdf_estimates,
-                                             normalized_gev_parameters_scale_cdf_estimates,
-                                             normalized_gev_parameters_loc_cdf_estimates)
+  pessimistic_weights_models_object <- cbind(normalized_gev_parameters_shape_exp,
+                                             normalized_gev_parameters_scale_exp,
+                                             normalized_gev_parameters_loc_exp)
   
   pessimistic_weights_models <- apply(pessimistic_weights_models_object, 1, max)
   pessimistic_weights <- pessimistic_weights_models/sum(pessimistic_weights_models)

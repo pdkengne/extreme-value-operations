@@ -21,10 +21,44 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
   # calculate empirical pdf
   empirical_density_object <- EnvStats::epdfPlot(x = uvdata, plot.it = FALSE)
   
+  # extract ordered quantiles
+  ordered_quantiles <- empirical_density_object$x
+  
+  
+  
+  
+  # set the gev mixture model types
+  gev_mixture_model_types = c("identic_weights_pw", "pessimistic_weights_pw", "automatic_weights_pw",
+                              "identic_weights_mw", "pessimistic_weights_mw", "automatic_weights_mw")
+  
+  
+  
+  
+  
+  
   
   
   
 }
 
-type = c("identic_weights_pw", "pessimistic_weights_pw", "automatic_weights_pw",
-         "identic_weights_mw", "pessimistic_weights_mw", "automatic_weights_mw")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
