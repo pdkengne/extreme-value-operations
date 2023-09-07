@@ -71,62 +71,62 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-source("./src/estimate_gev_mixture_model_parameters.R")
-
-n <- 10000
-nlargest <- 1000
-
-# x <- rnorm(n = n)
-x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
-
-gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
-                                                           nsloc = NULL,
-                                                           std.err = FALSE,
-                                                           block_sizes = NULL,
-                                                           minimum_nblocks = 50,
-                                                           nlargest = nlargest,
-                                                           confidence_level = 0.95,
-                                                           trace = TRUE)
-
-# extract the model parameters (mw)
-gev_mixture_model_parameters <- gev_mixture_model$normalized_gev_parameters_object
-gev_mixture_model_parameters_shape <- gev_mixture_model_parameters$shape_star
-gev_mixture_model_parameters_scale <- gev_mixture_model_parameters$scale_star
-gev_mixture_model_parameters_loc <- gev_mixture_model_parameters$loc_star
-
-# extract the weight parameters (mw)
-gev_mixture_model_identic_weights <- gev_mixture_model$identic_weights_mw
-gev_mixture_model_pessimistic_weights <- gev_mixture_model$pessimistic_weights_mw
-gev_mixture_model_automatic_weights <- gev_mixture_model$automatic_weights_mw
-
-y <- gev_mixture_model$data_largest
-
-plot_normalized_gev_mixture_model_pdf(x = y, 
-                                      locations = gev_mixture_model_parameters_loc, 
-                                      scales = gev_mixture_model_parameters_scale, 
-                                      shapes = gev_mixture_model_parameters_shape, 
-                                      weights = gev_mixture_model_identic_weights, 
-                                      xlab = "Quantile", 
-                                      ylab = "Density", 
-                                      main = "Probability Density Function (PDF) Plot")
-
-plot_normalized_gev_mixture_model_pdf(x = y, 
-                                      locations = gev_mixture_model_parameters_loc, 
-                                      scales = gev_mixture_model_parameters_scale, 
-                                      shapes = gev_mixture_model_parameters_shape, 
-                                      weights = gev_mixture_model_pessimistic_weights, 
-                                      xlab = "Quantile", 
-                                      ylab = "Density", 
-                                      main = "Probability Density Function (PDF) Plot")
-
-plot_normalized_gev_mixture_model_pdf(x = y, 
-                                      locations = gev_mixture_model_parameters_loc, 
-                                      scales = gev_mixture_model_parameters_scale, 
-                                      shapes = gev_mixture_model_parameters_shape, 
-                                      weights = gev_mixture_model_automatic_weights, 
-                                      xlab = "Quantile", 
-                                      ylab = "Density", 
-                                      main = "Probability Density Function (PDF) Plot")
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# source("./src/estimate_gev_mixture_model_parameters.R")
+# 
+# n <- 10000
+# nlargest <- 1000
+# 
+# # x <- rnorm(n = n)
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
+# 
+# gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
+#                                                            nsloc = NULL,
+#                                                            std.err = FALSE,
+#                                                            block_sizes = NULL,
+#                                                            minimum_nblocks = 50,
+#                                                            nlargest = nlargest,
+#                                                            confidence_level = 0.95,
+#                                                            trace = TRUE)
+# 
+# # extract the model parameters (mw)
+# gev_mixture_model_parameters <- gev_mixture_model$normalized_gev_parameters_object
+# gev_mixture_model_parameters_shape <- gev_mixture_model_parameters$shape_star
+# gev_mixture_model_parameters_scale <- gev_mixture_model_parameters$scale_star
+# gev_mixture_model_parameters_loc <- gev_mixture_model_parameters$loc_star
+# 
+# # extract the weight parameters (mw)
+# gev_mixture_model_identic_weights <- gev_mixture_model$identic_weights_mw
+# gev_mixture_model_pessimistic_weights <- gev_mixture_model$pessimistic_weights_mw
+# gev_mixture_model_automatic_weights <- gev_mixture_model$automatic_weights_mw
+# 
+# y <- gev_mixture_model$data_largest
+# 
+# plot_normalized_gev_mixture_model_pdf(x = y, 
+#                                       locations = gev_mixture_model_parameters_loc, 
+#                                       scales = gev_mixture_model_parameters_scale, 
+#                                       shapes = gev_mixture_model_parameters_shape, 
+#                                       weights = gev_mixture_model_identic_weights, 
+#                                       xlab = "Quantile", 
+#                                       ylab = "Density", 
+#                                       main = "Probability Density Function (PDF) Plot")
+# 
+# plot_normalized_gev_mixture_model_pdf(x = y, 
+#                                       locations = gev_mixture_model_parameters_loc, 
+#                                       scales = gev_mixture_model_parameters_scale, 
+#                                       shapes = gev_mixture_model_parameters_shape, 
+#                                       weights = gev_mixture_model_pessimistic_weights, 
+#                                       xlab = "Quantile", 
+#                                       ylab = "Density", 
+#                                       main = "Probability Density Function (PDF) Plot")
+# 
+# plot_normalized_gev_mixture_model_pdf(x = y, 
+#                                       locations = gev_mixture_model_parameters_loc, 
+#                                       scales = gev_mixture_model_parameters_scale, 
+#                                       shapes = gev_mixture_model_parameters_shape, 
+#                                       weights = gev_mixture_model_automatic_weights, 
+#                                       xlab = "Quantile", 
+#                                       ylab = "Density", 
+#                                       main = "Probability Density Function (PDF) Plot")

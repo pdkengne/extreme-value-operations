@@ -40,9 +40,9 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
   
   # extract the model parameters (mw)
   gev_mixture_model_parameters <- gev_mixture_model$normalized_gev_parameters_object
-  gev_mixture_model_parameters_object <- data.frame(cbind(gev_mixture_model_parameters$shape_star,
+  gev_mixture_model_parameters_object <- data.frame(cbind(gev_mixture_model_parameters$loc_star,
                                                           gev_mixture_model_parameters$scale_star,
-                                                          gev_mixture_model_parameters$loc_star))
+                                                          gev_mixture_model_parameters$shape_star))
   names(gev_mixture_model_parameters_object) <- c("loc_star", "scale_star", "shape_star")
   
   # extract the weight parameters (mw)
@@ -63,63 +63,82 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
   }
   
   if (is.element(el = type, set = weighted_gev_model_types) & model_wise){
-    plot_normalized_gev_pdf(x = uvdata, 
-                            loc = gev_model_parameters[type, "loc_star"], 
-                            scale = gev_model_parameters[type, "scale_star"], 
-                            shape = gev_model_parameters[type, "shape_star"], 
-                            xlab = xlab, 
-                            ylab = ylab, 
+    plot_normalized_gev_mixture_model_pdf(x = uvdata, 
+                                          locations = gev_mixture_model_parameters_object$loc_star, 
+                                          scales = gev_mixture_model_parameters_object$scale_star, 
+                                          shapes = gev_mixture_model_parameters_object$shape_star, 
+                                          weights = gev_mixture_model_weights_object[, type], 
+                                          xlab = "Quantile", 
+                                          ylab = "Density", 
                             main = paste(main, ":", type, "- model_wise =", model_wise))
   }
-  
-  
   
 }
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-source("./src/estimate_gev_mixture_model_parameters.R")
-
-n <- 10000
-nlargest <- 1000
-
-# x <- rnorm(n = n)
-x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
-
-gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
-                                                           nsloc = NULL,
-                                                           std.err = FALSE,
-                                                           block_sizes = NULL,
-                                                           minimum_nblocks = 50,
-                                                           nlargest = nlargest,
-                                                           confidence_level = 0.95,
-                                                           trace = TRUE)
-
-# set the types of weighted gev models
-weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
-
-plot_gev_mixture_model_pdf(gev_mixture_model, 
-                           type = "automatic_weights",
-                           xlab = "Quantile", 
-                           ylab = "Density", 
-                           main = "Probability Density Function (PDF) Plot")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# source("./src/estimate_gev_mixture_model_parameters.R")
+# 
+# n <- 10000
+# nlargest <- 1000
+# 
+# # x <- rnorm(n = n)
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
+# 
+# gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
+#                                                            nsloc = NULL,
+#                                                            std.err = FALSE,
+#                                                            block_sizes = NULL,
+#                                                            minimum_nblocks = 50,
+#                                                            nlargest = nlargest,
+#                                                            confidence_level = 0.95,
+#                                                            trace = TRUE)
+# 
+# # set the types of weighted gev models
+# weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model, 
+#                            type = "identic_weights",
+#                            model_wise = FALSE,
+#                            xlab = "Quantile", 
+#                            ylab = "Density", 
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model, 
+#                            type = "pessimistic_weights",
+#                            model_wise = FALSE,
+#                            xlab = "Quantile", 
+#                            ylab = "Density", 
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model, 
+#                            type = "automatic_weights",
+#                            model_wise = FALSE,
+#                            xlab = "Quantile", 
+#                            ylab = "Density", 
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# 
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model, 
+#                            type = "identic_weights",
+#                            model_wise = TRUE,
+#                            xlab = "Quantile", 
+#                            ylab = "Density", 
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model, 
+#                            type = "pessimistic_weights",
+#                            model_wise = TRUE,
+#                            xlab = "Quantile", 
+#                            ylab = "Density", 
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model, 
+#                            type = "automatic_weights",
+#                            model_wise = TRUE,
+#                            xlab = "Quantile", 
+#                            ylab = "Density", 
+#                            main = "Probability Density Function (PDF) Plot")
