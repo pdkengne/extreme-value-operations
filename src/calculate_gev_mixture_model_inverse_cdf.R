@@ -32,43 +32,43 @@ calculate_gev_mixture_model_inverse_cdf <- function(p, locations, scales, shapes
 }
 
 
-# example 1
-
-m <- 10
-
-y <- runif(m)
-weights <- y/sum(y)
-
-shapes <- runif(n = m, min = -0.1, max = +0.1)
-scales <- rexp(n = m)
-locations <- rnorm(n = m)
-
-p <- seq(from = 0.01, to = 0.09, length.out = 9)
-
-results <- calculate_gev_mixture_model_inverse_cdf(p = p, locations, scales, shapes, weights, iterations = 100)
-
-results
-
-calculate_gev_mixture_model_cdf(q = results, locations, scales, shapes, weights)
-p
-
-
-# example 2
-
-m <- 10
-
-y <- runif(m)
-weights <- y/sum(y)
-
-shapes <- runif(n = m, min = -0.1, max = +0.1)
-scales <- rexp(n = m)
-locations <- rnorm(n = m)
-
-p <- seq(from = 0.90, to = 0.99, length.out = 10)
-
-results <- calculate_gev_mixture_model_inverse_cdf(p = p, locations, scales, shapes, weights, iterations = 50)
-
-results
-
-calculate_gev_mixture_model_cdf(q = results, locations, scales, shapes, weights)
-p
+# # example 1
+# 
+# m <- 10
+# 
+# y <- runif(m)
+# weights <- y/sum(y)
+# 
+# shapes <- runif(n = m, min = -0.1, max = +0.1)
+# scales <- rexp(n = m)
+# locations <- rnorm(n = m)
+# 
+# p <- seq(from = 0.01, to = 0.09, length.out = 9)
+# 
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p, locations, scales, shapes, weights, iterations = 100)
+# 
+# results
+# 
+# calculate_gev_mixture_model_cdf(q = results, locations, scales, shapes, weights)
+# p
+# 
+# 
+# # example 2
+# 
+# m <- 10
+# 
+# y <- runif(m)
+# weights <- y/sum(y)
+# 
+# shapes <- runif(n = m, min = -0.1, max = +0.1)
+# scales <- rexp(n = m)
+# locations <- rnorm(n = m)
+# 
+# p <- seq(from = 0.90, to = 0.99, length.out = 10)
+# 
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p, locations, scales, shapes, weights, iterations = 100)
+# 
+# results
+# 
+# calculate_gev_mixture_model_cdf(q = results, locations, scales, shapes, weights)
+# p
