@@ -1,4 +1,4 @@
-dichotomie <- function(func, a, b, n){
+dichotomy <- function(func, a, b, n){
   # func: function associated with the equation to solve
   # a, b: lower and upper bounds of an interval which contains a solution
   # n: number of iterations to perform
@@ -29,10 +29,11 @@ dichotomie <- function(func, a, b, n){
 #   x^2 - 1
 # }
 # 
-# result <- dichotomie(func = f, a = -2, b = 0, n = 50)
+# result <- dichotomy(func = f, a = -2, b = 0, n = 50)
 # 
 # result
 # 
-# result <- dichotomie(func = f, a = 0, b = +2, n = 50)
+# result <- dichotomy(func = f, a = 0, b = +2, n = 50)
 # 
 # result
+
