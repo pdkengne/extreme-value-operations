@@ -1,16 +1,16 @@
 # library(EnvStats)
 
-source("./src/estimate_gev_parameters.R")
+source("./src/estimate_single_gev_model.R")
 source("./src/calculate_gev_cdf.R")
 
 plot_gev_probability <- function(gev_model, xlab = "Theoretical Probability", ylab = "Empirical Probability", main = "Probability Plot"){
-  # gev_model: an object associated with a result of the function "estimate_gev_parameters()"
+  # gev_model: an object associated with a result of the function "estimate_single_gev_model()"
   # xlab: label of the x-axis
   # ylab: label of the y-axis
   # main: title of the plot
   
   # extract the model parameters
-  gev_model_parameters <- gev_model$estimate
+  gev_model_parameters <- gev_model$normalized_gev_parameters
   
   # extract train data
   uvdata <- gev_model$data
@@ -26,9 +26,9 @@ plot_gev_probability <- function(gev_model, xlab = "Theoretical Probability", yl
   
   # calculate theoretical cdf
   theoretical_cdf <- calculate_gev_cdf(q = ordered_quantiles, 
-                                       loc = gev_model_parameters["loc"], 
-                                       scale = gev_model_parameters["scale"], 
-                                       shape = gev_model_parameters["shape"])
+                                       loc = gev_model_parameters["loc_star"], 
+                                       scale = gev_model_parameters["scale_star"], 
+                                       shape = gev_model_parameters["shape_star"])
   
   # get the probability range
   probability_range <- range(c(theoretical_cdf, empirical_cdf)) 
@@ -64,34 +64,40 @@ plot_gev_probability <- function(gev_model, xlab = "Theoretical Probability", yl
 
 
 
-# # example 1
-# 
-# source("./src/generate_gev_sample.R")
-# 
-# x <- generate_gev_sample(n = 100, loc = 1, scale = 0.5, shape = +0.2)
-# 
-# gev_model <- estimate_gev_parameters(x, nsloc = NULL)
-# 
-# plot_gev_probability(gev_model)
-# 
-# 
-# # example 2
-# 
-# source("./src/generate_gev_sample.R")
-# 
-# x <- generate_gev_sample(n = 100, loc = 1, scale = 0.5, shape = -0.2)
-# 
-# gev_model <- estimate_gev_parameters(x, nsloc = NULL)
-# 
-# plot_gev_probability(gev_model)
-# 
-# 
-# # example 3
-# 
-# source("./src/generate_gev_sample.R")
-# 
-# x <- generate_gev_sample(n = 100, loc = 1, scale = 0.5, shape = 0)
-# 
-# gev_model <- estimate_gev_parameters(x, nsloc = NULL)
-# 
-# plot_gev_probability(gev_model)
+# example 1
+
+source("./src/generate_gev_sample.R")
+
+x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = +0.1)
+
+block_size <- 40
+
+gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
+
+plot_gev_probability(gev_model)
+
+
+# example 2
+
+source("./src/generate_gev_sample.R")
+
+x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.1)
+
+block_size <- 40
+
+gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
+
+plot_gev_probability(gev_model)
+
+
+# example 3
+
+source("./src/generate_gev_sample.R")
+
+x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = 0)
+
+block_size <- 40
+
+gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
+
+plot_gev_probability(gev_model)

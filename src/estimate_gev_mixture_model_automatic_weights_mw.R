@@ -20,7 +20,7 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models, trace = 
   # extract the largest data to use
   x <- gev_models$data
   block_sizes <- gev_models$block_sizes
-  block_size <- min(block_sizes)
+  block_size <- max(block_sizes)
   threshold <- find_threshold_associated_with_given_block_size(x, block_size)
   y <- x[x > threshold]
   

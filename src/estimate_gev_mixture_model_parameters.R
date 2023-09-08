@@ -203,21 +203,21 @@ estimate_gev_mixture_model_parameters <- function(x,
 # results$automatic_weights_pw_statistics
 # 
 # # plot the mean standardized block maxima
-# plot_several_standardized_block_maxima_mean(x = results$data_largest, 
-#                                             block_sizes = results$block_sizes, 
+# plot_several_standardized_block_maxima_mean(x = results$data_largest,
+#                                             block_sizes = results$block_sizes,
 #                                             confidence_level = 0.95,
 #                                             equivalent = FALSE,
-#                                             xlab = "Block Sizes", 
-#                                             ylab = "Estimated Values", 
+#                                             xlab = "Block Sizes",
+#                                             ylab = "Estimated Values",
 #                                             main = "Mean Standardized Block Maxima Plot")
 # 
 # # plot the mean standardized block maxima (only equivalent models)
-# plot_several_standardized_block_maxima_mean(x = results$data_largest, 
-#                                             block_sizes = results$block_sizes, 
+# plot_several_standardized_block_maxima_mean(x = results$data_largest,
+#                                             block_sizes = results$block_sizes,
 #                                             confidence_level = 0.95,
 #                                             equivalent = TRUE,
-#                                             xlab = "Block Sizes", 
-#                                             ylab = "Estimated Values", 
+#                                             xlab = "Block Sizes",
+#                                             ylab = "Estimated Values",
 #                                             main = "Mean Standardized Block Maxima Plot")
 # # get the rejected block sizes
 # results$rejected_block_sizes

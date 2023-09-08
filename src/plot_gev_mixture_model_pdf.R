@@ -99,46 +99,46 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
 # # set the types of weighted gev models
 # weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
 # 
-# plot_gev_mixture_model_pdf(gev_mixture_model, 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "identic_weights",
 #                            model_wise = FALSE,
-#                            xlab = "Quantile", 
-#                            ylab = "Density", 
+#                            xlab = "Quantile",
+#                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
 # 
-# plot_gev_mixture_model_pdf(gev_mixture_model, 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "pessimistic_weights",
 #                            model_wise = FALSE,
-#                            xlab = "Quantile", 
-#                            ylab = "Density", 
+#                            xlab = "Quantile",
+#                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
 # 
-# plot_gev_mixture_model_pdf(gev_mixture_model, 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "automatic_weights",
 #                            model_wise = FALSE,
-#                            xlab = "Quantile", 
-#                            ylab = "Density", 
+#                            xlab = "Quantile",
+#                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
 # 
 # 
 # 
-# plot_gev_mixture_model_pdf(gev_mixture_model, 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "identic_weights",
 #                            model_wise = TRUE,
-#                            xlab = "Quantile", 
-#                            ylab = "Density", 
+#                            xlab = "Quantile",
+#                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
 # 
-# plot_gev_mixture_model_pdf(gev_mixture_model, 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "pessimistic_weights",
 #                            model_wise = TRUE,
-#                            xlab = "Quantile", 
-#                            ylab = "Density", 
+#                            xlab = "Quantile",
+#                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
 # 
-# plot_gev_mixture_model_pdf(gev_mixture_model, 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "automatic_weights",
 #                            model_wise = TRUE,
-#                            xlab = "Quantile", 
-#                            ylab = "Density", 
+#                            xlab = "Quantile",
+#                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
