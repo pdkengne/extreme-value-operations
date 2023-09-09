@@ -51,6 +51,16 @@ gev_mixture_model$automatic_weights_mw_statistics
 plot_gev_mixture_model_pdf(gev_mixture_model,
                            type = "automatic_weights",
                            model_wise = TRUE,
+                           zoom = FALSE,
+                           xlab = "Quantile",
+                           ylab = "Density",
+                           main = "Probability Density Function (PDF) Plot")
+
+#'
+plot_gev_mixture_model_pdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = TRUE,
+                           zoom = TRUE,
                            xlab = "Quantile",
                            ylab = "Density",
                            main = "Probability Density Function (PDF) Plot")

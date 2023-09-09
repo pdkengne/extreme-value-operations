@@ -1,5 +1,3 @@
-# library(EnvStats)
-
 source("./src/calculate_gev_pdf.R")
 source("./src/calculate_gev_mixture_model_pdf.R")
 source("./src/plot_normalized_gev_pdf.R")
@@ -8,6 +6,7 @@ source("./src/plot_normalized_gev_mixture_model_pdf.R")
 plot_gev_mixture_model_pdf <- function(gev_mixture_model, 
                                        type = NULL,
                                        model_wise = FALSE,
+                                       zoom = FALSE,
                                        xlab = "Quantile", 
                                        ylab = "Density", 
                                        main = "Probability Density Function (PDF) Plot"){
@@ -16,6 +15,7 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
   # model_wise: a boolean which indicates whether to use weights on models or on parameters
   #       ("identic_weights_pw", "pessimistic_weights_pw", "automatic_weights_pw",
   #        "identic_weights_mw", "pessimistic_weights_mw", "automatic_weights_mw").
+  # zoom: a boolean which indicates whether to focus on large values or not
   # xlab: label of the x-axis
   # ylab: label of the y-axis
   # main: title of the plot
@@ -23,14 +23,11 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
   # extract train data
   uvdata <- gev_mixture_model$data_largest
   
-  # calculate empirical pdf
-  empirical_density_object <- EnvStats::epdfPlot(x = uvdata, plot.it = FALSE)
+  # extract block size
+  block_size <- max(gev_mixture_model$block_sizes)
   
-  # extract ordered quantiles
-  ordered_quantiles <- empirical_density_object$x
-  
-  # extract empirical pdf
-  empirical_pdf <- empirical_density_object$f.x
+  # find the threshold associated with the block_size
+  threshold <- find_threshold_associated_with_given_block_size(x = uvdata, block_size = block_size)
   
   # set the types of weighted gev models
   weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
@@ -57,6 +54,8 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
                             loc = gev_model_parameters[type, "loc_star"], 
                             scale = gev_model_parameters[type, "scale_star"], 
                             shape = gev_model_parameters[type, "shape_star"], 
+                            zoom = zoom,
+                            threshold = threshold,
                             xlab = xlab, 
                             ylab = ylab, 
                             main = paste(main, ":", type, "- model_wise =", model_wise))
@@ -67,7 +66,9 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
                                           locations = gev_mixture_model_parameters_object$loc_star, 
                                           scales = gev_mixture_model_parameters_object$scale_star, 
                                           shapes = gev_mixture_model_parameters_object$shape_star, 
-                                          weights = gev_mixture_model_weights_object[, type], 
+                                          weights = gev_mixture_model_weights_object[, type],
+                                          zoom = zoom,
+                                          threshold = threshold,
                                           xlab = "Quantile", 
                                           ylab = "Density", 
                             main = paste(main, ":", type, "- model_wise =", model_wise))
@@ -102,6 +103,7 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
 # plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "identic_weights",
 #                            model_wise = FALSE,
+#                            zoom = FALSE,
 #                            xlab = "Quantile",
 #                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
@@ -109,6 +111,7 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
 # plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "pessimistic_weights",
 #                            model_wise = FALSE,
+#                            zoom = FALSE,
 #                            xlab = "Quantile",
 #                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
@@ -116,15 +119,26 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
 # plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "automatic_weights",
 #                            model_wise = FALSE,
+#                            zoom = FALSE,
 #                            xlab = "Quantile",
 #                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
+#                            type = "automatic_weights",
+#                            model_wise = FALSE,
+#                            zoom = TRUE,
+#                            xlab = "Quantile",
+#                            ylab = "Density",
+#                            main = "Probability Density Function (PDF) Plot")
+# 
 # 
 # 
 # 
 # plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "identic_weights",
 #                            model_wise = TRUE,
+#                            zoom = FALSE,
 #                            xlab = "Quantile",
 #                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
@@ -132,6 +146,7 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
 # plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "pessimistic_weights",
 #                            model_wise = TRUE,
+#                            zoom = FALSE,
 #                            xlab = "Quantile",
 #                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
@@ -139,6 +154,16 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
 # plot_gev_mixture_model_pdf(gev_mixture_model,
 #                            type = "automatic_weights",
 #                            model_wise = TRUE,
+#                            zoom = FALSE,
 #                            xlab = "Quantile",
 #                            ylab = "Density",
 #                            main = "Probability Density Function (PDF) Plot")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
+#                            type = "automatic_weights",
+#                            model_wise = TRUE,
+#                            zoom = TRUE,
+#                            xlab = "Quantile",
+#                            ylab = "Density",
+#                            main = "Probability Density Function (PDF) Plot")
+
