@@ -6,7 +6,12 @@ find_threshold_associated_with_given_block_size <- function(x, block_size){
   
   block_maxima <- extract_block_maxima(x, block_size)
   
-  threshold <- max(x[x < min(block_maxima)])
+  if (min(block_maxima) == min(x)){
+    threshold <- min(x)
+  }
+  else{
+    threshold <- max(x[x < min(block_maxima)])
+  }
   
   threshold
 }

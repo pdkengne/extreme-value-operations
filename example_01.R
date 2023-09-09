@@ -60,22 +60,16 @@ plot_gev_pdf(model,
              main = "Probability Density Function (PDF) Plot")
 
 #'
-plot_gev_cdf(gev_model,
+plot_gev_cdf(model,
              zoom = FALSE,
              xlab = "Quantile", 
              ylab = "Cumulative Probability",
              main = "Cumulative Distribution Function (CDF) Plot")
 
 #'
-plot_gev_cdf(gev_model,
+plot_gev_cdf(model,
              zoom = TRUE,
              xlab = "Quantile", 
              ylab = "Cumulative Probability",
              main = "Cumulative Distribution Function (CDF) Plot")
-
-#'
-plot_gev_probability(model)
-
-#'
-plot_gev_quantile(model)
 

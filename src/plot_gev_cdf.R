@@ -103,76 +103,76 @@ plot_gev_cdf <- function(gev_model,
 }
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-
-x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = +0.2)
-
-block_size <- 40
-
-gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
-
-plot_gev_cdf(gev_model,
-             zoom = FALSE,
-             xlab = "Quantile", 
-             ylab = "Cumulative Probability",
-             main = "Cumulative Distribution Function (CDF) Plot")
-
-plot_gev_cdf(gev_model,
-             zoom = TRUE,
-             xlab = "Quantile", 
-             ylab = "Cumulative Probability",
-             main = "Cumulative Distribution Function (CDF) Plot")
-
-gev_model$normalized_gev_parameters
-
-
-# example 2
-
-source("./src/generate_gev_sample.R")
-
-x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
-
-block_size <- 40
-
-gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
-
-plot_gev_cdf(gev_model,
-             zoom = FALSE,
-             xlab = "Quantile", 
-             ylab = "Cumulative Probability",
-             main = "Cumulative Distribution Function (CDF) Plot")
-
-plot_gev_cdf(gev_model,
-             zoom = TRUE,
-             xlab = "Quantile", 
-             ylab = "Cumulative Probability",
-             main = "Cumulative Distribution Function (CDF) Plot")
-
-gev_model$normalized_gev_parameters
-
-
-# example 3
-
-source("./src/generate_gev_sample.R")
-
-x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = 0)
-
-block_size <- 40
-
-gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
-
-plot_gev_cdf(gev_model,
-             zoom = FALSE,
-             xlab = "Quantile", 
-             ylab = "Cumulative Probability",
-             main = "Cumulative Distribution Function (CDF) Plot")
-
-plot_gev_cdf(gev_model,
-             zoom = TRUE,
-             xlab = "Quantile", 
-             ylab = "Cumulative Probability",
-             main = "Cumulative Distribution Function (CDF) Plot")
-
-gev_model$normalized_gev_parameters
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = +0.2)
+# 
+# block_size <- 40
+# 
+# gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
+# 
+# plot_gev_cdf(gev_model,
+#              zoom = FALSE,
+#              xlab = "Quantile", 
+#              ylab = "Cumulative Probability",
+#              main = "Cumulative Distribution Function (CDF) Plot")
+# 
+# plot_gev_cdf(gev_model,
+#              zoom = TRUE,
+#              xlab = "Quantile", 
+#              ylab = "Cumulative Probability",
+#              main = "Cumulative Distribution Function (CDF) Plot")
+# 
+# gev_model$normalized_gev_parameters
+# 
+# 
+# # example 2
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# block_size <- 40
+# 
+# gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
+# 
+# plot_gev_cdf(gev_model,
+#              zoom = FALSE,
+#              xlab = "Quantile", 
+#              ylab = "Cumulative Probability",
+#              main = "Cumulative Distribution Function (CDF) Plot")
+# 
+# plot_gev_cdf(gev_model,
+#              zoom = TRUE,
+#              xlab = "Quantile", 
+#              ylab = "Cumulative Probability",
+#              main = "Cumulative Distribution Function (CDF) Plot")
+# 
+# gev_model$normalized_gev_parameters
+# 
+# 
+# # example 3
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = 0)
+# 
+# block_size <- 40
+# 
+# gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
+# 
+# plot_gev_cdf(gev_model,
+#              zoom = FALSE,
+#              xlab = "Quantile", 
+#              ylab = "Cumulative Probability",
+#              main = "Cumulative Distribution Function (CDF) Plot")
+# 
+# plot_gev_cdf(gev_model,
+#              zoom = TRUE,
+#              xlab = "Quantile", 
+#              ylab = "Cumulative Probability",
+#              main = "Cumulative Distribution Function (CDF) Plot")
+# 
+# gev_model$normalized_gev_parameters
