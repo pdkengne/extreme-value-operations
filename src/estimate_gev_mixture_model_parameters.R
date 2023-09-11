@@ -7,6 +7,9 @@ source("./src/estimate_several_standardized_block_maxima_mean.R")
 source("./src/estimate_gev_mixture_model_automatic_weights_mw.R")
 source("./src/estimate_gev_mixture_model_automatic_weights_pw.R")
 
+source("./src/estimate_gev_mixture_model_automatic_weights_mw_log.R")
+source("./src/estimate_gev_mixture_model_automatic_weights_pw_log.R")
+
 estimate_gev_mixture_model_parameters <- function(x, 
                                                   nsloc = NULL, 
                                                   std.err = FALSE, 
