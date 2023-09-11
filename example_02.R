@@ -17,7 +17,7 @@ source("./src/calculate_gev_mixture_model_cdf.R")
 
 
 #'
-n <- 10000
+n <- 20000
 
 nlargest <- 1000
 
@@ -31,7 +31,9 @@ gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            minimum_nblocks = 50,
                                                            nlargest = nlargest,
                                                            confidence_level = 0.95,
-                                                           trace = FALSE)
+                                                           log_mv = TRUE,
+                                                           log_pw = TRUE,
+                                                           trace = TRUE)
 #'
 names(gev_mixture_model)
 
@@ -49,6 +51,9 @@ gev_mixture_model$automatic_weights_mw
 
 #'
 gev_mixture_model$automatic_weights_mw_statistics
+
+#'
+gev_mixture_model$automatic_weights_pw_statistics
 
 #'
 plot_gev_mixture_model_pdf(gev_mixture_model,

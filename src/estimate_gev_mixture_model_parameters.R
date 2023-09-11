@@ -6,7 +6,6 @@ source("./src/estimate_gev_mixture_model_pessimistic_weights.R")
 source("./src/estimate_several_standardized_block_maxima_mean.R")
 source("./src/estimate_gev_mixture_model_automatic_weights_mw.R")
 source("./src/estimate_gev_mixture_model_automatic_weights_pw.R")
-
 source("./src/estimate_gev_mixture_model_automatic_weights_mw_log.R")
 source("./src/estimate_gev_mixture_model_automatic_weights_pw_log.R")
 
@@ -17,12 +16,16 @@ estimate_gev_mixture_model_parameters <- function(x,
                                                   minimum_nblocks = 50,
                                                   nlargest = Inf,
                                                   confidence_level = 0.95,
+                                                  log_mv = TRUE,
+                                                  log_pw = TRUE,
                                                   trace = TRUE){
   # x: vector of observations
   # block_sizes: vector containing the sizes of blocks to consider
   # nsloc: dataframe of covariates for linear modeling of the location parameter
   # trace: boolean value which indicates whether to print information on the progress of optimization
   # std.err: a boolean which indicates whether the standard errors are returned or not
+  # log_mv: a boolean which indicates whether the model wise loss function is at logarithmic scale or not
+  # log_pw: a boolean which indicates whether the parameter wise loss function is at logarithmic scale or not
   # nlargest: number of largest values to focus on. Note that the whole vector x is used unless, nlargest != Inf.
   # confidence_level: desired confidence level when extraction equivalent block sizes. 
   #                   Note that this value is ignored if block_sizes != NULL.
@@ -72,7 +75,12 @@ estimate_gev_mixture_model_parameters <- function(x,
   pessimistic_weights_mw <- pessimistic_weights_object$pessimistic_weights
   
   # estimate model wise automatic weights 
-  automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = trace)
+  if (log_mv){
+    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models, trace = trace)
+  }
+  else{
+    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = trace)
+  }
   automatic_weights_mw <- automatic_weights_mw_object$automatic_weights
   automatic_weights_mw_statistics <- list(function_value = automatic_weights_mw_object$function_value,
                                           gradient_value = automatic_weights_mw_object$gradient_value,
@@ -82,7 +90,12 @@ estimate_gev_mixture_model_parameters <- function(x,
                                           message = automatic_weights_mw_object$message)
   
   # estimate parameter wise automatic weights
-  automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, trace = trace)
+  if (log_pw){
+    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models, trace = trace)
+  }
+  else{
+    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, trace = trace)
+  }
   automatic_weights_pw_statistics <- list(function_value = automatic_weights_pw_object$function_value,
                                           gradient_value = automatic_weights_pw_object$gradient_value,
                                           function_reduction = automatic_weights_pw_object$function_reduction,
@@ -172,6 +185,8 @@ estimate_gev_mixture_model_parameters <- function(x,
 #                                                  minimum_nblocks = 50,
 #                                                  nlargest = nlargest,
 #                                                  confidence_level = 0.95,
+#                                                  log_mv = TRUE,
+#                                                  log_pw = TRUE,
 #                                                  trace = TRUE)
 # 
 # #results
