@@ -2,7 +2,7 @@
 #' title: "Modeling extreme values with a GEV mixture probability distributions"
 #' author: "Pascal Alain Dkengne Sielenou"
 #' date: "September 08th, 2023"
-#' output: html_document
+#' output: pdf_document
 #' ---
 
 
@@ -21,8 +21,8 @@ n <- 10000
 
 nlargest <- 1000
 
-# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
-x <- rnorm(n = n)
+x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
+#x <- rnorm(n = n)
 
 gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            nsloc = NULL,
@@ -31,7 +31,7 @@ gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            minimum_nblocks = 50,
                                                            nlargest = nlargest,
                                                            confidence_level = 0.95,
-                                                           trace = TRUE)
+                                                           trace = FALSE)
 #'
 names(gev_mixture_model)
 
@@ -40,6 +40,9 @@ gev_mixture_model$block_sizes
 
 #'
 gev_mixture_model$normalized_gev_parameters_object
+
+#'
+gev_mixture_model$weighted_normalized_gev_parameters_object
 
 #'
 gev_mixture_model$automatic_weights_mw
@@ -76,12 +79,47 @@ locations <- gev_mixture_model_parameters$loc_star
 weights <- gev_mixture_model$automatic_weights_mw
 
 
+#
+p <- 0.95
+  
+q_initial_guesses <- sapply(1:length(weights), function(j) calculate_gev_inverse_cdf(p = p, 
+                                                                                     loc = locations[j], 
+                                                                                     scale = scales[j], 
+                                                                                     shape = shapes[j])) 
+q_initial_guesses
+
+range(q_initial_guesses)
+
+
 #'
-p <- seq(from = 0.90, to = 0.99, length.out = 10)
+block_size <- max(gev_mixture_model$block_sizes)
+y <- gev_mixture_model$data_largest
+threshold <- find_threshold_associated_with_given_block_size(x = y, block_size = block_size)
+
+#'
+library(evd)
+
+data <- y[y > threshold]
+
+M3 <- fgev(data, prob = 0.95)
+
+M3
+
+#'
+M4 <- fgev(data)
+
+M4
+
+
+#'
+Fn <- ecdf(y)
+
+#'
+p <- seq(from = Fn(threshold), to = 0.999, length.out = 20)
 p
 
 #'
-quantiles <- calculate_gev_mixture_model_inverse_cdf(p = p, locations, scales, shapes, weights, iterations = 100)
+quantiles <- calculate_gev_mixture_model_inverse_cdf(p = p*0.1, locations, scales, shapes, weights, iterations = 100)
 
 quantiles
 
@@ -94,4 +132,9 @@ probaility
 qnorm(p = p)
 
 #'
+calculate_gev_inverse_cdf(p = p*0.1, loc = 2.52214, scale = 0.5222, shape = 0.1487)
+
+#'
 calculate_gev_inverse_cdf(p = p, loc = 1, scale = 0.5, shape = 0.1)
+
+

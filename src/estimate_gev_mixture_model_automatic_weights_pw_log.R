@@ -1,7 +1,7 @@
 source("./src/calculate_gev_cdf.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
 
-estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models, trace = TRUE){
+estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models, trace = TRUE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
   # trace: boolean value which indicates whether to print information on the progress of optimization
   
@@ -123,7 +123,7 @@ estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models, trace = 
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, trace = TRUE)
+# results <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models, trace = TRUE)
 # 
 # results
 # 
@@ -157,7 +157,7 @@ estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models, trace = 
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, trace = TRUE)
+# results <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models, trace = TRUE)
 # 
 # results
 # 

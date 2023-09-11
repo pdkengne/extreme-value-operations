@@ -2,7 +2,7 @@
 #' title: "Modeling extreme values with a single GEV probability distribution"
 #' author: "Pascal Alain Dkengne Sielenou"
 #' date: "September 08th, 2023"
-#' output: html_document
+#' output: pdf_document
 #' ---
 
 
