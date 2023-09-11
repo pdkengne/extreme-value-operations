@@ -1,7 +1,10 @@
+# library(BB)
+
 source("./src/calculate_gev_cdf.R")
+source("./src/calculate_gev_mixture_model_cdf.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
 
-estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models, trace = TRUE){
+estimate_gev_mixture_model_automatic_weights_mw_log <- function(gev_models, trace = TRUE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
   # trace: boolean value which indicates whether to print information on the progress of optimization
   
@@ -28,74 +31,67 @@ estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models, trace = 
   p <- nrow(normalized_gev_parameters)
   
   # define the constraints on the unknown weights
-  lower <- rep(0, 3*p)
-  upper <- rep(1, 3*p)
+  lower <- rep(0, p)
+  upper <- rep(1, p)
   
   # define an initial vector of weights
-  initial_weights <- rep(1, 3*p)/p
+  initial_weights <- rep(1, p)/p
   
   # define the error function to optimize
   nlf <- function(w, y){
-    weights_shape <- w[1:p]
-    weights_scale <- w[(p+1):(2*p)]
-    weights_location <- w[(2*p+1):(3*p)]
-    
-    shape <- sum(weights_shape*shapes)
-    scale <- sum(weights_scale*scales)
-    location <- sum(weights_location*locations)
-    
-    theoretical_cdf <- calculate_gev_cdf(q = y, loc = location, scale = scale, shape = shape)
+    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w)
     
     empirical_cdf <- Fn(y)
     
-    errors <- (theoretical_cdf - empirical_cdf)^2
+    errors <- (log(theoretical_cdf) - log(empirical_cdf))^2
     
     loss <- sum(errors)
     
     loss
   }
   
+  # define the gradient of error function to optimize
+  
+  nlf_gradient <- function(w, y){
+    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w)
+    
+    empirical_cdf <- Fn(y)
+    
+    errors <- log(theoretical_cdf) - log(empirical_cdf)
+    
+    gradient_object <- sapply(1:p, function(j) errors*log(calculate_gev_cdf(q = y, 
+                                                                            loc = locations[j], 
+                                                                            scale = scales[j], 
+                                                                            shape = shapes[j])))
+    
+    gradient <- 2*apply(gradient_object, 2, sum)
+    
+    gradient
+  }
+  
   # minimize the error function
-  data_A <- c(rep(1, p), rep(0, p), rep(0, p),
-               rep(0, p), rep(1, p), rep(0, p),
-               rep(0, p), rep(0, p), rep(1, p))
-  
-  matrix_A <- matrix(data = data_A, nrow = 3, ncol = 3*p, byrow = TRUE)
-  
-  b <- c(1, 1, 1)
-  
-  meq <- 3
-  
   answer <- BB::BBoptim(par = initial_weights,
                         fn = nlf,
+                        gr = nlf_gradient,
                         y = y,
                         lower = lower,
                         upper = upper,
                         project = "projectLinear",
-                        projectArgs = list(A = matrix_A, b = b, meq = meq),
+                        projectArgs=list(A = matrix(1, nrow = 1, ncol = p), b = 1, meq = 1),
                         control = list(maximize = FALSE, trace = trace, checkGrad = FALSE))
-  
-  # extract the weights associated with each of the gev model parameters
-  automatic_weights_shape <- answer$par[1:p]
-  names(automatic_weights_shape) <- block_sizes
-  
-  automatic_weights_scale <- answer$par[(p+1):(2*p)]
-  names(automatic_weights_scale) <- block_sizes
-  
-  automatic_weights_loc <- answer$par[(2*p+1):(3*p)]
-  names(automatic_weights_loc) <- block_sizes
+
+  automatic_weights <- answer$par
+  names(automatic_weights) <- block_sizes
   
   # update the output object
-  output[["automatic_weights_shape"]] <- automatic_weights_shape
-  output[["automatic_weights_scale"]] <- automatic_weights_scale
-  output[["automatic_weights_loc"]] <- automatic_weights_loc
+  output[["automatic_weights"]] <- automatic_weights
   output[["function_value"]] <- answer$value
   output[["gradient_value"]] <- answer$gradient
   output[["function_reduction"]] <- answer$fn.reduction
   output[["number_iterations"]] <- answer$iter
   output[["convergence"]] <- answer$convergence
   output[["message"]] <- answer$message
-
+  
   output
 }
 
@@ -123,16 +119,11 @@ estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models, trace = 
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, trace = TRUE)
+# results <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models, trace = TRUE)
 # 
 # results
 # 
-# names(results)
-# 
-# sum(results$automatic_weights_shape)
-# sum(results$automatic_weights_scale)
-# sum(results$automatic_weights_loc)
-# 
+# sum(results$automatic_weights)
 # 
 # 
 # # example 2
@@ -157,12 +148,8 @@ estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models, trace = 
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, trace = TRUE)
+# results <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models, trace = TRUE)
 # 
 # results
 # 
-# names(results)
-# 
-# sum(results$automatic_weights_shape)
-# sum(results$automatic_weights_scale)
-# sum(results$automatic_weights_loc)
+# sum(results$automatic_weights)
