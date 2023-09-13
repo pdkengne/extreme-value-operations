@@ -69,8 +69,8 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
                                           weights = gev_mixture_model_weights_object[, type],
                                           zoom = zoom,
                                           threshold = threshold,
-                                          xlab = "Quantile", 
-                                          ylab = "Density", 
+                                          xlab = xlab, 
+                                          ylab = ylab, 
                             main = paste(main, ":", type, "- model_wise =", model_wise))
   }
   
