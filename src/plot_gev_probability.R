@@ -2,7 +2,6 @@
 
 source("./src/estimate_single_gev_model.R")
 source("./src/calculate_gev_cdf.R")
-source("./src/find_threshold_associated_with_given_block_size.R")
 
 
 plot_gev_probability <- function(gev_model, 
@@ -15,16 +14,10 @@ plot_gev_probability <- function(gev_model,
   # main: title of the plot
   
   # extract the model parameters
-  gev_model_parameters <- gev_model$normalized_gev_parameters
+  gev_model_parameters <- gev_model$gev_model$estimate
   
-  # extract train data
-  uvdata <- gev_model$data
-  
-  # extract block size
-  block_size <- gev_model$block_size
-  
-  # find the threshold associated with the block_size
-  threshold <- find_threshold_associated_with_given_block_size(x = uvdata, block_size = block_size)
+  # extract train block maxima data
+  uvdata <- gev_model$gev_model$data
   
   # calculate empirical cdf
   empirical_probability_object <- EnvStats::ecdfPlot(x = uvdata, prob.method ="plot.pos", plot.pos.con = 0.375, plot.it = FALSE)
@@ -37,29 +30,19 @@ plot_gev_probability <- function(gev_model,
   
   # calculate theoretical cdf
   theoretical_cdf <- calculate_gev_cdf(q = ordered_quantiles, 
-                                       loc = gev_model_parameters["loc_star"], 
-                                       scale = gev_model_parameters["scale_star"], 
-                                       shape = gev_model_parameters["shape_star"])
+                                       loc = gev_model_parameters["loc"], 
+                                       scale = gev_model_parameters["scale"], 
+                                       shape = gev_model_parameters["shape"])
   
   # get the probability range
   probability_range <- range(c(theoretical_cdf, empirical_cdf)) 
   
-  # get positions of large quantities
-  position_large_quantities <- which(ordered_quantiles >= threshold)
-  
-  # extract large quantities
-  large_ordered_quantiles <- ordered_quantiles[position_large_quantities]
-  large_empirical_cdf <- empirical_cdf[position_large_quantities]
-  large_theoretical_cdf <- theoretical_cdf[position_large_quantities]
-  large_probability_range <- range(c(large_theoretical_cdf, large_empirical_cdf))
-  
-  
   # plot probability
-  plot(x = large_theoretical_cdf, 
-       y = large_empirical_cdf, 
+  plot(x = theoretical_cdf, 
+       y = empirical_cdf, 
        type = "p", 
-       ylim = large_probability_range,
-       xlim = large_probability_range,
+       ylim = probability_range,
+       xlim = probability_range,
        pch = 20,
        col = 4,
        lwd = 2,
@@ -88,15 +71,15 @@ plot_gev_probability <- function(gev_model,
 # 
 # source("./src/generate_gev_sample.R")
 # 
-# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = +0.1)
+# x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = +0.1)
 # 
-# block_size <- 40
+# block_size <- 100
 # 
 # gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
 # 
-# plot_gev_probability(gev_model, 
-#                      xlab = "Theoretical Probability", 
-#                      ylab = "Empirical Probability", 
+# plot_gev_probability(gev_model,
+#                      xlab = "Theoretical Probability",
+#                      ylab = "Empirical Probability",
 #                      main = "Probability Plot")
 # 
 # gev_model$normalized_gev_parameters
@@ -106,15 +89,15 @@ plot_gev_probability <- function(gev_model,
 # 
 # source("./src/generate_gev_sample.R")
 # 
-# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.1)
+# x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = -0.1)
 # 
-# block_size <- 40
+# block_size <- 100
 # 
 # gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
 # 
-# plot_gev_probability(gev_model, 
-#                      xlab = "Theoretical Probability", 
-#                      ylab = "Empirical Probability", 
+# plot_gev_probability(gev_model,
+#                      xlab = "Theoretical Probability",
+#                      ylab = "Empirical Probability",
 #                      main = "Probability Plot")
 # 
 # gev_model$normalized_gev_parameters
@@ -124,15 +107,15 @@ plot_gev_probability <- function(gev_model,
 # 
 # source("./src/generate_gev_sample.R")
 # 
-# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = 0)
+# x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = 0)
 # 
-# block_size <- 40
+# block_size <- 100
 # 
 # gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
 # 
-# plot_gev_probability(gev_model, 
-#                      xlab = "Theoretical Probability", 
-#                      ylab = "Empirical Probability", 
+# plot_gev_probability(gev_model,
+#                      xlab = "Theoretical Probability",
+#                      ylab = "Empirical Probability",
 #                      main = "Probability Plot")
 # 
 # gev_model$normalized_gev_parameters
