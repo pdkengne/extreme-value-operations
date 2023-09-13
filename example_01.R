@@ -17,10 +17,10 @@ source("./src/plot_gev_quantile.R")
 source("./src/plot_block_maxima.R")
 
 #'
-x <- rnorm(n = 1000)
+x <- rnorm(n = 10000)
 
 #'
-block_size <- 40
+block_size <- 100
 
 #'
 extremes <- extract_block_maxima_with_indexes(x, block_size)
