@@ -1,8 +1,8 @@
 # library(EnvStats)
 
-source("./src/calculate_gev_mixture_model_pdf.R")
+source("./src/calculate_gev_mixture_model_cdf.R")
 
-plot_normalized_gev_mixture_model_pdf <- function(x, 
+plot_normalized_gev_mixture_model_cdf <- function(x, 
                                                   locations, 
                                                   scales, 
                                                   shapes, 
@@ -10,8 +10,8 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
                                                   zoom = FALSE,
                                                   threshold = NULL,
                                                   xlab = "Quantile", 
-                                                  ylab = "Density", 
-                                                  main = "Probability Density Function (PDF) Plot"){
+                                                  ylab = "Cumulative Probability",
+                                                  main = "Cumulative Distribution Function (CDF) Plot"){
   # x: vector of observations
   # weights: vector of weights
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
@@ -24,24 +24,24 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
   # extract train data
   uvdata <- x
   
-  # calculate empirical pdf
-  empirical_density_object <- EnvStats::epdfPlot(x = uvdata, plot.it = FALSE)
+  # calculate empirical cdf
+  empirical_probability_object <- EnvStats::ecdfPlot(x = uvdata, prob.method ="plot.pos", plot.pos.con = 0.375, plot.it = FALSE)
   
   # extract ordered quantiles
-  ordered_quantiles <- empirical_density_object$x
+  ordered_quantiles <- empirical_probability_object$Order.Statistics
   
-  # extract empirical pdf
-  empirical_pdf <- empirical_density_object$f.x
+  # extract empirical cdf
+  empirical_cdf <- empirical_probability_object$Cumulative.Probabilities
   
-  # calculate theoretical pdf
-  theoretical_pdf <- calculate_gev_mixture_model_pdf(x = ordered_quantiles, 
+  # calculate theoretical cdf
+  theoretical_cdf <- calculate_gev_mixture_model_cdf(q = ordered_quantiles, 
                                                      locations = locations, 
                                                      scales = scales, 
                                                      shapes = shapes, 
                                                      weights = weights)
   
-  # get the pdf range
-  pdf_range <- range(c(theoretical_pdf, empirical_pdf))
+  # get the cdf range
+  cdf_range <- range(c(theoretical_cdf, empirical_cdf))
   
   # define the non null threshold to use
   if (is.null(threshold)){
@@ -53,16 +53,16 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
   
   # extract large quantities
   large_ordered_quantiles <- ordered_quantiles[position_large_quantities]
-  large_empirical_pdf <- empirical_pdf[position_large_quantities]
-  large_theoretical_pdf <- theoretical_pdf[position_large_quantities]
-  large_pdf_range <- range(c(large_theoretical_pdf, large_empirical_pdf))
+  large_empirical_cdf <- empirical_cdf[position_large_quantities]
+  large_theoretical_cdf <- theoretical_cdf[position_large_quantities]
+  large_cdf_range <- range(c(large_theoretical_cdf, large_empirical_cdf))
   
   # plot densities
   if (zoom){
     plot(x = large_ordered_quantiles, 
-         y = large_empirical_pdf, 
+         y = large_empirical_cdf, 
          type = "l", 
-         ylim = large_pdf_range,
+         ylim = large_cdf_range,
          col = 4,
          lwd = 2,
          cex.axis = 1,
@@ -74,9 +74,9 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
   }
   else{
     plot(x = ordered_quantiles, 
-         y = empirical_pdf, 
+         y = empirical_cdf, 
          type = "l", 
-         ylim = pdf_range,
+         ylim = cdf_range,
          col = 4,
          lwd = 2,
          cex.axis = 1,
@@ -87,13 +87,13 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
          main = paste(main,": zoom =", zoom))
   }
   
-  lines(large_ordered_quantiles, large_theoretical_pdf, col = 2, lwd = 2)
+  lines(large_ordered_quantiles, large_theoretical_cdf, col = 2, lwd = 2)
   
   abline(h = 0, lty = "dotted", lwd = 1)
   abline(v = threshold, lty = "dotted", lwd = 1)
   
-  legend(x = "topright", 
-         legend = c("Empirical PDF", "Theoretical PDF"),
+  legend(x = "bottomright", 
+         legend = c("Empirical cdf", "Theoretical cdf"),
          lty = c(1, 1),
          col = c(4, 2),
          lwd = 2,
@@ -140,7 +140,7 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 # 
 # y <- gev_mixture_model$data_largest
 # 
-# plot_normalized_gev_mixture_model_pdf(x = y,
+# plot_normalized_gev_mixture_model_cdf(x = y,
 #                                       locations = gev_mixture_model_parameters_loc,
 #                                       scales = gev_mixture_model_parameters_scale,
 #                                       shapes = gev_mixture_model_parameters_shape,
@@ -148,10 +148,10 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 #                                       zoom = FALSE,
 #                                       threshold = NULL,
 #                                       xlab = "Quantile",
-#                                       ylab = "Density",
-#                                       main = "Probability Density Function (PDF) Plot")
+#                                       ylab = "Cumulative Probability",
+#                                       main = "Cumulative Distribution Function (CDF) Plot")
 # 
-# plot_normalized_gev_mixture_model_pdf(x = y,
+# plot_normalized_gev_mixture_model_cdf(x = y,
 #                                       locations = gev_mixture_model_parameters_loc,
 #                                       scales = gev_mixture_model_parameters_scale,
 #                                       shapes = gev_mixture_model_parameters_shape,
@@ -159,14 +159,14 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 #                                       zoom = FALSE,
 #                                       threshold = NULL,
 #                                       xlab = "Quantile",
-#                                       ylab = "Density",
-#                                       main = "Probability Density Function (PDF) Plot")
+#                                       ylab = "Cumulative Probability",
+#                                       main = "Cumulative Distribution Function (CDF) Plot")
 # 
 # block_size <- max(gev_mixture_model$block_sizes)
 # 
 # threshold <- find_threshold_associated_with_given_block_size(x = y, block_size = block_size)
 # 
-# plot_normalized_gev_mixture_model_pdf(x = y,
+# plot_normalized_gev_mixture_model_cdf(x = y,
 #                                       locations = gev_mixture_model_parameters_loc,
 #                                       scales = gev_mixture_model_parameters_scale,
 #                                       shapes = gev_mixture_model_parameters_shape,
@@ -174,10 +174,10 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 #                                       zoom = FALSE,
 #                                       threshold = threshold,
 #                                       xlab = "Quantile",
-#                                       ylab = "Density",
-#                                       main = "Probability Density Function (PDF) Plot")
+#                                       ylab = "Cumulative Probability",
+#                                       main = "Cumulative Distribution Function (CDF) Plot")
 # 
-# plot_normalized_gev_mixture_model_pdf(x = y,
+# plot_normalized_gev_mixture_model_cdf(x = y,
 #                                       locations = gev_mixture_model_parameters_loc,
 #                                       scales = gev_mixture_model_parameters_scale,
 #                                       shapes = gev_mixture_model_parameters_shape,
@@ -185,6 +185,5 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 #                                       zoom = TRUE,
 #                                       threshold = threshold,
 #                                       xlab = "Quantile",
-#                                       ylab = "Density",
-#                                       main = "Probability Density Function (PDF) Plot")
-# 
+#                                       ylab = "Cumulative Probability",
+#                                       main = "Cumulative Distribution Function (CDF) Plot")

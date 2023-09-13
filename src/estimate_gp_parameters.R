@@ -1,6 +1,6 @@
 # library(evd)
 
-options(digits = 15)
+options(digits = 10)
 
 estimate_gp_parameters <- function(x, threshold){
   # x: vector of observations

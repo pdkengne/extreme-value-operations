@@ -110,16 +110,16 @@ plot_gev_pdf <- function(gev_model,
 # 
 # gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
 # 
-# plot_gev_pdf(gev_model, 
+# plot_gev_pdf(gev_model,
 #              zoom = FALSE,
-#              xlab = "Quantile", 
-#              ylab = "Density", 
+#              xlab = "Quantile",
+#              ylab = "Density",
 #              main = "Probability Density Function (PDF) Plot")
 # 
-# plot_gev_pdf(gev_model, 
+# plot_gev_pdf(gev_model,
 #              zoom = TRUE,
-#              xlab = "Quantile", 
-#              ylab = "Density", 
+#              xlab = "Quantile",
+#              ylab = "Density",
 #              main = "Probability Density Function (PDF) Plot")
 # 
 # gev_model$normalized_gev_parameters
@@ -135,16 +135,16 @@ plot_gev_pdf <- function(gev_model,
 # 
 # gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
 # 
-# plot_gev_pdf(gev_model, 
+# plot_gev_pdf(gev_model,
 #              zoom = FALSE,
-#              xlab = "Quantile", 
-#              ylab = "Density", 
+#              xlab = "Quantile",
+#              ylab = "Density",
 #              main = "Probability Density Function (PDF) Plot")
 # 
-# plot_gev_pdf(gev_model, 
+# plot_gev_pdf(gev_model,
 #              zoom = TRUE,
-#              xlab = "Quantile", 
-#              ylab = "Density", 
+#              xlab = "Quantile",
+#              ylab = "Density",
 #              main = "Probability Density Function (PDF) Plot")
 # 
 # gev_model$normalized_gev_parameters
@@ -160,17 +160,16 @@ plot_gev_pdf <- function(gev_model,
 # 
 # gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
 # 
-# plot_gev_pdf(gev_model, 
+# plot_gev_pdf(gev_model,
 #              zoom = FALSE,
-#              xlab = "Quantile", 
-#              ylab = "Density", 
+#              xlab = "Quantile",
+#              ylab = "Density",
 #              main = "Probability Density Function (PDF) Plot")
 # 
-# plot_gev_pdf(gev_model, 
+# plot_gev_pdf(gev_model,
 #              zoom = TRUE,
-#              xlab = "Quantile", 
-#              ylab = "Density", 
+#              xlab = "Quantile",
+#              ylab = "Density",
 #              main = "Probability Density Function (PDF) Plot")
 # 
 # gev_model$normalized_gev_parameters
-# 
