@@ -2,7 +2,6 @@
 
 source("./src/estimate_single_gev_model.R")
 source("./src/calculate_gev_inverse_cdf.R")
-source("./src/find_threshold_associated_with_given_block_size.R")
 
 plot_gev_quantile <- function(gev_model, 
                               xlab = "Theoretical Quantile", 
@@ -14,16 +13,10 @@ plot_gev_quantile <- function(gev_model,
   # main: title of the plot
   
   # extract the model parameters
-  gev_model_parameters <- gev_model$normalized_gev_parameters
+  gev_model_parameters <- gev_model$gev_model$estimate
   
-  # extract train data
-  uvdata <- gev_model$data
-  
-  # extract block size
-  block_size <- gev_model$block_size
-  
-  # find the threshold associated with the block_size
-  threshold <- find_threshold_associated_with_given_block_size(x = uvdata, block_size = block_size)
+  # extract train block maxima data
+  uvdata <- gev_model$gev_model$data
   
   # calculate empirical cdf
   empirical_probability_object <- EnvStats::ecdfPlot(x = uvdata, prob.method ="plot.pos", plot.pos.con = 0.375, plot.it = FALSE)
@@ -36,27 +29,19 @@ plot_gev_quantile <- function(gev_model,
   
   # calculate theoretical quantiles
   theoretical_quantiles <- calculate_gev_inverse_cdf(p = empirical_cdf, 
-                                                     loc = gev_model_parameters["loc_star"], 
-                                                     scale = gev_model_parameters["scale_star"], 
-                                                     shape = gev_model_parameters["shape_star"])
+                                                     loc = gev_model_parameters["loc"], 
+                                                     scale = gev_model_parameters["scale"], 
+                                                     shape = gev_model_parameters["shape"])
   
   # get the quantile range
   quantile_range <- range(c(theoretical_quantiles, empirical_quantiles)) 
   
-  # get positions of large quantities
-  position_large_quantities <- which(empirical_quantiles >= threshold)
-  
-  # extract large quantities
-  large_empirical_quantiles <- empirical_quantiles[position_large_quantities]
-  large_theoretical_quantiles <- theoretical_quantiles[position_large_quantities]
-  large_quantile_range <- range(c(large_theoretical_quantiles, large_empirical_quantiles))
-  
   # plot quantile
-  plot(x = large_theoretical_quantiles, 
-       y = large_empirical_quantiles, 
+  plot(x = theoretical_quantiles, 
+       y = empirical_quantiles, 
        type = "p", 
-       ylim = large_quantile_range,
-       xlim = large_quantile_range,
+       ylim = quantile_range,
+       xlim = quantile_range,
        pch = 20,
        col = 4,
        lwd = 2,
@@ -92,9 +77,9 @@ plot_gev_quantile <- function(gev_model,
 # 
 # gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
 # 
-# plot_gev_quantile(gev_model, 
-#                   xlab = "Theoretical Quantile", 
-#                   ylab = "Empirical Quantile", 
+# plot_gev_quantile(gev_model,
+#                   xlab = "Theoretical Quantile",
+#                   ylab = "Empirical Quantile",
 #                   main = "Quantile Plot")
 # 
 # gev_model$normalized_gev_parameters
@@ -110,9 +95,9 @@ plot_gev_quantile <- function(gev_model,
 # 
 # gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
 # 
-# plot_gev_quantile(gev_model, 
-#                   xlab = "Theoretical Quantile", 
-#                   ylab = "Empirical Quantile", 
+# plot_gev_quantile(gev_model,
+#                   xlab = "Theoretical Quantile",
+#                   ylab = "Empirical Quantile",
 #                   main = "Quantile Plot")
 # 
 # gev_model$normalized_gev_parameters
@@ -128,9 +113,9 @@ plot_gev_quantile <- function(gev_model,
 # 
 # gev_model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
 # 
-# plot_gev_quantile(gev_model, 
-#                   xlab = "Theoretical Quantile", 
-#                   ylab = "Empirical Quantile", 
+# plot_gev_quantile(gev_model,
+#                   xlab = "Theoretical Quantile",
+#                   ylab = "Empirical Quantile",
 #                   main = "Quantile Plot")
 # 
 # gev_model$normalized_gev_parameters

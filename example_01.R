@@ -73,3 +73,20 @@ plot_gev_cdf(model,
              ylab = "Cumulative Probability",
              main = "Cumulative Distribution Function (CDF) Plot")
 
+#'
+plot_gev_probability(model, 
+                     xlab = "Theoretical Probability", 
+                     ylab = "Empirical Probability", 
+                     main = "Probability Plot")
+
+
+#'
+plot_gev_quantile(model, 
+                  xlab = "Theoretical Quantile", 
+                  ylab = "Empirical Quantile", 
+                  main = "Quantile Plot")
+
+
+
+
+
