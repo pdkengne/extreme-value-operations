@@ -1,6 +1,6 @@
 source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 
-generate_gev_mixture_model_sample <- function(n = 1, locations, scales, shapes, weights, iterations = 100){
+generate_gev_mixture_model_sample <- function(n = 1, locations, scales, shapes, weights, iterations = 50){
   # n: vnumber of observations to generate
   # weights: vector of weights
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
