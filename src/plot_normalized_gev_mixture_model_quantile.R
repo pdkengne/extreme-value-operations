@@ -154,9 +154,9 @@ plot_normalized_gev_mixture_model_quantile <- function(x,
 #                                            weights = gev_mixture_model_automatic_weights,
 #                                            zoom = FALSE,
 #                                            threshold = NULL,
-#                                            xlab = "Theoretical Probability",
-#                                            ylab = "Empirical Probability",
-#                                            main = "Probability Plot")
+#                                            xlab = "Theoretical Quantile", 
+#                                            ylab = "Empirical Quantile", 
+#                                            main = "Quantile Plot")
 # 
 # plot_normalized_gev_mixture_model_quantile(x = y,
 #                                            locations = gev_mixture_model_parameters_loc,
@@ -165,9 +165,9 @@ plot_normalized_gev_mixture_model_quantile <- function(x,
 #                                            weights = gev_mixture_model_automatic_weights,
 #                                            zoom = FALSE,
 #                                            threshold = threshold,
-#                                            xlab = "Theoretical Probability",
-#                                            ylab = "Empirical Probability",
-#                                            main = "Probability Plot")
+#                                            xlab = "Theoretical Quantile", 
+#                                            ylab = "Empirical Quantile", 
+#                                            main = "Quantile Plot")
 # 
 # plot_normalized_gev_mixture_model_quantile(x = y,
 #                                            locations = gev_mixture_model_parameters_loc,
@@ -176,9 +176,9 @@ plot_normalized_gev_mixture_model_quantile <- function(x,
 #                                            weights = gev_mixture_model_automatic_weights,
 #                                            zoom = TRUE,
 #                                            threshold = threshold,
-#                                            xlab = "Theoretical Probability",
-#                                            ylab = "Empirical Probability",
-#                                            main = "Probability Plot")
+#                                            xlab = "Theoretical Quantile", 
+#                                            ylab = "Empirical Quantile", 
+#                                            main = "Quantile Plot")
 # 
 # 
 # # example 2
@@ -206,6 +206,6 @@ plot_normalized_gev_mixture_model_quantile <- function(x,
 #                                            weights = weights,
 #                                            zoom = FALSE,
 #                                            threshold = NULL,
-#                                            xlab = "Theoretical Probability",
-#                                            ylab = "Empirical Probability",
-#                                            main = "Probability Plot")
+#                                            xlab = "Theoretical Quantile", 
+#                                            ylab = "Empirical Quantile", 
+#                                            main = "Quantile Plot")

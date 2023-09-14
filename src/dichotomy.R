@@ -5,20 +5,22 @@ dichotomy <- function(func, a, b, n){
   
   A <- a
   B <- b
-  if (func(A)*func(B) > 0){
-    print(paste("There is not root between a =", A, "and b =", B))
-  }
-  else{
-    for (i in 1:(n+1)){
-      if (func(A)*func((A+B)/2) <= 0){
-        B <- (A+B)/2
-      }
-      else{
-        A <- (A+B)/2
+  if (A != B){
+    if (func(A)*func(B) > 0){
+      print(paste("There is not root between a =", A, "and b =", B))
+    }
+    else{
+      for (i in 1:(n+1)){
+        if (func(A)*func((A+B)/2) <= 0){
+          B <- (A+B)/2
+        }
+        else{
+          A <- (A+B)/2
+        }
       }
     }
   }
-  
+
   (A+B)/2
 }
 
