@@ -16,6 +16,15 @@ calculate_gev_mixture_model_inverse_cdf <- function(p, locations, scales, shapes
       f
     }
     
+    # get the positions where weights are different from zero
+    position_weights_nonzero <- which(weights > 0)
+    
+    # extract all parameters for which weights are different from zero
+    locations <- locations[position_weights_nonzero]
+    scales <- scales[position_weights_nonzero]
+    shapes <- shapes[position_weights_nonzero]
+    weights <- weights[position_weights_nonzero]
+    
     # calculates some initial guesses for the root of the nonlinear equation to solve
     q_initial_guesses <- sapply(1:length(weights), function(j) calculate_gev_inverse_cdf(p = p, 
                                                                                          loc = locations[j], 
