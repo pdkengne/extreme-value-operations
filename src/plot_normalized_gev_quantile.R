@@ -2,7 +2,7 @@
 
 source("./src/calculate_gev_inverse_cdf.R")
 
-plot_gev_normalized_quantile <- function(x, 
+plot_normalized_gev_quantile <- function(x, 
                                          loc = 0, 
                                          scale = 1, 
                                          shape = 0,  
@@ -79,7 +79,7 @@ plot_gev_normalized_quantile <- function(x,
 # 
 # x <- generate_gev_sample(n = 1000, loc = loc, scale = scale, shape = shape)
 # 
-# plot_gev_normalized_quantile(x, 
+# plot_normalized_gev_quantile(x, 
 #                              loc = loc, 
 #                              scale = scale, 
 #                              shape = shape,  
@@ -100,7 +100,7 @@ plot_gev_normalized_quantile <- function(x,
 # 
 # x <- generate_gev_sample(n = 1000, loc = loc, scale = scale, shape = shape)
 # 
-# plot_gev_normalized_quantile(x, 
+# plot_normalized_gev_quantile(x, 
 #                              loc = loc, 
 #                              scale = scale, 
 #                              shape = shape,  
@@ -121,7 +121,7 @@ plot_gev_normalized_quantile <- function(x,
 # 
 # x <- generate_gev_sample(n = 1000, loc = loc, scale = scale, shape = shape)
 # 
-# plot_gev_normalized_quantile(x, 
+# plot_normalized_gev_quantile(x, 
 #                              loc = loc, 
 #                              scale = scale, 
 #                              shape = shape,  
