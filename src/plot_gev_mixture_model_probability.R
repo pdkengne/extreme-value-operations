@@ -7,9 +7,9 @@ plot_gev_mixture_model_probability <- function(gev_mixture_model,
                                        type = NULL,
                                        model_wise = FALSE,
                                        zoom = FALSE,
-                                       xlab = "Quantile", 
-                                       ylab = "Cumulative Probability", 
-                                       main = "Cumulative Distribution Function (CDF) Plot"){
+                                       xlab = "Theoretical Probability", 
+                                       ylab = "Empirical Probability", 
+                                       main = "Probability Plot"){
   # gev_mixture_model: an object associated with a result of the function "estimate_gev_mixture_model_parameters()"
   # type: type of gev mixture model to consider. It is one of the following elements
   # model_wise: a boolean which indicates whether to use weights on models or on parameters
@@ -77,92 +77,129 @@ plot_gev_mixture_model_probability <- function(gev_mixture_model,
 }
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-source("./src/estimate_gev_mixture_model_parameters.R")
-
-n <- 10000
-nlargest <- 1000
-
-# x <- rnorm(n = n)
-x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
-
-gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
-                                                           nsloc = NULL,
-                                                           std.err = FALSE,
-                                                           block_sizes = NULL,
-                                                           minimum_nblocks = 50,
-                                                           nlargest = nlargest,
-                                                           confidence_level = 0.95,
-                                                           trace = TRUE)
-
-# set the types of weighted gev models
-weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
-
-plot_gev_mixture_model_probability(gev_mixture_model,
-                           type = "identic_weights",
-                           model_wise = FALSE,
-                           zoom = FALSE,
-                           xlab = "Quantile",
-                           ylab = "Cumulative Probability",
-                           main = "Cumulative Distribution Function (CDF) Plot")
-
-plot_gev_mixture_model_probability(gev_mixture_model,
-                           type = "pessimistic_weights",
-                           model_wise = FALSE,
-                           zoom = FALSE,
-                           xlab = "Quantile",
-                           ylab = "Cumulative Probability",
-                           main = "Cumulative Distribution Function (CDF) Plot")
-
-plot_gev_mixture_model_probability(gev_mixture_model,
-                           type = "automatic_weights",
-                           model_wise = FALSE,
-                           zoom = FALSE,
-                           xlab = "Quantile",
-                           ylab = "Cumulative Probability",
-                           main = "Cumulative Distribution Function (CDF) Plot")
-
-plot_gev_mixture_model_probability(gev_mixture_model,
-                           type = "automatic_weights",
-                           model_wise = FALSE,
-                           zoom = TRUE,
-                           xlab = "Quantile",
-                           ylab = "Cumulative Probability",
-                           main = "Cumulative Distribution Function (CDF) Plot")
-
-
-
-
-plot_gev_mixture_model_probability(gev_mixture_model,
-                           type = "identic_weights",
-                           model_wise = TRUE,
-                           zoom = FALSE,
-                           xlab = "Quantile",
-                           ylab = "Cumulative Probability",
-                           main = "Cumulative Distribution Function (CDF) Plot")
-
-plot_gev_mixture_model_probability(gev_mixture_model,
-                           type = "pessimistic_weights",
-                           model_wise = TRUE,
-                           zoom = FALSE,
-                           xlab = "Quantile",
-                           ylab = "Cumulative Probability",
-                           main = "Cumulative Distribution Function (CDF) Plot")
-
-plot_gev_mixture_model_probability(gev_mixture_model,
-                           type = "automatic_weights",
-                           model_wise = TRUE,
-                           zoom = FALSE,
-                           xlab = "Quantile",
-                           ylab = "Cumulative Probability",
-                           main = "Cumulative Distribution Function (CDF) Plot")
-
-plot_gev_mixture_model_probability(gev_mixture_model,
-                           type = "automatic_weights",
-                           model_wise = TRUE,
-                           zoom = TRUE,
-                           xlab = "Quantile",
-                           ylab = "Cumulative Probability",
-                           main = "Cumulative Distribution Function (CDF) Plot")
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# source("./src/estimate_gev_mixture_model_parameters.R")
+# 
+# n <- 10000
+# nlargest <- 1000
+# 
+# # x <- rnorm(n = n)
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
+# 
+# gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
+#                                                            nsloc = NULL,
+#                                                            std.err = FALSE,
+#                                                            block_sizes = NULL,
+#                                                            minimum_nblocks = 50,
+#                                                            nlargest = nlargest,
+#                                                            confidence_level = 0.95,
+#                                                            trace = TRUE)
+# 
+# # set the types of weighted gev models
+# weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                            type = "identic_weights",
+#                            model_wise = FALSE,
+#                            zoom = FALSE,
+#                            xlab = "Theoretical Probability", 
+#                            ylab = "Empirical Probability", 
+#                            main = "Probability Plot")
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                                    type = "identic_weights",
+#                                    model_wise = FALSE,
+#                                    zoom = TRUE,
+#                                    xlab = "Theoretical Probability", 
+#                                    ylab = "Empirical Probability", 
+#                                    main = "Probability Plot")
+# #
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                            type = "pessimistic_weights",
+#                            model_wise = FALSE,
+#                            zoom = FALSE,
+#                            xlab = "Theoretical Probability", 
+#                            ylab = "Empirical Probability", 
+#                            main = "Probability Plot")
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                                    type = "pessimistic_weights",
+#                                    model_wise = FALSE,
+#                                    zoom = TRUE,
+#                                    xlab = "Theoretical Probability", 
+#                                    ylab = "Empirical Probability", 
+#                                    main = "Probability Plot")
+# #
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                            type = "automatic_weights",
+#                            model_wise = FALSE,
+#                            zoom = FALSE,
+#                            xlab = "Theoretical Probability", 
+#                            ylab = "Empirical Probability", 
+#                            main = "Probability Plot")
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                            type = "automatic_weights",
+#                            model_wise = FALSE,
+#                            zoom = TRUE,
+#                            xlab = "Theoretical Probability", 
+#                            ylab = "Empirical Probability", 
+#                            main = "Probability Plot")
+# 
+# # 
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                            type = "identic_weights",
+#                            model_wise = TRUE,
+#                            zoom = FALSE,
+#                            xlab = "Theoretical Probability", 
+#                            ylab = "Empirical Probability", 
+#                            main = "Probability Plot")
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                                    type = "identic_weights",
+#                                    model_wise = TRUE,
+#                                    zoom = TRUE,
+#                                    xlab = "Theoretical Probability", 
+#                                    ylab = "Empirical Probability", 
+#                                    main = "Probability Plot")
+# 
+# #
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                            type = "pessimistic_weights",
+#                            model_wise = TRUE,
+#                            zoom = FALSE,
+#                            xlab = "Theoretical Probability", 
+#                            ylab = "Empirical Probability", 
+#                            main = "Probability Plot")
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                                    type = "pessimistic_weights",
+#                                    model_wise = TRUE,
+#                                    zoom = FALSE,
+#                                    xlab = "Theoretical Probability", 
+#                                    ylab = "Empirical Probability", 
+#                                    main = "Probability Plot")
+# 
+# #
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                            type = "automatic_weights",
+#                            model_wise = TRUE,
+#                            zoom = FALSE,
+#                            xlab = "Theoretical Probability", 
+#                            ylab = "Empirical Probability", 
+#                            main = "Probability Plot")
+# 
+# plot_gev_mixture_model_probability(gev_mixture_model,
+#                            type = "automatic_weights",
+#                            model_wise = TRUE,
+#                            zoom = TRUE,
+#                            xlab = "Theoretical Probability", 
+#                            ylab = "Empirical Probability", 
+#                            main = "Probability Plot")

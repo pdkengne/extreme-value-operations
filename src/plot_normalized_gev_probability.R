@@ -69,7 +69,7 @@ plot_normalized_gev_probability <- function(x,
          cex.main = 1,
          xlab = xlab,
          ylab = ylab,
-         main = main
+         main = paste(main,": zoom =", zoom)
     )
   }
   else{
@@ -87,7 +87,7 @@ plot_normalized_gev_probability <- function(x,
          cex.main = 1,
          xlab = xlab,
          ylab = ylab,
-         main = main
+         main = paste(main,": zoom =", zoom)
     )
   }
   
