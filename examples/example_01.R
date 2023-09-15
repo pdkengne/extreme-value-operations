@@ -5,22 +5,28 @@
 #' output: pdf_document
 #' ---
 
+#'
+# library(xfun)
 
 #'
-source("./src/extract_block_maxima_with_indexes.R")
-source("./src/estimate_single_gev_model.R")
-source("./src/generate_gev_sample.R")
-source("./src/plot_gev_pdf.R")
-source("./src/plot_gev_cdf.R")
-source("./src/plot_gev_probability.R")
-source("./src/plot_gev_quantile.R")
-source("./src/plot_block_maxima.R")
+path <- ".."
+
 
 #'
-x <- rnorm(n = 10000)
+xfun::in_dir(dir = path, expr = source("./src/extract_block_maxima_with_indexes.R"))
+xfun::in_dir(dir = path, expr = source("./src/generate_gev_sample.R"))
+xfun::in_dir(dir = path, expr = source("./src/plot_gev_pdf.R"))
+xfun::in_dir(dir = path, expr = source("./src/plot_gev_cdf.R"))
+xfun::in_dir(dir = path, expr = source("./src/plot_gev_probability.R"))
+xfun::in_dir(dir = path, expr = source("./src/plot_gev_quantile.R"))
+xfun::in_dir(dir = path, expr = source("./src/plot_block_maxima.R"))
+
 
 #'
-block_size <- 100
+x <- rnorm(n = 1000)
+
+#'
+block_size <- 40
 
 #'
 extremes <- extract_block_maxima_with_indexes(x, block_size)

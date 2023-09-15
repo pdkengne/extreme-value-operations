@@ -7,13 +7,20 @@
 
 
 #'
-source("./src/estimate_gev_mixture_model_parameters.R")
-source("./src/plot_gev_mixture_model_pdf.R")
-source("./src/generate_gev_sample.R")
-source("./src/plot_normalized_gev_mixture_model_pdf.R")
-source("./src/calculate_gev_inverse_cdf.R")
-source("./src/calculate_gev_mixture_model_inverse_cdf.R")
-source("./src/calculate_gev_mixture_model_cdf.R")
+# library(xfun)
+
+#'
+path <- ".."
+
+
+#'
+xfun::in_dir(dir = path, expr = source("./src/estimate_gev_mixture_model_parameters.R"))
+xfun::in_dir(dir = path, expr = source("./src/plot_gev_mixture_model_pdf.R"))
+xfun::in_dir(dir = path, expr = source("./src/generate_gev_sample.R"))
+xfun::in_dir(dir = path, expr = source("./src/plot_normalized_gev_mixture_model_pdf.R"))
+xfun::in_dir(dir = path, expr = source("./src/calculate_gev_inverse_cdf.R"))
+xfun::in_dir(dir = path, expr = source("./src/calculate_gev_mixture_model_inverse_cdf.R"))
+xfun::in_dir(dir = path, expr = source("./src/calculate_gev_mixture_model_cdf.R"))
 
 
 #'
