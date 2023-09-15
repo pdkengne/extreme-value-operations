@@ -17,12 +17,12 @@ source("./src/calculate_gev_mixture_model_cdf.R")
 
 
 #'
-n <- 20000
+n <- 10000
 
 nlargest <- 1000
 
-x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
-#x <- rnorm(n = n)
+#x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
+x <- rnorm(n = n)
 
 gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            nsloc = NULL,
