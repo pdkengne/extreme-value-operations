@@ -40,7 +40,7 @@ gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            confidence_level = 0.95,
                                                            log_mv = TRUE,
                                                            log_pw = TRUE,
-                                                           trace = TRUE)
+                                                           trace = FALSE)
 #'
 names(gev_mixture_model)
 
