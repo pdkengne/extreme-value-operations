@@ -105,46 +105,46 @@ plot_normalized_gev_probability <- function(x,
 }
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-
-loc <- 1
-
-scale <- 0.5
-
-shape <- 0.1
-
-x <- generate_gev_sample(n = 100, loc = loc, scale = scale, shape = shape)
-
-plot_normalized_gev_probability(x,
-                                loc = loc,
-                                scale = scale,
-                                shape = shape,
-                                zoom = FALSE,
-                                threshold = NULL,
-                                xlab = "Theoretical Probability",
-                                ylab = "Empirical Probability",
-                                main = "Probability Plot")
-
-threshold <- median(x)
-
-plot_normalized_gev_probability(x,
-                                loc = loc,
-                                scale = scale,
-                                shape = shape,
-                                zoom = FALSE,
-                                threshold = threshold,
-                                xlab = "Theoretical Probability",
-                                ylab = "Empirical Probability",
-                                main = "Probability Plot")
-
-plot_normalized_gev_probability(x,
-                                loc = loc,
-                                scale = scale,
-                                shape = shape,
-                                zoom = TRUE,
-                                threshold = threshold,
-                                xlab = "Theoretical Probability",
-                                ylab = "Empirical Probability",
-                                main = "Probability Plot")
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# loc <- 1
+# 
+# scale <- 0.5
+# 
+# shape <- 0.1
+# 
+# x <- generate_gev_sample(n = 100, loc = loc, scale = scale, shape = shape)
+# 
+# plot_normalized_gev_probability(x,
+#                                 loc = loc,
+#                                 scale = scale,
+#                                 shape = shape,
+#                                 zoom = FALSE,
+#                                 threshold = NULL,
+#                                 xlab = "Theoretical Probability",
+#                                 ylab = "Empirical Probability",
+#                                 main = "Probability Plot")
+# 
+# threshold <- median(x)
+# 
+# plot_normalized_gev_probability(x,
+#                                 loc = loc,
+#                                 scale = scale,
+#                                 shape = shape,
+#                                 zoom = FALSE,
+#                                 threshold = threshold,
+#                                 xlab = "Theoretical Probability",
+#                                 ylab = "Empirical Probability",
+#                                 main = "Probability Plot")
+# 
+# plot_normalized_gev_probability(x,
+#                                 loc = loc,
+#                                 scale = scale,
+#                                 shape = shape,
+#                                 zoom = TRUE,
+#                                 threshold = threshold,
+#                                 xlab = "Theoretical Probability",
+#                                 ylab = "Empirical Probability",
+#                                 main = "Probability Plot")
