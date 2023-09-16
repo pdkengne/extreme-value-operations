@@ -58,7 +58,7 @@ plot_normalized_gev_mixture_model_quantile <- function(x,
   large_quantile_range <- range(c(large_theoretical_quantiles, large_empirical_quantiles))
   
   if (zoom){
-    # plot probability
+    # plot quantile
     plot(x = large_theoretical_quantiles, 
          y = large_empirical_quantiles, 
          type = "p", 
@@ -72,11 +72,11 @@ plot_normalized_gev_mixture_model_quantile <- function(x,
          cex.main = 1,
          xlab = xlab,
          ylab = ylab,
-         main = main
+         main = paste(main,": zoom =", zoom)
     )
   }
   else{
-    # plot probability
+    # plot quantile
     plot(x = theoretical_quantiles, 
          y = empirical_quantiles, 
          type = "p", 
@@ -90,11 +90,12 @@ plot_normalized_gev_mixture_model_quantile <- function(x,
          cex.main = 1,
          xlab = xlab,
          ylab = ylab,
-         main = main
+         main = paste(main,": zoom =", zoom)
     )
   }
   
   abline(a = 0, b = 1, lty = "dotted", lwd = 2)
+  lines(large_theoretical_quantiles, large_empirical_quantiles, col = 2, lwd = 2)
   
   legend(x = "topleft", 
          legend = c("Line y = x"),
