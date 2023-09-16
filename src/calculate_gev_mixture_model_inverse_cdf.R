@@ -1,4 +1,4 @@
-source(("./src/calculate_gev_inverse_cdf.R"))
+source("./src/calculate_gev_inverse_cdf.R")
 source("./src/calculate_gev_mixture_model_cdf.R")
 source("./src/dichotomy.R")
 
