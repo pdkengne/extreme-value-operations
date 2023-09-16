@@ -106,88 +106,46 @@ plot_normalized_gev_quantile <- function(x,
 
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-
-loc <- 1
-
-scale <- 0.5
-
-shape <- 0.1
-
-x <- generate_gev_sample(n = 1000, loc = loc, scale = scale, shape = shape)
-
-plot_normalized_gev_quantile(x,
-                             loc = loc,
-                             scale = scale,
-                             shape = shape,
-                             zoom = FALSE,
-                             threshold = NULL,
-                             xlab = "Theoretical Quantile",
-                             ylab = "Empirical Quantile",
-                             main = "Quantile Plot")
-
-threshold <- median(x)
-
-plot_normalized_gev_quantile(x,
-                             loc = loc,
-                             scale = scale,
-                             shape = shape,
-                             zoom = FALSE,
-                             threshold = threshold,
-                             xlab = "Theoretical Quantile",
-                             ylab = "Empirical Quantile",
-                             main = "Quantile Plot")
-
-plot_normalized_gev_quantile(x,
-                             loc = loc,
-                             scale = scale,
-                             shape = shape,
-                             zoom = TRUE,
-                             threshold = threshold,
-                             xlab = "Theoretical Quantile",
-                             ylab = "Empirical Quantile",
-                             main = "Quantile Plot")
-
-
-# example 2
-
-source("./src/generate_gev_sample.R")
-
-loc <- 1
-
-scale <- 0.5
-
-shape <- -0.2
-
-x <- generate_gev_sample(n = 1000, loc = loc, scale = scale, shape = shape)
-
-plot_normalized_gev_quantile(x,
-                             loc = loc,
-                             scale = scale,
-                             shape = shape,
-                             xlab = "Theoretical Quantile",
-                             ylab = "Empirical Quantile",
-                             main = "Quantile Plot")
-
-
-# example 3
-
-source("./src/generate_gev_sample.R")
-
-loc <- 1
-
-scale <- 0.5
-
-shape <- 0
-
-x <- generate_gev_sample(n = 1000, loc = loc, scale = scale, shape = shape)
-
-plot_normalized_gev_quantile(x,
-                             loc = loc,
-                             scale = scale,
-                             shape = shape,
-                             xlab = "Theoretical Quantile",
-                             ylab = "Empirical Quantile",
-                             main = "Quantile Plot")
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# loc <- 1
+# 
+# scale <- 0.5
+# 
+# shape <- 0.1
+# 
+# x <- generate_gev_sample(n = 1000, loc = loc, scale = scale, shape = shape)
+# 
+# plot_normalized_gev_quantile(x,
+#                              loc = loc,
+#                              scale = scale,
+#                              shape = shape,
+#                              zoom = FALSE,
+#                              threshold = NULL,
+#                              xlab = "Theoretical Quantile",
+#                              ylab = "Empirical Quantile",
+#                              main = "Quantile Plot")
+# 
+# threshold <- median(x)
+# 
+# plot_normalized_gev_quantile(x,
+#                              loc = loc,
+#                              scale = scale,
+#                              shape = shape,
+#                              zoom = FALSE,
+#                              threshold = threshold,
+#                              xlab = "Theoretical Quantile",
+#                              ylab = "Empirical Quantile",
+#                              main = "Quantile Plot")
+# 
+# plot_normalized_gev_quantile(x,
+#                              loc = loc,
+#                              scale = scale,
+#                              shape = shape,
+#                              zoom = TRUE,
+#                              threshold = threshold,
+#                              xlab = "Theoretical Quantile",
+#                              ylab = "Empirical Quantile",
+#                              main = "Quantile Plot")
