@@ -1,76 +1,127 @@
 source("./src/estimate_gev_parameters.R")
+source("./src/calculate_gev_inverse_cdf.R")
+source("./src/calculate_gev_mixture_model_inverse_cdf.R")
+source("./src/estimate_gev_mixture_model_quantile")
 
 calculate_gev_mixture_model_quantile <- function(gev_mixture_model, 
-                                            type = NULL,
-                                            model_wise = FALSE,
-                                            zoom = FALSE,
-                                            xlab = "Theoretical Quantile", 
-                                            ylab = "Empirical Quantile", 
-                                            main = "Quantile Plot"){
+                                                 type = NULL,
+                                                 model_wise = FALSE,
+                                                 alpha = NULL,
+                                                 confidence_level = 0.95){
   # gev_mixture_model: an object associated with a result of the function "estimate_gev_mixture_model_parameters()"
   # type: type of gev mixture model to consider. It is one of the following elements
   # model_wise: a boolean which indicates whether to use weights on models or on parameters
   #       ("identic_weights_pw", "pessimistic_weights_pw", "automatic_weights_pw",
   #        "identic_weights_mw", "pessimistic_weights_mw", "automatic_weights_mw").
-  # zoom: a boolean which indicates whether to focus on large values or not
-  # xlab: label of the x-axis
-  # ylab: label of the y-axis
-  # main: title of the plot
+  # alpha: order of the quantile to estimate
+  # confidence_level: the desired confidence level for the estimated quantile
+  
+  # extract the raw data
+  raw_data <- gev_mixture_model$data
+  
+  # get the size of the raww data
+  n <- length(raw_data)
   
   # extract train data
   uvdata <- gev_mixture_model$data_largest
   
-  # extract block size
+  # extract the vector of block sizes
+  block_sizes <- gev_mixture_model$block_sizes
+  
+  # extract the list of all estimated gev models
+  gev_models_objects <- gev_mixture_model$gev_models_object
+  
+  # get the largest block size
   block_size <- max(gev_mixture_model$block_sizes)
   
   # find the threshold associated with the block_size
   threshold <- find_threshold_associated_with_given_block_size(x = uvdata, block_size = block_size)
   
-  # set the types of weighted gev models
-  weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
+  # extract exceedances for the threshold
+  exceedances <- raw_data[raw_data > threshold]
   
-  # extract the model parameters (pw)
-  gev_model_parameters <- gev_mixture_model$weighted_normalized_gev_parameters_object
+  # calculate the proportion of exceedances for the threshold
+  tau <- mean(raw_data > threshold)
   
-  # extract the model parameters (mw)
-  gev_mixture_model_parameters <- gev_mixture_model$normalized_gev_parameters_object
-  gev_mixture_model_parameters_object <- data.frame(cbind(gev_mixture_model_parameters$loc_star,
-                                                          gev_mixture_model_parameters$scale_star,
-                                                          gev_mixture_model_parameters$shape_star))
-  names(gev_mixture_model_parameters_object) <- c("loc_star", "scale_star", "shape_star")
-  
-  # extract the weight parameters (mw)
-  gev_mixture_model_weights_object <- data.frame(cbind(gev_mixture_model$identic_weights_mw,
-                                                       gev_mixture_model$pessimistic_weights_mw,
-                                                       gev_mixture_model$automatic_weights_mw))
-  names(gev_mixture_model_weights_object) <- weighted_gev_model_types
-  
-  # plot densities
-  if (is.element(el = type, set = weighted_gev_model_types) & !model_wise){
-    plot_normalized_gev_quantile(x = uvdata, 
-                                 loc = gev_model_parameters[type, "loc_star"], 
-                                 scale = gev_model_parameters[type, "scale_star"], 
-                                 shape = gev_model_parameters[type, "shape_star"], 
-                                 zoom = zoom,
-                                 threshold = threshold,
-                                 xlab = xlab, 
-                                 ylab = ylab, 
-                                 main = paste(main, ":", type, "- model_wise =", model_wise))
+  if (alpha >= tau){
+    
+    threshold_alpha <- quantile(x = raw_data, probs = 1 - alpha)
+    
+    k_alpha <- sum(raw_data > threshold_alpha)
+    
+    test <- binom.test(x = k_alpha, n = n, conf.level = confidence_level)
+    
+    probs <- 1 - c(test$conf.int[2], test$estimate, test$conf.int[1])
+    
+    quantiles <- as.numeric(quantile(x = raw_data, probs = probs))
+    
+    names(quantiles) <- c("lower", "estimate", "upper")
+    
+  }
+  else{
+    # set the appropriate quantile order
+    alpha_prime <- alpha/tau
+    
+    # set the types of weighted gev models
+    weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
+    
+    # extract the model parameters (pw)
+    gev_model_parameters <- gev_mixture_model$weighted_normalized_gev_parameters_object
+    
+    # extract the model parameters (mw)
+    gev_mixture_model_parameters <- gev_mixture_model$normalized_gev_parameters_object
+    gev_mixture_model_parameters_object <- data.frame(cbind(gev_mixture_model_parameters$loc_star,
+                                                            gev_mixture_model_parameters$scale_star,
+                                                            gev_mixture_model_parameters$shape_star))
+    names(gev_mixture_model_parameters_object) <- c("loc_star", "scale_star", "shape_star")
+    
+    # extract the weight parameters (mw)
+    gev_mixture_model_weights_object <- data.frame(cbind(gev_mixture_model$identic_weights_mw,
+                                                         gev_mixture_model$pessimistic_weights_mw,
+                                                         gev_mixture_model$automatic_weights_mw))
+    names(gev_mixture_model_weights_object) <- weighted_gev_model_types
+
+    # calculate quantile
+    if (is.element(el = type, set = weighted_gev_model_types) & !model_wise){
+      quantiles <- rep(NA, 3)
+      names(quantiles) <- c("lower", "estimate", "upper")
+      quantiles[2] <-  calculate_gev_inverse_cdf(p = 1 - alpha,
+                                                 loc = gev_model_parameters[type, "loc_star"],
+                                                 scale = gev_model_parameters[type, "scale_star"], 
+                                                 shape = gev_model_parameters[type, "shape_star"])
+    }
+    
+    if (is.element(el = type, set = weighted_gev_model_types) & model_wise){
+      quantile <- calculate_gev_mixture_model_inverse_cdf(p = 1 - alpha, 
+                                                          locations = gev_mixture_model_parameters_object$loc_star, 
+                                                          scales = gev_mixture_model_parameters_object$scale_star, 
+                                                          shapes = gev_mixture_model_parameters_object$shape_star, 
+                                                          weights = gev_mixture_model_weights_object[, type],
+                                                          iterations = 100)
+      
+      # extract the vector of weights
+      weights = gev_mixture_model_weights_object[, type]
+      
+      # get the positions where weights are different from zero
+      position_weights_nonzero <- which(weights > 0)
+      
+      # extract all parameters for which weights are different from zero
+      locations <- locations[position_weights_nonzero]
+      scales <- scales[position_weights_nonzero]
+      shapes <- shapes[position_weights_nonzero]
+      weights <- weights[position_weights_nonzero]
+      block_sizes <- block_sizes[position_weights_nonzero]
+      gev_models_objects <- gev_models_objects[position_weights_nonzero]
+      
+      
+    }
+    
+    
+    
+    
   }
   
-  if (is.element(el = type, set = weighted_gev_model_types) & model_wise){
-    plot_normalized_gev_mixture_model_quantile(x = uvdata, 
-                                               locations = gev_mixture_model_parameters_object$loc_star, 
-                                               scales = gev_mixture_model_parameters_object$scale_star, 
-                                               shapes = gev_mixture_model_parameters_object$shape_star, 
-                                               weights = gev_mixture_model_weights_object[, type],
-                                               zoom = zoom,
-                                               threshold = threshold,
-                                               xlab = xlab, 
-                                               ylab = ylab, 
-                                               main = paste(main, ":", type, "- model_wise =", model_wise))
-  }
-  
+  quantiles
 }
 
 
