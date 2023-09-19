@@ -102,18 +102,25 @@ calculate_gev_mixture_model_quantile <- function(gev_mixture_model,
       block_sizes <- block_sizes[position_weights_nonzero]
       gev_models_objects <- gev_models_objects[position_weights_nonzero]
       
-      quantiles_object <- sapply(1:length(block_sizes), function(j){
-        block_size <- block_sizes[j]
-        
-        gev_model <- gev_models_objects[[j]]
-        
-        maxima <- gev_model$data
-        
-        model <- estimate_gev_parameters(x = maxima, prob = alpha_prime*block_size, std.err = TRUE)
-        
-        ci <- confint(model, level = confidence_level)
-        
-        ci["quantile", ]})
+      if (max(block_sizes)*alpha_prime < 1){
+        quantiles_object <- sapply(1:length(block_sizes), function(j){
+          block_size <- block_sizes[j]
+          
+          gev_model <- gev_models_objects[[j]]
+          
+          maxima <- gev_model$data
+          
+          model <- estimate_gev_parameters(x = maxima, prob = alpha_prime*block_size, std.err = TRUE)
+          
+          ci <- confint(model, level = confidence_level)
+          
+          ci["quantile", ]})
+      }
+      else{
+        print("Please, enter a smaller quantile order")
+      }
+      
+      
       
       quantiles[c(1, 3)] <- range(quantiles_object)
     }
@@ -157,7 +164,7 @@ gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
 weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
 
 
-alpha <- 0.0002
+alpha <- 0.00002
 
 
 results <- calculate_gev_mixture_model_quantile(gev_mixture_model, 
