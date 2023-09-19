@@ -1,7 +1,6 @@
 source("./src/estimate_gev_parameters.R")
 source("./src/calculate_gev_inverse_cdf.R")
 source("./src/calculate_gev_mixture_model_inverse_cdf.R")
-source("./src/estimate_gev_mixture_model_quantile")
 
 calculate_gev_mixture_model_quantile <- function(gev_mixture_model, 
                                                  type = NULL,
@@ -19,31 +18,17 @@ calculate_gev_mixture_model_quantile <- function(gev_mixture_model,
   # extract the raw data
   raw_data <- gev_mixture_model$data
   
-  # get the size of the raww data
-  n <- length(raw_data)
+  # extract the largest train data
+  data_largest <- gev_mixture_model$data_largest
   
-  # extract train data
-  uvdata <- gev_mixture_model$data_largest
+  # calculate the proportion of largest data
+  tau <- length(data_largest)/length(raw_data)
+          
+  # set the appropriate quantile order
+  alpha_prime <- alpha/tau
   
-  # extract the vector of block sizes
-  block_sizes <- gev_mixture_model$block_sizes
-  
-  # extract the list of all estimated gev models
-  gev_models_objects <- gev_mixture_model$gev_models_object
-  
-  # get the largest block size
-  block_size <- max(gev_mixture_model$block_sizes)
-  
-  # find the threshold associated with the block_size
-  threshold <- find_threshold_associated_with_given_block_size(x = uvdata, block_size = block_size)
-  
-  # extract exceedances for the threshold
-  exceedances <- raw_data[raw_data > threshold]
-  
-  # calculate the proportion of exceedances for the threshold
-  tau <- mean(raw_data > threshold)
-  
-  if (alpha >= tau){
+  # calculate the required quantile
+  if (alpha_prime >= 1){
     
     threshold_alpha <- quantile(x = raw_data, probs = 1 - alpha)
     
@@ -57,10 +42,10 @@ calculate_gev_mixture_model_quantile <- function(gev_mixture_model,
     
     names(quantiles) <- c("lower", "estimate", "upper")
     
+    quantiles <- data.frame(t(quantiles))
+    
   }
   else{
-    # set the appropriate quantile order
-    alpha_prime <- alpha/tau
     
     # set the types of weighted gev models
     weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
@@ -85,19 +70,27 @@ calculate_gev_mixture_model_quantile <- function(gev_mixture_model,
     if (is.element(el = type, set = weighted_gev_model_types) & !model_wise){
       quantiles <- rep(NA, 3)
       names(quantiles) <- c("lower", "estimate", "upper")
-      quantiles[2] <-  calculate_gev_inverse_cdf(p = 1 - alpha,
+      quantiles[2] <-  calculate_gev_inverse_cdf(p = 1 - alpha_prime,
                                                  loc = gev_model_parameters[type, "loc_star"],
                                                  scale = gev_model_parameters[type, "scale_star"], 
                                                  shape = gev_model_parameters[type, "shape_star"])
     }
     
     if (is.element(el = type, set = weighted_gev_model_types) & model_wise){
-      quantile <- calculate_gev_mixture_model_inverse_cdf(p = 1 - alpha, 
-                                                          locations = gev_mixture_model_parameters_object$loc_star, 
-                                                          scales = gev_mixture_model_parameters_object$scale_star, 
-                                                          shapes = gev_mixture_model_parameters_object$shape_star, 
-                                                          weights = gev_mixture_model_weights_object[, type],
-                                                          iterations = 100)
+      quantiles <- rep(NA, 3)
+      names(quantiles) <- c("lower", "estimate", "upper")
+      quantiles[2] <- calculate_gev_mixture_model_inverse_cdf(p = 1 - alpha_prime, 
+                                                              locations = gev_mixture_model_parameters_object$loc_star, 
+                                                              scales = gev_mixture_model_parameters_object$scale_star, 
+                                                              shapes = gev_mixture_model_parameters_object$shape_star, 
+                                                              weights = gev_mixture_model_weights_object[, type],
+                                                              iterations = 100)
+      
+      # extract the vector of block sizes
+      block_sizes <- gev_mixture_model$block_sizes
+      
+      # extract the list of all estimated gev models
+      gev_models_objects <- gev_mixture_model$gev_models_object
       
       # extract the vector of weights
       weights = gev_mixture_model_weights_object[, type]
@@ -106,18 +99,24 @@ calculate_gev_mixture_model_quantile <- function(gev_mixture_model,
       position_weights_nonzero <- which(weights > 0)
       
       # extract all parameters for which weights are different from zero
-      locations <- locations[position_weights_nonzero]
-      scales <- scales[position_weights_nonzero]
-      shapes <- shapes[position_weights_nonzero]
-      weights <- weights[position_weights_nonzero]
       block_sizes <- block_sizes[position_weights_nonzero]
       gev_models_objects <- gev_models_objects[position_weights_nonzero]
       
+      quantiles_object <- sapply(1:length(block_sizes), function(j){
+        block_size <- block_sizes[j]
+        
+        gev_model <- gev_models_objects[[j]]
+        
+        maxima <- gev_model$data
+        
+        model <- estimate_gev_parameters(x = maxima, prob = alpha_prime*block_size, std.err = TRUE)
+        
+        ci <- confint(model, level = confidence_level)
+        
+        ci["quantile", ]})
       
+      quantiles[c(1, 3)] <- range(quantiles_object)
     }
-    
-    
-    
     
   }
   
@@ -129,13 +128,21 @@ calculate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # example 1
 
 source("./src/generate_gev_sample.R")
+source("./src/calculate_gev_inverse_cdf.R")
 source("./src/estimate_gev_mixture_model_parameters.R")
 
 n <- 10000
 nlargest <- 1000
 
+tau <- nlargest/n
+
+loc <- 1
+scale <- 0.5
+shape <- 0.1
+
 # x <- rnorm(n = n)
-x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
+x <- generate_gev_sample(n = n, loc = loc, scale = scale, shape = shape)
+x <- rnorm(n = n)
 
 gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            nsloc = NULL,
@@ -148,4 +155,24 @@ gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
 
 # set the types of weighted gev models
 weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
+
+
+alpha <- 0.0002
+
+
+results <- calculate_gev_mixture_model_quantile(gev_mixture_model, 
+                                                type = weighted_gev_model_types[1],
+                                                model_wise = TRUE,
+                                                alpha = alpha,
+                                                confidence_level = 0.95)
+
+results
+
+quantile(x = x, probs = 1 - alpha)
+
+calculate_gev_inverse_cdf(p = 1 - alpha, loc = loc, scale = scale, shape = shape)
+
+qnorm(p = 1 - alpha)
+
+
 

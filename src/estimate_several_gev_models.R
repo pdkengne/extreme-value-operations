@@ -11,7 +11,7 @@ estimate_several_gev_models <- function(x, block_sizes, nsloc = NULL){
   # estimate the gev model associated with each block size
   models <- lapply(block_sizes, 
                    function(block_size)
-                     estimate_single_gev_model(x, block_size, nsloc = nsloc)) 
+                     estimate_single_gev_model(x, block_size = block_size, nsloc = nsloc)) 
   
   # extract the extremal indexes
   extremal_indexes <- sapply(models, function(model) model$extremal_index)

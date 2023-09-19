@@ -30,7 +30,7 @@ estimate_single_gev_model <- function(x, block_size = 1, nsloc = NULL, prob = NU
   extremal_index <- estimate_extremal_index(x, threshold, run = 0)
   
   # estimate gev model
-  gev_model <- estimate_gev_parameters(x = block_maxima, nsloc, prob, std.err)
+  gev_model <- estimate_gev_parameters(x = block_maxima, nsloc = nsloc, prob = prob, std.err = std.err)
   
   # calculate the normalized gev parameters
   gev_parameters <- gev_model$estimate
