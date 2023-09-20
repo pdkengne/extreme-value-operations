@@ -1,12 +1,15 @@
 library(readr)
 
 Gnss_imar <- read_csv("~/Documents/Doc-perso-2023/Job-Valeo/transfer_5854392_files_fdd9c292/20230911_133812_Record_data_INRIA/Gnss_imar.csv")
+Gnss_imar <- read_csv("~/Documents/Doc-perso-2023/Job-Valeo/20230911_133812_Record_data_INRIA/Gnss_imar.csv")
 #View(Gnss_imar)
 
 Gnss_map_matching <- read_csv("~/Documents/Doc-perso-2023/Job-Valeo/transfer_5854392_files_fdd9c292/20230911_133812_Record_data_INRIA/Gnss_map_matching.csv")
+Gnss_map_matching <- read_csv("~/Documents/Doc-perso-2023/Job-Valeo/20230911_133812_Record_data_INRIA/Gnss_map_matching.csv")
 #View(Gnss_map_matching)
 
 Gnss_standard <- read_csv("~/Documents/Doc-perso-2023/Job-Valeo/transfer_5854392_files_fdd9c292/20230911_133812_Record_data_INRIA/Gnss_standard.csv")
+Gnss_standard <- read_csv("~/Documents/Doc-perso-2023/Job-Valeo/20230911_133812_Record_data_INRIA/Gnss_standard.csv")
 #View(Gnss_standard)
 
 str(Gnss_imar)
@@ -46,7 +49,7 @@ x <- error_latitude_Gnss_imar_Gnss_standard[error_latitude_Gnss_imar_Gnss_standa
 n <- length(x)
 n
 
-nlargest <- n
+nlargest <- 1000
 
 
 blocks <- get_candidate_block_sizes(x, m = 10)

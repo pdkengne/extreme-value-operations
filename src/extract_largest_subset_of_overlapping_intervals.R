@@ -1,6 +1,6 @@
 source("./src/check_whether_an_element_belongs_to_several_intervals.R")
 
-extract_largest_subset_of_overlapping_intervals<- function(table_of_intervals){
+extract_largest_subset_of_overlapping_intervals <- function(table_of_intervals){
   # function to identify the largest subset of intervals which overlap.
   # Intervals are specified as a table (table_of_intervals) having two columns.
   # In this table, the first and the second components of each row are respectively the lower and upper bounds of an interval.
@@ -20,13 +20,18 @@ extract_largest_subset_of_overlapping_intervals<- function(table_of_intervals){
                        check_whether_an_element_belongs_to_several_intervals(table_of_intervals = table_of_intervals, element = value))
   
   # extract the selector of interval belonging to the largest subset of overlapping intervals
-  size_of_overlapping_intervals <- apply(overlaps, 2 , sum, na.rm = TRUE)
+  size_of_overlapping_intervals <- apply(data.frame(overlaps), 2 , sum, na.rm = TRUE)
+  
   positions_of_values_in_largest_common_interval <-  which(size_of_overlapping_intervals == max(size_of_overlapping_intervals)) 
   
   position_of_smallest_most_common_value <- min(positions_of_values_in_largest_common_interval)
   position_of_greatest_most_common_value <- max(positions_of_values_in_largest_common_interval)
   
-  interval_selector <- overlaps[, position_of_smallest_most_common_value]
+  if (class(overlaps)[1] == c("matrix", "array")[1]){
+    interval_selector <- overlaps[, position_of_smallest_most_common_value]
+  }else{
+    interval_selector <- overlaps[position_of_smallest_most_common_value]
+  }
   
   # extract the largest subset of overlapping intervals
   largest_subset_of_overlapping_intervals <- table_of_intervals[interval_selector, ]
