@@ -44,12 +44,12 @@ source("./src/plot_gev_mixture_model_pdf.R")
 source("./src/calculate_gev_mixture_model_quantile.R")
 source("./src/plot_several_standardized_block_maxima_mean.R")
 
-x <- error_latitude_Gnss_imar_Gnss_standard[error_latitude_Gnss_imar_Gnss_standard > 0.25*max(error_latitude_Gnss_imar_Gnss_standard)]
+x <- error_latitude_Gnss_imar_Gnss_standard[error_latitude_Gnss_imar_Gnss_standard > 0.51*max(error_latitude_Gnss_imar_Gnss_standard)]
 
 n <- length(x)
 n
 
-nlargest <- 1000
+nlargest <- n
 
 
 blocks <- get_candidate_block_sizes(x, m = 10)
@@ -57,7 +57,7 @@ blocks <- get_candidate_block_sizes(x, m = 10)
 model <- estimate_single_gev_model(x, block_size = 507, nsloc = NULL)
 
 model$normalized_gev_parameters
-model$
+
 
 
 plot_several_standardized_block_maxima_mean(x, blocks, confidence_level = 0.95, equivalent = FALSE)
@@ -91,7 +91,7 @@ gev_mixture_model$automatic_weights_pw_shape
 
 
 
-alpha <- 0.01
+alpha <- 0.0001
 
 results <- calculate_gev_mixture_model_quantile(gev_mixture_model,
                                                 alpha = alpha,
