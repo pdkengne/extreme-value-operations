@@ -78,7 +78,15 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models, trace = 
                         upper = upper,
                         project = "projectLinear",
                         projectArgs=list(A = matrix(1, nrow = 1, ncol = p), b = 1, meq = 1),
-                        control = list(maximize = FALSE, trace = trace, checkGrad = FALSE, ftol=1.e-20, gtol = 1e-20, eps = 1e-20))
+                        control = list(maximize = FALSE, 
+                                       trace = trace, 
+                                       # ftol = 1.e-10, 
+                                       # gtol = 1e-5, 
+                                       # eps = 1e-7,
+                                       # maxfeval = 10000,
+                                       # maxit = 1500,
+                                       # triter = 10,
+                                       checkGrad = FALSE))
 
   automatic_weights <- answer$par
   names(automatic_weights) <- block_sizes

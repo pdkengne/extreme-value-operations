@@ -73,7 +73,15 @@ estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models, trace = 
                         upper = upper,
                         project = "projectLinear",
                         projectArgs = list(A = matrix_A, b = b, meq = meq),
-                        control = list(maximize = FALSE, trace = trace, checkGrad = FALSE, ftol=1.e-20, gtol = 1e-20, eps = 1e-20))
+                        control = list(maximize = FALSE, 
+                                       trace = trace, 
+                                       # ftol = 1.e-10, 
+                                       # gtol = 1e-5, 
+                                       # eps = 1e-7,
+                                       # maxfeval = 10000,
+                                       # maxit = 1500,
+                                       # triter = 10,
+                                       checkGrad = FALSE))
   
   # extract the weights associated with each of the gev model parameters
   automatic_weights_shape <- answer$par[1:p]
