@@ -2,13 +2,14 @@
 #library(EnvStats)
 
 
-find_minimum_block_size <- function(x){
+find_minimum_block_size <- function(x, threshold){
   # x: vector of observations
+  # threshold: lower bound of block maxima
   
   block_size <- 2
   y <- zoo::rollmax(x, k = block_size)
   
-  while (min(y) <= median(x, na.rm = TRUE)){
+  while (min(y, na.rm = TRUE) <= threshold){
     block_size <- block_size + 1
     y <- zoo::rollmax(x, k = block_size)
   }
@@ -21,7 +22,10 @@ find_minimum_block_size <- function(x){
 # 
 # x <- rexp(n = 1000)
 # 
-# result <- find_minimum_block_size(x)
+# threshold <- median(x)
+# threshold
+# 
+# result <- find_minimum_block_size(x, threshold = threshold)
 # 
 # result
 # 
@@ -30,7 +34,10 @@ find_minimum_block_size <- function(x){
 # 
 # x <- rnorm(n = 1000)
 # 
-# result <- find_minimum_block_size(x)
+# threshold <- median(x)
+# threshold
+# 
+# result <- find_minimum_block_size(x, threshold = threshold)
 # 
 # result
 # 
@@ -39,7 +46,10 @@ find_minimum_block_size <- function(x){
 # 
 # x <- c(rnorm(n = 1000), rep(0, 100))
 # 
-# result <- find_minimum_block_size(x)
+# threshold <- median(x)
+# threshold
+# 
+# result <- find_minimum_block_size(x, threshold = threshold)
 # 
 # result
 # 
@@ -48,6 +58,9 @@ find_minimum_block_size <- function(x){
 # 
 # x <- EnvStats::rzmnorm(n = 1000, mean = 0, sd = 1, p.zero = 0.5)
 # 
-# result <- find_minimum_block_size(x)
+# threshold <- median(x)
+# threshold
+# 
+# result <- find_minimum_block_size(x, threshold = threshold)
 # 
 # result

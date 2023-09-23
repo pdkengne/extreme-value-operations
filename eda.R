@@ -93,6 +93,7 @@ gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            minimum_nblocks = 50,
                                                            nlargest = nlargest,
                                                            confidence_level = 0.95,
+                                                           maximum_iterations = 1500,
                                                            trace = TRUE)
 
 gev_mixture_model$normalized_gev_parameters_object
