@@ -16,6 +16,7 @@ estimate_gev_mixture_model_parameters <- function(x,
                                                   minimum_nblocks = 50,
                                                   nlargest = Inf,
                                                   confidence_level = 0.95,
+                                                  maximum_iterations = 1500,
                                                   log_mv = TRUE,
                                                   log_pw = TRUE,
                                                   trace = TRUE){
@@ -27,6 +28,7 @@ estimate_gev_mixture_model_parameters <- function(x,
   # log_mv: a boolean which indicates whether the model wise loss function is at logarithmic scale or not
   # log_pw: a boolean which indicates whether the parameter wise loss function is at logarithmic scale or not
   # nlargest: number of largest values to focus on. Note that the whole vector x is used unless, nlargest != Inf.
+  # maximum_iterations: maximum number of iterations
   # confidence_level: desired confidence level when extraction equivalent block sizes. 
   #                   Note that this value is ignored if block_sizes != NULL.
   # minimum_nblocks: desired minimum number of blocks. Note that this number is used to infer the largest block size.
@@ -76,10 +78,10 @@ estimate_gev_mixture_model_parameters <- function(x,
   
   # estimate model wise automatic weights 
   if (log_mv){
-    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models, trace = trace)
+    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models, maximum_iterations = maximum_iterations, trace = trace)
   }
   else{
-    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = trace)
+    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, maximum_iterations = maximum_iterations, trace = trace)
   }
   automatic_weights_mw <- automatic_weights_mw_object$automatic_weights
   automatic_weights_mw_statistics <- list(function_value = automatic_weights_mw_object$function_value,
@@ -91,10 +93,10 @@ estimate_gev_mixture_model_parameters <- function(x,
   
   # estimate parameter wise automatic weights
   if (log_pw){
-    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models, trace = trace)
+    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models, maximum_iterations = maximum_iterations, trace = trace)
   }
   else{
-    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, trace = trace)
+    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, maximum_iterations = maximum_iterations, trace = trace)
   }
   automatic_weights_pw_statistics <- list(function_value = automatic_weights_pw_object$function_value,
                                           gradient_value = automatic_weights_pw_object$gradient_value,

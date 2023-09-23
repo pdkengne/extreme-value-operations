@@ -19,19 +19,19 @@ str(Gnss_map_matching)
 str(Gnss_standard)
 
 
-latitude_Gnss_imar <- Gnss_imar$latitude
+altitude_Gnss_imar <- Gnss_imar$altitude
 
-latitude_Gnss_standard <- Gnss_standard$latitude
+altitude_Gnss_standard <- Gnss_standard$altitude
 
-error_latitude_Gnss_imar_Gnss_standard <- latitude_Gnss_imar - latitude_Gnss_standard
+error_altitude_Gnss_imar_Gnss_standard <- altitude_Gnss_imar - altitude_Gnss_standard
 
-length(error_latitude_Gnss_imar_Gnss_standard)
+length(error_altitude_Gnss_imar_Gnss_standard)
 
-boxplot(error_latitude_Gnss_imar_Gnss_standard)
+boxplot(error_altitude_Gnss_imar_Gnss_standard)
 
-hist(error_latitude_Gnss_imar_Gnss_standard)
+hist(error_altitude_Gnss_imar_Gnss_standard)
 
-
+range(error_altitude_Gnss_imar_Gnss_standard)
 
 
 
@@ -39,31 +39,45 @@ hist(error_latitude_Gnss_imar_Gnss_standard)
 
 source("./src/generate_gev_sample.R")
 source("./src/calculate_gev_inverse_cdf.R")
+
 source("./src/estimate_gev_mixture_model_parameters.R")
 source("./src/plot_gev_mixture_model_pdf.R")
 source("./src/calculate_gev_mixture_model_quantile.R")
 source("./src/plot_several_standardized_block_maxima_mean.R")
 
-x <- rnorm(n = 10000)
 
-x <- error_latitude_Gnss_imar_Gnss_standard[error_latitude_Gnss_imar_Gnss_standard > 0.51*max(error_latitude_Gnss_imar_Gnss_standard)]
+x <- error_altitude_Gnss_imar_Gnss_standard[error_altitude_Gnss_imar_Gnss_standard > 0.5*max(error_altitude_Gnss_imar_Gnss_standard)]
+
+hist(x)
 
 n <- length(x)
 n
 
 nlargest <- 1000
 
+y <- extract_nlargest_sample(x, n = nlargest)
+
+hist(y)
+
 
 blocks <- get_candidate_block_sizes(x, m = 50)
+blocks
 
-model <- estimate_single_gev_model(x, block_size = 200, nsloc = NULL)
+model <- estimate_single_gev_model(x, block_size = 300, nsloc = NULL)
 
 model$normalized_gev_parameters
 
+min_block <- find_minimum_block_size(y)
+min_block
+
+maxima <- extract_block_maxima(y, block_size = 100)
+maxima
 
 
-plot_several_standardized_block_maxima_mean(x, blocks, confidence_level = 0.95, equivalent = FALSE)
-plot_several_standardized_block_maxima_mean(x, blocks, confidence_level = 0.95, equivalent = TRUE)
+blocks <- 1:20
+
+plot_several_standardized_block_maxima_mean(x = y, blocks, confidence_level = 0.95, equivalent = FALSE)
+plot_several_standardized_block_maxima_mean(x = y, blocks, confidence_level = 0.95, equivalent = TRUE)
 
 models <- estimate_several_gev_models(x, block_sizes = blocks, nsloc = NULL)
 
@@ -75,7 +89,7 @@ models$normalized_gev_parameters_object
 gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            nsloc = NULL,
                                                            std.err = FALSE,
-                                                           block_sizes = NULL,
+                                                           block_sizes = 1:20,
                                                            minimum_nblocks = 50,
                                                            nlargest = nlargest,
                                                            confidence_level = 0.95,
@@ -93,7 +107,7 @@ gev_mixture_model$automatic_weights_pw_shape
 
 
 
-alpha <- 0.0001
+alpha <- 0.01
 
 results <- calculate_gev_mixture_model_quantile(gev_mixture_model,
                                                 alpha = alpha,

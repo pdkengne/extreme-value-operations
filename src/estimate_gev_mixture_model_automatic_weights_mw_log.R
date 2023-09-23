@@ -4,8 +4,9 @@ source("./src/calculate_gev_cdf.R")
 source("./src/calculate_gev_mixture_model_cdf.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
 
-estimate_gev_mixture_model_automatic_weights_mw_log <- function(gev_models, trace = TRUE){
+estimate_gev_mixture_model_automatic_weights_mw_log <- function(gev_models, maximum_iterations = 1500, trace = TRUE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
+  # maximum_iterations: maximum number of iterations
   # trace: boolean value which indicates whether to print information on the progress of optimization
   
   # create an empty output object
@@ -80,11 +81,11 @@ estimate_gev_mixture_model_automatic_weights_mw_log <- function(gev_models, trac
                         projectArgs=list(A = matrix(1, nrow = 1, ncol = p), b = 1, meq = 1),
                         control = list(maximize = FALSE, 
                                        trace = trace, 
+                                       maxit = maximum_iterations,
                                        # ftol = 1.e-10, 
                                        # gtol = 1e-5, 
                                        # eps = 1e-7,
                                        # maxfeval = 10000,
-                                       # maxit = 1500,
                                        # triter = 10,
                                        checkGrad = FALSE))
 
