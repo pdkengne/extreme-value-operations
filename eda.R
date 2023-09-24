@@ -39,7 +39,7 @@ range(error_altitude_Gnss_imar_Gnss_standard)
 
 source("./src/generate_gev_sample.R")
 source("./src/calculate_gev_inverse_cdf.R")
-
+source("./src/find_minimum_block_size.R")
 source("./src/estimate_gev_mixture_model_parameters.R")
 source("./src/plot_gev_mixture_model_pdf.R")
 source("./src/calculate_gev_mixture_model_quantile.R")
@@ -67,7 +67,7 @@ model <- estimate_single_gev_model(x, block_size = 300, nsloc = NULL)
 
 model$normalized_gev_parameters
 
-min_block <- find_minimum_block_size(y)
+min_block <- find_minimum_block_size(y, threshold = threshold)
 min_block
 
 maxima <- extract_block_maxima(y, block_size = 100)

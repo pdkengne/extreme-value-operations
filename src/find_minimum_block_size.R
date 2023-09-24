@@ -2,9 +2,13 @@
 #library(EnvStats)
 
 
-find_minimum_block_size <- function(x, threshold){
+find_minimum_block_size <- function(x, threshold = NULL){
   # x: vector of observations
   # threshold: lower bound of block maxima
+  
+  if (is.null(threshold)){
+    threshold = median(x)
+  }
   
   block_size <- 2
   y <- zoo::rollmax(x, k = block_size)

@@ -14,6 +14,7 @@ estimate_gev_mixture_model_parameters <- function(x,
                                                   std.err = FALSE, 
                                                   block_sizes = NULL,
                                                   minimum_nblocks = 50,
+                                                  threshold = NULL,
                                                   nlargest = Inf,
                                                   confidence_level = 0.95,
                                                   maximum_iterations = 1500,
@@ -29,6 +30,7 @@ estimate_gev_mixture_model_parameters <- function(x,
   # log_pw: a boolean which indicates whether the parameter wise loss function is at logarithmic scale or not
   # nlargest: number of largest values to focus on. Note that the whole vector x is used unless, nlargest != Inf.
   # maximum_iterations: maximum number of iterations
+  # threshold: lower bound of block maxima
   # confidence_level: desired confidence level when extraction equivalent block sizes. 
   #                   Note that this value is ignored if block_sizes != NULL.
   # minimum_nblocks: desired minimum number of blocks. Note that this number is used to infer the largest block size.
@@ -42,7 +44,7 @@ estimate_gev_mixture_model_parameters <- function(x,
   
   # get candidate block sizes
   if (is.null(block_sizes)){
-    block_sizes <- get_candidate_block_sizes(x = data_largest, m = minimum_nblocks)
+    block_sizes <- get_candidate_block_sizes(x = data_largest, threshold = threshold, m = minimum_nblocks)
   }
   
   # get equivalent block sizes
