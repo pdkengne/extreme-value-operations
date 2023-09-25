@@ -10,7 +10,7 @@ calculate_gev_mixture_model_quantile <- function(gev_mixture_model, alpha = NULL
   # create an empty output object
   output <- list()
   
-  # initialized the output content
+  # initialize the output content
   out <- data.frame("lower" = NA, "estimate" = NA, "upper" = NA)
   
   estimated_empirical_quantile <- out
@@ -50,7 +50,7 @@ calculate_gev_mixture_model_quantile <- function(gev_mixture_model, alpha = NULL
     
     k_alpha <- sum(raw_data > threshold_alpha)
     
-    test <- binom.test(x = k_alpha, n = n, conf.level = confidence_level)
+    test <- binom.test(x = k_alpha, n = length(raw_data), conf.level = confidence_level)
     
     probs <- 1 - c(test$conf.int[2], test$estimate, test$conf.int[1])
     
