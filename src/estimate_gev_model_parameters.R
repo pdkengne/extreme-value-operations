@@ -18,7 +18,7 @@ estimate_gev_model_parameters <- function(x,
   #                                                    must be supplied if any of these arguments are anything other than ~ 1.
   # use.phi: boolean which indicates whether to use the log of the scale parameter or not
   # type: type of model to use
-  # method: estimation mmethod to use
+  # method: estimation method to use
   
   gev_model <- extRemes::fevd(x = x, 
                               data = data, 
