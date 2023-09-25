@@ -1,12 +1,14 @@
 source("./src/estimate_gev_parameters.R")
+source("./src/estimate_gev_model_parameters.R")
 source("./src/shift_data_elements_circularly.R")
 source("./src/calculate_gev_inverse_cdf.R")
+source("./src/estimate_gev_model_quantile.R")
 source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 
 estimate_gev_mixture_model_quantile <- function(gev_mixture_model, 
                                                 alpha = NULL, 
                                                 confidence_level = 0.95, 
-                                                std.err = TRUE,
+                                                do.ci = TRUE,
                                                 estimator_type = c("automatic_weights_mw", 
                                                                    "pessimistic_weights_mw", 
                                                                    "identic_weights_mw", 
@@ -19,7 +21,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
   # gev_mixture_model: an object associated with a result of the function "estimate_gev_mixture_model_parameters()"
   # alpha: order of the quantile to estimate
   # confidence_level: the desired confidence level for the estimated quantile
-  # std.err: a boolean which indicates whether the standard errors are returned or not
+  # do.ci: boolean which indicates whether to return confidence interval or not
   # estimator_type: quantile estimator to use from the set 
   # c("automatic_weights_mw", "pessimistic_weights_mw", "identic_weights_mw", "automatic_weights_pw","pessimistic_weights_pw", 
   #   "identic_weights_pw", "empirical", "confidence_interval_mw", "confidence_interval_pw")
@@ -155,15 +157,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
         
         maxima <- gev_model$data
         
-        model <- estimate_gev_parameters(x = maxima, prob = alpha_prime*block_size, std.err = std.err)
-        
-        ci <- confint(model, level = confidence_level)
-        
-        out <- data.frame("lower" = NA, "estimate" = NA, "upper" = NA)
-        
-        out[2] <- model$estimate["quantile"]
-        
-        out[c(1, 3)] <- ci["quantile", ]
+        out <- estimate_gev_model_quantile(x = maxima, alpha = alpha_prime*block_size)
         
         out})
       
@@ -187,15 +181,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
         
         maxima <- gev_model$data
         
-        model <- estimate_gev_parameters(x = maxima, prob = alpha_prime*block_size, std.err = std.err)
-        
-        ci <- confint(model, level = confidence_level)
-        
-        out <- data.frame("lower" = NA, "estimate" = NA, "upper" = NA)
-        
-        out[2] <- model$estimate["quantile"]
-        
-        out[c(1, 3)] <- ci["quantile", ]
+        out <- estimate_gev_model_quantile(x = maxima, alpha = alpha_prime*block_size)
         
         out})
       
@@ -212,7 +198,6 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
   }
   
 }
-
 
 
 # # example 1
@@ -243,13 +228,15 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # 
 # gev_mixture_model$automatic_weights_pw_statistics
 # 
+# gev_mixture_model$automatic_weights_mw
 # 
-# estimator_types <- c("automatic_weights_mw", 
-#                     "pessimistic_weights_mw", 
-#                     "identic_weights_mw", 
+# 
+# estimator_types <- c("automatic_weights_mw",
+#                     "pessimistic_weights_mw",
+#                     "identic_weights_mw",
 #                     "automatic_weights_pw",
-#                     "pessimistic_weights_pw", 
-#                     "identic_weights_pw", 
+#                     "pessimistic_weights_pw",
+#                     "identic_weights_pw",
 #                     "empirical",
 #                     "confidence_interval_mw",
 #                     "confidence_interval_pw")
@@ -260,7 +247,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # results_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
 #                                                alpha = alpha,
 #                                                confidence_level = 0.95,
-#                                                std.err = TRUE,
+#                                                do.ci = TRUE,
 #                                                estimator_type = estimator_types[1])
 # 
 # results_mw
@@ -268,7 +255,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # results_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
 #                                                   alpha = alpha,
 #                                                   confidence_level = 0.95,
-#                                                   std.err = TRUE,
+#                                                   do.ci = TRUE,
 #                                                   estimator_type = estimator_types[4])
 # 
 # results_pw
@@ -278,23 +265,37 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # true_rl <- qnorm(p = 1 - alpha)
 # true_rl
 # 
-# est_rl_out <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-#                                                          alpha = alpha,
-#                                                          confidence_level = 0.95,
-#                                                          std.err = TRUE,
-#                                                          estimator_type = estimator_types[9])
+# est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                   alpha = alpha,
+#                                                   confidence_level = 0.95,
+#                                                   do.ci = TRUE,
+#                                                   estimator_type = estimator_types[9])
 # 
-# est_rl_out
+# est_rl_pw
 # 
-# est_rl <- range(as.matrix(est_rl_out))
-# est_rl
+# est_rl_pw_range <- range(as.matrix(est_rl_pw))
+# est_rl_pw_range
 # 
-# matplot(rownames(est_rl_out), est_rl_out, type = "l", lty = "dotted")
 # 
-# abline(h = true_rl, col = 4)
-# abline(h = results_mw[2], col = 5)
-# abline(h = results_pw[2], col = 6)
-# abline(h = est_rl, col = 7)
+# est_rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                  alpha = alpha,
+#                                                  confidence_level = 0.95,
+#                                                  do.ci = TRUE,
+#                                                  estimator_type = estimator_types[8])
+# 
+# est_rl_mw
+# 
+# est_rl_mw_range <- range(as.matrix(est_rl_mw))
+# est_rl_mw_range
+# 
+# 
+# matplot(rownames(est_rl_pw), est_rl_pw, type = "l", lty = c("dotted", "solid", "dotted"), lwd = 2, col = c(3, 1, 3))
+# 
+# abline(h = true_rl, col = 4, lwd = 2)
+# abline(h = results_mw[2], col = 7, lwd = 2)
+# abline(h = results_pw[2], col = 6, lwd = 2)
+# abline(h = est_rl_pw_range, col = 6, lty = "dotted", lwd = 2)
+# abline(h = est_rl_mw_range, col = 7, lty = "dotted", lwd = 2)
 # 
 # 
 # source("./src/plot_gev_mixture_model_pdf.R")
