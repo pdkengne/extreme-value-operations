@@ -64,19 +64,19 @@ estimate_single_standardized_block_maxima_mean_nonstationary <- function(x,
 
 
 
-# example 1
-
-x <- rnorm(n = 1000)
-
-results <- estimate_single_standardized_block_maxima_mean_nonstationary(x, block_size = 25, confidence_level = 0.95)
-
-results
-
-
-# example 2
-
-x <- rnorm(n = 1000)
-
-results <- estimate_single_standardized_block_maxima_mean_nonstationary(x, block_size = 40, confidence_level = 0.95)
-
-results
+# # example 1
+# 
+# x <- rnorm(n = 1000)
+# 
+# results <- estimate_single_standardized_block_maxima_mean_nonstationary(x, block_size = 25, confidence_level = 0.95)
+# 
+# results
+# 
+# 
+# # example 2
+# 
+# x <- rnorm(n = 1000)
+# 
+# results <- estimate_single_standardized_block_maxima_mean_nonstationary(x, block_size = 40, confidence_level = 0.95)
+# 
+# results
