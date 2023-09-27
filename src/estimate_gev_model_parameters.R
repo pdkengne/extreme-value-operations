@@ -20,6 +20,11 @@ estimate_gev_model_parameters <- function(x,
   # type: type of model to use
   # method: estimation method to use
   
+  # check whether data is null
+  if (is.null(data)){
+    data <- data.frame("x" = x)
+  }
+  
   gev_model <- extRemes::fevd(x = x, 
                               data = data, 
                               threshold = threshold, 
@@ -33,6 +38,7 @@ estimate_gev_model_parameters <- function(x,
   
   gev_model
 }
+
 
 
 # # example 1
@@ -50,3 +56,7 @@ estimate_gev_model_parameters <- function(x,
 # results_summary
 # 
 # names(results_summary)
+# 
+# results$x
+# 
+# results$cov.data
