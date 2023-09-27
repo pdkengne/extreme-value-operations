@@ -2,18 +2,18 @@ source("./src/estimate_single_standardized_block_maxima_mean.R")
 source("./src/estimate_single_standardized_block_maxima_mean_nonstationary.R")
 source("./src/extract_largest_subset_of_overlapping_intervals.R")
 
-estimate_several_standardized_block_maxima_mean_nonstationary.R <- function(x, 
-                                                                            block_sizes, 
-                                                                            confidence_level = 0.95,
-                                                                            data = NULL, 
-                                                                            threshold = NULL, 
-                                                                            threshold.fun = ~1, 
-                                                                            location.fun = ~1,
-                                                                            scale.fun = ~1, 
-                                                                            shape.fun = ~1, 
-                                                                            use.phi = FALSE,
-                                                                            type = c("GEV", "GP", "PP", "Gumbel", "Exponential")[1],
-                                                                            method = c("MLE", "GMLE", "Bayesian", "Lmoments")[1]){
+estimate_several_standardized_block_maxima_mean_nonstationary <- function(x, 
+                                                                          block_sizes, 
+                                                                          confidence_level = 0.95,
+                                                                          data = NULL, 
+                                                                          threshold = NULL, 
+                                                                          threshold.fun = ~1, 
+                                                                          location.fun = ~1,
+                                                                          scale.fun = ~1, 
+                                                                          shape.fun = ~1, 
+                                                                          use.phi = FALSE,
+                                                                          type = c("GEV", "GP", "PP", "Gumbel", "Exponential")[1],
+                                                                          method = c("MLE", "GMLE", "Bayesian", "Lmoments")[1]){
   # x: vector of observations
   # block_sizes: vector containing the sizes of blocks to consider
   # confidence_level: desired confidence level
@@ -30,9 +30,18 @@ estimate_several_standardized_block_maxima_mean_nonstationary.R <- function(x,
   # estimate the confidence intervals
   estimated_mean_confidence_intervals <- sapply(block_sizes, 
                                                 function(block_size) 
-                                                  estimate_single_standardized_block_maxima_mean_nonstationary(x, 
-                                                                                                               block_size, 
-                                                                                                               confidence_level))
+                                                  estimate_single_standardized_block_maxima_mean_nonstationary(x = x, 
+                                                                                                               block_size = block_size, 
+                                                                                                               confidence_level = confidence_level,
+                                                                                                               data = data,
+                                                                                                               threshold = threshold, 
+                                                                                                               threshold.fun = threshold.fun, 
+                                                                                                               location.fun = location.fun,
+                                                                                                               scale.fun = scale.fun, 
+                                                                                                               shape.fun = shape.fun, 
+                                                                                                               use.phi = use.phi,
+                                                                                                               type = type,
+                                                                                                               method = method))
   
   estimated_mean_confidence_intervals <- data.frame(t(estimated_mean_confidence_intervals))
   rownames(estimated_mean_confidence_intervals) <- block_sizes
@@ -76,7 +85,7 @@ estimate_several_standardized_block_maxima_mean_nonstationary.R <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# results <- estimate_several_standardized_block_maxima_mean_nonstationary.R(x, block_sizes, confidence_level = 0.95)
+# results <- estimate_several_standardized_block_maxima_mean_nonstationary(x, block_sizes, confidence_level = 0.95)
 # 
 # names(results)
 # 
@@ -109,7 +118,7 @@ estimate_several_standardized_block_maxima_mean_nonstationary.R <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# results <- estimate_several_standardized_block_maxima_mean_nonstationary.R(x, block_sizes, confidence_level = 0.95)
+# results <- estimate_several_standardized_block_maxima_mean_nonstationary(x, block_sizes, confidence_level = 0.95)
 # 
 # names(results)
 # 
@@ -142,7 +151,7 @@ estimate_several_standardized_block_maxima_mean_nonstationary.R <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# results <- estimate_several_standardized_block_maxima_mean_nonstationary.R(x, block_sizes, confidence_level = 0.95)
+# results <- estimate_several_standardized_block_maxima_mean_nonstationary(x, block_sizes, confidence_level = 0.95)
 # 
 # names(results)
 # 
