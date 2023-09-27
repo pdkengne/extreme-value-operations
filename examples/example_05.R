@@ -1,8 +1,7 @@
 #' ---
 #' title: "Modeling extreme values with a GEV mixture probability distributions"
-#' subtitle: "Application to a wind speed data"
 #' author: "Pascal Alain Dkengne Sielenou"
-#' date: "`r Sys.Date()`"
+#' date: "September 28th, 2023"
 #' output: pdf_document
 #' ---
 
@@ -21,38 +20,19 @@ xfun::in_dir(dir = path, expr = source("./src/plot_several_standardized_block_ma
 xfun::in_dir(dir = path, expr = source("./src/estimate_gev_mixture_model_quantile.R"))
 
 #'
-library(readr)
+n <- 100000
 
 #'
-Gnss_imar <- xfun::in_dir(dir = path, expr = read_csv("./applications/Gnss_imar.csv"))
-Gnss_map_matching <- xfun::in_dir(dir = path, expr = read_csv("./applications/Gnss_map_matching.csv"))
-Gnss_standard <- xfun::in_dir(dir = path, expr = read_csv("./applications/Gnss_standard.csv"))
-
-#'
-timestamp_position <- sapply(Gnss_standard$timestamp, 
-                             function(ts) 
-                               which.min(abs(ts - Gnss_imar$timestamp)))
-
-#'
-latitude_Gnss_standard_errors <- Gnss_imar$latitude[timestamp_position] - Gnss_standard$latitude
-
-#'
-coefficient <- 10^(4)
-x <- coefficient*latitude_Gnss_standard_errors
-
-x<- abs(x)
-
-#'
-n <- length(x)
-n
+loc <- 1
+scale <- 0.5
+shape <- -0.2
+set.seed(1133)
+x <- generate_gev_sample(n = n, loc = loc, scale = scale, shape = shape)
 
 #'
 nlargest <- 1000
 
 
-res <- estimate_several_gev_models(x = abs(latitude_Gnss_standard_errors), block_sizes = 2:20, nsloc = NULL)
-
-res$normalized_gev_parameters_object
 
 
 #'
@@ -61,7 +41,7 @@ gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            std.err = FALSE,
                                                            block_sizes = NULL,
                                                            minimum_nblocks = 50,
-                                                           threshold = 0.4,
+                                                           threshold = NULL,
                                                            nlargest = nlargest,
                                                            confidence_level = 0.95,
                                                            log_mv = TRUE,
@@ -169,6 +149,10 @@ results_pw
 quantile(x = x, probs = 1 - alpha)
 
 #'
+true_rl <- calculate_gev_inverse_cdf(p = 1 - alpha, loc = loc, scale = scale, shape = shape)
+true_rl
+
+#'
 est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
                                                  alpha = alpha,
                                                  confidence_level = 0.95,
@@ -208,6 +192,7 @@ matplot(x = rownames(est_rl_pw),
         lwd = c(2,2,2), 
         col = c(3, 1, 3))
 
+abline(h = true_rl, col = 4, lwd = 2)
 abline(h = results_mw[2], col = 7, lwd = 2)
 abline(h = results_pw[2], col = 6, lwd = 2)
 abline(h = est_rl_pw_range, col = 6, lty = "dotted", lwd = 2)

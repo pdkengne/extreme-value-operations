@@ -1,6 +1,6 @@
 # library(extRemes)
 
-options(digits = 15)
+options(digits = 10)
 
 estimate_gev_model_parameters <- function(x, 
                                           data, 

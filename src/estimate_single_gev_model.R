@@ -4,6 +4,7 @@ source("./src/estimate_gev_parameters.R")
 source("./src/calculate_power_gev_parameters.R")
 source("./src/estimate_extremal_index.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
+source("./src/estimate_gev_model_parameters.R")
 
 
 estimate_single_gev_model <- function(x, block_size = 1, nsloc = NULL, prob = NULL, std.err = FALSE){
