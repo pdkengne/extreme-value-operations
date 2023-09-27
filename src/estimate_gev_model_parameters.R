@@ -3,7 +3,7 @@
 options(digits = 10)
 
 estimate_gev_model_parameters <- function(x, 
-                                          data, 
+                                          data = NULL, 
                                           threshold = NULL, 
                                           threshold.fun = ~1, 
                                           location.fun = ~1,
