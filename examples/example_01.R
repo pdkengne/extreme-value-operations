@@ -1,8 +1,8 @@
 #' ---
-#' title: "Modeling extreme values with a single GEV probability distribution"
+#' title: "Modeling extreme values with a GEV mixture probability distributions"
 #' author: "Pascal Alain Dkengne Sielenou"
-#' date: "September 08th, 2023"
-#' output: html_notebook
+#' date: "September 28th, 2023"
+#' output: pdf_document
 #' ---
 
 #'
@@ -11,88 +11,186 @@
 #'
 path <- ".."
 
-
 #'
-xfun::in_dir(dir = path, expr = source("./src/extract_block_maxima_with_indexes.R"))
 xfun::in_dir(dir = path, expr = source("./src/generate_gev_sample.R"))
-xfun::in_dir(dir = path, expr = source("./src/plot_gev_pdf.R"))
-xfun::in_dir(dir = path, expr = source("./src/plot_gev_cdf.R"))
-xfun::in_dir(dir = path, expr = source("./src/plot_gev_probability.R"))
-xfun::in_dir(dir = path, expr = source("./src/plot_gev_quantile.R"))
-xfun::in_dir(dir = path, expr = source("./src/plot_block_maxima.R"))
-
-
-#'
-x <- rnorm(n = 1000)
+xfun::in_dir(dir = path, expr = source("./src/calculate_gev_inverse_cdf.R"))
+xfun::in_dir(dir = path, expr = source("./src/estimate_gev_mixture_model_parameters.R"))
+xfun::in_dir(dir = path, expr = source("./src/plot_gev_mixture_model_pdf.R"))
+xfun::in_dir(dir = path, expr = source("./src/plot_several_standardized_block_maxima_mean.R"))
+xfun::in_dir(dir = path, expr = source("./src/estimate_gev_mixture_model_quantile.R"))
 
 #'
-block_size <- 40
+n <- 100000
 
 #'
-extremes <- extract_block_maxima_with_indexes(x, block_size)
-
-extremes
-
-#'
-plot_block_maxima(x, block_size, xlab = "Index", ylab = "Values", main = "Block maxima")
-
-#'
-model <- estimate_single_gev_model(x, block_size, nsloc = NULL)
+loc <- 1
+scale <- 0.5
+shape <- 0.1
+set.seed(1122)
+x <- generate_gev_sample(n = n, loc = loc, scale = scale, shape = shape)
 
 #'
-names(model)
+nlargest <- 1000
 
 #'
-model$gev_model
+gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
+                                                           nsloc = NULL,
+                                                           std.err = FALSE,
+                                                           block_sizes = NULL,
+                                                           minimum_nblocks = 50,
+                                                           threshold = NULL,
+                                                           nlargest = nlargest,
+                                                           confidence_level = 0.95,
+                                                           log_mv = TRUE,
+                                                           log_pw = TRUE,
+                                                           trace = FALSE)
+#'
+names(gev_mixture_model)
 
 #'
-names(model$gev_model)
+gev_mixture_model$block_sizes
 
 #'
-model$normalized_gev_parameters
+gev_mixture_model$normalized_gev_parameters_object
 
 #'
-plot_gev_pdf(model, 
-             zoom = FALSE,
-             xlab = "Quantile", 
-             ylab = "Density", 
-             main = "Probability Density Function (PDF) Plot")
+gev_mixture_model$weighted_normalized_gev_parameters_object
 
 #'
-plot_gev_pdf(model, 
-             zoom = TRUE,
-             xlab = "Quantile", 
-             ylab = "Density", 
-             main = "Probability Density Function (PDF) Plot")
+gev_mixture_model$automatic_weights_mw_statistics
 
 #'
-plot_gev_cdf(model,
-             zoom = FALSE,
-             xlab = "Quantile", 
-             ylab = "Cumulative Probability",
-             main = "Cumulative Distribution Function (CDF) Plot")
+gev_mixture_model$automatic_weights_pw_statistics
 
 #'
-plot_gev_cdf(model,
-             zoom = TRUE,
-             xlab = "Quantile", 
-             ylab = "Cumulative Probability",
-             main = "Cumulative Distribution Function (CDF) Plot")
+gev_mixture_model$automatic_weights_mw
 
 #'
-plot_gev_probability(model, 
-                     xlab = "Theoretical Probability", 
-                     ylab = "Empirical Probability", 
-                     main = "Probability Plot")
-
+gev_mixture_model$pessimistic_weights_pw_shape
 
 #'
-plot_gev_quantile(model, 
-                  xlab = "Theoretical Quantile", 
-                  ylab = "Empirical Quantile", 
-                  main = "Quantile Plot")
+gev_mixture_model$pessimistic_weights_pw_scale
 
+#'
+gev_mixture_model$pessimistic_weights_pw_loc
 
+#+ fig.width=12, fig.height=8
+plot_gev_mixture_model_pdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = FALSE,
+                           zoom = FALSE,
+                           xlab = "Quantile",
+                           ylab = "Density",
+                           main = "Probability Density Function (PDF) Plot")
 
+#+ fig.width=12, fig.height=8
+plot_gev_mixture_model_pdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = FALSE,
+                           zoom = TRUE,
+                           xlab = "Quantile",
+                           ylab = "Density",
+                           main = "Probability Density Function (PDF) Plot")
 
+#+ fig.width=12, fig.height=8
+plot_gev_mixture_model_pdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = TRUE,
+                           zoom = FALSE,
+                           xlab = "Quantile",
+                           ylab = "Density",
+                           main = "Probability Density Function (PDF) Plot")
 
+#+ fig.width=12, fig.height=8
+plot_gev_mixture_model_pdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = TRUE,
+                           zoom = TRUE,
+                           xlab = "Quantile",
+                           ylab = "Density",
+                           main = "Probability Density Function (PDF) Plot")
+
+#'
+estimator_types <- c("automatic_weights_mw",
+                     "pessimistic_weights_mw",
+                     "identic_weights_mw",
+                     "automatic_weights_pw",
+                     "pessimistic_weights_pw",
+                     "identic_weights_pw",
+                     "empirical",
+                     "confidence_interval_mw",
+                     "confidence_interval_pw")
+
+#'
+alpha <- 10^(-14)
+
+#'
+results_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                  alpha = alpha,
+                                                  confidence_level = 0.95,
+                                                  do.ci = TRUE,
+                                                  estimator_type = estimator_types[1])
+
+results_mw
+
+#'
+results_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                  alpha = alpha,
+                                                  confidence_level = 0.95,
+                                                  do.ci = TRUE,
+                                                  estimator_type = estimator_types[4])
+
+results_pw
+
+#'
+quantile(x = x, probs = 1 - alpha)
+
+#'
+true_rl <- calculate_gev_inverse_cdf(p = 1 - alpha, loc = loc, scale = scale, shape = shape)
+true_rl
+
+#'
+est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                 alpha = alpha,
+                                                 confidence_level = 0.95,
+                                                 do.ci = TRUE,
+                                                 estimator_type = estimator_types[9])
+
+est_rl_pw
+
+#'
+est_rl_pw_range <- range(as.matrix(est_rl_pw))
+est_rl_pw_range
+
+#'
+est_rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                 alpha = alpha,
+                                                 confidence_level = 0.95,
+                                                 do.ci = TRUE,
+                                                 estimator_type = estimator_types[8])
+
+est_rl_mw
+
+#'
+est_rl_mw_range <- range(as.matrix(est_rl_mw))
+est_rl_mw_range
+
+#+ fig.width=12, fig.height=8
+matplot(x = rownames(est_rl_pw), 
+        y = est_rl_pw, 
+        xlab = "block size",
+        ylab = "quantile",
+        main = "Estimates of a quantile",
+        cex = 1,
+        cex.lab = 1,
+        cex.axis = 1,
+        type = "l", 
+        lty = c("dotted", "solid", "dotted"), 
+        lwd = c(2,2,2), 
+        col = c(3, 1, 3))
+
+abline(h = true_rl, col = 4, lwd = 2)
+abline(h = results_mw[2], col = 7, lwd = 2)
+abline(h = results_pw[2], col = 6, lwd = 2)
+abline(h = est_rl_pw_range, col = 6, lty = "dotted", lwd = 2)
+abline(h = est_rl_mw_range, col = 7, lty = "dotted", lwd = 2)

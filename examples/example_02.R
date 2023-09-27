@@ -2,7 +2,7 @@
 #' title: "Modeling extreme values with a GEV mixture probability distributions"
 #' author: "Pascal Alain Dkengne Sielenou"
 #' date: "September 28th, 2023"
-#' output: html_notebook
+#' output: pdf_document
 #' ---
 
 #'
@@ -175,6 +175,12 @@ est_rl_mw_range
 #+ fig.width=12, fig.height=8
 matplot(x = rownames(est_rl_pw), 
         y = est_rl_pw, 
+        xlab = "block size",
+        ylab = "quantile",
+        main = "Estimates of a quantile",
+        cex = 1,
+        cex.lab = 1,
+        cex.axis = 1,
         type = "l", 
         lty = c("dotted", "solid", "dotted"), 
         lwd = c(2,2,2), 
