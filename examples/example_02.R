@@ -1,10 +1,9 @@
 #' ---
 #' title: "Modeling extreme values with a GEV mixture probability distributions"
 #' author: "Pascal Alain Dkengne Sielenou"
-#' date: "September 08th, 2023"
-#' output: pdf_document
+#' date: "September 28th, 2023"
+#' output: html_notebook
 #' ---
-
 
 #'
 # library(xfun)
@@ -12,30 +11,31 @@
 #'
 path <- ".."
 
-
 #'
+xfun::in_dir(dir = path, expr = source("./src/generate_gev_sample.R"))
+xfun::in_dir(dir = path, expr = source("./src/calculate_gev_inverse_cdf.R"))
 xfun::in_dir(dir = path, expr = source("./src/estimate_gev_mixture_model_parameters.R"))
 xfun::in_dir(dir = path, expr = source("./src/plot_gev_mixture_model_pdf.R"))
-xfun::in_dir(dir = path, expr = source("./src/generate_gev_sample.R"))
-xfun::in_dir(dir = path, expr = source("./src/plot_normalized_gev_mixture_model_pdf.R"))
-xfun::in_dir(dir = path, expr = source("./src/calculate_gev_inverse_cdf.R"))
-xfun::in_dir(dir = path, expr = source("./src/calculate_gev_mixture_model_inverse_cdf.R"))
-xfun::in_dir(dir = path, expr = source("./src/calculate_gev_mixture_model_cdf.R"))
-
+xfun::in_dir(dir = path, expr = source("./src/plot_several_standardized_block_maxima_mean.R"))
+xfun::in_dir(dir = path, expr = source("./src/estimate_gev_mixture_model_quantile.R"))
 
 #'
-n <- 10000
+n <- 100000
 
-nlargest <- 1000
-
-#x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
+#'
+set.seed(1122)
 x <- rnorm(n = n)
 
+#'
+nlargest <- 1000
+
+#'
 gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            nsloc = NULL,
                                                            std.err = FALSE,
                                                            block_sizes = NULL,
                                                            minimum_nblocks = 50,
+                                                           threshold = NULL,
                                                            nlargest = nlargest,
                                                            confidence_level = 0.95,
                                                            log_mv = TRUE,
@@ -54,15 +54,42 @@ gev_mixture_model$normalized_gev_parameters_object
 gev_mixture_model$weighted_normalized_gev_parameters_object
 
 #'
-gev_mixture_model$automatic_weights_mw
-
-#'
 gev_mixture_model$automatic_weights_mw_statistics
 
 #'
 gev_mixture_model$automatic_weights_pw_statistics
 
 #'
+gev_mixture_model$automatic_weights_mw
+
+#'
+gev_mixture_model$pessimistic_weights_pw_shape
+
+#'
+gev_mixture_model$pessimistic_weights_pw_scale
+
+#'
+gev_mixture_model$pessimistic_weights_pw_loc
+
+#+ fig.width=12, fig.height=8
+plot_gev_mixture_model_pdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = FALSE,
+                           zoom = FALSE,
+                           xlab = "Quantile",
+                           ylab = "Density",
+                           main = "Probability Density Function (PDF) Plot")
+
+#+ fig.width=12, fig.height=8
+plot_gev_mixture_model_pdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = FALSE,
+                           zoom = TRUE,
+                           xlab = "Quantile",
+                           ylab = "Density",
+                           main = "Probability Density Function (PDF) Plot")
+
+#+ fig.width=12, fig.height=8
 plot_gev_mixture_model_pdf(gev_mixture_model,
                            type = "automatic_weights",
                            model_wise = TRUE,
@@ -71,7 +98,7 @@ plot_gev_mixture_model_pdf(gev_mixture_model,
                            ylab = "Density",
                            main = "Probability Density Function (PDF) Plot")
 
-#'
+#+ fig.width=12, fig.height=8
 plot_gev_mixture_model_pdf(gev_mixture_model,
                            type = "automatic_weights",
                            model_wise = TRUE,
@@ -80,73 +107,81 @@ plot_gev_mixture_model_pdf(gev_mixture_model,
                            ylab = "Density",
                            main = "Probability Density Function (PDF) Plot")
 
+#'
+estimator_types <- c("automatic_weights_mw",
+                     "pessimistic_weights_mw",
+                     "identic_weights_mw",
+                     "automatic_weights_pw",
+                     "pessimistic_weights_pw",
+                     "identic_weights_pw",
+                     "empirical",
+                     "confidence_interval_mw",
+                     "confidence_interval_pw")
 
 #'
-gev_mixture_model_parameters <- gev_mixture_model$normalized_gev_parameters_object
-
-shapes <- gev_mixture_model_parameters$shape_star
-scales <- gev_mixture_model_parameters$scale_star
-locations <- gev_mixture_model_parameters$loc_star
-
-weights <- gev_mixture_model$automatic_weights_mw
-
-
-#
-p <- 0.95
-  
-q_initial_guesses <- sapply(1:length(weights), function(j) calculate_gev_inverse_cdf(p = p, 
-                                                                                     loc = locations[j], 
-                                                                                     scale = scales[j], 
-                                                                                     shape = shapes[j])) 
-q_initial_guesses
-
-range(q_initial_guesses)
-
+alpha <- 10^(-14)
 
 #'
-block_size <- max(gev_mixture_model$block_sizes)
-y <- gev_mixture_model$data_largest
-threshold <- find_threshold_associated_with_given_block_size(x = y, block_size = block_size)
+results_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                  alpha = alpha,
+                                                  confidence_level = 0.95,
+                                                  do.ci = TRUE,
+                                                  estimator_type = estimator_types[1])
+
+results_mw
 
 #'
-library(evd)
+results_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                  alpha = alpha,
+                                                  confidence_level = 0.95,
+                                                  do.ci = TRUE,
+                                                  estimator_type = estimator_types[4])
 
-data <- y[y > threshold]
-
-M3 <- fgev(data, prob = 0.95)
-
-M3
-
-#'
-M4 <- fgev(data)
-
-M4
-
+results_pw
 
 #'
-Fn <- ecdf(y)
+quantile(x = x, probs = 1 - alpha)
 
 #'
-p <- seq(from = Fn(threshold), to = 0.999, length.out = 20)
-p
+true_rl <- qnorm(p = 1 - alpha)
+true_rl
 
 #'
-quantiles <- calculate_gev_mixture_model_inverse_cdf(p = p*0.1, locations, scales, shapes, weights, iterations = 100)
+est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                 alpha = alpha,
+                                                 confidence_level = 0.95,
+                                                 do.ci = TRUE,
+                                                 estimator_type = estimator_types[9])
 
-quantiles
-
-#'
-probaility <- calculate_gev_mixture_model_cdf(q = quantiles, locations, scales, shapes, weights)
-
-probaility
-
-#'
-qnorm(p = p)
+est_rl_pw
 
 #'
-calculate_gev_inverse_cdf(p = p*0.1, loc = 2.52214, scale = 0.5222, shape = 0.1487)
+est_rl_pw_range <- range(as.matrix(est_rl_pw))
+est_rl_pw_range
 
 #'
-calculate_gev_inverse_cdf(p = p, loc = 1, scale = 0.5, shape = 0.1)
+est_rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                 alpha = alpha,
+                                                 confidence_level = 0.95,
+                                                 do.ci = TRUE,
+                                                 estimator_type = estimator_types[8])
 
+est_rl_mw
 
+#'
+est_rl_mw_range <- range(as.matrix(est_rl_mw))
+est_rl_mw_range
+
+#+ fig.width=12, fig.height=8
+matplot(x = rownames(est_rl_pw), 
+        y = est_rl_pw, 
+        type = "l", 
+        lty = c("dotted", "solid", "dotted"), 
+        lwd = c(2,2,2), 
+        col = c(3, 1, 3))
+
+abline(h = true_rl, col = 4, lwd = 2)
+abline(h = results_mw[2], col = 7, lwd = 2)
+abline(h = results_pw[2], col = 6, lwd = 2)
+abline(h = est_rl_pw_range, col = 6, lty = "dotted", lwd = 2)
+abline(h = est_rl_mw_range, col = 7, lty = "dotted", lwd = 2)

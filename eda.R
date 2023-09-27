@@ -19,23 +19,63 @@ str(Gnss_map_matching)
 str(Gnss_standard)
 
 
+library(tidyverse)
+
+# select relevant data
+Gnss_imar_subset <- Gnss_imar %>% select(timestamp, latitude, longitude, altitude)
+Gnss_map_matching_subset <- Gnss_map_matching %>% select(timestamp, latitude, longitude, altitude)
+
+# extract timestamp
+Gnss_map_matching_subset_timestamp <- Gnss_map_matching_subset$timestamp
+Gnss_imar_subset_timestamp <- Gnss_imar_subset$timestamp
+
+# for each timestamp from Gnss_map_matching_subset, find position of the closest timestamp from Gnss_imar_subset
+timestamp_position <- sapply(Gnss_map_matching_subset_timestamp, function(ts) which.min(abs(ts - Gnss_imar_subset_timestamp)))
+
+# get errors wrt latitude
+latitude_Gnss_map_matching <- Gnss_map_matching$latitude
 latitude_Gnss_imar <- Gnss_imar$latitude
+error_latitude_Gnss_imar_Gnss_map_matching <- latitude_Gnss_imar[timestamp_position] - latitude_Gnss_map_matching
 
+# get errors wrt longitude
+longitude_Gnss_map_matching <- Gnss_map_matching$longitude
+longitude_Gnss_imar <- Gnss_imar$longitude
+error_longitude_Gnss_imar_Gnss_map_matching <- longitude_Gnss_imar[timestamp_position] - longitude_Gnss_map_matching
+
+# get errors wrt altitude
+altitude_Gnss_map_matching <- Gnss_map_matching$altitude
+altitude_Gnss_imar <- Gnss_imar$altitude
+error_altitude_Gnss_imar_Gnss_map_matching <- altitude_Gnss_imar[timestamp_position] - altitude_Gnss_map_matching
+
+
+#-------------------------------------------------------------------------------
+
+# select relevant data
+Gnss_imar_subset <- Gnss_imar %>% select(timestamp, latitude, longitude, altitude)
+Gnss_standard_subset <- Gnss_standard %>% select(timestamp, latitude, longitude, altitude)
+
+# extract timestamp
+Gnss_standard_subset_timestamp <- Gnss_standard_subset$timestamp
+Gnss_imar_subset_timestamp <- Gnss_imar_subset$timestamp
+
+# for each timestamp from Gnss_standard_subset, find position of the closest timestamp from Gnss_imar_subset
+timestamp_position <- sapply(Gnss_standard_subset_timestamp, function(ts) which.min(abs(ts - Gnss_imar_subset_timestamp)))
+
+# get errors wrt latitude
 latitude_Gnss_standard <- Gnss_standard$latitude
+latitude_Gnss_imar <- Gnss_imar$latitude
+error_latitude_Gnss_imar_Gnss_standard <- latitude_Gnss_imar[timestamp_position] - latitude_Gnss_standard
 
-error_latitude_Gnss_imar_Gnss_standard <- latitude_Gnss_imar - latitude_Gnss_standard
+# get errors wrt longitude
+longitude_Gnss_standard <- Gnss_standard$longitude
+longitude_Gnss_imar <- Gnss_imar$longitude
+error_longitude_Gnss_imar_Gnss_standard <- longitude_Gnss_imar[timestamp_position] - longitude_Gnss_standard
 
-length(error_latitude_Gnss_imar_Gnss_standard)
+# get errors wrt altitude
+altitude_Gnss_standard <- Gnss_standard$altitude
+altitude_Gnss_imar <- Gnss_imar$altitude
+error_altitude_Gnss_imar_Gnss_standard <- altitude_Gnss_imar[timestamp_position] - altitude_Gnss_standard
 
-boxplot(error_latitude_Gnss_imar_Gnss_standard)
-
-hist(error_latitude_Gnss_imar_Gnss_standard)
-
-range(error_latitude_Gnss_imar_Gnss_standard)
-
-
-
-# example 1
 
 source("./src/generate_gev_sample.R")
 source("./src/calculate_gev_inverse_cdf.R")
@@ -44,54 +84,36 @@ source("./src/estimate_gev_mixture_model_parameters.R")
 source("./src/plot_gev_mixture_model_pdf.R")
 source("./src/calculate_gev_mixture_model_quantile.R")
 source("./src/plot_several_standardized_block_maxima_mean.R")
+source("./src/estimate_gev_mixture_model_quantile.R")
 
+# extreme value analysis of errors wrt latitude
 
-x <- 10^(4)*error_latitude_Gnss_imar_Gnss_standard[error_latitude_Gnss_imar_Gnss_standard > 0.05*max(error_latitude_Gnss_imar_Gnss_standard)]
+coefficient <- 10^(0)
 
-hist(x)
+x <- coefficient*error_altitude_Gnss_imar_Gnss_map_matching
 
 n <- length(x)
 n
 
 nlargest <- 1000
 
-y <- extract_nlargest_sample(x, n = nlargest)
+hist(x)
 
-hist(y)
+range(x)
 
-threshold <- min(y)
+threshold <- quantile(x = x, probs = 0.5)
 threshold
 
-blocks <- get_candidate_block_sizes(y, threshold = threshold, m = 50)
-blocks
-
-model <- estimate_single_gev_model(y, block_size = 40, nsloc = NULL)
-
-model$normalized_gev_parameters
-
-min_block <- find_minimum_block_size(y, threshold = threshold)
-min_block
-
-blocks <- 2:50
-
-plot_several_standardized_block_maxima_mean(x = y, blocks, confidence_level = 0.95, equivalent = FALSE)
-plot_several_standardized_block_maxima_mean(x = y, blocks, confidence_level = 0.95, equivalent = TRUE)
-
-models <- estimate_several_gev_models(y, block_sizes = blocks, nsloc = NULL)
-
-names(models)
-
-models$normalized_gev_parameters_object
+hist(x[x>threshold])
 
 gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            nsloc = NULL,
                                                            std.err = FALSE,
-                                                           block_sizes = 1:40,
+                                                           block_sizes = NULL,
                                                            minimum_nblocks = 50,
                                                            threshold = threshold,
                                                            nlargest = nlargest,
                                                            confidence_level = 0.95,
-                                                           maximum_iterations = 1500,
                                                            trace = TRUE)
 
 gev_mixture_model$normalized_gev_parameters_object
@@ -102,41 +124,72 @@ gev_mixture_model$automatic_weights_mw_statistics
 
 gev_mixture_model$automatic_weights_pw_statistics
 
-gev_mixture_model$automatic_weights_pw_shape
+gev_mixture_model$pessimistic_weights_pw_shape
 
 gev_mixture_model$automatic_weights_mw
 
 
-
-estimator_type <- c("automatic_weights_mw", 
-                    "pessimistic_weights_mw", 
-                    "identic_weights_mw", 
+estimator_types <- c("automatic_weights_mw",
+                    "pessimistic_weights_mw",
+                    "identic_weights_mw",
                     "automatic_weights_pw",
-                    "pessimistic_weights_pw", 
-                    "identic_weights_pw", 
+                    "pessimistic_weights_pw",
+                    "identic_weights_pw",
                     "empirical",
                     "confidence_interval_mw",
-                    "confidence_interval_pw")[4]
+                    "confidence_interval_pw")
 
-max(gev_mixture_model$data)
-
-alpha <- 1/length(gev_mixture_model$data)
-alpha
 
 alpha <- 10^(-14)
 
-0.3*10^(14)/200000
-
-results <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+results_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
                                                alpha = alpha,
                                                confidence_level = 0.95,
-                                               estimator_type = estimator_type)
+                                               do.ci = TRUE,
+                                               estimator_type = estimator_types[1])
 
-results
+results_mw
 
-results*10^(-4)
+results_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                  alpha = alpha,
+                                                  confidence_level = 0.95,
+                                                  do.ci = TRUE,
+                                                  estimator_type = estimator_types[4])
+
+results_pw
+
+quantile(x = x, probs = 1 - alpha)
+
+est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                  alpha = alpha,
+                                                  confidence_level = 0.95,
+                                                  do.ci = TRUE,
+                                                  estimator_type = estimator_types[9])
+
+est_rl_pw
+
+est_rl_pw_range <- range(as.matrix(est_rl_pw))
+est_rl_pw_range
 
 
+est_rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                 alpha = alpha,
+                                                 confidence_level = 0.95,
+                                                 do.ci = TRUE,
+                                                 estimator_type = estimator_types[8])
+
+est_rl_mw
+
+est_rl_mw_range <- range(as.matrix(est_rl_mw))
+est_rl_mw_range
+
+
+matplot(rownames(est_rl_pw), est_rl_pw, type = "l", lty = c("dotted", "solid", "dotted"), lwd = 2, col = c(3, 1, 3))
+
+abline(h = results_mw[2], col = 7, lwd = 2)
+abline(h = results_pw[2], col = 6, lwd = 2)
+abline(h = est_rl_pw_range, col = 6, lty = "dotted", lwd = 2)
+abline(h = est_rl_mw_range, col = 7, lty = "dotted", lwd = 2)
 
 
 plot_gev_mixture_model_pdf(gev_mixture_model,
@@ -171,5 +224,4 @@ plot_gev_mixture_model_pdf(gev_mixture_model,
                            xlab = "Quantile",
                            ylab = "Density",
                            main = "Probability Density Function (PDF) Plot")
-# 
-# 
+
