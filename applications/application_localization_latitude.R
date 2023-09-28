@@ -26,20 +26,20 @@ library(readr)
 Gnss_imar <- xfun::in_dir(dir = path, expr = read_csv("./applications/Gnss_imar.csv"))
 Gnss_map_matching <- xfun::in_dir(dir = path, expr = read_csv("./applications/Gnss_map_matching.csv"))
 
-#' #'
-#' timestamp_position <- sapply(Gnss_map_matching$timestamp, 
-#'                              function(ts) 
-#'                                which.min(abs(ts - Gnss_imar$timestamp)))
+#'
+timestamp_position <- sapply(Gnss_map_matching$timestamp,
+                             function(ts)
+                               which.min(abs(ts - Gnss_imar$timestamp)))
 
 #'
-latitude_Gnss_map_matching_errors <- Gnss_imar$latitude[-1] - Gnss_map_matching$latitude
+latitude_Gnss_map_matching_errors <- Gnss_imar$latitude[timestamp_position] - Gnss_map_matching$latitude
 
-# timestamp_diff <- Gnss_imar$timestamp[-1] - Gnss_map_matching$timestamp
-# 
+# timestamp_diff <- Gnss_imar$timestamp[timestamp_position] - Gnss_map_matching$timestamp
+#  
 # head(timestamp_diff)
-# 
+#  
 # tail(timestamp_diff)
-# 
+#  
 # range(timestamp_diff)
 
 #'
