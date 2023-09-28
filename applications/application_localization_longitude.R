@@ -25,19 +25,18 @@ library(readr)
 #'
 Gnss_imar <- xfun::in_dir(dir = path, expr = read_csv("./applications/Gnss_imar.csv"))
 Gnss_map_matching <- xfun::in_dir(dir = path, expr = read_csv("./applications/Gnss_map_matching.csv"))
-Gnss_standard <- xfun::in_dir(dir = path, expr = read_csv("./applications/Gnss_standard.csv"))
+
+#' #'
+#' timestamp_position <- sapply(Gnss_map_matching$timestamp, 
+#'                              function(ts) 
+#'                                which.min(abs(ts - Gnss_imar$timestamp)))
 
 #'
-timestamp_position <- sapply(Gnss_standard$timestamp, 
-                             function(ts) 
-                               which.min(abs(ts - Gnss_imar$timestamp)))
-
-#'
-longitude_Gnss_standard_errors <- Gnss_imar$longitude[timestamp_position] - Gnss_standard$longitude
+longitude_Gnss_map_matching_errors <- Gnss_imar$longitude[-1] - Gnss_map_matching$longitude
 
 #'
 coefficient <- 10^(4)
-x <- coefficient*abs(longitude_Gnss_standard_errors)
+x <- coefficient*abs(longitude_Gnss_map_matching_errors)
 
 #+ fig.width=12, fig.height=8
 hist(x)
@@ -50,7 +49,7 @@ n <- length(x)
 n
 
 #'
-nlargest <- 1000
+nlargest <- 2000
 
 #
 y <- extract_nlargest_sample(x, n = nlargest)
