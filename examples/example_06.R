@@ -25,7 +25,7 @@ n <- 20000
 #'
 loc <- 1
 scale <- 0.5
-shape <- -0.2
+shape <- +0.2
 set.seed(1122)
 x <- generate_gev_sample(n = n, loc = loc, scale = scale, shape = shape)
 
@@ -36,7 +36,7 @@ hist(x)
 acf(x)
 
 #'
-nlargest <- 1000
+nlargest <- 2000
 
 #
 y <- extract_nlargest_sample(x, n = nlargest)
@@ -211,3 +211,4 @@ abline(h = rl_mw[2], col = 7, lwd = 2)
 abline(h = rl_pw[2], col = 6, lwd = 2)
 abline(h = est_rl_pw_range, col = 6, lty = "dotted", lwd = 2)
 abline(h = est_rl_mw_range, col = 7, lty = "dotted", lwd = 2)
+

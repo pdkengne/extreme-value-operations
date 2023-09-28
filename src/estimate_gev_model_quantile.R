@@ -3,7 +3,7 @@
 source("./src/estimate_gev_model_parameters.R")
 
 estimate_gev_model_quantile <- function(x, 
-                                        data, 
+                                        data = NULL, 
                                         alpha = NULL,
                                         do.ci = TRUE,
                                         confidence_level = 0.95,

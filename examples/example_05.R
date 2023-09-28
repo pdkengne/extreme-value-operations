@@ -20,20 +20,26 @@ xfun::in_dir(dir = path, expr = source("./src/plot_several_standardized_block_ma
 xfun::in_dir(dir = path, expr = source("./src/estimate_gev_mixture_model_quantile.R"))
 
 #'
-n <- 100000
+n <- 20000
 
 #'
 loc <- 1
 scale <- 0.5
-shape <- -0.2
-set.seed(1133)
+shape <- +0.2
+set.seed(1122)
 x <- generate_gev_sample(n = n, loc = loc, scale = scale, shape = shape)
+
+#+ fig.width=12, fig.height=8
+hist(x)
+
+#+ fig.width=12, fig.height=8
+acf(x)
 
 #'
 nlargest <- 1000
 
-
-
+#
+y <- extract_nlargest_sample(x, n = nlargest)
 
 #'
 gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
@@ -47,6 +53,7 @@ gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            log_mv = TRUE,
                                                            log_pw = TRUE,
                                                            trace = FALSE)
+
 #'
 names(gev_mixture_model)
 
@@ -128,25 +135,31 @@ estimator_types <- c("automatic_weights_mw",
 alpha <- 10^(-14)
 
 #'
-results_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                                  alpha = alpha,
-                                                  confidence_level = 0.95,
-                                                  do.ci = TRUE,
-                                                  estimator_type = estimator_types[1])
+rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                             alpha = alpha,
+                                             confidence_level = 0.95,
+                                             do.ci = TRUE,
+                                             estimator_type = estimator_types[1])
 
-results_mw
-
-#'
-results_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                                  alpha = alpha,
-                                                  confidence_level = 0.95,
-                                                  do.ci = TRUE,
-                                                  estimator_type = estimator_types[4])
-
-results_pw
+rl_mw
 
 #'
-quantile(x = x, probs = 1 - alpha)
+rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                             alpha = alpha,
+                                             confidence_level = 0.95,
+                                             do.ci = TRUE,
+                                             estimator_type = estimator_types[4])
+
+rl_pw
+
+#'
+rl_empirical <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                    alpha = alpha,
+                                                    confidence_level = 0.95,
+                                                    do.ci = TRUE,
+                                                    estimator_type = estimator_types[7])
+
+rl_empirical
 
 #'
 true_rl <- calculate_gev_inverse_cdf(p = 1 - alpha, loc = loc, scale = scale, shape = shape)
@@ -184,6 +197,7 @@ matplot(x = rownames(est_rl_pw),
         xlab = "block size",
         ylab = "quantile",
         main = "Estimates of a quantile",
+        ylim = range(c(est_rl_pw_range, true_rl)),
         cex = 1,
         cex.lab = 1,
         cex.axis = 1,
@@ -193,7 +207,8 @@ matplot(x = rownames(est_rl_pw),
         col = c(3, 1, 3))
 
 abline(h = true_rl, col = 4, lwd = 2)
-abline(h = results_mw[2], col = 7, lwd = 2)
-abline(h = results_pw[2], col = 6, lwd = 2)
+abline(h = rl_mw[2], col = 7, lwd = 2)
+abline(h = rl_pw[2], col = 6, lwd = 2)
 abline(h = est_rl_pw_range, col = 6, lty = "dotted", lwd = 2)
 abline(h = est_rl_mw_range, col = 7, lty = "dotted", lwd = 2)
+

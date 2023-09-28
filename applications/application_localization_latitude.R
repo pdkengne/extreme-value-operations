@@ -1,6 +1,5 @@
 #' ---
 #' title: "Modeling extreme values with a GEV mixture probability distributions"
-#' subtitle: "Application to a wind speed data"
 #' author: "Pascal Alain Dkengne Sielenou"
 #' date: "`r Sys.Date()`"
 #' output: pdf_document
@@ -37,10 +36,14 @@ timestamp_position <- sapply(Gnss_standard$timestamp,
 latitude_Gnss_standard_errors <- Gnss_imar$latitude[timestamp_position] - Gnss_standard$latitude
 
 #'
-coefficient <- 10^(4)
-x <- coefficient*latitude_Gnss_standard_errors
+coefficient <- 10^(5)
+x <- coefficient*abs(latitude_Gnss_standard_errors)
 
-x<- abs(x)
+#+ fig.width=12, fig.height=8
+hist(x)
+
+#+ fig.width=12, fig.height=8
+acf(x)
 
 #'
 n <- length(x)
@@ -49,11 +52,8 @@ n
 #'
 nlargest <- 1000
 
-
-res <- estimate_several_gev_models(x = abs(latitude_Gnss_standard_errors), block_sizes = 2:20, nsloc = NULL)
-
-res$normalized_gev_parameters_object
-
+#
+y <- extract_nlargest_sample(x, n = nlargest)
 
 #'
 gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
@@ -61,7 +61,7 @@ gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
                                                            std.err = FALSE,
                                                            block_sizes = NULL,
                                                            minimum_nblocks = 50,
-                                                           threshold = 0.4,
+                                                           threshold = min(y),
                                                            nlargest = nlargest,
                                                            confidence_level = 0.95,
                                                            log_mv = TRUE,
@@ -148,25 +148,31 @@ estimator_types <- c("automatic_weights_mw",
 alpha <- 10^(-14)
 
 #'
-results_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                                  alpha = alpha,
-                                                  confidence_level = 0.95,
-                                                  do.ci = TRUE,
-                                                  estimator_type = estimator_types[1])
+rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                             alpha = alpha,
+                                             confidence_level = 0.95,
+                                             do.ci = TRUE,
+                                             estimator_type = estimator_types[1])
 
-results_mw
-
-#'
-results_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                                  alpha = alpha,
-                                                  confidence_level = 0.95,
-                                                  do.ci = TRUE,
-                                                  estimator_type = estimator_types[4])
-
-results_pw
+rl_mw
 
 #'
-quantile(x = x, probs = 1 - alpha)
+rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                             alpha = alpha,
+                                             confidence_level = 0.95,
+                                             do.ci = TRUE,
+                                             estimator_type = estimator_types[4])
+
+rl_pw
+
+#'
+rl_empirical <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                                    alpha = alpha,
+                                                    confidence_level = 0.95,
+                                                    do.ci = TRUE,
+                                                    estimator_type = estimator_types[7])
+
+rl_empirical
 
 #'
 est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
@@ -208,7 +214,7 @@ matplot(x = rownames(est_rl_pw),
         lwd = c(2,2,2), 
         col = c(3, 1, 3))
 
-abline(h = results_mw[2], col = 7, lwd = 2)
-abline(h = results_pw[2], col = 6, lwd = 2)
+abline(h = rl_mw[2], col = 7, lwd = 2)
+abline(h = rl_pw[2], col = 6, lwd = 2)
 abline(h = est_rl_pw_range, col = 6, lty = "dotted", lwd = 2)
 abline(h = est_rl_mw_range, col = 7, lty = "dotted", lwd = 2)
