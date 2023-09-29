@@ -1,9 +1,15 @@
-estimate_gev_mixture_model_identic_weights <- function(gev_models){
+estimate_gev_mixture_model_identic_weights <- function(gev_models, use_extremal_index = TRUE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
+  # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
   
   # get the normalized gev parameters
-  normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
-  
+  if (use_extremal_index){
+    normalized_gev_parameters <- gev_models$full_normalized_gev_parameters_object
+  }
+  else{
+    normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
+  }
+
   # get the number of gev models
   p <- nrow(normalized_gev_parameters)
   
@@ -32,13 +38,14 @@ estimate_gev_mixture_model_identic_weights <- function(gev_models){
 # maximum_block_size
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# block_sizes
 # 
 # equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_identic_weights(gev_models)
+# results <- estimate_gev_mixture_model_identic_weights(gev_models, use_extremal_index = TRUE)
 # 
 # results
 # range(results)

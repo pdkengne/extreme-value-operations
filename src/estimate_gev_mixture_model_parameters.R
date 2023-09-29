@@ -17,6 +17,7 @@ estimate_gev_mixture_model_parameters <- function(x,
                                                   threshold = NULL,
                                                   nlargest = Inf,
                                                   confidence_level = 0.95,
+                                                  use_extremal_index = TRUE,
                                                   maximum_iterations = 1500,
                                                   log_mv = TRUE,
                                                   log_pw = TRUE,
@@ -31,6 +32,7 @@ estimate_gev_mixture_model_parameters <- function(x,
   # nlargest: number of largest values to focus on. Note that the whole vector x is used unless, nlargest != Inf.
   # maximum_iterations: maximum number of iterations
   # threshold: lower bound of block maxima
+  # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
   # confidence_level: desired confidence level when extraction equivalent block sizes. 
   #                   Note that this value is ignored if block_sizes != NULL.
   # minimum_nblocks: desired minimum number of blocks. Note that this number is used to infer the largest block size.
@@ -64,6 +66,9 @@ estimate_gev_mixture_model_parameters <- function(x,
   
   # get all gev models
   gev_models_object <- gev_models$gev_models_object
+  
+  # get the block maxima
+  block_maxima_object <- gev_models$block_maxima_object
   
   # get the block maxima indexes
   block_maxima_indexes_object <- gev_models$block_maxima_indexes_object
@@ -109,6 +114,8 @@ estimate_gev_mixture_model_parameters <- function(x,
   
   # get the normalized gev model parameters
   normalized_gev_parameters_object <- gev_models$normalized_gev_parameters_object
+  # get the normalized gev model parameters
+  full_normalized_gev_parameters_object <- gev_models$full_normalized_gev_parameters_object
   
   # calculate the identic weighted normalized gev model parameters
   identic_weighted_normalized_gev_parameters_object <- apply(normalized_gev_parameters_object, 2, mean)
@@ -144,11 +151,13 @@ estimate_gev_mixture_model_parameters <- function(x,
   output[["block_sizes"]] <- block_sizes
   output[["equivalent_block_sizes"]] <- equivalent_block_sizes
   output[["rejected_block_sizes"]] <- rejected_block_sizes
+  output[["block_maxima_object"]] <- block_maxima_object
   output[["block_maxima_indexes_object"]] <- block_maxima_indexes_object
   
   output[["gev_models_object"]] <- gev_models_object
   output[["extremal_indexes"]] <- extremal_indexes
   output[["normalized_gev_parameters_object"]] <- normalized_gev_parameters_object
+  output[["full_normalized_gev_parameters_object"]] <- full_normalized_gev_parameters_object
   output[["weighted_normalized_gev_parameters_object"]] <- weighted_normalized_gev_parameters_object
   
   output[["identic_weights_mw"]] <- identic_weights_mw
