@@ -33,7 +33,7 @@ estimate_single_gev_model <- function(x, block_size = 1, nsloc = NULL, prob = NU
   # estimate gev model
   gev_model <- estimate_gev_parameters(x = block_maxima, nsloc = nsloc, prob = prob, std.err = std.err)
   
-  # calculate the normalized gev parameters with both block size
+  # calculate the normalized gev parameters with block size
   gev_parameters <- gev_model$estimate
   
   exponent_bs <- 1/block_size

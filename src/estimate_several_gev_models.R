@@ -17,10 +17,19 @@ estimate_several_gev_models <- function(x, block_sizes, nsloc = NULL){
   extremal_indexes <- sapply(models, function(model) model$extremal_index)
   names(extremal_indexes) <- block_sizes
   
-  # extract the normalized gev parameters
+  # extract the normalized gev parameters with block size
   normalized_gev_parameters_object <- sapply(models, function(model) model$normalized_gev_parameters)
   normalized_gev_parameters_object <- data.frame(t(normalized_gev_parameters_object))
   rownames(normalized_gev_parameters_object) <- block_sizes
+  
+  # extract the normalized gev parameters with both block size and extremal index
+  full_normalized_gev_parameters_object <- sapply(models, function(model) model$full_normalized_gev_parameters)
+  full_normalized_gev_parameters_object <- data.frame(t(full_normalized_gev_parameters_object))
+  rownames(full_normalized_gev_parameters_object) <- block_sizes
+  
+  # extract the block maxima 
+  block_maxima_object <- lapply(models, function(model) model$block_maxima)
+  names(block_maxima_object) <- block_sizes
   
   # extract the block maxima indexes
   block_maxima_indexes_object <- lapply(models, function(model) model$block_maxima_indexes)
@@ -33,11 +42,13 @@ estimate_several_gev_models <- function(x, block_sizes, nsloc = NULL){
   # update the output object
   output[["data"]] <- x
   output[["covariates"]] <- nsloc
+  output[["block_sizes"]] <- block_sizes
+  output[["block_maxima_object"]] <- block_maxima_object
   output[["block_maxima_indexes_object"]] <- block_maxima_indexes_object
   output[["gev_models_object"]] <- gev_models_object
-  output[["block_sizes"]] <- block_sizes
   output[["extremal_indexes"]] <- extremal_indexes
   output[["normalized_gev_parameters_object"]] <- normalized_gev_parameters_object
+  output[["full_normalized_gev_parameters_object"]] <- full_normalized_gev_parameters_object
   
   output
 }
@@ -59,10 +70,10 @@ estimate_several_gev_models <- function(x, block_sizes, nsloc = NULL){
 # maximum_block_size
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# block_sizes
 # 
 # equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
-# 
 # 
 # results <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
@@ -75,8 +86,17 @@ estimate_several_gev_models <- function(x, block_sizes, nsloc = NULL){
 # # get the extremal indexes
 # results$extremal_indexes
 # 
+# # get the associated block maxima
+# results$block_maxima_object
+# 
+# # get the associated block maxima indexes
+# results$block_maxima_indexes_object
+# 
 # # get the normalized gev parameters
 # results$normalized_gev_parameters_object
+# 
+# # get the full normalized gev parameters
+# results$full_normalized_gev_parameters_object
 # 
 # # get gev models
 # models<- results$gev_models_object
@@ -91,9 +111,3 @@ estimate_several_gev_models <- function(x, block_sizes, nsloc = NULL){
 # 
 # class(model_1)
 # names(model_1)
-# 
-# # get the associated block maxima
-# model_1$data
-# 
-# # get the associated block maxima indexes
-# results$block_maxima_indexes_object[[1]]
