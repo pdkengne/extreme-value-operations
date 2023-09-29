@@ -74,6 +74,11 @@ block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 
+rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+
+plot_several_standardized_block_maxima_mean_nonstationary(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+plot_several_standardized_block_maxima_mean_nonstationary(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+
 gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 
 results <- estimate_gev_mixture_model_pessimistic_weights(gev_models, use_extremal_index = FALSE)
