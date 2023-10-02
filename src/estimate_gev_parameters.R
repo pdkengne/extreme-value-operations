@@ -1,5 +1,7 @@
 # library(evd)
 
+source("./src/estimate_gev_model_parameters.R")
+
 options(digits = 10)
 
 estimate_gev_parameters <- function(x, ..., nsloc = NULL, prob = NULL, std.err = FALSE){
@@ -8,8 +10,23 @@ estimate_gev_parameters <- function(x, ..., nsloc = NULL, prob = NULL, std.err =
   # prob: order of quantile associated with the parametrization (quantile, scale, shape)
   # std.err: a boolean which indicates whether the standard errors are returned or not
   
-  gev_model <- evd::fgev(x, ..., nsloc = nsloc, prob = prob, std.err = std.err,
-                        corr = FALSE, method = "BFGS", warn.inf = TRUE)
+  initial_estimate <- estimate_gev_model_parameters(x = x)
+  
+  start_parameters <- initial_estimate$results$par
+  
+  start <- list(loc = start_parameters["location"],
+                scale = start_parameters["scale"],
+                shape = start_parameters["shape"])
+  
+  gev_model <- evd::fgev(x, 
+                         start = start, 
+                         ..., 
+                         nsloc = nsloc, 
+                         prob = prob, 
+                         std.err = std.err,
+                         corr = FALSE, 
+                         method = "BFGS", 
+                         warn.inf = TRUE)
   
   gev_model
 }

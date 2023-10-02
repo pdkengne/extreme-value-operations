@@ -59,6 +59,7 @@ source("./src/estimate_several_gev_models.R")
 source("./src/find_minimum_block_size.R")
 source("./src/find_block_size_associated_with_given_number_of_blocks.R")
 source("./src/generate_gev_sample.R")
+source("./src/plot_several_standardized_block_maxima_mean.R")
 source("./src/estimate_several_standardized_block_maxima_mean.R")
 
 x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = -0.2)
@@ -73,11 +74,13 @@ block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 
 equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+equivalent_block_sizes
 
 rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+rejected_block_sizes
 
-plot_several_standardized_block_maxima_mean_nonstationary(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-plot_several_standardized_block_maxima_mean_nonstationary(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
 
 gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 
@@ -113,6 +116,7 @@ points(names(results$pessimistic_weights_loc), results$pessimistic_weights, col 
 source("./src/estimate_several_gev_models.R")
 source("./src/find_minimum_block_size.R")
 source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+source("./src/plot_several_standardized_block_maxima_mean.R")
 source("./src/estimate_several_standardized_block_maxima_mean.R")
 
 x <- rnorm(n = 10000)
@@ -125,8 +129,15 @@ maximum_block_size
 
 block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 
+plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+
 equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+equivalent_block_sizes
+
+rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+rejected_block_sizes
 
 gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 

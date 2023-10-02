@@ -35,7 +35,7 @@ timestamp_position <- sapply(Gnss_map_matching$timestamp,
 longitude_Gnss_map_matching_errors <- Gnss_imar$longitude[timestamp_position] - Gnss_map_matching$longitude
 
 #'
-coefficient <- 10^(4)
+coefficient <- 1
 x <- coefficient*abs(longitude_Gnss_map_matching_errors)
 
 #+ fig.width=12, fig.height=8
@@ -49,7 +49,7 @@ n <- length(x)
 n
 
 #'
-nlargest <- 2000
+nlargest <- 1000
 
 #
 y <- extract_nlargest_sample(x, n = nlargest)

@@ -13,13 +13,15 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
   # estimate the confidence intervals
   estimated_mean_confidence_intervals <- sapply(block_sizes, 
                                                 function(block_size) 
-                                                  estimate_single_standardized_block_maxima_mean(x, block_size, confidence_level))
+                                                  estimate_single_standardized_block_maxima_mean(x = x, 
+                                                                                                 block_size = block_size, 
+                                                                                                 confidence_level = confidence_level))
   
   estimated_mean_confidence_intervals <- data.frame(t(estimated_mean_confidence_intervals))
   rownames(estimated_mean_confidence_intervals) <- block_sizes
   
   # find the selector of the largest subset of intervals which overlap
-  selector_object <- extract_largest_subset_of_overlapping_intervals(estimated_mean_confidence_intervals[c(1, 3)])
+  selector_object <- extract_largest_subset_of_overlapping_intervals(estimated_mean_confidence_intervals[, c(1, 3)])
   selector <- selector_object$interval_selector
   
   # extract a common interval to all intervals from the largest subset of overlapping intervals
