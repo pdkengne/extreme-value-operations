@@ -4,16 +4,26 @@ source("./src/calculate_gev_cdf.R")
 source("./src/calculate_gev_mixture_model_cdf.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
 
-estimate_gev_mixture_model_automatic_weights_mw_log <- function(gev_models, maximum_iterations = 1500, trace = TRUE){
+estimate_gev_mixture_model_automatic_weights_mw_log <- function(gev_models, 
+                                                                maximum_iterations = 1500, 
+                                                                trace = TRUE, 
+                                                                use_extremal_index = TRUE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
   # maximum_iterations: maximum number of iterations
   # trace: boolean value which indicates whether to print information on the progress of optimization
+  # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
   
   # create an empty output object
   output <- list()
   
   # get the normalized gev parameters
-  normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
+  if (use_extremal_index){
+    normalized_gev_parameters <- gev_models$full_normalized_gev_parameters_object
+  }
+  else{
+    normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
+  }
+  
   shapes <- normalized_gev_parameters$shape_star
   scales <- normalized_gev_parameters$scale_star
   locations <- normalized_gev_parameters$loc_star
@@ -111,6 +121,7 @@ estimate_gev_mixture_model_automatic_weights_mw_log <- function(gev_models, maxi
 # source("./src/find_minimum_block_size.R")
 # source("./src/find_block_size_associated_with_given_number_of_blocks.R")
 # source("./src/generate_gev_sample.R")
+# source("./src/plot_several_standardized_block_maxima_mean.R")
 # source("./src/estimate_several_standardized_block_maxima_mean.R")
 # 
 # x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
@@ -123,12 +134,19 @@ estimate_gev_mixture_model_automatic_weights_mw_log <- function(gev_models, maxi
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# 
 # equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+# equivalent_block_sizes
+# 
+# rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+# rejected_block_sizes
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models, trace = TRUE)
+# results <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models, trace = TRUE, use_extremal_index = TRUE)
 # 
 # results
 # 
@@ -140,6 +158,7 @@ estimate_gev_mixture_model_automatic_weights_mw_log <- function(gev_models, maxi
 # source("./src/estimate_several_gev_models.R")
 # source("./src/find_minimum_block_size.R")
 # source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# source("./src/plot_several_standardized_block_maxima_mean.R")
 # source("./src/estimate_several_standardized_block_maxima_mean.R")
 # 
 # x <- rnorm(n = 1000)
@@ -152,12 +171,19 @@ estimate_gev_mixture_model_automatic_weights_mw_log <- function(gev_models, maxi
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# 
 # equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+# equivalent_block_sizes
+# 
+# rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+# rejected_block_sizes
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models, trace = TRUE)
+# results <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models, trace = TRUE, use_extremal_index = TRUE)
 # 
 # results
 # 

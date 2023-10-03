@@ -53,116 +53,116 @@ estimate_gev_mixture_model_pessimistic_weights <- function(gev_models, use_extre
 }
 
 
-# example 1
-
-source("./src/estimate_several_gev_models.R")
-source("./src/find_minimum_block_size.R")
-source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-source("./src/generate_gev_sample.R")
-source("./src/plot_several_standardized_block_maxima_mean.R")
-source("./src/estimate_several_standardized_block_maxima_mean.R")
-
-x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = -0.2)
-
-minimum_block_size <- find_minimum_block_size(x)
-minimum_block_size
-
-maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
-maximum_block_size
-
-block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
-
-equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
-equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
-equivalent_block_sizes
-
-rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
-rejected_block_sizes
-
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
-
-gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
-
-results <- estimate_gev_mixture_model_pessimistic_weights(gev_models, use_extremal_index = FALSE)
-
-# results
-names(results)
-lapply(results, function(weights) range(weights))
-lapply(results, function(weights) sum(weights))
-
-y_df <- cbind(results$pessimistic_weights_shape,
-              results$pessimistic_weights_scale,
-              results$pessimistic_weights_loc,
-              results$pessimistic_weights)
-
-y <- apply(y_df, 1, max)
-
-plot(names(results$pessimistic_weights_shape), y, ylim = range(y_df),
-     type = "h", xlab = "block sizes", ylab = "weights",
-     main = "estimated weights: shape (blue), scale (green), location (red) and model (yellow)")
-
-points(names(results$pessimistic_weights_shape), results$pessimistic_weights_shape, col = 4, pch = 20)
-
-points(names(results$pessimistic_weights_scale), results$pessimistic_weights_scale, col = 3, pch = 20)
-
-points(names(results$pessimistic_weights_loc), results$pessimistic_weights_loc, col = 2, pch = 20)
-
-points(names(results$pessimistic_weights_loc), results$pessimistic_weights, col = 7, pch = 20)
-
-
-# example 2
-
-source("./src/estimate_several_gev_models.R")
-source("./src/find_minimum_block_size.R")
-source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-source("./src/plot_several_standardized_block_maxima_mean.R")
-source("./src/estimate_several_standardized_block_maxima_mean.R")
-
-x <- rnorm(n = 10000)
-
-minimum_block_size <- find_minimum_block_size(x)
-minimum_block_size
-
-maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
-maximum_block_size
-
-block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
-
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
-
-equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
-equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
-equivalent_block_sizes
-
-rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
-rejected_block_sizes
-
-gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
-
-results <- estimate_gev_mixture_model_pessimistic_weights(gev_models, use_extremal_index = TRUE)
-
-# results
-names(results)
-lapply(results, function(weights) range(weights))
-lapply(results, function(weights) sum(weights))
-
-y_df <- cbind(results$pessimistic_weights_shape,
-              results$pessimistic_weights_scale,
-              results$pessimistic_weights_loc,
-              results$pessimistic_weights)
-
-y <- apply(y_df, 1, max)
-
-plot(names(results$pessimistic_weights_shape), y, ylim = range(y_df),
-     type = "h", xlab = "block sizes", ylab = "weights",
-     main = "estimated weights: shape (blue), scale (green), location (red) and model (yellow)")
-
-points(names(results$pessimistic_weights_shape), results$pessimistic_weights_shape, col = 4, pch = 20)
-
-points(names(results$pessimistic_weights_scale), results$pessimistic_weights_scale, col = 3, pch = 20)
-
-points(names(results$pessimistic_weights_loc), results$pessimistic_weights_loc, col = 2, pch = 20)
-
-points(names(results$pessimistic_weights_loc), results$pessimistic_weights, col = 7, pch = 20)
+# # example 1
+# 
+# source("./src/estimate_several_gev_models.R")
+# source("./src/find_minimum_block_size.R")
+# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# source("./src/generate_gev_sample.R")
+# source("./src/plot_several_standardized_block_maxima_mean.R")
+# source("./src/estimate_several_standardized_block_maxima_mean.R")
+# 
+# x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# minimum_block_size <- find_minimum_block_size(x)
+# minimum_block_size
+# 
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+# maximum_block_size
+# 
+# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# 
+# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+# equivalent_block_sizes
+# 
+# rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+# rejected_block_sizes
+# 
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# 
+# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
+# 
+# results <- estimate_gev_mixture_model_pessimistic_weights(gev_models, use_extremal_index = FALSE)
+# 
+# # results
+# names(results)
+# lapply(results, function(weights) range(weights))
+# lapply(results, function(weights) sum(weights))
+# 
+# y_df <- cbind(results$pessimistic_weights_shape,
+#               results$pessimistic_weights_scale,
+#               results$pessimistic_weights_loc,
+#               results$pessimistic_weights)
+# 
+# y <- apply(y_df, 1, max)
+# 
+# plot(names(results$pessimistic_weights_shape), y, ylim = range(y_df),
+#      type = "h", xlab = "block sizes", ylab = "weights",
+#      main = "estimated weights: shape (blue), scale (green), location (red) and model (yellow)")
+# 
+# points(names(results$pessimistic_weights_shape), results$pessimistic_weights_shape, col = 4, pch = 20)
+# 
+# points(names(results$pessimistic_weights_scale), results$pessimistic_weights_scale, col = 3, pch = 20)
+# 
+# points(names(results$pessimistic_weights_loc), results$pessimistic_weights_loc, col = 2, pch = 20)
+# 
+# points(names(results$pessimistic_weights_loc), results$pessimistic_weights, col = 7, pch = 20)
+# 
+# 
+# # example 2
+# 
+# source("./src/estimate_several_gev_models.R")
+# source("./src/find_minimum_block_size.R")
+# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# source("./src/plot_several_standardized_block_maxima_mean.R")
+# source("./src/estimate_several_standardized_block_maxima_mean.R")
+# 
+# x <- rnorm(n = 10000)
+# 
+# minimum_block_size <- find_minimum_block_size(x)
+# minimum_block_size
+# 
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+# maximum_block_size
+# 
+# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# 
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# 
+# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+# equivalent_block_sizes
+# 
+# rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+# rejected_block_sizes
+# 
+# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
+# 
+# results <- estimate_gev_mixture_model_pessimistic_weights(gev_models, use_extremal_index = TRUE)
+# 
+# # results
+# names(results)
+# lapply(results, function(weights) range(weights))
+# lapply(results, function(weights) sum(weights))
+# 
+# y_df <- cbind(results$pessimistic_weights_shape,
+#               results$pessimistic_weights_scale,
+#               results$pessimistic_weights_loc,
+#               results$pessimistic_weights)
+# 
+# y <- apply(y_df, 1, max)
+# 
+# plot(names(results$pessimistic_weights_shape), y, ylim = range(y_df),
+#      type = "h", xlab = "block sizes", ylab = "weights",
+#      main = "estimated weights: shape (blue), scale (green), location (red) and model (yellow)")
+# 
+# points(names(results$pessimistic_weights_shape), results$pessimistic_weights_shape, col = 4, pch = 20)
+# 
+# points(names(results$pessimistic_weights_scale), results$pessimistic_weights_scale, col = 3, pch = 20)
+# 
+# points(names(results$pessimistic_weights_loc), results$pessimistic_weights_loc, col = 2, pch = 20)
+# 
+# points(names(results$pessimistic_weights_loc), results$pessimistic_weights, col = 7, pch = 20)
