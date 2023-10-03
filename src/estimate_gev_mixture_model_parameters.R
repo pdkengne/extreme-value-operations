@@ -77,18 +77,26 @@ estimate_gev_mixture_model_parameters <- function(x,
   extremal_indexes <- gev_models$extremal_indexes
   
   # estimate the identic weights
-  identic_weights_mw <- estimate_gev_mixture_model_identic_weights(gev_models)
+  identic_weights_mw <- estimate_gev_mixture_model_identic_weights(gev_models = gev_models,
+                                                                   use_extremal_index = use_extremal_index)
   
   # estimate the pessimistic weights
-  pessimistic_weights_object <- estimate_gev_mixture_model_pessimistic_weights(gev_models)
+  pessimistic_weights_object <- estimate_gev_mixture_model_pessimistic_weights(gev_models = gev_models,
+                                                                               use_extremal_index = use_extremal_index)
   pessimistic_weights_mw <- pessimistic_weights_object$pessimistic_weights
   
   # estimate model wise automatic weights 
   if (log_mv){
-    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models, maximum_iterations = maximum_iterations, trace = trace)
+    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models = gev_models,
+                                                                                       maximum_iterations = maximum_iterations, 
+                                                                                       trace = trace,
+                                                                                       use_extremal_index = use_extremal_index)
   }
   else{
-    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, maximum_iterations = maximum_iterations, trace = trace)
+    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models = gev_models,
+                                                                                   maximum_iterations = maximum_iterations, 
+                                                                                   trace = trace,
+                                                                                   use_extremal_index = use_extremal_index)
   }
   automatic_weights_mw <- automatic_weights_mw_object$automatic_weights
   automatic_weights_mw_statistics <- list(function_value = automatic_weights_mw_object$function_value,
@@ -100,10 +108,16 @@ estimate_gev_mixture_model_parameters <- function(x,
   
   # estimate parameter wise automatic weights
   if (log_pw){
-    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models, maximum_iterations = maximum_iterations, trace = trace)
+    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models = gev_models,
+                                                                                       maximum_iterations = maximum_iterations, 
+                                                                                       trace = trace,
+                                                                                       use_extremal_index = use_extremal_index)
   }
   else{
-    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw(gev_models, maximum_iterations = maximum_iterations, trace = trace)
+    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw(gev_models = gev_models,
+                                                                                   maximum_iterations = maximum_iterations, 
+                                                                                   trace = trace,
+                                                                                   use_extremal_index = use_extremal_index)
   }
   automatic_weights_pw_statistics <- list(function_value = automatic_weights_pw_object$function_value,
                                           gradient_value = automatic_weights_pw_object$gradient_value,
@@ -189,7 +203,7 @@ estimate_gev_mixture_model_parameters <- function(x,
 # nlargest <- 1000
 # 
 # # x <- rnorm(n = n)
-# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
 # 
 # results <- estimate_gev_mixture_model_parameters(x,
 #                                                  nsloc = NULL,
@@ -199,6 +213,8 @@ estimate_gev_mixture_model_parameters <- function(x,
 #                                                  threshold = NULL,
 #                                                  nlargest = nlargest,
 #                                                  confidence_level = 0.95,
+#                                                  use_extremal_index = TRUE,
+#                                                  maximum_iterations = 1500,
 #                                                  log_mv = TRUE,
 #                                                  log_pw = TRUE,
 #                                                  trace = TRUE)
@@ -206,14 +222,14 @@ estimate_gev_mixture_model_parameters <- function(x,
 # #results
 # names(results)
 # 
-# # "data"                                      "data_largest"                              "block_sizes"
-# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_indexes_object"
-# # "gev_models_object"                         "extremal_indexes"                          "normalized_gev_parameters_object"
-# # "weighted_normalized_gev_parameters_object" "identic_weights_mw"                        "pessimistic_weights_mw"
-# # "pessimistic_weights_pw_shape"              "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"
-# # "automatic_weights_mw"                      "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"
-# # "automatic_weights_pw_scale"                "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
-# 
+# # "data"                                      "data_largest"                              "block_sizes"                              
+# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_object"                      
+# # "block_maxima_indexes_object"               "gev_models_object"                         "extremal_indexes"                         
+# # "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"     "weighted_normalized_gev_parameters_object"
+# # "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"             
+# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"                     
+# # "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"               
+# # "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"          
 # 
 # # get the block sizes
 # results$block_sizes
@@ -223,6 +239,9 @@ estimate_gev_mixture_model_parameters <- function(x,
 # 
 # # get the normalized gev parameters
 # results$normalized_gev_parameters_object
+# 
+# # get the full normalized gev parameters
+# results$full_normalized_gev_parameters_object
 # 
 # # get model wise automatic weights
 # results$automatic_weights_mw
