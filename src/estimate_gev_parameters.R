@@ -4,17 +4,15 @@ options(digits = 10)
 
 estimate_gev_parameters <- function(x, 
                                     data = NULL, 
-                                    threshold = NULL, 
-                                    threshold.fun = ~1, 
                                     location.fun = ~1,
                                     scale.fun = ~1, 
                                     shape.fun = ~1, 
                                     use.phi = FALSE,
-                                    type = c("GEV", "GP", "PP", "Gumbel", "Exponential")[1],
+                                    type = c("GEV", "Gumbel")[1],
                                     method = c("MLE", "GMLE", "Bayesian", "Lmoments")[1]){
   # x: vector of observations (assumed to be block maxima)
   # data: dataframe of covariates for linear modeling of the location parameter
-  # threshold.fun, location.fun, scale.fun, shape.fun: formula describing a model for each parameter using columns from data. data
+  # location.fun, scale.fun, shape.fun: formula describing a model for each parameter using columns from data. data
   #                                                    must be supplied if any of these arguments are anything other than ~ 1.
   # use.phi: boolean which indicates whether to use the log of the scale parameter or not
   # type: type of model to use
@@ -28,8 +26,6 @@ estimate_gev_parameters <- function(x,
   # estimation of the gev model
   gev_model <- extRemes::fevd(x = x, 
                               data = data, 
-                              threshold = threshold, 
-                              threshold.fun = threshold.fun, 
                               location.fun = location.fun,
                               scale.fun = scale.fun, 
                               shape.fun = shape.fun, 
