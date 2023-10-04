@@ -14,7 +14,7 @@ estimate_single_gev_model <- function(x,
                                       shape.fun = ~1, 
                                       use.phi = FALSE,
                                       type = c("GEV", "Gumbel")[1],
-                                      method = c("MLE", "GMLE", "Bayesian", "Lmoments")[1]){
+                                      method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations
   # block_size: size of blocks to consider
   # data: dataframe of covariates for linear modeling of the location parameter

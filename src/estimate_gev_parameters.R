@@ -9,7 +9,7 @@ estimate_gev_parameters <- function(x,
                                     shape.fun = ~1, 
                                     use.phi = FALSE,
                                     type = c("GEV", "Gumbel")[1],
-                                    method = c("MLE", "GMLE", "Bayesian", "Lmoments")[1]){
+                                    method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations (assumed to be block maxima)
   # data: dataframe of covariates for linear modeling of the location parameter
   # location.fun, scale.fun, shape.fun: formula describing a model for each parameter using columns from data. data
@@ -56,7 +56,7 @@ estimate_gev_parameters <- function(x,
 # 
 # x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
 # 
-# results <- estimate_gev_parameters(x, method = c("MLE", "GMLE", "Bayesian", "Lmoments")[4])
+# results <- estimate_gev_parameters(x, method = c("MLE", "GMLE", "Lmoments")[3])
 # 
 # results
 # names(results)
@@ -68,7 +68,7 @@ estimate_gev_parameters <- function(x,
 # 
 # x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = 0)
 # 
-# results <- estimate_gev_parameters(x, method = c("MLE", "GMLE", "Bayesian", "Lmoments")[2])
+# results <- estimate_gev_parameters(x, method = c("MLE", "GMLE", "Lmoments")[2])
 # 
 # results
 # names(results)
@@ -90,7 +90,7 @@ estimate_gev_parameters <- function(x,
 #                                   scale.fun = ~ ., 
 #                                   shape.fun = ~ ., 
 #                                   use.phi = TRUE,
-#                                   method = c("MLE", "GMLE", "Bayesian", "Lmoments")[1])
+#                                   method = c("MLE", "GMLE", "Lmoments")[1])
 # 
 # results
 # names(results)
