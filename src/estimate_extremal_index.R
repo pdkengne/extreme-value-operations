@@ -1,14 +1,21 @@
-# library(evd)
+# library(extRemes)
 
-estimate_extremal_index <- function(x, threshold, run = 0){
+estimate_extremal_index <- function(x, 
+                                    threshold, 
+                                    method = c("intervals", "runs")[1],
+                                    run.length = 1){
   # x: vector of observations
   # threshold: threshold above which (non-inclusive) the extremal index should be calculated
-  # run: a positive integer denoting the clustering interval length (the number of threshold deficits to
-  #      be considered as starting a new cluster). If run = 0, the intervals estimator of Ferro and Segers (2003) is used.
+  # method: estimation method for the extremal index. By default, the intervals estimator of Ferro and Segers (2003) is used.
+  # run.length: a positive integer denoting the clustering interval length
+  #             (the number of threshold deficits to be considered as starting a new cluster).
   
-  extremal_index <- evd::exi(x, u = threshold, r = run)
+  extremal_index <- extRemes::extremalindex(x = x, 
+                                            threshold = threshold, 
+                                            method = method,
+                                            run.length = run.length)
   
-  extremal_index
+  as.numeric(extremal_index["extremal.index"])
 }
 
 
