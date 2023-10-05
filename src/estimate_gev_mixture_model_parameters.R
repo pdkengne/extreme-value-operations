@@ -10,7 +10,6 @@ source("./src/estimate_gev_mixture_model_automatic_weights_mw_log.R")
 source("./src/estimate_gev_mixture_model_automatic_weights_pw_log.R")
 
 estimate_gev_mixture_model_parameters <- function(x, 
-                                                  nsloc = NULL, 
                                                   std.err = FALSE, 
                                                   block_sizes = NULL,
                                                   minimum_nblocks = 50,
@@ -24,7 +23,6 @@ estimate_gev_mixture_model_parameters <- function(x,
                                                   trace = TRUE){
   # x: vector of observations
   # block_sizes: vector containing the sizes of blocks to consider
-  # nsloc: dataframe of covariates for linear modeling of the location parameter
   # trace: boolean value which indicates whether to print information on the progress of optimization
   # std.err: a boolean which indicates whether the standard errors are returned or not
   # log_mv: a boolean which indicates whether the model wise loss function is at logarithmic scale or not
@@ -61,8 +59,7 @@ estimate_gev_mixture_model_parameters <- function(x,
   
   # estimate several gev models associated with the equivalent block sizes
   gev_models <- estimate_several_gev_models(x = data_largest, 
-                                            block_sizes = equivalent_block_sizes, 
-                                            nsloc = nsloc)
+                                            block_sizes = equivalent_block_sizes)
   
   # get all gev models
   gev_models_object <- gev_models$gev_models_object
@@ -160,7 +157,6 @@ estimate_gev_mixture_model_parameters <- function(x,
   # update the output object
   output[["data"]] <- x
   output[["data_largest"]] <- data_largest
-  output[["covariates"]] <- nsloc
   
   output[["block_sizes"]] <- block_sizes
   output[["equivalent_block_sizes"]] <- equivalent_block_sizes
@@ -206,7 +202,6 @@ estimate_gev_mixture_model_parameters <- function(x,
 # x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
 # 
 # results <- estimate_gev_mixture_model_parameters(x,
-#                                                  nsloc = NULL,
 #                                                  std.err = FALSE,
 #                                                  block_sizes = NULL,
 #                                                  minimum_nblocks = 50,
@@ -222,14 +217,14 @@ estimate_gev_mixture_model_parameters <- function(x,
 # #results
 # names(results)
 # 
-# # "data"                                      "data_largest"                              "block_sizes"                              
-# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_object"                      
-# # "block_maxima_indexes_object"               "gev_models_object"                         "extremal_indexes"                         
+# # "data"                                      "data_largest"                              "block_sizes"
+# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_object"
+# # "block_maxima_indexes_object"               "gev_models_object"                         "extremal_indexes"
 # # "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"     "weighted_normalized_gev_parameters_object"
-# # "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"             
-# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"                     
-# # "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"               
-# # "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"          
+# # "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
+# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"
+# # "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"
+# # "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
 # 
 # # get the block sizes
 # results$block_sizes

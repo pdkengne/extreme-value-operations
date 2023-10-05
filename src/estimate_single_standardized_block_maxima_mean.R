@@ -10,13 +10,13 @@ estimate_single_standardized_block_maxima_mean <- function(x, block_size = 1, co
   block_maxima <- extract_block_maxima(x, block_size)
   
   # estimate gev model
-  gev_model <- estimate_gev_parameters(x = block_maxima, nsloc = NULL)
+  gev_model <- estimate_gev_parameters(x = block_maxima)
   
   # extract gev model parameters
-  gev_model_parameters <- gev_model$estimate
+  gev_model_parameters <- gev_model$results$par
   
   # calculate standardized block maxima
-  standardized_block_maxima <- (block_maxima - gev_model_parameters["loc"])/gev_model_parameters["scale"]
+  standardized_block_maxima <- (block_maxima - gev_model_parameters["location"])/gev_model_parameters["scale"]
   
   # calculate the confidence interval of the standardized block maxima mean
   standardized_block_maxima_student_test <- t.test(x = standardized_block_maxima, 
