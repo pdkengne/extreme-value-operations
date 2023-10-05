@@ -24,7 +24,12 @@ plot_gev_mixture_model_pdf <- function(gev_mixture_model,
   uvdata <- gev_mixture_model$data_largest
   
   # extract block size
-  block_size <- max(gev_mixture_model$block_sizes)
+  if (gev_mixture_model$use_lower_threshold){
+    block_size <- min(gev_mixture_model$block_sizes)
+  }
+  else{
+    block_size <- max(gev_mixture_model$block_sizes)
+  }
   
   # find the threshold associated with the block_size
   threshold <- find_threshold_associated_with_given_block_size(x = uvdata, block_size = block_size)

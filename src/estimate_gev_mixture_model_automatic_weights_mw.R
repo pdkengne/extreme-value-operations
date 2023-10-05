@@ -7,11 +7,13 @@ source("./src/find_threshold_associated_with_given_block_size.R")
 estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models, 
                                                             maximum_iterations = 1500, 
                                                             trace = TRUE, 
-                                                            use_extremal_index = TRUE){
+                                                            use_extremal_index = TRUE,
+                                                            use_lower_threshold = FALSE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
   # maximum_iterations: maximum number of iterations
   # trace: boolean value which indicates whether to print information on the progress of optimization
   # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
+  # use_lower_threshold: a boolean which indicates whether to use threshold associated with the smallest or largest block size
   
   # create an empty output object
   output <- list()
@@ -31,7 +33,12 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
   # extract the largest data to use
   x <- gev_models$data
   block_sizes <- gev_models$block_sizes
-  block_size <- max(block_sizes)
+  if (use_lower_threshold){
+    block_size <- min(block_sizes)
+  }
+  else{
+    block_size <- max(block_sizes)
+  }
   threshold <- find_threshold_associated_with_given_block_size(x, block_size)
   y <- x[x > threshold]
   
@@ -146,7 +153,7 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = TRUE, use_extremal_index = TRUE)
+# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = TRUE, use_extremal_index = TRUE, use_lower_threshold = FALSE)
 # 
 # results
 # 
@@ -183,7 +190,7 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = TRUE, use_extremal_index = TRUE)
+# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = TRUE, use_extremal_index = TRUE, use_lower_threshold = FALSE)
 # 
 # results
 # 

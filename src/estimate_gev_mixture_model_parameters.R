@@ -17,6 +17,7 @@ estimate_gev_mixture_model_parameters <- function(x,
                                                   nlargest = Inf,
                                                   confidence_level = 0.95,
                                                   use_extremal_index = TRUE,
+                                                  use_lower_threshold = FALSE,
                                                   maximum_iterations = 1500,
                                                   log_mv = TRUE,
                                                   log_pw = TRUE,
@@ -31,6 +32,7 @@ estimate_gev_mixture_model_parameters <- function(x,
   # maximum_iterations: maximum number of iterations
   # threshold: lower bound of block maxima
   # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
+  # use_lower_threshold: a boolean which indicates whether to use threshold associated with the smallest or largest block size
   # confidence_level: desired confidence level when extraction equivalent block sizes. 
   #                   Note that this value is ignored if block_sizes != NULL.
   # minimum_nblocks: desired minimum number of blocks. Note that this number is used to infer the largest block size.
@@ -87,13 +89,15 @@ estimate_gev_mixture_model_parameters <- function(x,
     automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models = gev_models,
                                                                                        maximum_iterations = maximum_iterations, 
                                                                                        trace = trace,
-                                                                                       use_extremal_index = use_extremal_index)
+                                                                                       use_extremal_index = use_extremal_index,
+                                                                                       use_lower_threshold = use_lower_threshold)
   }
   else{
     automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models = gev_models,
                                                                                    maximum_iterations = maximum_iterations, 
                                                                                    trace = trace,
-                                                                                   use_extremal_index = use_extremal_index)
+                                                                                   use_extremal_index = use_extremal_index,
+                                                                                   use_lower_threshold = use_lower_threshold)
   }
   automatic_weights_mw <- automatic_weights_mw_object$automatic_weights
   automatic_weights_mw_statistics <- list(function_value = automatic_weights_mw_object$function_value,
@@ -108,13 +112,15 @@ estimate_gev_mixture_model_parameters <- function(x,
     automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models = gev_models,
                                                                                        maximum_iterations = maximum_iterations, 
                                                                                        trace = trace,
-                                                                                       use_extremal_index = use_extremal_index)
+                                                                                       use_extremal_index = use_extremal_index,
+                                                                                       use_lower_threshold = use_lower_threshold)
   }
   else{
     automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw(gev_models = gev_models,
                                                                                    maximum_iterations = maximum_iterations, 
                                                                                    trace = trace,
-                                                                                   use_extremal_index = use_extremal_index)
+                                                                                   use_extremal_index = use_extremal_index,
+                                                                                   use_lower_threshold = use_lower_threshold)
   }
   automatic_weights_pw_statistics <- list(function_value = automatic_weights_pw_object$function_value,
                                           gradient_value = automatic_weights_pw_object$gradient_value,
@@ -158,6 +164,9 @@ estimate_gev_mixture_model_parameters <- function(x,
   output[["data"]] <- x
   output[["data_largest"]] <- data_largest
   
+  output[["use_lower_threshold"]] <- use_lower_threshold
+  
+  
   output[["block_sizes"]] <- block_sizes
   output[["equivalent_block_sizes"]] <- equivalent_block_sizes
   output[["rejected_block_sizes"]] <- rejected_block_sizes
@@ -190,81 +199,82 @@ estimate_gev_mixture_model_parameters <- function(x,
 
 
 
-# # example 1
-# 
-# source("./src/generate_gev_sample.R")
-# source("./src/plot_several_standardized_block_maxima_mean.R")
-# 
-# n <- 10000
-# nlargest <- 1000
-# 
-# # x <- rnorm(n = n)
-# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
-# 
-# results <- estimate_gev_mixture_model_parameters(x,
-#                                                  std.err = FALSE,
-#                                                  block_sizes = NULL,
-#                                                  minimum_nblocks = 50,
-#                                                  threshold = NULL,
-#                                                  nlargest = nlargest,
-#                                                  confidence_level = 0.95,
-#                                                  use_extremal_index = TRUE,
-#                                                  maximum_iterations = 1500,
-#                                                  log_mv = TRUE,
-#                                                  log_pw = TRUE,
-#                                                  trace = TRUE)
-# 
-# #results
-# names(results)
-# 
-# # "data"                                      "data_largest"                              "block_sizes"
-# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_object"
-# # "block_maxima_indexes_object"               "gev_models_object"                         "extremal_indexes"
-# # "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"     "weighted_normalized_gev_parameters_object"
-# # "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
-# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"
-# # "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"
-# # "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
-# 
-# # get the block sizes
-# results$block_sizes
-# 
-# # get the extremal indexes
-# results$extremal_indexes
-# 
-# # get the normalized gev parameters
-# results$normalized_gev_parameters_object
-# 
-# # get the full normalized gev parameters
-# results$full_normalized_gev_parameters_object
-# 
-# # get model wise automatic weights
-# results$automatic_weights_mw
-# 
-# # get the weighted normalized gev parameters
-# results$weighted_normalized_gev_parameters_object
-# 
-# # get the statistics about the estimation of weights
-# results$automatic_weights_mw_statistics
-# results$automatic_weights_pw_statistics
-# 
-# # plot the mean standardized block maxima
-# plot_several_standardized_block_maxima_mean(x = results$data_largest,
-#                                             block_sizes = results$block_sizes,
-#                                             confidence_level = 0.95,
-#                                             equivalent = FALSE,
-#                                             xlab = "Block Sizes",
-#                                             ylab = "Estimated Values",
-#                                             main = "Mean Standardized Block Maxima Plot")
-# 
-# # plot the mean standardized block maxima (only equivalent models)
-# plot_several_standardized_block_maxima_mean(x = results$data_largest,
-#                                             block_sizes = results$block_sizes,
-#                                             confidence_level = 0.95,
-#                                             equivalent = TRUE,
-#                                             xlab = "Block Sizes",
-#                                             ylab = "Estimated Values",
-#                                             main = "Mean Standardized Block Maxima Plot")
-# # get the rejected block sizes
-# results$rejected_block_sizes
+# example 1
+
+source("./src/generate_gev_sample.R")
+source("./src/plot_several_standardized_block_maxima_mean.R")
+
+n <- 10000
+nlargest <- 1000
+
+# x <- rnorm(n = n)
+x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
+
+results <- estimate_gev_mixture_model_parameters(x,
+                                                 std.err = FALSE,
+                                                 block_sizes = NULL,
+                                                 minimum_nblocks = 50,
+                                                 threshold = NULL,
+                                                 nlargest = nlargest,
+                                                 confidence_level = 0.95,
+                                                 use_extremal_index = TRUE,
+                                                 use_lower_threshold = FALSE,
+                                                 maximum_iterations = 1500,
+                                                 log_mv = TRUE,
+                                                 log_pw = TRUE,
+                                                 trace = TRUE)
+
+#results
+names(results)
+
+# "data"                                      "data_largest"                              "block_sizes"
+# "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_object"
+# "block_maxima_indexes_object"               "gev_models_object"                         "extremal_indexes"
+# "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"     "weighted_normalized_gev_parameters_object"
+# "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
+# "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"
+# "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"
+# "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+
+# get the block sizes
+results$block_sizes
+
+# get the extremal indexes
+results$extremal_indexes
+
+# get the normalized gev parameters
+results$normalized_gev_parameters_object
+
+# get the full normalized gev parameters
+results$full_normalized_gev_parameters_object
+
+# get model wise automatic weights
+results$automatic_weights_mw
+
+# get the weighted normalized gev parameters
+results$weighted_normalized_gev_parameters_object
+
+# get the statistics about the estimation of weights
+results$automatic_weights_mw_statistics
+results$automatic_weights_pw_statistics
+
+# plot the mean standardized block maxima
+plot_several_standardized_block_maxima_mean(x = results$data_largest,
+                                            block_sizes = results$block_sizes,
+                                            confidence_level = 0.95,
+                                            equivalent = FALSE,
+                                            xlab = "Block Sizes",
+                                            ylab = "Estimated Values",
+                                            main = "Mean Standardized Block Maxima Plot")
+
+# plot the mean standardized block maxima (only equivalent models)
+plot_several_standardized_block_maxima_mean(x = results$data_largest,
+                                            block_sizes = results$block_sizes,
+                                            confidence_level = 0.95,
+                                            equivalent = TRUE,
+                                            xlab = "Block Sizes",
+                                            ylab = "Estimated Values",
+                                            main = "Mean Standardized Block Maxima Plot")
+# get the rejected block sizes
+results$rejected_block_sizes
 
