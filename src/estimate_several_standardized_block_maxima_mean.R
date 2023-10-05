@@ -1,11 +1,13 @@
 source("./src/estimate_single_standardized_block_maxima_mean.R")
-source("./src/estimate_single_standardized_block_maxima_mean_nonstationary.R")
 source("./src/extract_largest_subset_of_overlapping_intervals.R")
 
-estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, confidence_level = 0.95){
+estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, 
+                                                            confidence_level = 0.95, 
+                                                            method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations
   # block_sizes: vector containing the sizes of blocks to consider
   # confidence_level: desired confidence level
+  # method: estimation method to use
   
   # create an empty output object
   output <- list()
@@ -15,7 +17,8 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
                                                 function(block_size) 
                                                   estimate_single_standardized_block_maxima_mean(x = x, 
                                                                                                  block_size = block_size, 
-                                                                                                 confidence_level = confidence_level))
+                                                                                                 confidence_level = confidence_level,
+                                                                                                 method = method))
   
   estimated_mean_confidence_intervals <- data.frame(t(estimated_mean_confidence_intervals))
   rownames(estimated_mean_confidence_intervals) <- block_sizes
@@ -58,7 +61,7 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, method = c("MLE", "GMLE", "Lmoments")[1])
 # 
 # names(results)
 # 
@@ -91,7 +94,7 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, method = c("MLE", "GMLE", "Lmoments")[2])
 # 
 # names(results)
 # 
@@ -124,7 +127,7 @@ estimate_several_standardized_block_maxima_mean <- function(x, block_sizes, conf
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# results <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, method = c("MLE", "GMLE", "Lmoments")[3])
 # 
 # names(results)
 # 

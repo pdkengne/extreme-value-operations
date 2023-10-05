@@ -4,6 +4,7 @@ plot_several_standardized_block_maxima_mean <- function(x,
                                                         block_sizes, 
                                                         confidence_level = 0.95,
                                                         equivalent = FALSE,
+                                                        method = c("MLE", "GMLE", "Lmoments")[1],
                                                         xlab = "Block Sizes", 
                                                         ylab = "Estimated Values", 
                                                         main = "Mean Standardized Block Maxima Plot"){
@@ -11,12 +12,13 @@ plot_several_standardized_block_maxima_mean <- function(x,
   # block_sizes: vector containing the sizes of blocks to consider
   # confidence_interval_level: desired confidence level
   # equivalent: a boolean which indicates whether the equivalent estimates are returned or not
+  # method: estimation method to use
   # xlab: label of the x-axis
   # ylab: label of the y-axis
   # main: title of the plot
   
   # estimate the mean of each required standardized block maxima
-  estimated_mean_confidence_intervals_object <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level)
+  estimated_mean_confidence_intervals_object <- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level, method = method)
   
   if (equivalent == TRUE){
     estimated_mean_confidence_intervals <- estimated_mean_confidence_intervals_object$selected
@@ -82,8 +84,8 @@ plot_several_standardized_block_maxima_mean <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE, method = c("MLE", "GMLE", "Lmoments")[1])
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE, method = c("MLE", "GMLE", "Lmoments")[1])
 # 
 # 
 # # example 2
@@ -102,8 +104,8 @@ plot_several_standardized_block_maxima_mean <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE, method = c("MLE", "GMLE", "Lmoments")[2])
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE, method = c("MLE", "GMLE", "Lmoments")[2])
 # 
 # 
 # # example 3
@@ -122,8 +124,8 @@ plot_several_standardized_block_maxima_mean <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE, method = c("MLE", "GMLE", "Lmoments")[3])
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE, method = c("MLE", "GMLE", "Lmoments")[3])
 # 
 # 
 # # example 4
@@ -141,5 +143,5 @@ plot_several_standardized_block_maxima_mean <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE, method = c("MLE", "GMLE", "Lmoments")[1])
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE, method = c("MLE", "GMLE", "Lmoments")[1])

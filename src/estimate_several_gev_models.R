@@ -1,8 +1,9 @@
 source("./src/estimate_single_gev_model.R")
 
-estimate_several_gev_models <- function(x, block_sizes){
+estimate_several_gev_models <- function(x, block_sizes, method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations
   # block_sizes: vector containing the sizes of blocks to consider
+  # method: estimation method to use
   
   # create an empty output object
   output <- list()
@@ -10,7 +11,7 @@ estimate_several_gev_models <- function(x, block_sizes){
   # estimate the gev model associated with each block size
   models <- lapply(block_sizes, 
                    function(block_size)
-                     estimate_single_gev_model(x = x, block_size = block_size)) 
+                     estimate_single_gev_model(x = x, block_size = block_size, method = method)) 
   
   # extract the extremal indexes
   extremal_indexes <- sapply(models, function(model) model$extremal_index)
@@ -77,7 +78,7 @@ estimate_several_gev_models <- function(x, block_sizes){
 # equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 # 
-# results <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
+# results <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, method = c("MLE", "GMLE", "Lmoments")[1])
 # 
 # #results
 # names(results)

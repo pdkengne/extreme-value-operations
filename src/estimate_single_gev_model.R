@@ -37,7 +37,12 @@ estimate_single_gev_model <- function(x,
                                        method = method)
   
   # calculate the normalized gev parameters with block size
-  gev_parameters <- gev_model$results$par
+  if (method != "Lmoments"){
+    gev_parameters <- gev_model$results$par
+  }
+  else{
+    gev_parameters <- gev_model$results
+  }
   
   exponent_bs <- 1/block_size
   
@@ -76,7 +81,7 @@ estimate_single_gev_model <- function(x,
 # 
 # block_size <- 25
 # 
-# results<- estimate_single_gev_model(x, block_size)
+# results<- estimate_single_gev_model(x, block_size, method = c("MLE", "GMLE", "Lmoments")[1])
 # 
 # #results
 # names(results)
@@ -103,6 +108,9 @@ estimate_single_gev_model <- function(x,
 # model
 # 
 # names(model)
+# 
+# # confidence interval for the estimated gev parameters
+# extRemes::ci.fevd(model, type = "parameter")
 # 
 # 
 # # example 2
@@ -113,7 +121,7 @@ estimate_single_gev_model <- function(x,
 # 
 # block_size <- 25
 # 
-# results<- estimate_single_gev_model(x, block_size)
+# results<- estimate_single_gev_model(x, block_size, method = c("MLE", "GMLE", "Lmoments")[2])
 # 
 # #results
 # names(results)
@@ -141,6 +149,9 @@ estimate_single_gev_model <- function(x,
 # 
 # names(model)
 # 
+# # confidence interval for the estimated gev parameters
+# extRemes::ci.fevd(model, type = "parameter")
+# 
 # 
 # # example 3
 # 
@@ -150,7 +161,7 @@ estimate_single_gev_model <- function(x,
 # 
 # block_size <- 40
 # 
-# results<- estimate_single_gev_model(x, block_size)
+# results<- estimate_single_gev_model(x, block_size, method = c("MLE", "GMLE", "Lmoments")[3])
 # 
 # #results
 # names(results)
