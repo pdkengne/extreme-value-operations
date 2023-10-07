@@ -73,6 +73,7 @@ estimate_single_ns_gev_model <- function(x,
 }
 
 
+
 # # example 1
 # 
 # source("./src/generate_gev_sample.R")
@@ -87,12 +88,12 @@ estimate_single_ns_gev_model <- function(x,
 # 
 # block_size <- 25
 # 
-# results<- estimate_single_ns_gev_model(x = x, 
+# results<- estimate_single_ns_gev_model(x = x,
 #                                        block_size = block_size,
-#                                        data = data, 
+#                                        data = data,
 #                                        location.fun = ~ .,
-#                                        scale.fun = ~1, 
-#                                        shape.fun = ~1, 
+#                                        scale.fun = ~1,
+#                                        shape.fun = ~1,
 #                                        use.phi = FALSE,
 #                                        type = c("GEV", "Gumbel")[1],
 #                                        method = c("MLE", "GMLE")[1])
@@ -138,12 +139,12 @@ estimate_single_ns_gev_model <- function(x,
 # 
 # block_size <- 25
 # 
-# results<- estimate_single_ns_gev_model(x = x, 
+# results<- estimate_single_ns_gev_model(x = x,
 #                                        block_size = block_size,
-#                                        data = data, 
+#                                        data = data,
 #                                        location.fun = ~1,
-#                                        scale.fun = ~ trend + random, 
-#                                        shape.fun = ~1, 
+#                                        scale.fun = ~ trend + random,
+#                                        shape.fun = ~1,
 #                                        use.phi = TRUE,
 #                                        type = c("GEV", "Gumbel")[1],
 #                                        method = c("MLE", "GMLE")[2])
@@ -188,12 +189,12 @@ estimate_single_ns_gev_model <- function(x,
 # 
 # block_size <- 40
 # 
-# results<- estimate_single_ns_gev_model(x = x, 
+# results<- estimate_single_ns_gev_model(x = x,
 #                                        block_size = block_size,
-#                                        data = data, 
+#                                        data = data,
 #                                        location.fun = ~1,
-#                                        scale.fun = ~ ., 
-#                                        shape.fun = ~ random, 
+#                                        scale.fun = ~ .,
+#                                        shape.fun = ~ random,
 #                                        use.phi = FALSE,
 #                                        type = c("GEV", "Gumbel")[1],
 #                                        method = c("MLE", "GMLE")[1])
@@ -230,20 +231,20 @@ estimate_single_ns_gev_model <- function(x,
 # 
 # n <- 1000
 # 
-# x <- generate_gev_sample(n = n, loc = 0.13, scale = 1.1, shape = 0.2)
+# x <- generate_gev_sample(n = n, loc = 0.13, scale = 1.1, shape = 0)
 # 
 # trend <- (-49:50)/n
 # rnd <- runif(n = n, min = -0.5, max = 0.5)
 # data <- data.frame(trend = trend, random = rnd)
 # 
-# block_size <- 40 
+# block_size <- 40
 # 
-# results <- estimate_single_ns_gev_model(x = x, 
+# results <- estimate_single_ns_gev_model(x = x,
 #                                         block_size = block_size,
-#                                         data = data, 
+#                                         data = data,
 #                                         location.fun = ~ .,
-#                                         scale.fun = ~ ., 
-#                                         shape.fun = ~ 1, 
+#                                         scale.fun = ~ .,
+#                                         shape.fun = ~ 1,
 #                                         use.phi = TRUE,
 #                                         type = c("GEV", "Gumbel")[1],
 #                                         method = c("MLE", "GMLE")[1])
