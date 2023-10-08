@@ -21,11 +21,6 @@ estimate_several_ns_gev_models <- function(x,
   # create an empty output object
   output <- list()
   
-  # check whether data is null
-  if (is.null(data)){
-    data <- data.frame("x" = x)
-  }
-  
   # estimate the gev model associated with each block size
   models <- lapply(block_sizes, 
                    function(block_size)
@@ -61,7 +56,7 @@ estimate_several_ns_gev_models <- function(x,
   
   # update the output object
   output[["data"]] <- x
-  output[["covariates"]] <- data
+  output[["covariates"]] <- models[[1]]$covariates
   output[["block_sizes"]] <- block_sizes
   output[["block_maxima_object"]] <- block_maxima_object
   output[["block_maxima_indexes_object"]] <- block_maxima_indexes_object
@@ -104,12 +99,12 @@ estimate_several_ns_gev_models <- function(x,
 # equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 # 
-# results <- estimate_several_ns_gev_models(x = x, 
-#                                           block_sizes = equivalent_block_sizes, 
-#                                           data = data, 
+# results <- estimate_several_ns_gev_models(x = x,
+#                                           block_sizes = equivalent_block_sizes,
+#                                           data = data,
 #                                           location.fun = ~ .,
-#                                           scale.fun = ~ ., 
-#                                           shape.fun = ~1, 
+#                                           scale.fun = ~ .,
+#                                           shape.fun = ~ 1,
 #                                           use.phi = TRUE,
 #                                           type = c("GEV", "Gumbel")[1],
 #                                           method = c("MLE", "GMLE")[1])
@@ -133,7 +128,8 @@ estimate_several_ns_gev_models <- function(x,
 # results$block_maxima_covariates_object
 # 
 # # get the full covariates
-# results$covariates
+# head(results$covariates)
+# tail(results$covariates)
 # 
 # # get gev models
 # models<- results$gev_models_object
