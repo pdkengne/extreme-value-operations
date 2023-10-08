@@ -19,7 +19,7 @@ estimate_single_ns_gev_model <- function(x,
   # block_size: size of blocks to consider
   # data: dataframe of covariates for linear modeling of the location parameter
   # location.fun, scale.fun, shape.fun: formula describing a model for each parameter using columns from data. data
-  #                                                    must be supplied if any of these arguments are anything other than ~ 1.
+  #                                     must be supplied if any of these arguments are anything other than ~ 1.
   # use.phi: boolean which indicates whether to use the log of the scale parameter in numerical optimization
   # type: type of model to use
   # method: estimation method to use
