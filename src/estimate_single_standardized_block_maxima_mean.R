@@ -1,25 +1,29 @@
-source("./src/extract_block_maxima.R")
-source("./src/estimate_gev_parameters.R")
+source("./src/estimate_single_gev_model.R")
 
-estimate_single_standardized_block_maxima_mean <- function(x, block_size = 1, confidence_level = 0.95, method = c("MLE", "GMLE", "Lmoments")[1]){
+estimate_single_standardized_block_maxima_mean <- function(x, 
+                                                           block_size = 1, 
+                                                           confidence_level = 0.95, 
+                                                           method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations
   # block_size: size of blocks to consider
   # confidence_level: desired confidence level
   # method: estimation method to use
   
-  # extract block maxima
-  block_maxima <- extract_block_maxima(x, block_size)
-  
   # estimate gev model
-  gev_model <- estimate_gev_parameters(x = block_maxima, method = method)
+  model <- estimate_single_gev_model(x = x, 
+                                     block_size = block_size,
+                                     method = method)
   
   # extract gev model parameters
   if (method != "Lmoments"){
-    gev_model_parameters <- gev_model$results$par
+    gev_model_parameters <- model$gev_model$results$par
   }
   else{
-    gev_model_parameters <- gev_model$results
+    gev_model_parameters <- model$gev_model$results
   }
+  
+  # extract block maxima
+  block_maxima <- model$block_maxima
   
   # calculate standardized block maxima
   standardized_block_maxima <- (block_maxima - gev_model_parameters["location"])/gev_model_parameters["scale"]
