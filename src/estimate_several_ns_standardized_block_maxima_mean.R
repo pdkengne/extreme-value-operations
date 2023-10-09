@@ -64,6 +64,7 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
 }
 
 
+
 # # example 1
 # 
 # source("./src/find_minimum_block_size.R")
@@ -102,7 +103,13 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
 # source("./src/find_block_size_associated_with_given_number_of_blocks.R")
 # source("./src/generate_gev_sample.R")
 # 
-# x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = 0)
+# n <- 10000
+# 
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0)
+# 
+# trend <- (-49:50)/n
+# rnd <- runif(n = n, min = -0.5, max = 0.5)
+# data <- data.frame(trend = trend, random = rnd)
 # 
 # minimum_block_size <- find_minimum_block_size(x)
 # minimum_block_size
@@ -112,7 +119,16 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# results <- estimate_several_ns_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, method = c("MLE", "GMLE")[2])
+# results <- estimate_several_ns_standardized_block_maxima_mean(x, 
+#                                                               block_sizes, 
+#                                                               confidence_level = 0.95, 
+#                                                               data = data, 
+#                                                               location.fun = ~ .,
+#                                                               scale.fun = ~1, 
+#                                                               shape.fun = ~1, 
+#                                                               use.phi = TRUE,
+#                                                               type = c("GEV", "Gumbel")[1],
+#                                                               method = c("MLE", "GMLE")[2])
 # 
 # names(results)
 # 
@@ -135,7 +151,13 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
 # source("./src/find_block_size_associated_with_given_number_of_blocks.R")
 # source("./src/generate_gev_sample.R")
 # 
-# x <- generate_gev_sample(n = 10000, loc = 1, scale = 0.5, shape = -0.2)
+# n <- 10000
+# 
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0)
+# 
+# trend <- (-49:50)/n
+# rnd <- runif(n = n, min = -0.5, max = 0.5)
+# data <- data.frame(trend = trend, random = rnd)
 # 
 # minimum_block_size <- find_minimum_block_size(x)
 # minimum_block_size
@@ -145,7 +167,16 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# results <- estimate_several_ns_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, method = c("MLE", "GMLE")[3])
+# results <- estimate_several_ns_standardized_block_maxima_mean(x, 
+#                                                               block_sizes, 
+#                                                               confidence_level = 0.95, 
+#                                                               data = data, 
+#                                                               location.fun = ~ .,
+#                                                               scale.fun = ~ ., 
+#                                                               shape.fun = ~1, 
+#                                                               use.phi = TRUE,
+#                                                               type = c("GEV", "Gumbel")[1],
+#                                                               method = c("MLE", "GMLE")[1])
 # 
 # names(results)
 # 
@@ -160,3 +191,4 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
 # 
 # # common interval
 # results$common_interval
+
