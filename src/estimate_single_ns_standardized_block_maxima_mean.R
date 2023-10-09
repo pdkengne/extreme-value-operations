@@ -48,7 +48,6 @@ estimate_single_ns_standardized_block_maxima_mean <- function(x,
   estimated_mean_confidence_interval[c(1,3)] <- standardized_block_maxima_student_test$conf.int
   names(estimated_mean_confidence_interval) <- c("lower_bound", "estimate", "upper_bound")
   
-  
   estimated_mean_confidence_interval
 }
 
@@ -63,9 +62,9 @@ estimate_single_ns_standardized_block_maxima_mean <- function(x,
 # rnd <- runif(n = n, min = -0.5, max = 0.5)
 # data <- data.frame(trend = trend, random = rnd)
 # 
-# results <- estimate_single_ns_standardized_block_maxima_mean(x = x, 
-#                                                              block_size = 40, 
-#                                                              confidence_level = 0.95, 
+# results <- estimate_single_ns_standardized_block_maxima_mean(x = x,
+#                                                              block_size = 40,
+#                                                              confidence_level = 0.95,
 #                                                              data = data,
 #                                                              location.fun = ~ .,
 #                                                              scale.fun = ~1,
@@ -87,9 +86,9 @@ estimate_single_ns_standardized_block_maxima_mean <- function(x,
 # rnd <- runif(n = n, min = -0.5, max = 0.5)
 # data <- data.frame(trend = trend, random = rnd)
 # 
-# results <- estimate_single_ns_standardized_block_maxima_mean(x = x, 
-#                                                              block_size = 40, 
-#                                                              confidence_level = 0.95, 
+# results <- estimate_single_ns_standardized_block_maxima_mean(x = x,
+#                                                              block_size = 40,
+#                                                              confidence_level = 0.95,
 #                                                              data = data,
 #                                                              location.fun = ~ .,
 #                                                              scale.fun = ~ .,
@@ -111,9 +110,9 @@ estimate_single_ns_standardized_block_maxima_mean <- function(x,
 # rnd <- runif(n = n, min = -0.5, max = 0.5)
 # data <- data.frame(trend = trend, random = rnd)
 # 
-# results <- estimate_single_ns_standardized_block_maxima_mean(x = x, 
-#                                                              block_size = 40, 
-#                                                              confidence_level = 0.95, 
+# results <- estimate_single_ns_standardized_block_maxima_mean(x = x,
+#                                                              block_size = 40,
+#                                                              confidence_level = 0.95,
 #                                                              data = data,
 #                                                              location.fun = ~ .,
 #                                                              scale.fun = ~ .,
@@ -123,3 +122,4 @@ estimate_single_ns_standardized_block_maxima_mean <- function(x,
 #                                                              method = c("MLE", "GMLE")[1])
 # 
 # results
+
