@@ -1,6 +1,6 @@
 # library(evd)
 
-options(digits = 15)
+options(digits = 10)
 
 calculate_gev_inverse_cdf <- function(p, loc = 0, scale = 1, shape = 0){
   # p: vector of probabilities
