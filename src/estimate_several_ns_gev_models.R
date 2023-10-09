@@ -73,8 +73,8 @@ estimate_several_ns_gev_models <- function(x,
 # source("./src/find_minimum_block_size.R")
 # source("./src/find_block_size_associated_with_given_number_of_blocks.R")
 # source("./src/generate_gev_sample.R")
-# source("./src/plot_several_standardized_block_maxima_mean.R")
-# source("./src/estimate_several_standardized_block_maxima_mean.R")
+# source("./src/plot_several_ns_standardized_block_maxima_mean.R")
+# source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
 # 
 # n <- 10000
 # 
@@ -93,10 +93,40 @@ estimate_several_ns_gev_models <- function(x,
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # block_sizes
 # 
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# plot_several_ns_standardized_block_maxima_mean(x,
+#                                                block_sizes,
+#                                                confidence_level = 0.95,
+#                                                equivalent = FALSE,
+#                                                data = data,
+#                                                location.fun = ~ .,
+#                                                scale.fun = ~ .,
+#                                                shape.fun = ~1,
+#                                                use.phi = TRUE,
+#                                                type = c("GEV", "Gumbel")[1],
+#                                                method = c("MLE", "GMLE")[2])
 # 
-# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# plot_several_ns_standardized_block_maxima_mean(x,
+#                                                block_sizes,
+#                                                confidence_level = 0.95,
+#                                                equivalent = TRUE,
+#                                                data = data,
+#                                                location.fun = ~ .,
+#                                                scale.fun = ~ .,
+#                                                shape.fun = ~1,
+#                                                use.phi = TRUE,
+#                                                type = c("GEV", "Gumbel")[1],
+#                                                method = c("MLE", "GMLE")[2])
+# 
+# equivalent_block_sizes_object<- estimate_several_ns_standardized_block_maxima_mean(x, 
+#                                                                                    block_sizes,
+#                                                                                    confidence_level = 0.95,
+#                                                                                    data = data,
+#                                                                                    location.fun = ~ .,
+#                                                                                    scale.fun = ~ .,
+#                                                                                    shape.fun = ~1,
+#                                                                                    use.phi = TRUE,
+#                                                                                    type = c("GEV", "Gumbel")[1],
+#                                                                                    method = c("MLE", "GMLE")[2])
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 # 
 # results <- estimate_several_ns_gev_models(x = x,
@@ -107,7 +137,7 @@ estimate_several_ns_gev_models <- function(x,
 #                                           shape.fun = ~ 1,
 #                                           use.phi = TRUE,
 #                                           type = c("GEV", "Gumbel")[1],
-#                                           method = c("MLE", "GMLE")[1])
+#                                           method = c("MLE", "GMLE")[2])
 # 
 # #results
 # names(results)

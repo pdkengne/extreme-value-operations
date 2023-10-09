@@ -173,9 +173,9 @@ plot_several_ns_standardized_block_maxima_mean <- function(x,
 #                                                confidence_level = 0.95, 
 #                                                equivalent = TRUE, 
 #                                                data = data,
-#                                                location.fun = ~ 1,
+#                                                location.fun = ~ .,
 #                                                scale.fun = ~1,
 #                                                shape.fun = ~1,
 #                                                use.phi = TRUE,
 #                                                type = c("GEV", "Gumbel")[1],
-#                                                method = c("MLE", "GMLE")[1])
+#                                                method = c("MLE", "GMLE")[2])
