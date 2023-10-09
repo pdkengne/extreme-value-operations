@@ -73,12 +73,13 @@ plot_several_ns_standardized_block_maxima_mean <- function(x,
   
   if (equivalent == TRUE){
     abline(h = common_interval, lty = "dotted", lwd = 1, col = 7)
+    abline(h = 0.5772156649, lty = 1, lwd = 1, col = 1)
   }
   
   legend(x = "topleft", 
-         legend = c("CI Lower Bound", "Estimate", "CI Upper Bound"),
-         lty = c(1, 1, 1),
-         col = c(2, 4, 3),
+         legend = c("CI Lower Bound", "Estimate", "CI Upper Bound", "Euler's constant"),
+         lty = c(1, 1, 1, 1),
+         col = c(2, 4, 3, 1),
          lwd = 2,
          box.lty = 2,
          box.lwd = 1, 
