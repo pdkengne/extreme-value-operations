@@ -41,8 +41,7 @@ predict_gev_parameters <- function(ns_gev_model,
                                   method = method)
     }
     else{
-      print("Please enter appropriate information in the argument: covariates!")
-      gev_model <- NULL
+      stop("Please enter appropriate information in the argument: covariates!")
     }
   }
   
