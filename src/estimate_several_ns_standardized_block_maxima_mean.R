@@ -14,7 +14,7 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
   # x: vector of observations
   # block_sizes: vector containing the sizes of blocks to consider
   # confidence_level: desired confidence level
-  # data: dataframe of covariates for linear modeling of the location parameter
+  # data: dataframe of covariates for linear modeling of the gev model parameters
   # location.fun, scale.fun, shape.fun: formula describing a model for each parameter using columns from data. data
   #                                     must be supplied if any of these arguments are anything other than ~ 1.
   # use.phi: boolean which indicates whether to use the log of the scale parameter in numerical optimization

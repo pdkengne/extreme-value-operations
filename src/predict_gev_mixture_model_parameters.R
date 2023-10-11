@@ -31,6 +31,7 @@ predict_gev_mixture_model_parameters <- function(x,
                                                  trace = TRUE,
                                                  method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations
+  # data: dataframe of covariates for linear modeling of the gev model parameters
   # block_sizes: vector containing the sizes of blocks to consider
   # trace: boolean value which indicates whether to print information on the progress of optimization
   # log_mv: a boolean which indicates whether the model wise loss function is at logarithmic scale or not
