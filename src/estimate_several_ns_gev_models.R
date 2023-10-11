@@ -18,9 +18,6 @@ estimate_several_ns_gev_models <- function(x,
   # type: type of model to use
   # method: estimation method to use
   
-  # create an empty output object
-  output <- list()
-  
   # estimate the gev model associated with each block size
   models <- lapply(block_sizes, 
                    function(block_size)
@@ -34,37 +31,9 @@ estimate_several_ns_gev_models <- function(x,
                                                   type = type,
                                                   method = method)) 
   
-  # extract the extremal indexes
-  extremal_indexes <- sapply(models, function(model) model$extremal_index)
-  names(extremal_indexes) <- block_sizes
+  names(models) <- block_sizes
   
-  # extract the block maxima 
-  block_maxima_object <- lapply(models, function(model) model$block_maxima)
-  names(block_maxima_object) <- block_sizes
-  
-  # extract the block maxima indexes
-  block_maxima_indexes_object <- lapply(models, function(model) model$block_maxima_indexes)
-  names(block_maxima_indexes_object) <- block_sizes
-  
-  # extract covariates associated to block maxima
-  block_maxima_covariates_object <- lapply(models, function(model) model$block_maxima_covariates)
-  names(block_maxima_covariates_object) <- block_sizes
-  
-  # extract the gev models
-  gev_models_object <- lapply(models, function(model) model$gev_model)
-  names(gev_models_object) <- block_sizes
-  
-  # update the output object
-  output[["data"]] <- x
-  output[["covariates"]] <- models[[1]]$covariates
-  output[["block_sizes"]] <- block_sizes
-  output[["block_maxima_object"]] <- block_maxima_object
-  output[["block_maxima_indexes_object"]] <- block_maxima_indexes_object
-  output[["block_maxima_covariates_object"]] <- block_maxima_covariates_object
-  output[["extremal_indexes"]] <- extremal_indexes
-  output[["gev_models_object"]] <- gev_models_object
-  
-  output
+  models
 }
 
 
@@ -117,7 +86,7 @@ estimate_several_ns_gev_models <- function(x,
 #                                                type = c("GEV", "Gumbel")[1],
 #                                                method = c("MLE", "GMLE")[2])
 # 
-# equivalent_block_sizes_object<- estimate_several_ns_standardized_block_maxima_mean(x, 
+# equivalent_block_sizes_object<- estimate_several_ns_standardized_block_maxima_mean(x,
 #                                                                                    block_sizes,
 #                                                                                    confidence_level = 0.95,
 #                                                                                    data = data,
@@ -142,35 +111,9 @@ estimate_several_ns_gev_models <- function(x,
 # #results
 # names(results)
 # 
-# # get the block sizes
-# results$block_sizes
+# # extract a model
+# model <- results[[1]]
 # 
-# # get the extremal indexes
-# results$extremal_indexes
+# names(model)
 # 
-# # get the associated block maxima
-# results$block_maxima_object
-# 
-# # get the associated block maxima indexes
-# results$block_maxima_indexes_object
-# 
-# # get the block maxima covariates
-# results$block_maxima_covariates_object
-# 
-# # get the full covariates
-# head(results$covariates)
-# tail(results$covariates)
-# 
-# # get gev models
-# models<- results$gev_models_object
-# 
-# models
-# 
-# names(models)
-# 
-# # get the first model
-# 
-# model_1 <- models[[1]]
-# 
-# class(model_1)
-# names(model_1)
+# # model
