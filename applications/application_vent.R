@@ -17,7 +17,7 @@ xfun::in_dir(dir = path, expr = source("./src/generate_gev_sample.R"))
 xfun::in_dir(dir = path, expr = source("./src/calculate_gev_inverse_cdf.R"))
 xfun::in_dir(dir = path, expr = source("./src/estimate_gev_mixture_model_parameters.R"))
 xfun::in_dir(dir = path, expr = source("./src/plot_gev_mixture_model_pdf.R"))
-xfun::in_dir(dir = path, expr = source("./src/plot_several_standardized_block_maxima_mean.R"))
+xfun::in_dir(dir = path, expr = source("./src/plot_gev_mixture_model_cdf.R"))
 xfun::in_dir(dir = path, expr = source("./src/estimate_gev_mixture_model_quantile.R"))
 
 #'

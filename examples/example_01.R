@@ -72,6 +72,9 @@ gev_mixture_model <- estimate_gev_mixture_model_parameters(x = x,
                                                            method = "MLE")
 
 #'
+gev_mixture_model$extremal_indexes
+
+#'
 gev_mixture_model$normalized_gev_parameters_object
 
 #'
@@ -187,7 +190,7 @@ estimator_types <- c("automatic_weights_mw",
                      "confidence_interval_pw")
 
 #'
-alpha <- 10^(-8)
+alpha <- 10^(-14)
 
 
 ## Quantile from the true distribution
@@ -261,3 +264,8 @@ abline(h = rl_mw[2], col = 7, lwd = 2)
 abline(h = rl_pw[2], col = 6, lwd = 2)
 abline(h = est_rl_pw_range, col = 6, lty = "dotted", lwd = 2)
 abline(h = est_rl_mw_range, col = 7, lty = "dotted", lwd = 2)
+
+# Legend:
+# blue: Quantile from the true distribution
+# yellow: Quantile from GEV mixture model with respect to distribution functions
+# pink: Quantile from GEV mixture model with respect to parameters
