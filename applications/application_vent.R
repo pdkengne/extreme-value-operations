@@ -29,67 +29,83 @@ vent <- xfun::in_dir(dir = path, expr = read_csv("./applications/vent.csv"))
 #'
 x <- vent$Vent
 x <- x[!is.na(x)]
+n <- length(x)
 
+n
+
+# Histogram of all data
 #+ fig.width=12, fig.height=8
-hist(x)
+hist(x, prob = TRUE)
+lines(density(x),
+      lwd = 2,
+      col = 4)
 
+# Autocorrelation function of all data
 #+ fig.width=12, fig.height=8
 acf(x)
 
-#'
-n <- length(x)
-n
 
+# Histogram of the largest data
 #'
-nlargest <- 1000
-
-#
+nlargest <- 2000
 y <- extract_nlargest_sample(x, n = nlargest)
+hist(y, prob = TRUE)
+lines(density(y),
+      lwd = 2,
+      col = 4)
 
+# Autocorrelation function of the largest data
+#+ fig.width=12, fig.height=8
+acf(y)
+
+
+# Estimation of gev mixture models
 #'
-gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
-                                                           nsloc = NULL,
-                                                           std.err = FALSE,
+gev_mixture_model <- estimate_gev_mixture_model_parameters(x = x, 
                                                            block_sizes = NULL,
                                                            minimum_nblocks = 50,
-                                                           threshold = min(y),
+                                                           threshold = NULL,
                                                            nlargest = nlargest,
                                                            confidence_level = 0.95,
+                                                           use_extremal_index = TRUE,
+                                                           use_lower_threshold = FALSE,
+                                                           maximum_iterations = 1500,
                                                            log_mv = TRUE,
                                                            log_pw = TRUE,
-                                                           trace = FALSE)
+                                                           trace = FALSE,
+                                                           method = "MLE")
 
 #'
-names(gev_mixture_model)
-
-#'
-gev_mixture_model$block_sizes
+gev_mixture_model$extremal_indexes
 
 #'
 gev_mixture_model$normalized_gev_parameters_object
 
 #'
-gev_mixture_model$weighted_normalized_gev_parameters_object
+gev_mixture_model$full_normalized_gev_parameters_object
 
 #'
-gev_mixture_model$automatic_weights_mw_statistics
+gev_mixture_model$automatic_weights_pw_shape
 
 #'
-gev_mixture_model$automatic_weights_pw_statistics
+gev_mixture_model$automatic_weights_pw_scale
+
+#'
+gev_mixture_model$automatic_weights_pw_loc
+
+#'
+gev_mixture_model$weighted_normalized_gev_parameters_object[3, ]
 
 #'
 gev_mixture_model$automatic_weights_mw
 
-#'
-gev_mixture_model$pessimistic_weights_pw_shape
 
-#'
-gev_mixture_model$pessimistic_weights_pw_scale
 
-#'
-gev_mixture_model$pessimistic_weights_pw_loc
+# Model diagnostics
 
-#+ fig.width=12, fig.height=8
+## GEV mixture model with respect to parameters
+#+ fig.width=12, fig.height=16
+par(mfrow = c(2, 1))
 plot_gev_mixture_model_pdf(gev_mixture_model,
                            type = "automatic_weights",
                            model_wise = FALSE,
@@ -98,7 +114,6 @@ plot_gev_mixture_model_pdf(gev_mixture_model,
                            ylab = "Density",
                            main = "Probability Density Function (PDF) Plot")
 
-#+ fig.width=12, fig.height=8
 plot_gev_mixture_model_pdf(gev_mixture_model,
                            type = "automatic_weights",
                            model_wise = FALSE,
@@ -107,7 +122,29 @@ plot_gev_mixture_model_pdf(gev_mixture_model,
                            ylab = "Density",
                            main = "Probability Density Function (PDF) Plot")
 
-#+ fig.width=12, fig.height=8
+
+#+ fig.width=12, fig.height=16
+par(mfrow = c(2, 1))
+plot_gev_mixture_model_cdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = FALSE,
+                           zoom = FALSE,
+                           xlab = "Quantile",
+                           ylab = "Cumulative Probability",
+                           main = "Cumulative Distribution Function (CDF) Plot")
+
+plot_gev_mixture_model_cdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = FALSE,
+                           zoom = TRUE,
+                           xlab = "Quantile",
+                           ylab = "Cumulative Probability",
+                           main = "Cumulative Distribution Function (CDF) Plot")
+
+
+## GEV mixture model with respect to distribution functions
+#+ fig.width=12, fig.height=16
+par(mfrow = c(2, 1))
 plot_gev_mixture_model_pdf(gev_mixture_model,
                            type = "automatic_weights",
                            model_wise = TRUE,
@@ -116,7 +153,6 @@ plot_gev_mixture_model_pdf(gev_mixture_model,
                            ylab = "Density",
                            main = "Probability Density Function (PDF) Plot")
 
-#+ fig.width=12, fig.height=8
 plot_gev_mixture_model_pdf(gev_mixture_model,
                            type = "automatic_weights",
                            model_wise = TRUE,
@@ -125,6 +161,27 @@ plot_gev_mixture_model_pdf(gev_mixture_model,
                            ylab = "Density",
                            main = "Probability Density Function (PDF) Plot")
 
+
+#+ fig.width=12, fig.height=16
+par(mfrow = c(2, 1))
+plot_gev_mixture_model_cdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = TRUE,
+                           zoom = FALSE,
+                           xlab = "Quantile",
+                           ylab = "Cumulative Probability",
+                           main = "Cumulative Distribution Function (CDF) Plot")
+
+plot_gev_mixture_model_cdf(gev_mixture_model,
+                           type = "automatic_weights",
+                           model_wise = TRUE,
+                           zoom = TRUE,
+                           xlab = "Quantile",
+                           ylab = "Cumulative Probability",
+                           main = "Cumulative Distribution Function (CDF) Plot")
+
+
+# Estimation of an extreme quantile
 #'
 estimator_types <- c("automatic_weights_mw",
                      "pessimistic_weights_mw",
@@ -139,15 +196,7 @@ estimator_types <- c("automatic_weights_mw",
 #'
 alpha <- 10^(-6)
 
-#'
-rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                             alpha = alpha,
-                                             confidence_level = 0.95,
-                                             do.ci = TRUE,
-                                             estimator_type = estimator_types[1])
-
-rl_mw
-
+## Quantile from GEV mixture model with respect to parameters
 #'
 rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
                                              alpha = alpha,
@@ -155,17 +204,21 @@ rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
                                              do.ci = TRUE,
                                              estimator_type = estimator_types[4])
 
-rl_pw
+rl_pw[2]
 
+
+## Quantile from GEV mixture model with respect to distribution functions
 #'
-rl_empirical <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                                    alpha = alpha,
-                                                    confidence_level = 0.95,
-                                                    do.ci = TRUE,
-                                                    estimator_type = estimator_types[7])
+rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+                                             alpha = alpha,
+                                             confidence_level = 0.95,
+                                             do.ci = TRUE,
+                                             estimator_type = estimator_types[1])
 
-rl_empirical
+rl_mw[2]
 
+
+## Quantiles from equivalent estimated GEV models
 #'
 est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
                                                  alpha = alpha,
@@ -175,22 +228,18 @@ est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
 
 est_rl_pw
 
+
+## Comparison of estimated quantiles
 #'
 est_rl_pw_range <- range(as.matrix(est_rl_pw))
-est_rl_pw_range
 
-#'
 est_rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
                                                  alpha = alpha,
                                                  confidence_level = 0.95,
                                                  do.ci = TRUE,
                                                  estimator_type = estimator_types[8])
 
-est_rl_mw
-
-#'
 est_rl_mw_range <- range(as.matrix(est_rl_mw))
-est_rl_mw_range
 
 #+ fig.width=12, fig.height=8
 matplot(x = rownames(est_rl_pw), 
@@ -198,6 +247,7 @@ matplot(x = rownames(est_rl_pw),
         xlab = "block size",
         ylab = "quantile",
         main = "Estimates of a quantile",
+        ylim = range(c(est_rl_pw_range)),
         cex = 1,
         cex.lab = 1,
         cex.axis = 1,
@@ -210,3 +260,7 @@ abline(h = rl_mw[2], col = 7, lwd = 2)
 abline(h = rl_pw[2], col = 6, lwd = 2)
 abline(h = est_rl_pw_range, col = 6, lty = "dotted", lwd = 2)
 abline(h = est_rl_mw_range, col = 7, lty = "dotted", lwd = 2)
+
+# Legend:
+# yellow: Quantile from GEV mixture model with respect to distribution functions
+# pink: Quantile from GEV mixture model with respect to parameters
