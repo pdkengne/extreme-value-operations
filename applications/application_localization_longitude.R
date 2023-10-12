@@ -65,7 +65,7 @@ y <- extract_nlargest_sample(x, n = nlargest)
 # Estimation of gev mixture models
 #'
 gev_mixture_model <- suppressWarnings(estimate_gev_mixture_model_parameters(x = x, 
-                                                                            block_sizes = NULL,
+                                                                            block_sizes = 10:40,
                                                                             minimum_nblocks = 50,
                                                                             threshold = min(y),
                                                                             nlargest = nlargest,
