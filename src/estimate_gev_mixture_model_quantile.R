@@ -155,7 +155,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
         
         gev_model <- gev_models_object[[j]]
         
-        maxima <- gev_model$data
+        maxima <- gev_model$x
         
         out <- estimate_gev_model_quantile(x = maxima, alpha = alpha_prime*block_size)
         
@@ -179,7 +179,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
         
         gev_model <- gev_models_object[[j]]
         
-        maxima <- gev_model$data
+        maxima <- gev_model$x
         
         out <- estimate_gev_model_quantile(x = maxima, alpha = alpha_prime*block_size)
         
@@ -212,8 +212,6 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # x <- rnorm(n = n)
 # 
 # gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
-#                                                            nsloc = NULL,
-#                                                            std.err = FALSE,
 #                                                            block_sizes = NULL,
 #                                                            minimum_nblocks = 50,
 #                                                            nlargest = nlargest,
@@ -266,10 +264,10 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # true_rl
 # 
 # est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-#                                                   alpha = alpha,
-#                                                   confidence_level = 0.95,
-#                                                   do.ci = TRUE,
-#                                                   estimator_type = estimator_types[9])
+#                                                  alpha = alpha,
+#                                                  confidence_level = 0.95,
+#                                                  do.ci = TRUE,
+#                                                  estimator_type = estimator_types[9])
 # 
 # est_rl_pw
 # 

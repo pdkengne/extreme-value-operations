@@ -41,11 +41,11 @@ estimate_gev_model_quantile <- function(x,
                                          method = method)
   
   quantile <- extRemes::return.level(x = model, 
-                           return.period = 1/alpha, 
-                           alpha = 1 - confidence_level, 
-                           method = c("normal"), 
-                           do.ci = do.ci,
-                           qcov = qcov)
+                                     return.period = 1/alpha, 
+                                     alpha = 1 - confidence_level, 
+                                     method = c("normal"), 
+                                     do.ci = do.ci,
+                                     qcov = qcov)
   
   output <- data.frame("lower" = NA, "estimate" = NA, "upper" = NA)
   
