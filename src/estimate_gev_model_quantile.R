@@ -22,7 +22,7 @@ estimate_gev_model_quantile <- function(x,
   # do.ci: boolean which indicates whether to return confidence interval or not
   # confidence_level: the desired confidence level for the estimated quantile
   # qcov: numeric matrix with rows the same length as q and columns equal to the number of parameters.
-  #       This gives any covariate values for a nonstationary model
+  #       This gives any covariate values for a non-stationary model
   # threshold.fun, location.fun, scale.fun, shape.fun: formula describing a model for each parameter using columns from data. data
   #                                                    must be supplied if any of these arguments are anything other than ~ 1.
   # use.phi: boolean which indicates whether to use the log of the scale parameter or not

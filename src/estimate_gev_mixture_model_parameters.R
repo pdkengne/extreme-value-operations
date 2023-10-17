@@ -133,6 +133,7 @@ estimate_gev_mixture_model_parameters <- function(x,
   
   # get the normalized gev model parameters
   normalized_gev_parameters_object <- gev_models$normalized_gev_parameters_object
+  
   # get the normalized gev model parameters
   full_normalized_gev_parameters_object <- gev_models$full_normalized_gev_parameters_object
   
@@ -177,6 +178,8 @@ estimate_gev_mixture_model_parameters <- function(x,
   
   output[["gev_models_object"]] <- gev_models_object
   output[["extremal_indexes"]] <- extremal_indexes
+  output[["use_extremal_index"]] <- use_extremal_index
+  
   output[["normalized_gev_parameters_object"]] <- normalized_gev_parameters_object
   output[["full_normalized_gev_parameters_object"]] <- full_normalized_gev_parameters_object
   output[["weighted_normalized_gev_parameters_object"]] <- weighted_normalized_gev_parameters_object
