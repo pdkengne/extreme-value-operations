@@ -1,5 +1,7 @@
 source("./src/calculate_gev_inverse_cdf.R")
 source("./src/calculate_gev_mixture_model_inverse_cdf.R")
+source("./src/estimate_gev_parameters.R")
+source("./src/estimate_gev_model_quantile.R")
 
 estimate_gev_mixture_model_quantile <- function(gev_mixture_model, 
                                                 alpha = NULL, 
