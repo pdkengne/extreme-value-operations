@@ -11,8 +11,8 @@ get_candidate_block_sizes <- function(x, threshold = NULL, m = 50){
   maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m)
   
   if (maximum_block_size <= minimum_block_size){
-    print(paste("The provided minimum number of blocks,", m, "is too large! Please, consider using a smaller number."))
-    print(paste("The provided threshold,", threshold, "is too large! Please, consider using a smaller value."))
+    stop(paste("The provided minimum number of blocks,", m, "is too large! Please, consider using a smaller number."))
+    stop(paste("The provided threshold,", threshold, "is too large! Please, consider using a smaller value."))
     maximum_block_size <- minimum_block_size
   }
   
