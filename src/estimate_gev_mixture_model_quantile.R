@@ -4,7 +4,9 @@ source("./src/estimate_gev_parameters.R")
 source("./src/estimate_gev_model_quantile.R")
 
 estimate_gev_mixture_model_quantile <- function(gev_mixture_model, 
-                                                alpha = NULL, 
+                                                alpha,
+                                                do.ci = TRUE,
+                                                confidence_level = 0.95,
                                                 estimator_type = c("automatic_weights_mw", 
                                                                    "pessimistic_weights_mw", 
                                                                    "identic_weights_mw", 
@@ -16,6 +18,8 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                                    "gev_model_quantiles_pw")[1]){
   # gev_mixture_model: an object associated with a result of the function "estimate_gev_mixture_model_parameters()"
   # alpha: order of the quantile to estimate
+  # do.ci: boolean which indicates whether to return confidence interval or not
+  # confidence_level: the desired confidence level for the estimated quantile
   # estimator_type: quantile estimator to use from the set 
   # c("automatic_weights_mw", "pessimistic_weights_mw", "identic_weights_mw", "automatic_weights_pw","pessimistic_weights_pw", 
   #   "identic_weights_pw", "empirical", "confidence_interval_mw", "confidence_interval_pw")
@@ -54,6 +58,9 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                        gev_mixture_model$pessimistic_weights_mw,
                                                        gev_mixture_model$automatic_weights_mw))
   names(gev_mixture_model_weights_object) <- weighted_gev_model_types
+  
+  # extract the list of all estimated gev models
+  gev_models_object <- gev_mixture_model$gev_models_object
   
   # extract the vector of block sizes
   block_sizes <- gev_mixture_model$block_sizes
@@ -118,43 +125,122 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
       
       # extract all parameters for which weights are different from zero
       block_sizes <- block_sizes[position_weights_nonzero]
+      gev_models_object <- gev_models_object[position_weights_nonzero]
       
-      quantiles_object <- sapply(1:length(block_sizes), function(j){
-        block_size <- block_sizes[j]
+      if (do.ci){
+        quantiles_object <- sapply(1:length(block_sizes), function(j){
+          block_size <- block_sizes[j]
+          gev_model <- gev_models_object[[j]]
+          
+          loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
+          scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
+          shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
+          
+          gev_parameters <- gev_model$results$par
+          
+          loc <- gev_parameters["location"]
+          scale <- gev_parameters["scale"]
+          shape <- gev_parameters["shape"]
+          
+          block_maxima <- gev_model$x
+          
+          block_maxima_standardized <- (block_maxima - loc)/scale
+          
+          block_maxima_star <- loc_star + scale_star*block_maxima_standardized
+          
+          gev_model_star <- estimate_gev_parameters(x = block_maxima_star,
+                                                    type = c("GEV", "Gumbel")[1],
+                                                    method = c("MLE", "GMLE", "Lmoments")[1])
+          
+          out <- estimate_gev_model_quantile(gev_model = gev_model_star,
+                                             alpha = alpha_prime*block_size,
+                                             do.ci = do.ci,
+                                             confidence_level = confidence_level)
+          
+          out})
         
-        loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
-        scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
-        shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
+        output <- data.frame(t(quantiles_object))
         
-        out <- calculate_gev_inverse_cdf(p = 1 - alpha_prime*block_size,
-                                         loc = loc_star,
-                                         scale = scale_star, 
-                                         shape = shape_star)
+        rownames(output) <- block_sizes
+      }
+      else{
+        quantiles_object <- sapply(1:length(block_sizes), function(j){
+          block_size <- block_sizes[j]
+          
+          loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
+          scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
+          shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
+          
+          out <- calculate_gev_inverse_cdf(p = 1 - alpha_prime*block_size,
+                                           loc = loc_star,
+                                           scale = scale_star, 
+                                           shape = shape_star)
+          
+          out})
         
-        out})
+        output <- data.frame(quantiles = quantiles_object)
+        
+        rownames(output) <- block_sizes
+      }
       
-      output <- data.frame(quantiles = quantiles_object)
-      
-      rownames(output) <- block_sizes
     }
     else{
-      quantiles_object <- sapply(1:length(block_sizes), function(j){
-        block_size <- block_sizes[j]
+      if (do.ci){
+        quantiles_object <- sapply(1:length(block_sizes), function(j){
+          block_size <- block_sizes[j]
+          gev_model <- gev_models_object[[j]]
+          
+          loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
+          scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
+          shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
+          
+          gev_parameters <- gev_model$results$par
+          
+          loc <- gev_parameters["location"]
+          scale <- gev_parameters["scale"]
+          shape <- gev_parameters["shape"]
+          
+          block_maxima <- gev_model$x
+          
+          block_maxima_standardized <- (block_maxima - loc)/scale
+          
+          block_maxima_star <- loc_star + scale_star*block_maxima_standardized
+          
+          gev_model_star <- estimate_gev_parameters(x = block_maxima_star,
+                                                    type = c("GEV", "Gumbel")[1],
+                                                    method = c("MLE", "GMLE", "Lmoments")[1])
+          
+          out <- estimate_gev_model_quantile(gev_model = gev_model_star,
+                                             alpha = alpha_prime*block_size,
+                                             do.ci = do.ci,
+                                             confidence_level = confidence_level)
+          
+          out})
         
-        loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
-        scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
-        shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
+        output <- data.frame(t(quantiles_object))
         
-        out <- calculate_gev_inverse_cdf(p = 1 - alpha_prime*block_size,
-                                         loc = loc_star,
-                                         scale = scale_star, 
-                                         shape = shape_star)
+        rownames(output) <- block_sizes
+      }
+      else{
+        quantiles_object <- sapply(1:length(block_sizes), function(j){
+          block_size <- block_sizes[j]
+          
+          loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
+          scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
+          shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
+          
+          out <- calculate_gev_inverse_cdf(p = 1 - alpha_prime*block_size,
+                                           loc = loc_star,
+                                           scale = scale_star, 
+                                           shape = shape_star)
+          
+          out})
         
-        out})
+        output <- data.frame(quantiles = quantiles_object)
+        
+        rownames(output) <- block_sizes
+      }
       
-      output <- data.frame(quantiles = quantiles_object)
-      
-      rownames(output) <- block_sizes
     }
   }
   else{
@@ -209,12 +295,16 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # 
 # results_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
 #                                                   alpha = alpha,
+#                                                   do.ci = TRUE,
+#                                                   confidence_level = 0.95,
 #                                                   estimator_type = estimator_types[1])
 # 
 # results_mw
 # 
 # results_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
 #                                                   alpha = alpha,
+#                                                   do.ci = TRUE,
+#                                                   confidence_level = 0.95,
 #                                                   estimator_type = estimator_types[4])
 # 
 # results_pw
@@ -224,33 +314,63 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # 
 # results_emp <- estimate_gev_mixture_model_quantile(gev_mixture_model,
 #                                                  alpha = alpha,
+#                                                  do.ci = TRUE,
+#                                                  confidence_level = 0.95,
 #                                                  estimator_type = estimator_types[7])
 # 
 # results_emp
 # 
 # est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
 #                                                  alpha = alpha,
+#                                                  do.ci = FALSE,
+#                                                  confidence_level = 0.95,
 #                                                  estimator_type = estimator_types[9])
 # 
 # est_rl_pw
 # 
+# est_rl_pw_ci <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                  alpha = alpha,
+#                                                  do.ci = TRUE,
+#                                                  confidence_level = 0.95,
+#                                                  estimator_type = estimator_types[9])
+# 
+# est_rl_pw_ci
+# 
+# est_rl_pw_ci_range <- range(est_rl_pw_ci)
+# est_rl_pw_ci_range
+# 
 # est_rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
 #                                                  alpha = alpha,
+#                                                  do.ci = FALSE,
+#                                                  confidence_level = 0.95,
 #                                                  estimator_type = estimator_types[8])
 # 
 # est_rl_mw
 # 
+# est_rl_mw_ci <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                     alpha = alpha,
+#                                                     do.ci = TRUE,
+#                                                     confidence_level = 0.95,
+#                                                     estimator_type = estimator_types[8])
+# 
+# est_rl_mw_ci
+# 
+# est_rl_mw_ci_range <- range(est_rl_mw_ci)
+# est_rl_mw_ci_range
+# 
 # matplot(rownames(x = est_rl_pw),
-#         y = est_rl_pw,
-#         ylim = range(c(est_rl_pw, results_pw, true_rl)),
+#         y = est_rl_pw_ci,
+#         ylim = range(c(est_rl_pw, results_pw, true_rl, range(est_rl_pw_ci))),
 #         type = "l",
-#         lty = "solid",
+#         lty  = c("dotted", "solid", "dotted"),
 #         lwd = 2,
-#         col = 3)
+#         col = c(3, 1, 3))
 # 
 # abline(h = true_rl, col = 4, lwd = 2)
 # abline(h = results_mw, col = 7, lwd = 2)
 # abline(h = results_pw, col = 6, lwd = 2)
+# abline(h = est_rl_pw_ci_range, col = 7, lwd = 2, lty = "dotted")
+# abline(h = est_rl_mw_ci_range, col = 6, lwd = 2, lty = "dotted")
 # 
 # 
 # source("./src/plot_gev_mixture_model_pdf.R")

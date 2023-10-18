@@ -21,7 +21,7 @@ estimate_gev_model_quantile <- function(gev_model,
   
   output[1, ] <- quantile[names(quantile)]
   
-  output
+  as.matrix(output)
 }
 
 
