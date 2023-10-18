@@ -127,120 +127,76 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
       block_sizes <- block_sizes[position_weights_nonzero]
       gev_models_object <- gev_models_object[position_weights_nonzero]
       
-      if (do.ci){
-        quantiles_object <- sapply(1:length(block_sizes), function(j){
-          block_size <- block_sizes[j]
-          gev_model <- gev_models_object[[j]]
-          
-          loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
-          scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
-          shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
-          
-          gev_parameters <- gev_model$results$par
-          
-          loc <- gev_parameters["location"]
-          scale <- gev_parameters["scale"]
-          shape <- gev_parameters["shape"]
-          
-          block_maxima <- gev_model$x
-          
-          block_maxima_standardized <- (block_maxima - loc)/scale
-          
-          block_maxima_star <- loc_star + scale_star*block_maxima_standardized
-          
-          gev_model_star <- estimate_gev_parameters(x = block_maxima_star,
-                                                    type = c("GEV", "Gumbel")[1],
-                                                    method = c("MLE", "GMLE", "Lmoments")[1])
-          
-          out <- estimate_gev_model_quantile(gev_model = gev_model_star,
-                                             alpha = alpha_prime*block_size,
-                                             do.ci = do.ci,
-                                             confidence_level = confidence_level)
-          
-          out})
+      quantiles_object <- sapply(1:length(block_sizes), function(j){
+        block_size <- block_sizes[j]
+        gev_model <- gev_models_object[[j]]
         
-        output <- data.frame(t(quantiles_object))
+        loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
+        scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
+        shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
         
-        rownames(output) <- block_sizes
-      }
-      else{
-        quantiles_object <- sapply(1:length(block_sizes), function(j){
-          block_size <- block_sizes[j]
-          
-          loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
-          scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
-          shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
-          
-          out <- calculate_gev_inverse_cdf(p = 1 - alpha_prime*block_size,
-                                           loc = loc_star,
-                                           scale = scale_star, 
-                                           shape = shape_star)
-          
-          out})
+        gev_parameters <- gev_model$results$par
         
-        output <- data.frame(quantiles = quantiles_object)
+        loc <- gev_parameters["location"]
+        scale <- gev_parameters["scale"]
+        shape <- gev_parameters["shape"]
         
-        rownames(output) <- block_sizes
-      }
+        block_maxima <- gev_model$x
+        
+        block_maxima_standardized <- (block_maxima - loc)/scale
+        
+        block_maxima_star <- loc_star + scale_star*block_maxima_standardized
+        
+        gev_model_star <- estimate_gev_parameters(x = block_maxima_star,
+                                                  type = c("GEV", "Gumbel")[1],
+                                                  method = c("MLE", "GMLE", "Lmoments")[1])
+        
+        out <- estimate_gev_model_quantile(gev_model = gev_model_star,
+                                           alpha = alpha_prime*block_size,
+                                           do.ci = do.ci,
+                                           confidence_level = confidence_level)
+        
+        out})
       
+      output <- data.frame(t(quantiles_object))
+      rownames(output) <- block_sizes
+      names(output) <- c("lower", "quantile", "upper")
     }
     else{
-      if (do.ci){
-        quantiles_object <- sapply(1:length(block_sizes), function(j){
-          block_size <- block_sizes[j]
-          gev_model <- gev_models_object[[j]]
-          
-          loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
-          scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
-          shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
-          
-          gev_parameters <- gev_model$results$par
-          
-          loc <- gev_parameters["location"]
-          scale <- gev_parameters["scale"]
-          shape <- gev_parameters["shape"]
-          
-          block_maxima <- gev_model$x
-          
-          block_maxima_standardized <- (block_maxima - loc)/scale
-          
-          block_maxima_star <- loc_star + scale_star*block_maxima_standardized
-          
-          gev_model_star <- estimate_gev_parameters(x = block_maxima_star,
-                                                    type = c("GEV", "Gumbel")[1],
-                                                    method = c("MLE", "GMLE", "Lmoments")[1])
-          
-          out <- estimate_gev_model_quantile(gev_model = gev_model_star,
-                                             alpha = alpha_prime*block_size,
-                                             do.ci = do.ci,
-                                             confidence_level = confidence_level)
-          
-          out})
+      quantiles_object <- sapply(1:length(block_sizes), function(j){
+        block_size <- block_sizes[j]
+        gev_model <- gev_models_object[[j]]
         
-        output <- data.frame(t(quantiles_object))
+        loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
+        scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
+        shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
         
-        rownames(output) <- block_sizes
-      }
-      else{
-        quantiles_object <- sapply(1:length(block_sizes), function(j){
-          block_size <- block_sizes[j]
-          
-          loc_star = gev_mixture_model_parameters_object[as.character(block_size), "loc_star"] 
-          scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
-          shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
-          
-          out <- calculate_gev_inverse_cdf(p = 1 - alpha_prime*block_size,
-                                           loc = loc_star,
-                                           scale = scale_star, 
-                                           shape = shape_star)
-          
-          out})
+        gev_parameters <- gev_model$results$par
         
-        output <- data.frame(quantiles = quantiles_object)
+        loc <- gev_parameters["location"]
+        scale <- gev_parameters["scale"]
+        shape <- gev_parameters["shape"]
         
-        rownames(output) <- block_sizes
-      }
+        block_maxima <- gev_model$x
+        
+        block_maxima_standardized <- (block_maxima - loc)/scale
+        
+        block_maxima_star <- loc_star + scale_star*block_maxima_standardized
+        
+        gev_model_star <- estimate_gev_parameters(x = block_maxima_star,
+                                                  type = c("GEV", "Gumbel")[1],
+                                                  method = c("MLE", "GMLE", "Lmoments")[1])
+        
+        out <- estimate_gev_model_quantile(gev_model = gev_model_star,
+                                           alpha = alpha_prime*block_size,
+                                           do.ci = do.ci,
+                                           confidence_level = confidence_level)
+        
+        out})
       
+      output <- data.frame(t(quantiles_object))
+      rownames(output) <- block_sizes
+      names(output) <- c("lower", "quantile", "upper")
     }
   }
   else{
@@ -249,6 +205,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
   
   output
 }
+
 
 
 # # example 1
@@ -313,10 +270,10 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # true_rl
 # 
 # results_emp <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-#                                                  alpha = alpha,
-#                                                  do.ci = TRUE,
-#                                                  confidence_level = 0.95,
-#                                                  estimator_type = estimator_types[7])
+#                                                    alpha = alpha,
+#                                                    do.ci = TRUE,
+#                                                    confidence_level = 0.95,
+#                                                    estimator_type = estimator_types[7])
 # 
 # results_emp
 # 
