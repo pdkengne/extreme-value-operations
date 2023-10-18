@@ -156,7 +156,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
     }
   }
   else{
-    print("Please, enter a smaller quantile order")
+    stop("Please, enter a smaller quantile order")
   }
   
   output
