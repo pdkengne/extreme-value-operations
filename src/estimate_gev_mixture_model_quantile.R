@@ -124,7 +124,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
         scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
         shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
         
-        out <- calculate_gev_inverse_cdf(p = 1 - alpha_gev_mixture_model,
+        out <- calculate_gev_inverse_cdf(p = 1 - alpha_prime*block_size,
                                          loc = loc_star,
                                          scale = scale_star, 
                                          shape = shape_star)
@@ -143,7 +143,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
         scale_star = gev_mixture_model_parameters_object[as.character(block_size), "scale_star"]
         shape_star = gev_mixture_model_parameters_object[as.character(block_size), "shape_star"]
         
-        out <- calculate_gev_inverse_cdf(p = 1 - alpha_gev_mixture_model,
+        out <- calculate_gev_inverse_cdf(p = 1 - alpha_prime*block_size,
                                          loc = loc_star,
                                          scale = scale_star, 
                                          shape = shape_star)
@@ -163,126 +163,126 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 }
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-source("./src/calculate_gev_inverse_cdf.R")
-source("./src/estimate_gev_mixture_model_parameters.R")
-
-n <- 100000
-nlargest <- 1000
-
-x <- rnorm(n = n)
-
-gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
-                                                           block_sizes = NULL,
-                                                           minimum_nblocks = 50,
-                                                           nlargest = nlargest,
-                                                           confidence_level = 0.95,
-                                                           trace = TRUE)
-
-gev_mixture_model$normalized_gev_parameters_object
-
-gev_mixture_model$weighted_normalized_gev_parameters_object
-
-gev_mixture_model$automatic_weights_mw_statistics
-
-gev_mixture_model$automatic_weights_pw_statistics
-
-gev_mixture_model$automatic_weights_mw
-
-
-estimator_types <- c("automatic_weights_mw",
-                     "pessimistic_weights_mw",
-                     "identic_weights_mw",
-                     "automatic_weights_pw",
-                     "pessimistic_weights_pw",
-                     "identic_weights_pw",
-                     "empirical",
-                     "gev_model_quantiles_mw",
-                     "gev_model_quantiles_pw")
-
-
-alpha <- 10^(-14)
-
-results_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                                  alpha = alpha,
-                                                  estimator_type = estimator_types[1])
-
-results_mw
-
-results_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                                  alpha = alpha,
-                                                  estimator_type = estimator_types[4])
-
-results_pw
-
-true_rl <- qnorm(p = 1 - alpha)
-true_rl
-
-results_emp <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                                 alpha = alpha,
-                                                 estimator_type = estimator_types[7])
-
-results_emp
-
-est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                                 alpha = alpha,
-                                                 estimator_type = estimator_types[9])
-
-est_rl_pw
-
-est_rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
-                                                 alpha = alpha,
-                                                 estimator_type = estimator_types[8])
-
-est_rl_mw
-
-matplot(rownames(x = est_rl_pw),
-        y = est_rl_pw,
-        ylim = range(c(est_rl_pw, results_pw)),
-        type = "l",
-        lty = "solid",
-        lwd = 2,
-        col = 3)
-
-abline(h = true_rl, col = 4, lwd = 2)
-abline(h = results_mw, col = 7, lwd = 2)
-abline(h = results_pw, col = 6, lwd = 2)
-
-
-source("./src/plot_gev_mixture_model_pdf.R")
-
-
-plot_gev_mixture_model_pdf(gev_mixture_model,
-                           type = "automatic_weights",
-                           model_wise = FALSE,
-                           zoom = FALSE,
-                           xlab = "Quantile",
-                           ylab = "Density",
-                           main = "Probability Density Function (PDF) Plot")
-
-plot_gev_mixture_model_pdf(gev_mixture_model,
-                           type = "automatic_weights",
-                           model_wise = FALSE,
-                           zoom = TRUE,
-                           xlab = "Quantile",
-                           ylab = "Density",
-                           main = "Probability Density Function (PDF) Plot")
-
-
-plot_gev_mixture_model_pdf(gev_mixture_model,
-                           type = "automatic_weights",
-                           model_wise = TRUE,
-                           zoom = FALSE,
-                           xlab = "Quantile",
-                           ylab = "Density",
-                           main = "Probability Density Function (PDF) Plot")
-
-plot_gev_mixture_model_pdf(gev_mixture_model,
-                           type = "automatic_weights",
-                           model_wise = TRUE,
-                           zoom = TRUE,
-                           xlab = "Quantile",
-                           ylab = "Density",
-                           main = "Probability Density Function (PDF) Plot")
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# source("./src/calculate_gev_inverse_cdf.R")
+# source("./src/estimate_gev_mixture_model_parameters.R")
+# 
+# n <- 100000
+# nlargest <- 1000
+# 
+# x <- rnorm(n = n)
+# 
+# gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
+#                                                            block_sizes = NULL,
+#                                                            minimum_nblocks = 50,
+#                                                            nlargest = nlargest,
+#                                                            confidence_level = 0.95,
+#                                                            trace = TRUE)
+# 
+# gev_mixture_model$normalized_gev_parameters_object
+# 
+# gev_mixture_model$weighted_normalized_gev_parameters_object
+# 
+# gev_mixture_model$automatic_weights_mw_statistics
+# 
+# gev_mixture_model$automatic_weights_pw_statistics
+# 
+# gev_mixture_model$automatic_weights_mw
+# 
+# 
+# estimator_types <- c("automatic_weights_mw",
+#                      "pessimistic_weights_mw",
+#                      "identic_weights_mw",
+#                      "automatic_weights_pw",
+#                      "pessimistic_weights_pw",
+#                      "identic_weights_pw",
+#                      "empirical",
+#                      "gev_model_quantiles_mw",
+#                      "gev_model_quantiles_pw")
+# 
+# 
+# alpha <- 10^(-14)
+# 
+# results_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                   alpha = alpha,
+#                                                   estimator_type = estimator_types[1])
+# 
+# results_mw
+# 
+# results_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                   alpha = alpha,
+#                                                   estimator_type = estimator_types[4])
+# 
+# results_pw
+# 
+# true_rl <- qnorm(p = 1 - alpha)
+# true_rl
+# 
+# results_emp <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                  alpha = alpha,
+#                                                  estimator_type = estimator_types[7])
+# 
+# results_emp
+# 
+# est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                  alpha = alpha,
+#                                                  estimator_type = estimator_types[9])
+# 
+# est_rl_pw
+# 
+# est_rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                  alpha = alpha,
+#                                                  estimator_type = estimator_types[8])
+# 
+# est_rl_mw
+# 
+# matplot(rownames(x = est_rl_pw),
+#         y = est_rl_pw,
+#         ylim = range(c(est_rl_pw, results_pw, true_rl)),
+#         type = "l",
+#         lty = "solid",
+#         lwd = 2,
+#         col = 3)
+# 
+# abline(h = true_rl, col = 4, lwd = 2)
+# abline(h = results_mw, col = 7, lwd = 2)
+# abline(h = results_pw, col = 6, lwd = 2)
+# 
+# 
+# source("./src/plot_gev_mixture_model_pdf.R")
+# 
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
+#                            type = "automatic_weights",
+#                            model_wise = FALSE,
+#                            zoom = FALSE,
+#                            xlab = "Quantile",
+#                            ylab = "Density",
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
+#                            type = "automatic_weights",
+#                            model_wise = FALSE,
+#                            zoom = TRUE,
+#                            xlab = "Quantile",
+#                            ylab = "Density",
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
+#                            type = "automatic_weights",
+#                            model_wise = TRUE,
+#                            zoom = FALSE,
+#                            xlab = "Quantile",
+#                            ylab = "Density",
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model,
+#                            type = "automatic_weights",
+#                            model_wise = TRUE,
+#                            zoom = TRUE,
+#                            xlab = "Quantile",
+#                            ylab = "Density",
+#                            main = "Probability Density Function (PDF) Plot")
