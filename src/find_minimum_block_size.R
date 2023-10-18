@@ -1,13 +1,17 @@
 #library(zoo)
 #library(EnvStats)
 
+source("./src/calculate_mode.R")
+
 
 find_minimum_block_size <- function(x, threshold = NULL){
   # x: vector of observations
   # threshold: lower bound of block maxima
   
   if (is.null(threshold)){
-    threshold = median(x)
+    med <- median(x)
+    mod <- calculate_mode(x, data_type = c("continuous", "discrete")[1])
+    threshold = max(med, mod)
   }
   
   block_size <- 2
