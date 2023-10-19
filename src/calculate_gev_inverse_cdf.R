@@ -1,4 +1,4 @@
-# library(evd)
+# library(extRemes)
 
 options(digits = 10)
 
@@ -6,7 +6,11 @@ calculate_gev_inverse_cdf <- function(p, loc = 0, scale = 1, shape = 0){
   # p: vector of probabilities
   # loc, scale, shape: location, scale and shape parameters of the considered gev distribution
   
-  gev_inverse_cdf <- evd::qgev(p, loc, scale, shape)
+  gev_inverse_cdf <- extRemes::qevd(p = p, 
+                                    loc = loc, 
+                                    scale = scale, 
+                                    shape = shape, 
+                                    type = "GEV")
   
   gev_inverse_cdf
 }
@@ -16,7 +20,7 @@ calculate_gev_inverse_cdf <- function(p, loc = 0, scale = 1, shape = 0){
 # 
 # probabilities <- seq(from = 10^(-8), to = 1 -10^(-8), length.out = 20)
 # 
-# result <- calculate_gev_inverse_cdf(p = probabilities, loc = 1, scale = 0.5, shape = 0.8)
+# result <- calculate_gev_inverse_cdf(p = probabilities, loc = 1, scale = 0.5, shape = +0.2)
 # 
 # result
 # 
