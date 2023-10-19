@@ -14,8 +14,8 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                                    "pessimistic_weights_pw", 
                                                                    "identic_weights_pw", 
                                                                    "empirical",
-                                                                   "gev_model_quantiles_mw",
-                                                                   "gev_model_quantiles_pw")[1]){
+                                                                   "model_wise",
+                                                                   "parameter_wise")[1]){
   # gev_mixture_model: an object associated with a result of the function 
   #                    "estimate_gev_mixture_model_parameters()" or "predict_gev_mixture_model_parameters()"
   # alpha: order of the quantile to estimate
@@ -23,7 +23,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
   # confidence_level: the desired confidence level for the estimated quantile
   # estimator_type: quantile estimator to use from the set 
   # c("automatic_weights_mw", "pessimistic_weights_mw", "identic_weights_mw", "automatic_weights_pw","pessimistic_weights_pw", 
-  #   "identic_weights_pw", "empirical", "confidence_interval_mw", "confidence_interval_pw")
+  #   "identic_weights_pw", "empirical", "model_wise", "parameter_wise")
   
   # extract the raw data
   raw_data <- gev_mixture_model$data
@@ -117,7 +117,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
       
       output <- as.numeric(quantile_alpha)
     }
-    else if (estimator_type == "gev_model_quantiles_mw"){
+    else if (estimator_type == "model_wise"){
       # extract the vector of weights
       weights = gev_mixture_model_weights_object[, "automatic_weights"]
       
@@ -212,7 +212,6 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # # example 1
 # 
 # source("./src/generate_gev_sample.R")
-# source("./src/calculate_gev_inverse_cdf.R")
 # source("./src/estimate_gev_mixture_model_parameters.R")
 # 
 # n <- 100000
@@ -245,8 +244,8 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                      "pessimistic_weights_pw",
 #                      "identic_weights_pw",
 #                      "empirical",
-#                      "gev_model_quantiles_mw",
-#                      "gev_model_quantiles_pw")
+#                      "model_wise",
+#                      "parameter_wise")
 # 
 # 
 # alpha <- 10^(-14)
