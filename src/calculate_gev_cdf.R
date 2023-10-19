@@ -4,7 +4,11 @@ calculate_gev_cdf <- function(q, loc = 0, scale = 1, shape = 0){
   # q: vector of observations
   # loc, scale, shape: location, scale and shape parameters of the considered gev distribution
   
-  gev_cdf <- extRemes::pevd(q, loc, scale, shape)
+  gev_cdf <- extRemes::pevd(q = q, 
+                            loc = loc, 
+                            scale = scale, 
+                            shape = shape, 
+                            type = "GEV")
   
   gev_cdf
 }
