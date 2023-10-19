@@ -16,7 +16,8 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                                    "empirical",
                                                                    "gev_model_quantiles_mw",
                                                                    "gev_model_quantiles_pw")[1]){
-  # gev_mixture_model: an object associated with a result of the function "estimate_gev_mixture_model_parameters()"
+  # gev_mixture_model: an object associated with a result of the function 
+  #                    "estimate_gev_mixture_model_parameters()" or "predict_gev_mixture_model_parameters()"
   # alpha: order of the quantile to estimate
   # do.ci: boolean which indicates whether to return confidence interval or not
   # confidence_level: the desired confidence level for the estimated quantile
