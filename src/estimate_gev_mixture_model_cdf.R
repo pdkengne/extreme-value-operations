@@ -2,10 +2,6 @@ source("./src/calculate_gev_mixture_model_cdf.R")
 source("./src/calculate_gev_cdf.R")
 source("./src/extract_block_maxima.R")
 
-source("./src/calculate_gev_cdf.R")
-source("./src/calculate_gev_mixture_model_cdf.R")
-source("./src/estimate_gev_parameters.R")
-source("./src/estimate_gev_model_quantile.R")
 
 estimate_gev_mixture_model_cdf <- function(gev_mixture_model, 
                                            q,
@@ -68,48 +64,46 @@ estimate_gev_mixture_model_cdf <- function(gev_mixture_model,
   # set the observation threshold
   q_threshold <- min(block_maxima_largest)
   
-  # calculate the probability to exceed the threshold
-  tau <- sum(raw_data > q_threshold)/length(raw_data)
-  
+  # calculate the cdf
   if (q > q_threshold){
     if (estimator_type == "identic_weights_pw"){
       output <- calculate_gev_cdf(q = q,
                                   loc = gev_model_parameters["identic_weights", "loc_star"],
                                   scale = gev_model_parameters["identic_weights", "scale_star"], 
-                                  shape = gev_model_parameters["identic_weights", "shape_star"])/tau
+                                  shape = gev_model_parameters["identic_weights", "shape_star"])
     }
     else if (estimator_type == "pessimistic_weights_pw"){
       output <- calculate_gev_cdf(q = q,
                                   loc = gev_model_parameters["pessimistic_weights", "loc_star"],
                                   scale = gev_model_parameters["pessimistic_weights", "scale_star"], 
-                                  shape = gev_model_parameters["pessimistic_weights", "shape_star"])/tau
+                                  shape = gev_model_parameters["pessimistic_weights", "shape_star"])
     }
     else if (estimator_type == "automatic_weights_pw"){
       output <- calculate_gev_cdf(q = q,
                                   loc = gev_model_parameters["automatic_weights", "loc_star"],
                                   scale = gev_model_parameters["automatic_weights", "scale_star"], 
-                                  shape = gev_model_parameters["automatic_weights", "shape_star"])/tau
+                                  shape = gev_model_parameters["automatic_weights", "shape_star"])
     }
     else if (estimator_type == "identic_weights_mw"){
       output <- calculate_gev_mixture_model_cdf(q = q, 
                                                 locations = gev_mixture_model_parameters_object$loc_star, 
                                                 scales = gev_mixture_model_parameters_object$scale_star, 
                                                 shapes = gev_mixture_model_parameters_object$shape_star, 
-                                                weights = gev_mixture_model_weights_object[, "identic_weights"])/tau
+                                                weights = gev_mixture_model_weights_object[, "identic_weights"])
     }
     else if (estimator_type == "pessimistic_weights_mw"){
       output <- calculate_gev_mixture_model_cdf(q = q, 
                                                 locations = gev_mixture_model_parameters_object$loc_star, 
                                                 scales = gev_mixture_model_parameters_object$scale_star, 
                                                 shapes = gev_mixture_model_parameters_object$shape_star, 
-                                                weights = gev_mixture_model_weights_object[, "pessimistic_weights"])/tau
+                                                weights = gev_mixture_model_weights_object[, "pessimistic_weights"])
     }
     else if (estimator_type == "automatic_weights_mw"){
       output <- calculate_gev_mixture_model_cdf(q = q, 
                                                 locations = gev_mixture_model_parameters_object$loc_star, 
                                                 scales = gev_mixture_model_parameters_object$scale_star, 
                                                 shapes = gev_mixture_model_parameters_object$shape_star, 
-                                                weights = gev_mixture_model_weights_object[, "automatic_weights"])/tau
+                                                weights = gev_mixture_model_weights_object[, "automatic_weights"])
     }
     else{
       output <- Fn(q)
@@ -124,58 +118,61 @@ estimate_gev_mixture_model_cdf <- function(gev_mixture_model,
 
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-source("./src/calculate_gev_cdf.R")
-source("./src/estimate_gev_mixture_model_parameters.R")
-
-n <- 100000
-nlargest <- 1000
-
-x <- rnorm(n = n)
-
-gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
-                                                           block_sizes = NULL,
-                                                           minimum_nblocks = 50,
-                                                           nlargest = nlargest,
-                                                           confidence_level = 0.95,
-                                                           trace = TRUE)
-
-gev_mixture_model$normalized_gev_parameters_object
-
-gev_mixture_model$weighted_normalized_gev_parameters_object
-
-gev_mixture_model$automatic_weights_mw_statistics
-
-gev_mixture_model$automatic_weights_pw_statistics
-
-gev_mixture_model$automatic_weights_mw
-
-
-estimator_types <- c("automatic_weights_mw", 
-                     "pessimistic_weights_mw", 
-                     "identic_weights_mw", 
-                     "automatic_weights_pw",
-                     "pessimistic_weights_pw", 
-                     "identic_weights_pw", 
-                     "empirical")
-
-
-alpha <- 10^(-14)
-
-results_mw <- estimate_gev_mixture_model_cdf(gev_mixture_model,
-                                             alpha = alpha,
-                                             do.ci = TRUE,
-                                             confidence_level = 0.95,
-                                             estimator_type = estimator_types[1])
-
-results_mw
-
-results_pw <- estimate_gev_mixture_model_cdf(gev_mixture_model,
-                                             alpha = alpha,
-                                             do.ci = TRUE,
-                                             confidence_level = 0.95,
-                                             estimator_type = estimator_types[4])
-
-results_pw
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# source("./src/estimate_gev_mixture_model_parameters.R")
+# 
+# n <- 100000
+# nlargest <- 1000
+# 
+# x <- rnorm(n = n)
+# 
+# gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
+#                                                            block_sizes = NULL,
+#                                                            minimum_nblocks = 50,
+#                                                            nlargest = nlargest,
+#                                                            confidence_level = 0.95,
+#                                                            trace = TRUE)
+# 
+# gev_mixture_model$normalized_gev_parameters_object
+# 
+# gev_mixture_model$weighted_normalized_gev_parameters_object
+# 
+# gev_mixture_model$automatic_weights_mw_statistics
+# 
+# gev_mixture_model$automatic_weights_pw_statistics
+# 
+# gev_mixture_model$automatic_weights_mw
+# 
+# 
+# estimator_types <- c("automatic_weights_mw", 
+#                      "pessimistic_weights_mw", 
+#                      "identic_weights_mw", 
+#                      "automatic_weights_pw",
+#                      "pessimistic_weights_pw", 
+#                      "identic_weights_pw", 
+#                      "empirical")
+# 
+# 
+# range(x)
+# 
+# q <- 4
+# 
+# results_mw <- estimate_gev_mixture_model_cdf(gev_mixture_model,
+#                                              q = q,
+#                                              estimator_type = estimator_types[1])
+# 
+# results_mw
+# 
+# results_pw <- estimate_gev_mixture_model_cdf(gev_mixture_model,
+#                                              q = q,
+#                                              estimator_type = estimator_types[4])
+# 
+# results_pw
+# 
+# results_emp <- estimate_gev_mixture_model_cdf(gev_mixture_model,
+#                                              q = q,
+#                                              estimator_type = estimator_types[7])
+# 
+# results_emp
