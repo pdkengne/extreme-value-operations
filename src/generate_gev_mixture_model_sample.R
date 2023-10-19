@@ -65,4 +65,3 @@ generate_gev_mixture_model_sample <- function(n = 1, locations, scales, shapes, 
 # #pdf
 # 
 # plot(sort(results), pdf, type = "l")
-
