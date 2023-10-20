@@ -1,3 +1,5 @@
+# library(EnvStats)
+
 source("./src/calculate_gev_mixture_model_cdf.R")
 source("./src/calculate_gev_cdf.R")
 source("./src/extract_block_maxima.R")
@@ -106,11 +108,11 @@ estimate_gev_mixture_model_cdf <- function(gev_mixture_model,
                                                 weights = gev_mixture_model_weights_object[, "automatic_weights"])
     }
     else{
-      output <- Fn(q)
+      output <- EnvStats::pemp(q = q, obs = raw_data, prob.method = "emp.probs")
     }
   }
   else{
-    output <- Fn(q)
+    output <- EnvStats::pemp(q = q, obs = raw_data, prob.method = "emp.probs")
   }
   
   output
@@ -146,12 +148,12 @@ estimate_gev_mixture_model_cdf <- function(gev_mixture_model,
 # gev_mixture_model$automatic_weights_mw
 # 
 # 
-# estimator_types <- c("automatic_weights_mw", 
-#                      "pessimistic_weights_mw", 
-#                      "identic_weights_mw", 
+# estimator_types <- c("automatic_weights_mw",
+#                      "pessimistic_weights_mw",
+#                      "identic_weights_mw",
 #                      "automatic_weights_pw",
-#                      "pessimistic_weights_pw", 
-#                      "identic_weights_pw", 
+#                      "pessimistic_weights_pw",
+#                      "identic_weights_pw",
 #                      "empirical")
 # 
 # 

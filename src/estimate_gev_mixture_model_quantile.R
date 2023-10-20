@@ -1,3 +1,5 @@
+# library(EnvStats)
+
 source("./src/calculate_gev_inverse_cdf.R")
 source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 source("./src/estimate_gev_parameters.R")
@@ -13,9 +15,9 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                                    "automatic_weights_pw",
                                                                    "pessimistic_weights_pw", 
                                                                    "identic_weights_pw", 
-                                                                   "empirical",
                                                                    "model_wise",
-                                                                   "parameter_wise")[1]){
+                                                                   "parameter_wise",
+                                                                   "empirical")[1]){
   # gev_mixture_model: an object associated with a result of the function 
   #                    "estimate_gev_mixture_model_parameters()" or "predict_gev_mixture_model_parameters()"
   # alpha: order of the quantile to estimate
@@ -23,7 +25,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
   # confidence_level: the desired confidence level for the estimated quantile
   # estimator_type: quantile estimator to use from the set 
   # c("automatic_weights_mw", "pessimistic_weights_mw", "identic_weights_mw", "automatic_weights_pw","pessimistic_weights_pw", 
-  #   "identic_weights_pw", "empirical", "model_wise", "parameter_wise")
+  #   "identic_weights_pw", "model_wise", "parameter_wise", "empirical")
   
   # extract the raw data
   raw_data <- gev_mixture_model$data
@@ -112,11 +114,6 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                         weights = gev_mixture_model_weights_object[, "automatic_weights"],
                                                         iterations = 100)
     }
-    else if (estimator_type == "empirical"){
-      quantile_alpha <- quantile(x = raw_data, probs = 1 - alpha)
-      
-      output <- as.numeric(quantile_alpha)
-    }
     else if (estimator_type == "model_wise"){
       # extract the vector of weights
       weights = gev_mixture_model_weights_object[, "automatic_weights"]
@@ -163,7 +160,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
       rownames(output) <- block_sizes
       names(output) <- c("lower", "quantile", "upper")
     }
-    else{
+    else if (estimator_type == "parameter_wise"){
       quantiles_object <- sapply(1:length(block_sizes), function(j){
         block_size <- block_sizes[j]
         gev_model <- gev_models_object[[j]]
@@ -199,9 +196,12 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
       rownames(output) <- block_sizes
       names(output) <- c("lower", "quantile", "upper")
     }
+    else{
+      output <- EnvStats::qemp(p = 1 - alpha, obs = raw_data, prob.method = "emp.probs")
+    }
   }
   else{
-    stop("Please, enter a smaller quantile order")
+    output <- EnvStats::qemp(p = 1 - alpha, obs = raw_data, prob.method = "emp.probs")
   }
   
   output
@@ -237,15 +237,15 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # gev_mixture_model$automatic_weights_mw
 # 
 # 
-# estimator_types <- c("automatic_weights_mw",
-#                      "pessimistic_weights_mw",
-#                      "identic_weights_mw",
+# estimator_types <- c("automatic_weights_mw", 
+#                      "pessimistic_weights_mw", 
+#                      "identic_weights_mw", 
 #                      "automatic_weights_pw",
-#                      "pessimistic_weights_pw",
-#                      "identic_weights_pw",
-#                      "empirical",
+#                      "pessimistic_weights_pw", 
+#                      "identic_weights_pw", 
 #                      "model_wise",
-#                      "parameter_wise")
+#                      "parameter_wise",
+#                      "empirical")
 # 
 # 
 # alpha <- 10^(-14)
@@ -273,7 +273,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                                    alpha = alpha,
 #                                                    do.ci = TRUE,
 #                                                    confidence_level = 0.95,
-#                                                    estimator_type = estimator_types[7])
+#                                                    estimator_type = estimator_types[9])
 # 
 # results_emp
 # 
@@ -281,7 +281,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                                  alpha = alpha,
 #                                                  do.ci = FALSE,
 #                                                  confidence_level = 0.95,
-#                                                  estimator_type = estimator_types[9])
+#                                                  estimator_type = estimator_types[8])
 # 
 # est_rl_pw
 # 
@@ -289,7 +289,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                                  alpha = alpha,
 #                                                  do.ci = TRUE,
 #                                                  confidence_level = 0.95,
-#                                                  estimator_type = estimator_types[9])
+#                                                  estimator_type = estimator_types[8])
 # 
 # est_rl_pw_ci
 # 
@@ -300,7 +300,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                                  alpha = alpha,
 #                                                  do.ci = FALSE,
 #                                                  confidence_level = 0.95,
-#                                                  estimator_type = estimator_types[8])
+#                                                  estimator_type = estimator_types[7])
 # 
 # est_rl_mw
 # 
@@ -308,7 +308,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                                     alpha = alpha,
 #                                                     do.ci = TRUE,
 #                                                     confidence_level = 0.95,
-#                                                     estimator_type = estimator_types[8])
+#                                                     estimator_type = estimator_types[7])
 # 
 # est_rl_mw_ci
 # 
