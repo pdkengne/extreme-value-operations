@@ -88,6 +88,12 @@ predict_gev_mixture_model_parameters <- function(x,
                                                           use.phi = use.phi,
                                                           method = method)
   
+  # extract non-stationary gev parameters associated with the equivalent block sizes
+  several_ns_gev_parameters <- sapply(several_ns_gev_models, function(single_ns_gev_model) 
+    single_ns_gev_model$gev_model$results$par)
+  
+  several_ns_gev_parameters <- data.frame(t(several_ns_gev_parameters))
+  
   # estimate several stationary gev models associated with the equivalent block sizes
   gev_models <- predict_several_gev_models(several_ns_gev_models = several_ns_gev_models, 
                                            covariates = covariates,
@@ -209,6 +215,9 @@ predict_gev_mixture_model_parameters <- function(x,
   output[["full_normalized_gev_parameters_object"]] <- full_normalized_gev_parameters_object
   output[["weighted_normalized_gev_parameters_object"]] <- weighted_normalized_gev_parameters_object
   
+  output[["several_ns_gev_models"]] <- several_ns_gev_models
+  output[["several_ns_gev_parameters"]] <- several_ns_gev_parameters
+  
   output[["identic_weights_mw"]] <- identic_weights_mw
   output[["pessimistic_weights_mw"]] <- pessimistic_weights_mw
   
@@ -244,8 +253,8 @@ predict_gev_mixture_model_parameters <- function(x,
 # results <- predict_gev_mixture_model_parameters(x = x,
 #                                                 data = NULL,
 #                                                 location.fun = ~1,
-#                                                 scale.fun = ~1, 
-#                                                 shape.fun = ~1, 
+#                                                 scale.fun = ~1,
+#                                                 shape.fun = ~1,
 #                                                 use.phi = TRUE,
 #                                                 covariates = NULL,
 #                                                 block_sizes = NULL,
@@ -264,12 +273,15 @@ predict_gev_mixture_model_parameters <- function(x,
 # #results
 # names(results)
 # 
-# # "data"                                      "data_largest"                              "use_lower_threshold"                       "block_sizes"
-# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_object"                       "block_maxima_indexes_object"
-# # "gev_models_object"                         "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
-# # "weighted_normalized_gev_parameters_object" "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
-# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"                      "automatic_weights_mw_statistics"
-# # "automatic_weights_pw_shape"                "automatic_weights_pw_scale"                "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+# # "data"                                      "data_largest"                              "use_lower_threshold"                      
+# # "block_sizes"                               "equivalent_block_sizes"                    "rejected_block_sizes"                     
+# # "block_maxima_object"                       "block_maxima_indexes_object"               "gev_models_object"                        
+# # "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"    
+# # "weighted_normalized_gev_parameters_object" "several_ns_gev_models"                     "several_ns_gev_parameters"                
+# # "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"             
+# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"                     
+# # "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"               
+# # "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"          
 # 
 # # get the block sizes
 # results$block_sizes
@@ -292,6 +304,19 @@ predict_gev_mixture_model_parameters <- function(x,
 # # get the statistics about the estimation of weights
 # results$automatic_weights_mw_statistics
 # results$automatic_weights_pw_statistics
+# 
+# # get the non-stationary gev parameters
+# results$several_ns_gev_parameters
+# 
+# # get the non-stationary gev models
+# single_ns_gev_model <- results$several_ns_gev_models[[1]]
+# names(single_ns_gev_model)
+# 
+# # "data"                    "covariates"              "block_maxima_covariates" "block_size"              "block_maxima"           
+# # "block_maxima_indexes"    "extremal_index"          "gev_model"
+# 
+# single_ns_gev_model$gev_model
+# 
 # 
 # # plot the mean standardized block maxima
 # plot_several_standardized_block_maxima_mean(x = results$data_largest,
@@ -366,8 +391,8 @@ predict_gev_mixture_model_parameters <- function(x,
 # results <- predict_gev_mixture_model_parameters(x = x,
 #                                                 data = data,
 #                                                 location.fun = ~ trend,
-#                                                 scale.fun = ~ ., 
-#                                                 shape.fun = ~ random, 
+#                                                 scale.fun = ~ .,
+#                                                 shape.fun = ~ random,
 #                                                 use.phi = TRUE,
 #                                                 covariates = covariates,
 #                                                 block_sizes = NULL,
@@ -386,12 +411,15 @@ predict_gev_mixture_model_parameters <- function(x,
 # #results
 # names(results)
 # 
-# # "data"                                      "data_largest"                              "use_lower_threshold"                       "block_sizes"
-# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_object"                       "block_maxima_indexes_object"
-# # "gev_models_object"                         "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
-# # "weighted_normalized_gev_parameters_object" "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
-# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"                      "automatic_weights_mw_statistics"
-# # "automatic_weights_pw_shape"                "automatic_weights_pw_scale"                "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+# # "data"                                      "data_largest"                              "use_lower_threshold"                      
+# # "block_sizes"                               "equivalent_block_sizes"                    "rejected_block_sizes"                     
+# # "block_maxima_object"                       "block_maxima_indexes_object"               "gev_models_object"                        
+# # "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"    
+# # "weighted_normalized_gev_parameters_object" "several_ns_gev_models"                     "several_ns_gev_parameters"                
+# # "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"             
+# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"                     
+# # "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"               
+# # "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"          
 # 
 # # get the block sizes
 # results$block_sizes
@@ -414,6 +442,18 @@ predict_gev_mixture_model_parameters <- function(x,
 # # get the statistics about the estimation of weights
 # results$automatic_weights_mw_statistics
 # results$automatic_weights_pw_statistics
+# 
+# # get the non-stationary gev parameters
+# results$several_ns_gev_parameters
+# 
+# # get the non-stationary gev models
+# single_ns_gev_model <- results$several_ns_gev_models[[1]]
+# names(single_ns_gev_model)
+# 
+# # "data"                    "covariates"              "block_maxima_covariates" "block_size"              "block_maxima"           
+# # "block_maxima_indexes"    "extremal_index"          "gev_model"
+# 
+# single_ns_gev_model$gev_model
 # 
 # # plot the mean standardized block maxima
 # plot_several_standardized_block_maxima_mean(x = results$data_largest,
@@ -489,8 +529,8 @@ predict_gev_mixture_model_parameters <- function(x,
 # results <- predict_gev_mixture_model_parameters(x = x,
 #                                                 data = data,
 #                                                 location.fun = ~ trend,
-#                                                 scale.fun = ~ ., 
-#                                                 shape.fun = ~ 1, 
+#                                                 scale.fun = ~ .,
+#                                                 shape.fun = ~ 1,
 #                                                 use.phi = TRUE,
 #                                                 covariates = covariates,
 #                                                 block_sizes = NULL,
@@ -509,12 +549,15 @@ predict_gev_mixture_model_parameters <- function(x,
 # #results
 # names(results)
 # 
-# # "data"                                      "data_largest"                              "use_lower_threshold"                       "block_sizes"
-# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_object"                       "block_maxima_indexes_object"
-# # "gev_models_object"                         "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
-# # "weighted_normalized_gev_parameters_object" "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
-# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"                      "automatic_weights_mw_statistics"
-# # "automatic_weights_pw_shape"                "automatic_weights_pw_scale"                "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+# # "data"                                      "data_largest"                              "use_lower_threshold"                      
+# # "block_sizes"                               "equivalent_block_sizes"                    "rejected_block_sizes"                     
+# # "block_maxima_object"                       "block_maxima_indexes_object"               "gev_models_object"                        
+# # "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"    
+# # "weighted_normalized_gev_parameters_object" "several_ns_gev_models"                     "several_ns_gev_parameters"                
+# # "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"             
+# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"                     
+# # "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"               
+# # "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"          
 # 
 # # get the block sizes
 # results$block_sizes
@@ -537,6 +580,18 @@ predict_gev_mixture_model_parameters <- function(x,
 # # get the statistics about the estimation of weights
 # results$automatic_weights_mw_statistics
 # results$automatic_weights_pw_statistics
+# 
+# # get the non-stationary gev parameters
+# results$several_ns_gev_parameters
+# 
+# # get the non-stationary gev models
+# single_ns_gev_model <- results$several_ns_gev_models[[1]]
+# names(single_ns_gev_model)
+# 
+# # "data"                    "covariates"              "block_maxima_covariates" "block_size"              "block_maxima"           
+# # "block_maxima_indexes"    "extremal_index"          "gev_model"
+# 
+# single_ns_gev_model$gev_model
 # 
 # # plot the mean standardized block maxima
 # plot_several_standardized_block_maxima_mean(x = results$data_largest,
