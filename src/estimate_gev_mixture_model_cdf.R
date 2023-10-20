@@ -15,7 +15,7 @@ estimate_gev_mixture_model_cdf <- function(gev_mixture_model,
   # gev_mixture_model: an object associated with a result of the function 
   #                    "estimate_gev_mixture_model_parameters()" or "predict_gev_mixture_model_parameters()"
   # q: vector of observations
-  # estimator_type: quantile estimator to use from the set 
+  # estimator_type: cdf estimator to use from the set 
   # c("automatic_weights_mw", "pessimistic_weights_mw", "identic_weights_mw", "automatic_weights_pw",
   #   "pessimistic_weights_pw", "identic_weights_pw", "empirical")
   
