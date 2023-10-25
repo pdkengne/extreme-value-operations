@@ -58,7 +58,7 @@ plot_intro(weatherAUS)
 plot_missing(weatherAUS)
 
 #'
-final_data <- drop_columns(weatherAUS, c("RISK_MM", "Cloud9am", "Cloud3pm", "Evaporation", "Sunshine"))
+final_data <- drop_columns(weatherAUS, c("Date", "RISK_MM", "Cloud9am", "Cloud3pm", "Evaporation", "Sunshine"))
 
 # names(final_data)
 
