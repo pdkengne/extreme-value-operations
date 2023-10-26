@@ -24,7 +24,6 @@ library(readr)
 #'
 Gnss_imar <- xfun::in_dir(dir = path, expr = read_csv("./applications/Gnss_imar.csv"))
 Gnss_map_matching <- xfun::in_dir(dir = path, expr = read_csv("./applications/Gnss_map_matching.csv"))
-
 #'
 timestamp_position <- sapply(Gnss_map_matching$timestamp,
                              function(ts)

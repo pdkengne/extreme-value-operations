@@ -1,5 +1,6 @@
 # library(EnvStats)
 
+source("./src/find_threshold_associated_with_given_block_size.R")
 source("./src/calculate_gev_inverse_cdf.R")
 source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 source("./src/estimate_gev_parameters.R")
@@ -30,13 +31,17 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
   # extract the raw data
   raw_data <- gev_mixture_model$data
   
-  # extract the largest train data
-  data_largest <- gev_mixture_model$data_largest
+  # extract the vector of block sizes
+  block_sizes <- gev_mixture_model$block_sizes
   
-  # calculate the proportion of largest data
-  tau <- length(data_largest)/length(raw_data)
+  # find threshold above which all fitted models are well defined
+  threshold <- find_threshold_associated_with_given_block_size(x = raw_data, 
+                                                               block_size = max(block_sizes))
   
-  # set the appropriate quantile order
+  # calculate the proportion of data which exceed the threshold
+  tau <- sum(raw_data > threshold)/length(raw_data)
+  
+  # calculate the quantile order to use for all fitted models
   alpha_prime <- alpha/tau
   
   # set the types of weighted gev models
@@ -65,33 +70,27 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
   # extract the list of all estimated gev models
   gev_models_object <- gev_mixture_model$gev_models_object
   
-  # extract the vector of block sizes
-  block_sizes <- gev_mixture_model$block_sizes
-  
-  # quantile order for gev mixture model
-  alpha_gev_mixture_model <- max(block_sizes)*alpha_prime
-  
-  if (alpha_gev_mixture_model < 1){
+  if (alpha_prime < 1){
     if (estimator_type == "identic_weights_pw"){
-      output <- calculate_gev_inverse_cdf(p = 1 - alpha_gev_mixture_model,
+      output <- calculate_gev_inverse_cdf(p = 1 - alpha_prime,
                                           loc = gev_model_parameters["identic_weights", "loc_star"],
                                           scale = gev_model_parameters["identic_weights", "scale_star"], 
                                           shape = gev_model_parameters["identic_weights", "shape_star"])
     }
     else if (estimator_type == "pessimistic_weights_pw"){
-      output <- calculate_gev_inverse_cdf(p = 1 - alpha_gev_mixture_model,
+      output <- calculate_gev_inverse_cdf(p = 1 - alpha_prime,
                                           loc = gev_model_parameters["pessimistic_weights", "loc_star"],
                                           scale = gev_model_parameters["pessimistic_weights", "scale_star"], 
                                           shape = gev_model_parameters["pessimistic_weights", "shape_star"])
     }
     else if (estimator_type == "automatic_weights_pw"){
-      output <- calculate_gev_inverse_cdf(p = 1 - alpha_gev_mixture_model,
+      output <- calculate_gev_inverse_cdf(p = 1 - alpha_prime,
                                           loc = gev_model_parameters["automatic_weights", "loc_star"],
                                           scale = gev_model_parameters["automatic_weights", "scale_star"], 
                                           shape = gev_model_parameters["automatic_weights", "shape_star"])
     }
     else if (estimator_type == "identic_weights_mw"){
-      output <- calculate_gev_mixture_model_inverse_cdf(p = 1 - alpha_gev_mixture_model, 
+      output <- calculate_gev_mixture_model_inverse_cdf(p = 1 - alpha_prime, 
                                                         locations = gev_mixture_model_parameters_object$loc_star, 
                                                         scales = gev_mixture_model_parameters_object$scale_star, 
                                                         shapes = gev_mixture_model_parameters_object$shape_star, 
@@ -99,7 +98,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                         iterations = 100)
     }
     else if (estimator_type == "pessimistic_weights_mw"){
-      output <- calculate_gev_mixture_model_inverse_cdf(p = 1 - alpha_gev_mixture_model, 
+      output <- calculate_gev_mixture_model_inverse_cdf(p = 1 - alpha_prime, 
                                                         locations = gev_mixture_model_parameters_object$loc_star, 
                                                         scales = gev_mixture_model_parameters_object$scale_star, 
                                                         shapes = gev_mixture_model_parameters_object$shape_star, 
@@ -107,7 +106,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                         iterations = 100)
     }
     else if (estimator_type == "automatic_weights_mw"){
-      output <- calculate_gev_mixture_model_inverse_cdf(p = 1 - alpha_gev_mixture_model, 
+      output <- calculate_gev_mixture_model_inverse_cdf(p = 1 - alpha_prime, 
                                                         locations = gev_mixture_model_parameters_object$loc_star, 
                                                         scales = gev_mixture_model_parameters_object$scale_star, 
                                                         shapes = gev_mixture_model_parameters_object$shape_star, 
@@ -150,7 +149,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                   method = c("MLE", "GMLE", "Lmoments")[1])
         
         out <- estimate_gev_model_quantile(gev_model = gev_model_star,
-                                           alpha = alpha_gev_mixture_model,
+                                           alpha = alpha_prime,
                                            do.ci = do.ci,
                                            confidence_level = confidence_level)
         
@@ -186,7 +185,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                   method = c("MLE", "GMLE", "Lmoments")[1])
         
         out <- estimate_gev_model_quantile(gev_model = gev_model_star,
-                                           alpha = alpha_gev_mixture_model,
+                                           alpha = alpha_prime,
                                            do.ci = do.ci,
                                            confidence_level = confidence_level)
         
