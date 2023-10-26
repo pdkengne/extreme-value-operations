@@ -150,7 +150,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                   method = c("MLE", "GMLE", "Lmoments")[1])
         
         out <- estimate_gev_model_quantile(gev_model = gev_model_star,
-                                           alpha = alpha_prime*block_size,
+                                           alpha = alpha_gev_mixture_model,
                                            do.ci = do.ci,
                                            confidence_level = confidence_level)
         
@@ -186,7 +186,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                   method = c("MLE", "GMLE", "Lmoments")[1])
         
         out <- estimate_gev_model_quantile(gev_model = gev_model_star,
-                                           alpha = alpha_prime*block_size,
+                                           alpha = alpha_gev_mixture_model,
                                            do.ci = do.ci,
                                            confidence_level = confidence_level)
         
