@@ -106,7 +106,7 @@ gev_mixture_model$automatic_weights_mw
 # Model diagnostics
 
 ## GEV mixture model with respect to parameters
-#+ fig.width=12, fig.height=16
+#+ fig.width=12, fig.height=8
 plot_gev_mixture_model_pdf(gev_mixture_model,
                            type = "automatic_weights",
                            model_wise = FALSE,
@@ -116,7 +116,7 @@ plot_gev_mixture_model_pdf(gev_mixture_model,
                            main = "Probability Density Function (PDF) Plot")
 
 ## GEV mixture model with respect to distribution functions
-#+ fig.width=12, fig.height=16
+#+ fig.width=12, fig.height=8
 plot_gev_mixture_model_pdf(gev_mixture_model,
                            type = "automatic_weights",
                            model_wise = TRUE,
