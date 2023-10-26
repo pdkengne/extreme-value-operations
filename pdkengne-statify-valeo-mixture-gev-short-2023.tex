@@ -736,9 +736,9 @@
 	
 	\begin{block}{Estimation des poids}
 		\begin{equation}
-			\widehat{\omega} = \argmin_{\omega}\left\{ \sum_{x\in \mathcal{X}, x>x_{n, \alpha}}\, \left[F_{X,n}(x) - G_{\mathbb{P}}\left(x; \omega \right)\right]^2\right\},
+			\widehat{\omega} = \argmin_{\omega}\left\{ \sum_{x\in \mathcal{X}, x>x_{n, \alpha}}\, \left[F_{n}(x) - G_{\mathbb{P}}\left(x; \omega \right)\right]^2\right\},
 		\end{equation}
-		où $F_{X,n}$ est la fonction de répartition empirique de la v.a. $X$ estimée sur un échantillon $\mathcal{X} = \{x_1,\cdots, x_n\}$ de même que le quantile empirique $x_{n, \alpha}$ d'ordre $\alpha > 0.5.$
+		où $F_{n}(\cdot)$ est la fonct. de répartition empirique estimée sur une séq. $\mathcal{X} = \{x_1,\cdots, x_n\}$ d'obs. de $X$ de même que le quantile empirique $x_{n, \alpha}$ d'ordre $\alpha > 0.5.$
 	\end{block}
 	
 	
@@ -765,9 +765,9 @@
 		\begin{equation}
 			\left(\widehat{\omega}_{\gamma},
 			\widehat{\omega}_{\sigma},
-			\widehat{\omega}_{\mu}\right) = \argmin_{\omega_{\gamma},\omega_{\sigma}, \omega_{\mu}}\left\{ \sum_{x\in \mathcal{X}, x>x_{n, \alpha}}\, \left[F_{X,n}(x) - G_{\mathbb{M}}\left(x; \omega_{\gamma}, \omega_{\sigma}, \omega_{\mu} \right)\right]^2\right\},
+			\widehat{\omega}_{\mu}\right) = \argmin_{\omega_{\gamma},\omega_{\sigma}, \omega_{\mu}}\left\{ \sum_{x\in \mathcal{X}, x>x_{n, \alpha}}\, \left[F_{n}(x) - G_{\mathbb{M}}\left(x; \omega_{\gamma}, \omega_{\sigma}, \omega_{\mu} \right)\right]^2\right\},
 		\end{equation}
-		où $F_{X,n}$ est la fonction de répartition empirique de la v.a. $X$ estimée sur un échantillon $\mathcal{X} = \{x_1,\cdots, x_n\}$ de même que le quantile empirique $x_{n, \alpha}$ d'ordre $\alpha > 0.5.$
+		où $F_{n}(\cdot)$ est la fonct. de répartition empirique estimée sur une séq. $\mathcal{X} = \{x_1,\cdots, x_n\}$ d'obs. de $X$ de même que le quantile empirique $x_{n, \alpha}$ d'ordre $\alpha > 0.5.$
 	\end{block}
 	
 \end{frame}
@@ -778,7 +778,7 @@
 	
 	\small
 	
-	Soit $X_t,$ $t=1, 2, \cdots$ une série temporelle \textbf{stationnaire}.
+	Soit $X_t,$ $t=1, 2, \cdots$ une série temporelle  \textbf{stationnaire} de processus aléatoire \textbf{inconnu}.
 	
 	\begin{block}{}
 		\begin{itemize}
@@ -826,6 +826,25 @@
 	\end{definition}
 	
 	
+	\begin{block}{Estimation des poids}
+		\begin{equation}
+			\widehat{\omega} = \argmin_{\omega}\left\{ \sum_{x\in \mathcal{X}, x>x_{n, \alpha}}\, \left[F_{n}(x) - G_{\mathbb{P}}\left(x; \omega \right)\right]^2\right\},
+		\end{equation}
+		où $F_{n}(\cdot)$ est la fonct. de répartition empirique estimée sur une séq. $\mathcal{X} = \{x_1,\cdots, x_n\}$ d'obs. de $X_t$ de même que le quantile empirique $x_{n, \alpha}$ d'ordre $\alpha > 0.5.$
+	\end{block}
+	
+	
+	
+	
+\end{frame}
+
+
+
+\begin{frame}
+	\frametitle{Mélange des distributions GEV: Cas Stationnaire} %Each frame should have a title.
+	
+	\small
+	
 	\begin{definition}[Modèle de mélange $G_{\mathbb{M}}(\cdot; \omega_{\gamma}, \omega_{\sigma}, \omega_{\mu})$]
 		Soit $G(\cdot)$ la fonction de répartition de la loi GEV. Le modèle de mélange $G_{\mathbb{M}}(\cdot; \omega_{\gamma}, \omega_{\sigma}, \omega_{\mu})$ est défini pour tout $x\in \mathbb{R}$ par 
 		\begin{equation}
@@ -834,12 +853,17 @@
 		où $\omega_{\gamma} = \left(\omega_{\gamma, 1},\cdots, \omega_{\gamma, p}\right) \in [0,\, 1]^p,$ $\omega_{\sigma} = \left(\omega_{\sigma, 1},\cdots, \omega_{\sigma, p}\right) \in [0,\, 1]^p$ et $\omega_{\mu} = \left(\omega_{\mu, 1},\cdots, \omega_{\mu, p}\right) \in [0,\, 1]^p$ sont trois vecteurs des poids. 
 	\end{definition}
 	
-	
+	\begin{block}{Estimation des poids}
+		\begin{equation}
+			\left(\widehat{\omega}_{\gamma},
+			\widehat{\omega}_{\sigma},
+			\widehat{\omega}_{\mu}\right) = \argmin_{\omega_{\gamma},\omega_{\sigma}, \omega_{\mu}}\left\{ \sum_{x\in \mathcal{X}, x>x_{n, \alpha}}\, \left[F_{n}(x) - G_{\mathbb{M}}\left(x; \omega_{\gamma}, \omega_{\sigma}, \omega_{\mu} \right)\right]^2\right\},
+		\end{equation}
+		où $F_{n}(\cdot)$ est la fonct. de répartition empirique estimée sur une séq. $\mathcal{X} = \{x_1,\cdots, x_n\}$ d'obs. de $X_t$ de même que le quantile empirique $x_{n, \alpha}$ d'ordre $\alpha > 0.5.$
+	\end{block}
 	
 	
 \end{frame}
-
-
 
 
 
@@ -850,7 +874,7 @@
 	
 	\small
 	
-	Soit $X_t,$ $t=1, 2, \cdots$ une série temporelle \textbf{non-stationnaire}. 
+	Soit $X_t,$ $t=1, 2, \cdots$ une série temporelle \textbf{non-stationnaire} de processus \textbf{inconnu}. 
 	
 	Soit $Y_t = \left(Y_{1,t}, \cdots,Y_{q,t}\right)$ une série temporelle de $q$ covariables pour la série $X_t.$ 
 	
@@ -863,7 +887,7 @@
 		\begin{itemize}
 			\item Soit $b=\left\{b_j\in \mathbb{N}^{\star},\, j=1,\cdots, p\right\}$ un ensemble de $p$ tailles de blocs assez grandes.
 			
-			\item Soit $\left(\gamma_j(y_t),\, \sigma_j(y_t),\, \mu_j(y_t)\right)$ le vecteur des paramètres de la loi GEV  nommée $G_j(\cdot;\,|\,Y_t = y_t)$ caractérisant la distribution conditionelle des maximums de $b_j$ obs. consécutives de la série $X_t.$
+			\item Soit $\left(\gamma_j(y_t),\, \sigma_j(y_t),\, \mu_j(y_t)\right)$ le vecteur des paramètres de la loi GEV  nommée $G_j(\cdot\,|\,Y_t = y_t)$ caractérisant la distribution conditionelle des maximums de $b_j$ obs. consécutives de la série $X_t.$
 			
 			\item Soit $\theta_j\in [0,\,1]$ l'\textbf{indice extremal} associé au seuil défini par le quantile empirique $x_{n, 1/b_j}$ d'ordre $1/b_j$ estimé sur une séquence $\mathcal{X}_n = \{x_1,\cdots, x_n\}$ de la série $X_t.$
 			
@@ -893,7 +917,7 @@
 
 	
 	\begin{definition}[Lois GEV normalisées]
-		Soit $y_t = \left(y_{1,t},\cdots, y_{q,t}\right) \in \mathbb{R}^q$ un vecteur constitué des valeurs potentielles des $q$ covariables associées à la série $X_t.$ La loi GEV normalisée $G_j^{\theta_j/b_j}(\cdot;\,|\,Y_t = y_t)$ caractérisant la distribution conditionelle des grandes obs. de $X_t$ est la loi GEV $G_j\left(\cdot;\gamma_j(b_j,\theta_j, y_t), \,\sigma_j(b_j,\theta_j,y_t),\, \mu_j(b_j, \theta_j,y_t)\right)$ dont les trois paramètres sont définis par:
+		Soit $y_t = \left(y_{1,t},\cdots, y_{q,t}\right) \in \mathbb{R}^q$ un vecteur constitué des valeurs potentielles des $q$ covariables associées à la série $X_t.$ La loi GEV normalisée $G_j^{\theta_j/b_j}(\cdot\,|\,Y_t = y_t)$ caractérisant la distribution conditionelle des grandes obs. de $X_t$ est la loi GEV $G_j\left(\cdot;\gamma_j(b_j,\theta_j, y_t), \,\sigma_j(b_j,\theta_j,y_t),\, \mu_j(b_j, \theta_j,y_t)\right)$ dont les trois paramètres sont définis par:
 		\begin{itemize}
 			\item $\gamma_{j}(b_j,\theta_j, y_t) = \gamma_j(y_t)$ (paramètre de forme),
 			
@@ -925,12 +949,13 @@
 	
 	\begin{block}{Estimation des poids $\omega_j(y_t)$}
 		\begin{equation}
-			\widehat{\omega}(y_t) = \argmin_{\omega}\left\{ \sum_{x\in \mathcal{X}, x>x_{n, \alpha}}\, \left[F_{X,n}(x) - G_{\mathbb{P}}\left(x\,|\,Y_t = y_t;\omega(y_t)\right)\right]^2\right\},
+			\widehat{\omega}(y_t) = \argmin_{\omega}\left\{ \sum_{x\in \mathcal{X}, x>x_{n, \alpha}}\, \left[F_{n}(x\,|\,Y_t \in \mathcal{V}(y_t,k)) - G_{\mathbb{P}}\left(x\,|\,Y_t = y_t;\omega(y_t)\right)\right]^2\right\},
 		\end{equation}
-		où $F_{X,n}$ est la fonction de répartition empirique de la v.a. $X$ estimée sur un échantillon $\mathcal{X} = \{x_1,\cdots, x_n\}$ de même que le quantile empirique $x_{n, \alpha}$ d'ordre $\alpha > 0.5.$
+		où le quantile empirique $x_{n, \alpha}$ d'ordre $\alpha > 0.5$ est estimé sur une séquence $\mathcal{X} = \{x_1, \cdots, x_n\}$ de $X_t$ tandis que la fonct. de répartition empirique $F_{n}\left(\cdot \,|\,Y_t \in \mathcal{V}(y_t,k)\right)$ est  estimée sur la sous seq. $\mathcal{X}(y_t) = \left\{x_{\ell} \in \mathcal{X}:\, y_{\ell} \in \mathcal{V}(y_t,k)\right\}$ dans lequel $\mathcal{V}(y_t,k)$ est l'ens. des $k$-NN de $y_t.$ 
 	\end{block}
 	
 \end{frame}
+
 
 
 \begin{frame}
@@ -970,10 +995,10 @@
 			\widehat{\omega}_{\sigma}(y_t),\,
 			\widehat{\omega}_{\mu}(y_t)\right) 
 			&=& 
-			\argmin_{\omega_{\gamma},\omega_{\sigma}, \omega_{\mu}}\left\{ \sum_{x\in \mathcal{X}, x>x_{n, \alpha}}\, \left[F_{X,n}(x) - \right.\right.\nonumber\\ 
+			\argmin_{\omega_{\gamma},\omega_{\sigma}, \omega_{\mu}}\left\{ \sum_{x\in \mathcal{X}, x>x_{n, \alpha}}\, \left[F_{n}(x\,|\,Y_t \in \mathcal{V}(y_t,k)) - \right.\right.\nonumber\\ 
 			& & \left. \left. G_{\mathbb{M}}\left(x\,|\,Y_t = y_t; \omega_{\gamma}(y_t), \omega_{\sigma}(y_t), \omega_{\mu}(y_t) \right)\right]^2\right\},
 		\end{eqnarray}
-		où $F_{X,n}$ est la fonction de répartition empirique de la v.a. $X$ estimée sur un échantillon $\mathcal{X} = \{x_1,\cdots, x_n\}$ de même que le quantile empirique $x_{n, \alpha}$ d'ordre $\alpha > 0.5.$
+		où le quantile empirique $x_{n, \alpha}$ d'ordre $\alpha > 0.5$ est estimé sur une séquence $\mathcal{X} = \{x_1, \cdots, x_n\}$ de $X_t$ tandis que la fonct. de répartition empirique $F_{n}\left(\cdot \,|\,Y_t \in \mathcal{V}(y_t,k)\right)$ est  estimée sur la sous seq. $\mathcal{X}(y_t) = \left\{x_{\ell} \in \mathcal{X}:\, y_{\ell} \in \mathcal{V}(y_t,k)\right\}$ dans lequel $\mathcal{V}(y_t,k)$ est l'ens. des $k$-NN de $y_t.$ 
 	\end{block}
 	
 	
