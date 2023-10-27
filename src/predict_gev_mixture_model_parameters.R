@@ -291,7 +291,8 @@ predict_gev_mixture_model_parameters <- function(x,
 # 
 # # get the normalized gev parameters
 # results$normalized_gev_parameters_object
-# 
+# # extract the raw data
+raw_data <- gev_mixture_model$data
 # # get the full normalized gev parameters
 # results$full_normalized_gev_parameters_object
 # 

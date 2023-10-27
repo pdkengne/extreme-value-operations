@@ -31,14 +31,27 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
   # extract the raw data
   raw_data <- gev_mixture_model$data
   
+  # extract the used largest dataset
+  data_largest <- gev_mixture_model$data_largest
+  
   # extract the vector of block sizes
   block_sizes <- gev_mixture_model$block_sizes
   
+  # get the location indicator of the threshold
+  use_lower_threshold <- gev_mixture_model$use_lower_threshold
+  
   # find threshold above which all fitted models are well defined
-  threshold <- find_threshold_associated_with_given_block_size(x = raw_data, 
-                                                               block_size = max(block_sizes))
+  if (use_lower_threshold){
+    threshold <- find_threshold_associated_with_given_block_size(x = data_largest, 
+                                                                 block_size = min(block_sizes))
+  }
+  else{
+    threshold <- find_threshold_associated_with_given_block_size(x = data_largest, 
+                                                                 block_size = max(block_sizes))
+  }
   
   # calculate the proportion of data which exceed the threshold
+  # tau <- length(data_largest)/length(raw_data)
   tau <- sum(raw_data > threshold)/length(raw_data)
   
   # calculate the quantile order to use for all fitted models
