@@ -51,8 +51,8 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
   }
   
   # calculate the proportion of data which exceed the threshold
-  # tau <- length(data_largest)/length(raw_data)
-  tau <- sum(raw_data > threshold)/length(raw_data)
+  tau <- length(data_largest)/length(raw_data)
+  # tau <- sum(raw_data > threshold)/length(raw_data)
   
   # calculate the quantile order to use for all fitted models
   alpha_prime <- alpha/tau
