@@ -60,7 +60,7 @@ acf(y)
 # Estimation of gev mixture models
 #'
 gev_mixture_model <- estimate_gev_mixture_model_parameters(x = x, 
-                                                           block_sizes = 5:20,
+                                                           block_sizes = NULL,
                                                            minimum_nblocks = 50,
                                                            threshold = NULL,
                                                            nlargest = nlargest,
