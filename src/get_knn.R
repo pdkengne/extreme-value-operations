@@ -17,37 +17,37 @@ get_knn <- function(data, k, query = NULL, search = "kdtree"){
 }
 
 
-# # example 1
-# 
-# data <- data.frame(cbind(1:10, 1:10))
-# 
-# query <- data[1, ]
-# 
-# k <- 3
-# 
-# nn <- dbscan::kNN(x = data, k = k, query = query)
-# nn
-# 
-# # get the nearest neighbor indices
-# nn$id
-# 
-# # get the nearest neighbor Euclidean distances
-# nn$dist
-# 
-# 
-# # example 2
-# 
-# data <- data.frame(cbind(1:10, 1:10))
-# 
-# query <- NULL
-# 
-# k <- 3
-# 
-# nn <- dbscan::kNN(x = data, k = k, query = query)
-# nn
-# 
-# # get the nearest neighbor indices
-# nn$id
-# 
-# # get the nearest neighbor Euclidean distances
-# nn$dist
+# example 1
+
+data <- data.frame(cbind(1:10, 1:10))
+
+query <- data[1, ]
+
+k <- 3
+
+nn <- get_knn(data = data, k = k, query = query)
+nn
+
+# get the nearest neighbor indices
+nn$id
+
+# get the nearest neighbor Euclidean distances
+nn$dist
+
+
+# example 2
+
+data <- data.frame(cbind(1:10, 1:10))
+
+query <- NULL
+
+k <- 3
+
+nn <- get_knn(data = data, k = k, query = query)
+nn
+
+# get the nearest neighbor indices
+nn$id
+
+# get the nearest neighbor Euclidean distances
+nn$dist
