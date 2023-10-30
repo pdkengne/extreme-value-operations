@@ -1,4 +1,4 @@
-# library(caret)
+library(caret)
 
 get_standard_scaler <- function(data, method = c("center", "scale")){
   # data: a matrix or dataframe
