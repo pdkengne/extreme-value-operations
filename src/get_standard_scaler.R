@@ -1,38 +1,29 @@
 # library(caret)
 
-get_standard_scaler <- function(x, method = c("center", "scale")){
-  # x: a matrix or dataframe
+get_standard_scaler <- function(data, method = c("center", "scale")){
+  # data: a matrix or dataframe
   # method: a character vector specifying the type of processing. Possible values are
-  # c("BoxCox", "YeoJohnson", "expoTrans", "center", "scale", "pca", "ica", "medianImpute", "corr")
+  # c("BoxCox", "YeoJohnson", "expoTrans", "center", "scale", "pca", "ica", "medianImpute", bagImpute", "corr")
   
+  output <- caret::preProcess(x = data, method = method)
   
-  
-  
+  output
 }
 
 
-
-data <- data.frame(cbind(1:10, 1:10))
-
-data
-
-query <- data[1, ]
-
-preProcValues <- caret::preProcess(x = data, method = c("center", "scale"))
-
-
-testTransformed <- predict(object = preProcValues, newdata = query)
-
-testTransformed
-
-apply(data, 2, mean)
-
-apply(data, 2, sd)
-
-(query - apply(data, 2, mean))/apply(data, 2, sd)
-
-
-preProcValues$mean
-
-preProcValues$std
+# # example 1
+# 
+# data <- data.frame(cbind(1:10, 1:10))
+# 
+# data
+# 
+# results <- get_standard_scaler(data = data, method = c("center", "scale"))
+# 
+# results
+# 
+# names(results)
+# 
+# results$mean
+# 
+# results$std
 
