@@ -26,3 +26,5 @@ predict_standard_scaler <- function(object, newdata){
 # results <- predict_standard_scaler(object = data_scaler, newdata = newdata)
 # 
 # results
+
+
