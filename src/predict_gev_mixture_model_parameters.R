@@ -18,6 +18,7 @@ predict_gev_mixture_model_parameters <- function(x,
                                                  shape.fun = ~1, 
                                                  use.phi = FALSE,
                                                  covariates = NULL,
+                                                 k = 50,
                                                  block_sizes = NULL,
                                                  minimum_nblocks = 50,
                                                  threshold = NULL,
@@ -36,6 +37,7 @@ predict_gev_mixture_model_parameters <- function(x,
   #                                     must be supplied if any of these arguments are anything other than ~ 1.
   # use.phi: boolean which indicates whether to use the log of the scale parameter in numerical optimization
   # covariates: a named list whose names match the fitted model parameter names
+  # k: the maximum number of nearest neighbors to search
   # block_sizes: vector containing the sizes of blocks to consider
   # trace: boolean value which indicates whether to print information on the progress of optimization
   # log_mv: a boolean which indicates whether the model wise loss function is at logarithmic scale or not
@@ -127,6 +129,9 @@ predict_gev_mixture_model_parameters <- function(x,
   # estimate model wise automatic weights 
   if (log_mv){
     automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models = gev_models,
+                                                                                       single_ns_gev_model = several_ns_gev_models[[1]],
+                                                                                       covariates = covariates,
+                                                                                       k = k,
                                                                                        maximum_iterations = maximum_iterations, 
                                                                                        trace = trace,
                                                                                        use_extremal_index = use_extremal_index,
@@ -134,6 +139,9 @@ predict_gev_mixture_model_parameters <- function(x,
   }
   else{
     automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models = gev_models,
+                                                                                   single_ns_gev_model = several_ns_gev_models[[1]],
+                                                                                   covariates = covariates,
+                                                                                   k = k,
                                                                                    maximum_iterations = maximum_iterations, 
                                                                                    trace = trace,
                                                                                    use_extremal_index = use_extremal_index,
@@ -150,6 +158,9 @@ predict_gev_mixture_model_parameters <- function(x,
   # estimate parameter wise automatic weights
   if (log_pw){
     automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models = gev_models,
+                                                                                       single_ns_gev_model = several_ns_gev_models[[1]],
+                                                                                       covariates = covariates,
+                                                                                       k = k,
                                                                                        maximum_iterations = maximum_iterations, 
                                                                                        trace = trace,
                                                                                        use_extremal_index = use_extremal_index,
@@ -157,6 +168,9 @@ predict_gev_mixture_model_parameters <- function(x,
   }
   else{
     automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw(gev_models = gev_models,
+                                                                                   single_ns_gev_model = several_ns_gev_models[[1]],
+                                                                                   covariates = covariates,
+                                                                                   k = k,
                                                                                    maximum_iterations = maximum_iterations, 
                                                                                    trace = trace,
                                                                                    use_extremal_index = use_extremal_index,
