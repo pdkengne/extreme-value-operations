@@ -2,7 +2,7 @@
 # library(extRemes)
 
 get_provided_covariates <- function(ns_gev_model, covariates = NULL){
-  # ns_gev_model: an object associated with a result of the function "estimate_ns_gev_parameters()"
+  # ns_gev_model: an object associated with a result of the function "estimate_single_ns_gev_model()"
   # covariates: a named list whose names match the fitted model parameter names
   
   if (ns_gev_model$const.loc & ns_gev_model$const.scale & ns_gev_model$const.shape){
@@ -17,7 +17,7 @@ get_provided_covariates <- function(ns_gev_model, covariates = NULL){
       output <- list()
       
       # extract the data frame of all covariates
-      data <- ns_gev_model$cov.data
+      data <- ns_gev_model$covariates
       
       # get the names of useful covariates in each parameter
       gev_model_covariates_list <- ns_gev_model$par.models$term.names
