@@ -1,4 +1,5 @@
 # library(stringr)
+# library(extRemes)
 
 get_provided_covariates <- function(ns_gev_model, covariates = NULL){
   # ns_gev_model: an object associated with a result of the function "estimate_ns_gev_parameters()"

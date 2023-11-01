@@ -7,7 +7,7 @@ estimate_ns_gev_parameters <- function(x,
                                        location.fun = ~1,
                                        scale.fun = ~1, 
                                        shape.fun = ~1, 
-                                       use.phi = TRUE,
+                                       use.phi = FALSE,
                                        type = c("GEV", "Gumbel")[1],
                                        method = c("MLE", "GMLE")[1]){
   # x: vector of observations (assumed to be block maxima)
