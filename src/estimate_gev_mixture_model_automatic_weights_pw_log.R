@@ -147,6 +147,11 @@ estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models,
 # source("./src/generate_gev_sample.R")
 # source("./src/plot_several_standardized_block_maxima_mean.R")
 # source("./src/estimate_several_standardized_block_maxima_mean.R")
+# source("./src/predict_several_gev_models.R")
+# source("./src/estimate_several_ns_gev_models.R")
+# source("./src/plot_several_ns_standardized_block_maxima_mean.R")
+# source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
+# 
 # 
 # x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
 # 
@@ -168,21 +173,36 @@ estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models,
 # rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
 # rejected_block_sizes
 # 
-# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
-# equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+# several_ns_gev_models <- estimate_several_ns_gev_models(x = x,
+#                                                         block_sizes = equivalent_block_sizes,
+#                                                         data = NULL,
+#                                                         location.fun = ~ 1,
+#                                                         scale.fun = ~ 1,
+#                                                         shape.fun = ~ 1,
+#                                                         use.phi = TRUE,
+#                                                         type = c("GEV", "Gumbel")[1],
+#                                                         method = c("MLE", "GMLE")[1])
 # 
-# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
+# single_ns_gev_model <- several_ns_gev_models[[1]]
+# names(single_ns_gev_model)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models, trace = TRUE, use_extremal_index = TRUE, use_lower_threshold = FALSE)
+# gev_models <- predict_several_gev_models(several_ns_gev_models,
+#                                          covariates = NULL,
+#                                          method = c("MLE", "GMLE", "Lmoments")[1])
+# 
+# names(gev_models)
+# 
+# results <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models,
+#                                                                single_ns_gev_model,
+#                                                                covariates = NULL,
+#                                                                k = 50,
+#                                                                trace = TRUE,
+#                                                                use_extremal_index = TRUE,
+#                                                                use_lower_threshold = FALSE)
 # 
 # results
 # 
-# names(results)
-# 
-# sum(results$automatic_weights_shape)
-# sum(results$automatic_weights_scale)
-# sum(results$automatic_weights_loc)
-# 
+# sum(results$automatic_weights)
 # 
 # 
 # # example 2
@@ -190,10 +210,22 @@ estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models,
 # source("./src/estimate_several_gev_models.R")
 # source("./src/find_minimum_block_size.R")
 # source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# source("./src/generate_gev_sample.R")
 # source("./src/plot_several_standardized_block_maxima_mean.R")
 # source("./src/estimate_several_standardized_block_maxima_mean.R")
+# source("./src/predict_several_gev_models.R")
+# source("./src/estimate_several_ns_gev_models.R")
+# source("./src/plot_several_ns_standardized_block_maxima_mean.R")
+# source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
 # 
-# x <- rnorm(n = 1000)
+# 
+# n <- 1000
+# 
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# trend <- (-49:50)/n
+# rnd <- runif(n = n, min = -0.5, max = 0.5)
+# data <- data.frame(trend = trend, random = rnd)
 # 
 # minimum_block_size <- find_minimum_block_size(x)
 # minimum_block_size
@@ -203,27 +235,56 @@ estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# equivalent_block_sizes_object<- estimate_several_ns_standardized_block_maxima_mean(x,
+#                                                                                    block_sizes,
+#                                                                                    confidence_level = 0.95,
+#                                                                                    data = data,
+#                                                                                    location.fun = ~ trend,
+#                                                                                    scale.fun = ~ .,
+#                                                                                    shape.fun = ~ random,
+#                                                                                    use.phi = TRUE,
+#                                                                                    type = c("GEV", "Gumbel")[1],
+#                                                                                    method = c("MLE", "GMLE")[1])
 # 
-# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# 
+# 
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
-# equivalent_block_sizes
 # 
-# rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
-# rejected_block_sizes
+# several_ns_gev_models <- estimate_several_ns_gev_models(x = x,
+#                                                         block_sizes = equivalent_block_sizes,
+#                                                         data = data,
+#                                                         location.fun = ~ trend,
+#                                                         scale.fun = ~ .,
+#                                                         shape.fun = ~ random,
+#                                                         use.phi = TRUE,
+#                                                         type = c("GEV", "Gumbel")[1],
+#                                                         method = c("MLE", "GMLE")[1])
 # 
-# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
-# equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 # 
-# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
+# single_ns_gev_model <- several_ns_gev_models[[1]]
+# names(single_ns_gev_model)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models, trace = TRUE, use_extremal_index = TRUE, use_lower_threshold = FALSE)
+# covariates <- list(mu1 = 25/n,
+#                    phi1 = 25/n,
+#                    phi2 = runif(n = 1, min = -0.5, max = 0.5),
+#                    xi1 = runif(n = 1, min = -0.5, max = 0.5))
+# 
+# covariates
+# 
+# gev_models <- predict_several_gev_models(several_ns_gev_models,
+#                                          covariates = covariates,
+#                                          method = c("MLE", "GMLE", "Lmoments")[1])
+# 
+# names(gev_models)
+# 
+# results <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models,
+#                                                                single_ns_gev_model,
+#                                                                covariates = covariates,
+#                                                                k = 50,
+#                                                                trace = TRUE,
+#                                                                use_extremal_index = TRUE,
+#                                                                use_lower_threshold = FALSE)
 # 
 # results
 # 
-# names(results)
-# 
-# sum(results$automatic_weights_shape)
-# sum(results$automatic_weights_scale)
-# sum(results$automatic_weights_loc)
+# sum(results$automatic_weights)
