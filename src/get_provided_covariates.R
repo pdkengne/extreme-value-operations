@@ -25,8 +25,28 @@ get_provided_covariates <- function(single_ns_gev_model, covariates = NULL){
       # get the names of useful covariates in each parameter
       gev_model_covariates_list <- ns_gev_model$par.models$term.names
       
+      # get the names of useful covariates in the location parameter
+      gev_model_covariates_list_location <- gev_model_covariates_list$location
+      if (is.element(el = ".", set = gev_model_covariates_list_location)){
+        gev_model_covariates_list_location <- names(data)
+      }
+      
+      # get the names of useful covariates in the scale parameter
+      gev_model_covariates_list_scale <- gev_model_covariates_list$scale
+      if (is.element(el = ".", set = gev_model_covariates_list_scale)){
+        gev_model_covariates_list_scale <- names(data)
+      }
+      
+      # get the names of useful covariates in the shape parameter
+      gev_model_covariates_list_shape <- gev_model_covariates_list$shape
+      if (is.element(el = ".", set = gev_model_covariates_list_shape)){
+        gev_model_covariates_list_shape <- names(data)
+      }
+      
       # get the names of useful covariates in the model
-      gev_model_covariates_vector <- unique(unlist(gev_model_covariates_list))
+      gev_model_covariates_vector <- unique(c(gev_model_covariates_list_location,
+                                              gev_model_covariates_list_scale,
+                                              gev_model_covariates_list_shape))
       
       # extract the data frame of useful covariates in the model
       used_gev_model_covariates <- data[, gev_model_covariates_vector]
@@ -62,9 +82,9 @@ get_provided_covariates <- function(single_ns_gev_model, covariates = NULL){
 
       # collect the provided covariates
       provided_gev_model_covariates <- used_gev_model_covariates[1, ]
-      provided_gev_model_covariates[, gev_model_covariates_list$location] <- covariates_vector[covariate_location_names][-1]
-      provided_gev_model_covariates[, gev_model_covariates_list$scale] <- covariates_vector[covariate_scale_names][-1]
-      provided_gev_model_covariates[, gev_model_covariates_list$shape] <- covariates_vector[covariate_shape_names][-1]
+      provided_gev_model_covariates[, gev_model_covariates_list_location] <- covariates_vector[covariate_location_names][-1]
+      provided_gev_model_covariates[, gev_model_covariates_list_scale] <- covariates_vector[covariate_scale_names][-1]
+      provided_gev_model_covariates[, gev_model_covariates_list_shape] <- covariates_vector[covariate_shape_names][-1]
       
       # update the output object
       output[["used_gev_model_covariates"]] <- used_gev_model_covariates
@@ -203,7 +223,7 @@ get_provided_covariates <- function(single_ns_gev_model, covariates = NULL){
 # single_ns_gev_model <- estimate_single_ns_gev_model(x,
 #                                                     block_size = 1,
 #                                                     data = data,
-#                                                     location.fun = ~ trend + random,
+#                                                     location.fun = ~ .,
 #                                                     scale.fun = ~ 1,
 #                                                     shape.fun = ~ 1,
 #                                                     use.phi = FALSE,

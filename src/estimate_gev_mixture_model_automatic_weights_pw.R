@@ -1,5 +1,7 @@
 source("./src/calculate_gev_cdf.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
+source("./src/get_provided_covariates.R")
+source("./src/get_knn.R")
 
 estimate_gev_mixture_model_automatic_weights_pw <- function(gev_models,
                                                             single_ns_gev_model,

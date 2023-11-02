@@ -256,378 +256,381 @@ predict_gev_mixture_model_parameters <- function(x,
 
 
 
-# # example 1
-# 
-# source("./src/generate_gev_sample.R")
-# source("./src/plot_several_standardized_block_maxima_mean.R")
-# source("./src/plot_several_ns_standardized_block_maxima_mean.R")
-# 
-# n <- 10000
-# nlargest <- 1000
-# 
-# # x <- rnorm(n = n)
-# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
-# 
-# results <- predict_gev_mixture_model_parameters(x = x,
-#                                                 data = NULL,
-#                                                 location.fun = ~1,
-#                                                 scale.fun = ~1,
-#                                                 shape.fun = ~1,
-#                                                 use.phi = TRUE,
-#                                                 covariates = NULL,
-#                                                 block_sizes = NULL,
-#                                                 minimum_nblocks = 50,
-#                                                 threshold = NULL,
-#                                                 nlargest = nlargest,
-#                                                 confidence_level = 0.95,
-#                                                 use_extremal_index = TRUE,
-#                                                 use_lower_threshold = FALSE,
-#                                                 maximum_iterations = 1500,
-#                                                 log_mv = TRUE,
-#                                                 log_pw = TRUE,
-#                                                 trace = TRUE,
-#                                                 method = c("MLE", "GMLE", "Lmoments")[1])
-# 
-# #results
-# names(results)
-# 
-# # "data"                                      "data_largest"                              "use_lower_threshold"
-# # "block_sizes"                               "equivalent_block_sizes"                    "rejected_block_sizes"
-# # "block_maxima_object"                       "block_maxima_indexes_object"               "gev_models_object"
-# # "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
-# # "weighted_normalized_gev_parameters_object" "several_ns_gev_models"                     "several_ns_gev_parameters"
-# # "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
-# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"
-# # "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"
-# # "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
-# 
-# # get the block sizes
-# results$block_sizes
-# 
-# # get the extremal indexes
-# results$extremal_indexes
-# 
-# # get the normalized gev parameters
-# results$normalized_gev_parameters_object
-# # extract the raw data
-# raw_data <- gev_mixture_model$data
-# # get the full normalized gev parameters
-# results$full_normalized_gev_parameters_object
-# 
-# # get model wise automatic weights
-# results$automatic_weights_mw
-# 
-# # get the weighted normalized gev parameters
-# results$weighted_normalized_gev_parameters_object
-# 
-# # get the statistics about the estimation of weights
-# results$automatic_weights_mw_statistics
-# results$automatic_weights_pw_statistics
-# 
-# # get the non-stationary gev parameters
-# results$several_ns_gev_parameters
-# 
-# # get the non-stationary gev models
-# single_ns_gev_model <- results$several_ns_gev_models[[1]]
-# names(single_ns_gev_model)
-# 
-# # "data"                    "covariates"              "block_maxima_covariates" "block_size"              "block_maxima"
-# # "block_maxima_indexes"    "extremal_index"          "gev_model"
-# 
-# single_ns_gev_model$gev_model
-# 
-# 
-# # plot the mean standardized block maxima
-# plot_several_standardized_block_maxima_mean(x = results$data_largest,
-#                                             block_sizes = results$block_sizes,
-#                                             confidence_level = 0.95,
-#                                             equivalent = FALSE,
-#                                             xlab = "Block Sizes",
-#                                             ylab = "Estimated Values",
-#                                             main = "Mean Standardized Block Maxima Plot")
-# 
-# # plot the mean standardized block maxima (only equivalent models)
-# plot_several_standardized_block_maxima_mean(x = results$data_largest,
-#                                             block_sizes = results$block_sizes,
-#                                             confidence_level = 0.95,
-#                                             equivalent = TRUE,
-#                                             xlab = "Block Sizes",
-#                                             ylab = "Estimated Values",
-#                                             main = "Mean Standardized Block Maxima Plot")
-# # get the rejected block sizes
-# results$rejected_block_sizes
-# 
-# 
-# # example 2
-# 
-# source("./src/generate_gev_sample.R")
-# source("./src/plot_several_standardized_block_maxima_mean.R")
-# source("./src/plot_several_ns_standardized_block_maxima_mean.R")
-# source("./src/estimate_single_ns_gev_model.R")
-# 
-# 
-# n <- 10000
-# nlargest <- 1000
-# 
-# # x <- rnorm(n = n)
-# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
-# 
-# trend <- (-49:50)/n
-# rnd <- runif(n = n, min = -0.5, max = 0.5)
-# data <- data.frame(trend = trend, random = rnd)
-# 
-# single_ns_gev_model <- estimate_single_ns_gev_model(x = x,
-#                                                     block_size = 100,
-#                                                     data = data,
-#                                                     location.fun = ~ trend,
-#                                                     scale.fun = ~ .,
-#                                                     shape.fun = ~ random,
-#                                                     use.phi = TRUE,
-#                                                     type = c("GEV", "Gumbel")[1],
-#                                                     method = c("MLE", "GMLE")[1])
-# 
-# ns_gev_model <- single_ns_gev_model$gev_model
-# 
-# ns_gev_model
-# names(ns_gev_model)
-# ns_gev_model$const.loc
-# ns_gev_model$const.scale
-# ns_gev_model$const.shape
-# 
-# ns_gev_model$results$par
-# 
-# ns_gev_model$par.models$term.names
-# 
-# names(data)
-# 
-# covariates <- list(mu1 = 25/n,
-#                    phi1 = 25/n,
-#                    phi2 = runif(n = 1, min = -0.5, max = 0.5),
-#                    xi1 = runif(n = 1, min = -0.5, max = 0.5))
-# 
-# covariates
-# 
-# results <- predict_gev_mixture_model_parameters(x = x,
-#                                                 data = data,
-#                                                 location.fun = ~ trend,
-#                                                 scale.fun = ~ .,
-#                                                 shape.fun = ~ random,
-#                                                 use.phi = TRUE,
-#                                                 covariates = covariates,
-#                                                 block_sizes = NULL,
-#                                                 minimum_nblocks = 50,
-#                                                 threshold = NULL,
-#                                                 nlargest = nlargest,
-#                                                 confidence_level = 0.95,
-#                                                 use_extremal_index = TRUE,
-#                                                 use_lower_threshold = FALSE,
-#                                                 maximum_iterations = 1500,
-#                                                 log_mv = TRUE,
-#                                                 log_pw = TRUE,
-#                                                 trace = TRUE,
-#                                                 method = c("MLE", "GMLE", "Lmoments")[1])
-# 
-# #results
-# names(results)
-# 
-# # "data"                                      "data_largest"                              "use_lower_threshold"
-# # "block_sizes"                               "equivalent_block_sizes"                    "rejected_block_sizes"
-# # "block_maxima_object"                       "block_maxima_indexes_object"               "gev_models_object"
-# # "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
-# # "weighted_normalized_gev_parameters_object" "several_ns_gev_models"                     "several_ns_gev_parameters"
-# # "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
-# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"
-# # "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"
-# # "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
-# 
-# # get the block sizes
-# results$block_sizes
-# 
-# # get the extremal indexes
-# results$extremal_indexes
-# 
-# # get the normalized gev parameters
-# results$normalized_gev_parameters_object
-# 
-# # get the full normalized gev parameters
-# results$full_normalized_gev_parameters_object
-# 
-# # get model wise automatic weights
-# results$automatic_weights_mw
-# 
-# # get the weighted normalized gev parameters
-# results$weighted_normalized_gev_parameters_object
-# 
-# # get the statistics about the estimation of weights
-# results$automatic_weights_mw_statistics
-# results$automatic_weights_pw_statistics
-# 
-# # get the non-stationary gev parameters
-# results$several_ns_gev_parameters
-# 
-# # get the non-stationary gev models
-# single_ns_gev_model <- results$several_ns_gev_models[[1]]
-# names(single_ns_gev_model)
-# 
-# # "data"                    "covariates"              "block_maxima_covariates" "block_size"              "block_maxima"
-# # "block_maxima_indexes"    "extremal_index"          "gev_model"
-# 
-# single_ns_gev_model$gev_model
-# 
-# # plot the mean standardized block maxima
-# plot_several_standardized_block_maxima_mean(x = results$data_largest,
-#                                             block_sizes = results$block_sizes,
-#                                             confidence_level = 0.95,
-#                                             equivalent = FALSE,
-#                                             xlab = "Block Sizes",
-#                                             ylab = "Estimated Values",
-#                                             main = "Mean Standardized Block Maxima Plot")
-# 
-# # plot the mean standardized block maxima (only equivalent models)
-# plot_several_standardized_block_maxima_mean(x = results$data_largest,
-#                                             block_sizes = results$block_sizes,
-#                                             confidence_level = 0.95,
-#                                             equivalent = TRUE,
-#                                             xlab = "Block Sizes",
-#                                             ylab = "Estimated Values",
-#                                             main = "Mean Standardized Block Maxima Plot")
-# # get the rejected block sizes
-# results$rejected_block_sizes
-# 
-# 
-# # example 3
-# 
-# source("./src/generate_gev_sample.R")
-# source("./src/plot_several_standardized_block_maxima_mean.R")
-# source("./src/plot_several_ns_standardized_block_maxima_mean.R")
-# source("./src/estimate_single_ns_gev_model.R")
-# 
-# 
-# n <- 10000
-# nlargest <- 1000
-# 
-# # x <- rnorm(n = n)
-# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0)
-# 
-# trend <- (-49:50)/n
-# rnd <- runif(n = n, min = -0.5, max = 0.5)
-# data <- data.frame(trend = trend, random = rnd)
-# 
-# single_ns_gev_model <- estimate_single_ns_gev_model(x = x,
-#                                                     block_size = 100,
-#                                                     data = data,
-#                                                     location.fun = ~ trend,
-#                                                     scale.fun = ~ .,
-#                                                     shape.fun = ~ 1,
-#                                                     use.phi = TRUE,
-#                                                     type = c("GEV", "Gumbel")[1],
-#                                                     method = c("MLE", "GMLE")[1])
-# 
-# ns_gev_model <- single_ns_gev_model$gev_model
-# 
-# ns_gev_model
-# names(ns_gev_model)
-# ns_gev_model$const.loc
-# ns_gev_model$const.scale
-# ns_gev_model$const.shape
-# 
-# ns_gev_model$results$par
-# 
-# ns_gev_model$par.models$term.names
-# 
-# names(data)
-# 
-# covariates <- list(mu0 = 1,
-#                    mu1 = 25/n,
-#                    phi0 = 1,
-#                    phi1 = 25/n,
-#                    phi2 = runif(n = 1, min = -0.5, max = 0.5))
-# 
-# covariates
-# 
-# results <- predict_gev_mixture_model_parameters(x = x,
-#                                                 data = data,
-#                                                 location.fun = ~ trend,
-#                                                 scale.fun = ~ .,
-#                                                 shape.fun = ~ 1,
-#                                                 use.phi = TRUE,
-#                                                 covariates = covariates,
-#                                                 block_sizes = NULL,
-#                                                 minimum_nblocks = 50,
-#                                                 threshold = NULL,
-#                                                 nlargest = nlargest,
-#                                                 confidence_level = 0.95,
-#                                                 use_extremal_index = TRUE,
-#                                                 use_lower_threshold = FALSE,
-#                                                 maximum_iterations = 1500,
-#                                                 log_mv = TRUE,
-#                                                 log_pw = TRUE,
-#                                                 trace = TRUE,
-#                                                 method = c("MLE", "GMLE", "Lmoments")[1])
-# 
-# #results
-# names(results)
-# 
-# # "data"                                      "data_largest"                              "use_lower_threshold"
-# # "block_sizes"                               "equivalent_block_sizes"                    "rejected_block_sizes"
-# # "block_maxima_object"                       "block_maxima_indexes_object"               "gev_models_object"
-# # "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
-# # "weighted_normalized_gev_parameters_object" "several_ns_gev_models"                     "several_ns_gev_parameters"
-# # "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
-# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"
-# # "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"
-# # "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
-# 
-# # get the block sizes
-# results$block_sizes
-# 
-# # get the extremal indexes
-# results$extremal_indexes
-# 
-# # get the normalized gev parameters
-# results$normalized_gev_parameters_object
-# 
-# # get the full normalized gev parameters
-# results$full_normalized_gev_parameters_object
-# 
-# # get model wise automatic weights
-# results$automatic_weights_mw
-# 
-# # get the weighted normalized gev parameters
-# results$weighted_normalized_gev_parameters_object
-# 
-# # get the statistics about the estimation of weights
-# results$automatic_weights_mw_statistics
-# results$automatic_weights_pw_statistics
-# 
-# # get the non-stationary gev parameters
-# results$several_ns_gev_parameters
-# 
-# # get the non-stationary gev models
-# single_ns_gev_model <- results$several_ns_gev_models[[1]]
-# names(single_ns_gev_model)
-# 
-# # "data"                    "covariates"              "block_maxima_covariates" "block_size"              "block_maxima"
-# # "block_maxima_indexes"    "extremal_index"          "gev_model"
-# 
-# single_ns_gev_model$gev_model
-# 
-# # plot the mean standardized block maxima
-# plot_several_standardized_block_maxima_mean(x = results$data_largest,
-#                                             block_sizes = results$block_sizes,
-#                                             confidence_level = 0.95,
-#                                             equivalent = FALSE,
-#                                             xlab = "Block Sizes",
-#                                             ylab = "Estimated Values",
-#                                             main = "Mean Standardized Block Maxima Plot")
-# 
-# # plot the mean standardized block maxima (only equivalent models)
-# plot_several_standardized_block_maxima_mean(x = results$data_largest,
-#                                             block_sizes = results$block_sizes,
-#                                             confidence_level = 0.95,
-#                                             equivalent = TRUE,
-#                                             xlab = "Block Sizes",
-#                                             ylab = "Estimated Values",
-#                                             main = "Mean Standardized Block Maxima Plot")
-# # get the rejected block sizes
-# results$rejected_block_sizes
+# example 1
+
+source("./src/generate_gev_sample.R")
+source("./src/plot_several_standardized_block_maxima_mean.R")
+source("./src/plot_several_ns_standardized_block_maxima_mean.R")
+
+n <- 10000
+nlargest <- 1000
+
+# x <- rnorm(n = n)
+x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
+
+results <- predict_gev_mixture_model_parameters(x = x,
+                                                data = NULL,
+                                                location.fun = ~1,
+                                                scale.fun = ~1,
+                                                shape.fun = ~1,
+                                                use.phi = TRUE,
+                                                covariates = NULL,
+                                                k = 50,
+                                                block_sizes = NULL,
+                                                minimum_nblocks = 50,
+                                                threshold = NULL,
+                                                nlargest = nlargest,
+                                                confidence_level = 0.95,
+                                                use_extremal_index = TRUE,
+                                                use_lower_threshold = FALSE,
+                                                maximum_iterations = 1500,
+                                                log_mv = TRUE,
+                                                log_pw = TRUE,
+                                                trace = TRUE,
+                                                method = c("MLE", "GMLE", "Lmoments")[1])
+
+#results
+names(results)
+
+# "data"                                      "data_largest"                              "use_lower_threshold"
+# "block_sizes"                               "equivalent_block_sizes"                    "rejected_block_sizes"
+# "block_maxima_object"                       "block_maxima_indexes_object"               "gev_models_object"
+# "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
+# "weighted_normalized_gev_parameters_object" "several_ns_gev_models"                     "several_ns_gev_parameters"
+# "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
+# "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"
+# "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"
+# "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+
+# get the block sizes
+results$block_sizes
+
+# get the extremal indexes
+results$extremal_indexes
+
+# get the normalized gev parameters
+results$normalized_gev_parameters_object
+# extract the raw data
+raw_data <- gev_mixture_model$data
+# get the full normalized gev parameters
+results$full_normalized_gev_parameters_object
+
+# get model wise automatic weights
+results$automatic_weights_mw
+
+# get the weighted normalized gev parameters
+results$weighted_normalized_gev_parameters_object
+
+# get the statistics about the estimation of weights
+results$automatic_weights_mw_statistics
+results$automatic_weights_pw_statistics
+
+# get the non-stationary gev parameters
+results$several_ns_gev_parameters
+
+# get the non-stationary gev models
+single_ns_gev_model <- results$several_ns_gev_models[[1]]
+names(single_ns_gev_model)
+
+# "data"                    "covariates"              "block_maxima_covariates" "block_size"              "block_maxima"
+# "block_maxima_indexes"    "extremal_index"          "gev_model"
+
+single_ns_gev_model$gev_model
+
+
+# plot the mean standardized block maxima
+plot_several_standardized_block_maxima_mean(x = results$data_largest,
+                                            block_sizes = results$block_sizes,
+                                            confidence_level = 0.95,
+                                            equivalent = FALSE,
+                                            xlab = "Block Sizes",
+                                            ylab = "Estimated Values",
+                                            main = "Mean Standardized Block Maxima Plot")
+
+# plot the mean standardized block maxima (only equivalent models)
+plot_several_standardized_block_maxima_mean(x = results$data_largest,
+                                            block_sizes = results$block_sizes,
+                                            confidence_level = 0.95,
+                                            equivalent = TRUE,
+                                            xlab = "Block Sizes",
+                                            ylab = "Estimated Values",
+                                            main = "Mean Standardized Block Maxima Plot")
+# get the rejected block sizes
+results$rejected_block_sizes
+
+
+# example 2
+
+source("./src/generate_gev_sample.R")
+source("./src/plot_several_standardized_block_maxima_mean.R")
+source("./src/plot_several_ns_standardized_block_maxima_mean.R")
+source("./src/estimate_single_ns_gev_model.R")
+
+
+n <- 10000
+nlargest <- 1000
+
+# x <- rnorm(n = n)
+x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
+
+trend <- (-49:50)/n
+rnd <- runif(n = n, min = -0.5, max = 0.5)
+data <- data.frame(trend = trend, random = rnd)
+
+single_ns_gev_model <- estimate_single_ns_gev_model(x = x,
+                                                    block_size = 100,
+                                                    data = data,
+                                                    location.fun = ~ trend,
+                                                    scale.fun = ~ .,
+                                                    shape.fun = ~ random,
+                                                    use.phi = TRUE,
+                                                    type = c("GEV", "Gumbel")[1],
+                                                    method = c("MLE", "GMLE")[1])
+
+ns_gev_model <- single_ns_gev_model$gev_model
+
+ns_gev_model
+names(ns_gev_model)
+ns_gev_model$const.loc
+ns_gev_model$const.scale
+ns_gev_model$const.shape
+
+ns_gev_model$results$par
+
+ns_gev_model$par.models$term.names
+
+names(data)
+
+covariates <- list(mu1 = 25/n,
+                   phi1 = 25/n,
+                   phi2 = runif(n = 1, min = -0.5, max = 0.5),
+                   xi1 = runif(n = 1, min = -0.5, max = 0.5))
+
+covariates
+
+results <- predict_gev_mixture_model_parameters(x = x,
+                                                data = data,
+                                                location.fun = ~ trend,
+                                                scale.fun = ~ .,
+                                                shape.fun = ~ random,
+                                                use.phi = TRUE,
+                                                covariates = covariates,
+                                                k = 50,
+                                                block_sizes = NULL,
+                                                minimum_nblocks = 50,
+                                                threshold = NULL,
+                                                nlargest = nlargest,
+                                                confidence_level = 0.95,
+                                                use_extremal_index = TRUE,
+                                                use_lower_threshold = FALSE,
+                                                maximum_iterations = 1500,
+                                                log_mv = TRUE,
+                                                log_pw = TRUE,
+                                                trace = TRUE,
+                                                method = c("MLE", "GMLE", "Lmoments")[1])
+
+#results
+names(results)
+
+# "data"                                      "data_largest"                              "use_lower_threshold"
+# "block_sizes"                               "equivalent_block_sizes"                    "rejected_block_sizes"
+# "block_maxima_object"                       "block_maxima_indexes_object"               "gev_models_object"
+# "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
+# "weighted_normalized_gev_parameters_object" "several_ns_gev_models"                     "several_ns_gev_parameters"
+# "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
+# "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"
+# "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"
+# "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+
+# get the block sizes
+results$block_sizes
+
+# get the extremal indexes
+results$extremal_indexes
+
+# get the normalized gev parameters
+results$normalized_gev_parameters_object
+
+# get the full normalized gev parameters
+results$full_normalized_gev_parameters_object
+
+# get model wise automatic weights
+results$automatic_weights_mw
+
+# get the weighted normalized gev parameters
+results$weighted_normalized_gev_parameters_object
+
+# get the statistics about the estimation of weights
+results$automatic_weights_mw_statistics
+results$automatic_weights_pw_statistics
+
+# get the non-stationary gev parameters
+results$several_ns_gev_parameters
+
+# get the non-stationary gev models
+single_ns_gev_model <- results$several_ns_gev_models[[1]]
+names(single_ns_gev_model)
+
+# "data"                    "covariates"              "block_maxima_covariates" "block_size"              "block_maxima"
+# "block_maxima_indexes"    "extremal_index"          "gev_model"
+
+single_ns_gev_model$gev_model
+
+# plot the mean standardized block maxima
+plot_several_standardized_block_maxima_mean(x = results$data_largest,
+                                            block_sizes = results$block_sizes,
+                                            confidence_level = 0.95,
+                                            equivalent = FALSE,
+                                            xlab = "Block Sizes",
+                                            ylab = "Estimated Values",
+                                            main = "Mean Standardized Block Maxima Plot")
+
+# plot the mean standardized block maxima (only equivalent models)
+plot_several_standardized_block_maxima_mean(x = results$data_largest,
+                                            block_sizes = results$block_sizes,
+                                            confidence_level = 0.95,
+                                            equivalent = TRUE,
+                                            xlab = "Block Sizes",
+                                            ylab = "Estimated Values",
+                                            main = "Mean Standardized Block Maxima Plot")
+# get the rejected block sizes
+results$rejected_block_sizes
+
+
+# example 3
+
+source("./src/generate_gev_sample.R")
+source("./src/plot_several_standardized_block_maxima_mean.R")
+source("./src/plot_several_ns_standardized_block_maxima_mean.R")
+source("./src/estimate_single_ns_gev_model.R")
+
+
+n <- 10000
+nlargest <- 1000
+
+# x <- rnorm(n = n)
+x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0)
+
+trend <- (-49:50)/n
+rnd <- runif(n = n, min = -0.5, max = 0.5)
+data <- data.frame(trend = trend, random = rnd)
+
+single_ns_gev_model <- estimate_single_ns_gev_model(x = x,
+                                                    block_size = 100,
+                                                    data = data,
+                                                    location.fun = ~ trend,
+                                                    scale.fun = ~ .,
+                                                    shape.fun = ~ 1,
+                                                    use.phi = TRUE,
+                                                    type = c("GEV", "Gumbel")[1],
+                                                    method = c("MLE", "GMLE")[1])
+
+ns_gev_model <- single_ns_gev_model$gev_model
+
+ns_gev_model
+names(ns_gev_model)
+ns_gev_model$const.loc
+ns_gev_model$const.scale
+ns_gev_model$const.shape
+
+ns_gev_model$results$par
+
+ns_gev_model$par.models$term.names
+
+names(data)
+
+covariates <- list(mu0 = 1,
+                   mu1 = 25/n,
+                   phi0 = 1,
+                   phi1 = 25/n,
+                   phi2 = runif(n = 1, min = -0.5, max = 0.5))
+
+covariates
+
+results <- predict_gev_mixture_model_parameters(x = x,
+                                                data = data,
+                                                location.fun = ~ trend,
+                                                scale.fun = ~ .,
+                                                shape.fun = ~ 1,
+                                                use.phi = TRUE,
+                                                covariates = covariates,
+                                                k = 50,
+                                                block_sizes = NULL,
+                                                minimum_nblocks = 50,
+                                                threshold = NULL,
+                                                nlargest = nlargest,
+                                                confidence_level = 0.95,
+                                                use_extremal_index = TRUE,
+                                                use_lower_threshold = FALSE,
+                                                maximum_iterations = 1500,
+                                                log_mv = TRUE,
+                                                log_pw = TRUE,
+                                                trace = TRUE,
+                                                method = c("MLE", "GMLE", "Lmoments")[1])
+
+#results
+names(results)
+
+# "data"                                      "data_largest"                              "use_lower_threshold"
+# "block_sizes"                               "equivalent_block_sizes"                    "rejected_block_sizes"
+# "block_maxima_object"                       "block_maxima_indexes_object"               "gev_models_object"
+# "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
+# "weighted_normalized_gev_parameters_object" "several_ns_gev_models"                     "several_ns_gev_parameters"
+# "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
+# "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"
+# "automatic_weights_mw_statistics"           "automatic_weights_pw_shape"                "automatic_weights_pw_scale"
+# "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+
+# get the block sizes
+results$block_sizes
+
+# get the extremal indexes
+results$extremal_indexes
+
+# get the normalized gev parameters
+results$normalized_gev_parameters_object
+
+# get the full normalized gev parameters
+results$full_normalized_gev_parameters_object
+
+# get model wise automatic weights
+results$automatic_weights_mw
+
+# get the weighted normalized gev parameters
+results$weighted_normalized_gev_parameters_object
+
+# get the statistics about the estimation of weights
+results$automatic_weights_mw_statistics
+results$automatic_weights_pw_statistics
+
+# get the non-stationary gev parameters
+results$several_ns_gev_parameters
+
+# get the non-stationary gev models
+single_ns_gev_model <- results$several_ns_gev_models[[1]]
+names(single_ns_gev_model)
+
+# "data"                    "covariates"              "block_maxima_covariates" "block_size"              "block_maxima"
+# "block_maxima_indexes"    "extremal_index"          "gev_model"
+
+single_ns_gev_model$gev_model
+
+# plot the mean standardized block maxima
+plot_several_standardized_block_maxima_mean(x = results$data_largest,
+                                            block_sizes = results$block_sizes,
+                                            confidence_level = 0.95,
+                                            equivalent = FALSE,
+                                            xlab = "Block Sizes",
+                                            ylab = "Estimated Values",
+                                            main = "Mean Standardized Block Maxima Plot")
+
+# plot the mean standardized block maxima (only equivalent models)
+plot_several_standardized_block_maxima_mean(x = results$data_largest,
+                                            block_sizes = results$block_sizes,
+                                            confidence_level = 0.95,
+                                            equivalent = TRUE,
+                                            xlab = "Block Sizes",
+                                            ylab = "Estimated Values",
+                                            main = "Mean Standardized Block Maxima Plot")
+# get the rejected block sizes
+results$rejected_block_sizes

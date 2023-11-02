@@ -19,17 +19,17 @@ estimate_gev_parameters <- function(x,
 
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-
-x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = +0.2)
-
-results <- estimate_gev_parameters(x)
-
-results
-names(results)
-
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# 
+# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = +0.2)
+# 
+# results <- estimate_gev_parameters(x)
+# 
+# results
+# names(results)
+#
 # 
 # # example 2
 # 
