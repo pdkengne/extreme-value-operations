@@ -151,7 +151,7 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 # rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
 # rejected_block_sizes
 # 
-# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
+# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
 # 
 # results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = TRUE, use_extremal_index = TRUE, use_lower_threshold = FALSE)
 # 
@@ -188,7 +188,7 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 # rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
 # rejected_block_sizes
 # 
-# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
+# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
 # 
 # results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = TRUE, use_extremal_index = TRUE, use_lower_threshold = FALSE)
 # 

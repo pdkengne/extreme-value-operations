@@ -5,10 +5,10 @@ source("./src/predict_several_gev_models.R")
 source("./src/estimate_gev_mixture_model_identic_weights.R")
 source("./src/estimate_gev_mixture_model_pessimistic_weights.R")
 source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
-source("./src/estimate_gev_mixture_model_automatic_weights_mw.R")
-source("./src/estimate_gev_mixture_model_automatic_weights_pw.R")
-source("./src/estimate_gev_mixture_model_automatic_weights_mw_log.R")
-source("./src/estimate_gev_mixture_model_automatic_weights_pw_log.R")
+source("./src/estimate_ns_gev_mixture_model_automatic_weights_mw.R")
+source("./src/estimate_ns_gev_mixture_model_automatic_weights_pw.R")
+source("./src/estimate_ns_gev_mixture_model_automatic_weights_mw_log.R")
+source("./src/estimate_ns_gev_mixture_model_automatic_weights_pw_log.R")
 
 
 predict_gev_mixture_model_parameters <- function(x, 
@@ -128,24 +128,24 @@ predict_gev_mixture_model_parameters <- function(x,
   
   # estimate model wise automatic weights 
   if (log_mv){
-    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models = gev_models,
-                                                                                       single_ns_gev_model = several_ns_gev_models[[1]],
-                                                                                       covariates = covariates,
-                                                                                       k = k,
-                                                                                       maximum_iterations = maximum_iterations, 
-                                                                                       trace = trace,
-                                                                                       use_extremal_index = use_extremal_index,
-                                                                                       use_lower_threshold = use_lower_threshold)
+    automatic_weights_mw_object <- estimate_ns_gev_mixture_model_automatic_weights_mw_log(gev_models = gev_models,
+                                                                                          single_ns_gev_model = several_ns_gev_models[[1]],
+                                                                                          covariates = covariates,
+                                                                                          k = k,
+                                                                                          maximum_iterations = maximum_iterations, 
+                                                                                          trace = trace,
+                                                                                          use_extremal_index = use_extremal_index,
+                                                                                          use_lower_threshold = use_lower_threshold)
   }
   else{
-    automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models = gev_models,
-                                                                                   single_ns_gev_model = several_ns_gev_models[[1]],
-                                                                                   covariates = covariates,
-                                                                                   k = k,
-                                                                                   maximum_iterations = maximum_iterations, 
-                                                                                   trace = trace,
-                                                                                   use_extremal_index = use_extremal_index,
-                                                                                   use_lower_threshold = use_lower_threshold)
+    automatic_weights_mw_object <- estimate_ns_gev_mixture_model_automatic_weights_mw(gev_models = gev_models,
+                                                                                      single_ns_gev_model = several_ns_gev_models[[1]],
+                                                                                      covariates = covariates,
+                                                                                      k = k,
+                                                                                      maximum_iterations = maximum_iterations, 
+                                                                                      trace = trace,
+                                                                                      use_extremal_index = use_extremal_index,
+                                                                                      use_lower_threshold = use_lower_threshold)
   }
   automatic_weights_mw <- automatic_weights_mw_object$automatic_weights
   automatic_weights_mw_statistics <- list(function_value = automatic_weights_mw_object$function_value,
@@ -157,24 +157,24 @@ predict_gev_mixture_model_parameters <- function(x,
   
   # estimate parameter wise automatic weights
   if (log_pw){
-    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models = gev_models,
-                                                                                       single_ns_gev_model = several_ns_gev_models[[1]],
-                                                                                       covariates = covariates,
-                                                                                       k = k,
-                                                                                       maximum_iterations = maximum_iterations, 
-                                                                                       trace = trace,
-                                                                                       use_extremal_index = use_extremal_index,
-                                                                                       use_lower_threshold = use_lower_threshold)
+    automatic_weights_pw_object <- estimate_ns_gev_mixture_model_automatic_weights_pw_log(gev_models = gev_models,
+                                                                                          single_ns_gev_model = several_ns_gev_models[[1]],
+                                                                                          covariates = covariates,
+                                                                                          k = k,
+                                                                                          maximum_iterations = maximum_iterations, 
+                                                                                          trace = trace,
+                                                                                          use_extremal_index = use_extremal_index,
+                                                                                          use_lower_threshold = use_lower_threshold)
   }
   else{
-    automatic_weights_pw_object <- estimate_gev_mixture_model_automatic_weights_pw(gev_models = gev_models,
-                                                                                   single_ns_gev_model = several_ns_gev_models[[1]],
-                                                                                   covariates = covariates,
-                                                                                   k = k,
-                                                                                   maximum_iterations = maximum_iterations, 
-                                                                                   trace = trace,
-                                                                                   use_extremal_index = use_extremal_index,
-                                                                                   use_lower_threshold = use_lower_threshold)
+    automatic_weights_pw_object <- estimate_ns_gev_mixture_model_automatic_weights_pw(gev_models = gev_models,
+                                                                                      single_ns_gev_model = several_ns_gev_models[[1]],
+                                                                                      covariates = covariates,
+                                                                                      k = k,
+                                                                                      maximum_iterations = maximum_iterations, 
+                                                                                      trace = trace,
+                                                                                      use_extremal_index = use_extremal_index,
+                                                                                      use_lower_threshold = use_lower_threshold)
   }
   automatic_weights_pw_statistics <- list(function_value = automatic_weights_pw_object$function_value,
                                           gradient_value = automatic_weights_pw_object$gradient_value,

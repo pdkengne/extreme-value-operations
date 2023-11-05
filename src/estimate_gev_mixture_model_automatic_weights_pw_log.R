@@ -4,17 +4,11 @@ source("./src/get_provided_covariates.R")
 source("./src/get_knn.R")
 
 estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models,
-                                                                single_ns_gev_model,
-                                                                covariates = NULL,
-                                                                k = 50,
                                                                 maximum_iterations = 1500, 
                                                                 trace = TRUE, 
                                                                 use_extremal_index = TRUE,
                                                                 use_lower_threshold = FALSE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()" or "predict_several_gev_models()"
-  # single_ns_gev_model: an object associated with a result of the function "estimate_single_ns_gev_model()"
-  # covariates: a named list whose names match the fitted model parameter names,
-  # k: the maximum number of nearest neighbors to search
   # maximum_iterations: maximum number of iterations
   # trace: boolean value which indicates whether to print information on the progress of optimization
   # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
@@ -48,12 +42,7 @@ estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models,
   y <- x[x > threshold]
   
   # estimate the empirical distribution function
-  provided_covariates <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = covariates)
-  provided_covariates_knn <- get_knn(data = provided_covariates$used_gev_model_covariates, 
-                                     k = k, 
-                                     query = provided_covariates$provided_gev_model_covariates)
-  x_knn <- x[provided_covariates_knn$id[1, ]]
-  Fn <- ecdf(x_knn)
+  Fn <- ecdf(x)
   
   # get the number of gev models
   p <- nrow(normalized_gev_parameters)
@@ -147,11 +136,6 @@ estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models,
 # source("./src/generate_gev_sample.R")
 # source("./src/plot_several_standardized_block_maxima_mean.R")
 # source("./src/estimate_several_standardized_block_maxima_mean.R")
-# source("./src/predict_several_gev_models.R")
-# source("./src/estimate_several_ns_gev_models.R")
-# source("./src/plot_several_ns_standardized_block_maxima_mean.R")
-# source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
-# 
 # 
 # x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
 # 
@@ -173,36 +157,18 @@ estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models,
 # rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
 # rejected_block_sizes
 # 
-# several_ns_gev_models <- estimate_several_ns_gev_models(x = x,
-#                                                         block_sizes = equivalent_block_sizes,
-#                                                         data = NULL,
-#                                                         location.fun = ~ 1,
-#                                                         scale.fun = ~ 1,
-#                                                         shape.fun = ~ 1,
-#                                                         use.phi = TRUE,
-#                                                         type = c("GEV", "Gumbel")[1],
-#                                                         method = c("MLE", "GMLE")[1])
-# 
-# single_ns_gev_model <- several_ns_gev_models[[1]]
-# names(single_ns_gev_model)
-# 
-# gev_models <- predict_several_gev_models(several_ns_gev_models,
-#                                          covariates = NULL,
-#                                          method = c("MLE", "GMLE", "Lmoments")[1])
-# 
-# names(gev_models)
+# gev_models <- estimate_several_gev_models(x = x, block_sizes = equivalent_block_sizes)
 # 
 # results <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models,
-#                                                                single_ns_gev_model,
-#                                                                covariates = NULL,
-#                                                                k = 50,
 #                                                                trace = TRUE,
 #                                                                use_extremal_index = TRUE,
 #                                                                use_lower_threshold = FALSE)
 # 
 # results
 # 
-# sum(results$automatic_weights)
+# sum(results$automatic_weights_shape)
+# sum(results$automatic_weights_scale)
+# sum(results$automatic_weights_loc)
 # 
 # 
 # # example 2
@@ -213,19 +179,10 @@ estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models,
 # source("./src/generate_gev_sample.R")
 # source("./src/plot_several_standardized_block_maxima_mean.R")
 # source("./src/estimate_several_standardized_block_maxima_mean.R")
-# source("./src/predict_several_gev_models.R")
-# source("./src/estimate_several_ns_gev_models.R")
-# source("./src/plot_several_ns_standardized_block_maxima_mean.R")
-# source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
-# 
 # 
 # n <- 1000
 # 
 # x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
-# 
-# trend <- (-49:50)/n
-# rnd <- runif(n = n, min = -0.5, max = 0.5)
-# data <- data.frame(trend = trend, random = rnd)
 # 
 # minimum_block_size <- find_minimum_block_size(x)
 # minimum_block_size
@@ -235,56 +192,19 @@ estimate_gev_mixture_model_automatic_weights_pw_log <- function(gev_models,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# equivalent_block_sizes_object<- estimate_several_ns_standardized_block_maxima_mean(x,
-#                                                                                    block_sizes,
-#                                                                                    confidence_level = 0.95,
-#                                                                                    data = data,
-#                                                                                    location.fun = ~ trend,
-#                                                                                    scale.fun = ~ .,
-#                                                                                    shape.fun = ~ random,
-#                                                                                    use.phi = TRUE,
-#                                                                                    type = c("GEV", "Gumbel")[1],
-#                                                                                    method = c("MLE", "GMLE")[1])
-# 
-# 
+# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 # 
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 # 
-# several_ns_gev_models <- estimate_several_ns_gev_models(x = x,
-#                                                         block_sizes = equivalent_block_sizes,
-#                                                         data = data,
-#                                                         location.fun = ~ trend,
-#                                                         scale.fun = ~ .,
-#                                                         shape.fun = ~ random,
-#                                                         use.phi = TRUE,
-#                                                         type = c("GEV", "Gumbel")[1],
-#                                                         method = c("MLE", "GMLE")[1])
-# 
-# 
-# single_ns_gev_model <- several_ns_gev_models[[1]]
-# names(single_ns_gev_model)
-# 
-# covariates <- list(mu1 = 25/n,
-#                    phi1 = 25/n,
-#                    phi2 = runif(n = 1, min = -0.5, max = 0.5),
-#                    xi1 = runif(n = 1, min = -0.5, max = 0.5))
-# 
-# covariates
-# 
-# gev_models <- predict_several_gev_models(several_ns_gev_models,
-#                                          covariates = covariates,
-#                                          method = c("MLE", "GMLE", "Lmoments")[1])
-# 
-# names(gev_models)
+# gev_models <- estimate_several_gev_models(x = x, block_sizes = equivalent_block_sizes)
 # 
 # results <- estimate_gev_mixture_model_automatic_weights_pw_log(gev_models,
-#                                                                single_ns_gev_model,
-#                                                                covariates = covariates,
-#                                                                k = 50,
 #                                                                trace = TRUE,
 #                                                                use_extremal_index = TRUE,
 #                                                                use_lower_threshold = FALSE)
 # 
 # results
 # 
-# sum(results$automatic_weights)
+# sum(results$automatic_weights_shape)
+# sum(results$automatic_weights_scale)
+# sum(results$automatic_weights_loc)
