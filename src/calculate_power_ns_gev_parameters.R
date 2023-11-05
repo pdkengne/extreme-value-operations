@@ -1,4 +1,4 @@
-calculate_power_ncalculate_power_ns_gev_parameterss-gev_parameters <- function(loc = 0, scale = 1, shape = 0, exponent = 1){
+calculate_power_ns_gev_parameterss-gev_parameters-gev_parameters <- function(loc = 0, scale = 1, shape = 0, exponent = 1){
   # loc, scale, shape: location, scale and shape parameters of the base GEV model
   # exponent: the exponent to consider
   # Note: Let G denotes a GEV distribution function. The output is a vector containing the parameters
@@ -22,25 +22,25 @@ calculate_power_ncalculate_power_ns_gev_parameterss-gev_parameters <- function(l
 
 # # example 1
 # 
-# result <- calculate_power_ncalculate_power_ns_gev_parameterss-gev_parameters(loc = 0, scale = 1, shape = 0, exponent = 1)
+# result <- calculate_power_ns_gev_parameterss-gev_parameters-gev_parameters(loc = 0, scale = 1, shape = 0, exponent = 1)
 # result
 # 
 # 
 # # example 2
 # 
-# result <- calculate_power_ncalculate_power_ns_gev_parameterss-gev_parameters(loc = 0, scale = 1, shape = 0.2, exponent = 1)
+# result <- calculate_power_ns_gev_parameterss-gev_parameters-gev_parameters(loc = 0, scale = 1, shape = 0.2, exponent = 1)
 # result
 # 
 # 
 # # example 3
 # 
-# result <- calculate_power_ncalculate_power_ns_gev_parameterss-gev_parameters(loc = 0, scale = 1, shape = 0.2, exponent = 32)
+# result <- calculate_power_ns_gev_parameterss-gev_parameters-gev_parameters(loc = 0, scale = 1, shape = 0.2, exponent = 32)
 # result
 # 
 # 
 # # example 4
 # 
-# result <- calculate_power_ncalculate_power_ns_gev_parameterss-gev_parameters(loc = 0, scale = 1, shape = 0, exponent = exp(1))
+# result <- calculate_power_ns_gev_parameterss-gev_parameters-gev_parameters(loc = 0, scale = 1, shape = 0, exponent = exp(1))
 # result
 # 
 # names(result)

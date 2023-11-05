@@ -1,4 +1,5 @@
 source("./src/calculate_gev_mixture_model_inverse_cdf.R")
+source("./src/calculate_power_gev_parameters.R")
 source("./src/generate_gev_sample.R")
 
 generate_gev_mixture_model_sample <- function(n = 1, 
@@ -32,15 +33,24 @@ generate_gev_mixture_model_sample <- function(n = 1,
     })
   }
   else if (kind == "geometric"){
-    p <- runif(n, min = 0, max = 1)
+    output <- sapply(1:n, function(j){
+      out <- sapply(1:length(weights), function(k){
+        parameter_star <- calculate_power_gev_parameters(loc = locations[k], 
+                                                         scale = scales[k], 
+                                                         shape = shapes[k], 
+                                                         exponent = weights[k])
+        
+        random_value <- generate_gev_sample(n = 1, 
+                                            loc = parameter_star["loc_star"], 
+                                            scale = parameter_star["scale_star"], 
+                                            shape = parameter_star["shape_star"])
+        
+        random_value
+      })
+      
+      max(out)
+    })
     
-    output <- calculate_gev_mixture_model_inverse_cdf(p = p, 
-                                                      locations = locations, 
-                                                      scales = scales, 
-                                                      shapes = shapes, 
-                                                      weights = weights, 
-                                                      iterations = iterations, 
-                                                      kind = kind)
   }
   else{
     stop("Please enter a correct value to the argument 'kind'. Possible values are 'geometric' or 'arithmetic'!")
@@ -61,55 +71,55 @@ generate_gev_mixture_model_sample <- function(n = 1,
 # scales <- c(1, 1)
 # locations <- c(-2, +2)
 # 
-# n <- 100
+# n <- 1000
 # 
-# results_1 <- generate_gev_mixture_model_sample(n = n, 
-#                                              locations, 
-#                                              scales, 
-#                                              shapes, 
-#                                              weights, 
+# results_1 <- generate_gev_mixture_model_sample(n = n,
+#                                              locations,
+#                                              scales,
+#                                              shapes,
+#                                              weights,
 #                                              iterations = 50,
 #                                              kind = c("geometric", "arithmetic")[2])
 # 
 # #results_1
 # 
-# pdf_1 <- calculate_gev_mixture_model_pdf(x = sort(results_1), 
-#                                        locations, 
-#                                        scales, 
-#                                        shapes, 
+# pdf_1 <- calculate_gev_mixture_model_pdf(x = sort(results_1),
+#                                        locations,
+#                                        scales,
+#                                        shapes,
 #                                        weights,
 #                                        kind = c("geometric", "arithmetic")[2])
 # 
 # #pdf_1
 # 
-# results_2 <- generate_gev_mixture_model_sample(n = n, 
-#                                              locations, 
-#                                              scales, 
-#                                              shapes, 
-#                                              weights, 
+# results_2 <- generate_gev_mixture_model_sample(n = n,
+#                                              locations,
+#                                              scales,
+#                                              shapes,
+#                                              weights,
 #                                              iterations = 50,
 #                                              kind = c("geometric", "arithmetic")[1])
 # 
 # #results_2
 # 
-# pdf_2 <- calculate_gev_mixture_model_pdf(x = sort(results_2), 
-#                                        locations, 
-#                                        scales, 
-#                                        shapes, 
+# pdf_2 <- calculate_gev_mixture_model_pdf(x = sort(results_2),
+#                                        locations,
+#                                        scales,
+#                                        shapes,
 #                                        weights,
 #                                        kind = c("geometric", "arithmetic")[1])
 # 
 # #pdf_2
 # 
-# plot(sort(results_1), pdf_1, type = "l", ylim = range(c(pdf_1, pdf_2)))
+# plot(sort(results_1), pdf_1, type = "l", ylim = range(c(pdf_1, pdf_2)), xlim = range(c(results_1, results_2)))
 # lines(sort(results_2), pdf_2, type = "l", col = 4)
 # legend("topright", legend = c("arithmetic", "geometric"), col = c(1, 4), lty = c(1, 1))
 # 
-# results <- generate_gev_mixture_model_sample(n = n, 
-#                                              locations, 
-#                                              scales, 
-#                                              shapes, 
-#                                              weights, 
+# results <- generate_gev_mixture_model_sample(n = n,
+#                                              locations,
+#                                              scales,
+#                                              shapes,
+#                                              weights,
 #                                              iterations = 50,
 #                                              kind = "merge")
 # 
@@ -127,44 +137,44 @@ generate_gev_mixture_model_sample <- function(n = 1,
 # 
 # n <- 1500
 # 
-# results_1 <- generate_gev_mixture_model_sample(n = n, 
-#                                                locations, 
-#                                                scales, 
-#                                                shapes, 
-#                                                weights, 
+# results_1 <- generate_gev_mixture_model_sample(n = n,
+#                                                locations,
+#                                                scales,
+#                                                shapes,
+#                                                weights,
 #                                                iterations = 50,
 #                                                kind = c("geometric", "arithmetic")[2])
 # 
 # #results_1
 # 
-# pdf_1 <- calculate_gev_mixture_model_pdf(x = sort(results_1), 
-#                                          locations, 
-#                                          scales, 
-#                                          shapes, 
+# pdf_1 <- calculate_gev_mixture_model_pdf(x = sort(results_1),
+#                                          locations,
+#                                          scales,
+#                                          shapes,
 #                                          weights,
 #                                          kind = c("geometric", "arithmetic")[2])
 # 
 # #pdf_1
 # 
-# results_2 <- generate_gev_mixture_model_sample(n = n, 
-#                                                locations, 
-#                                                scales, 
-#                                                shapes, 
-#                                                weights, 
+# results_2 <- generate_gev_mixture_model_sample(n = n,
+#                                                locations,
+#                                                scales,
+#                                                shapes,
+#                                                weights,
 #                                                iterations = 50,
 #                                                kind = c("geometric", "arithmetic")[1])
 # 
 # #results_2
 # 
-# pdf_2 <- calculate_gev_mixture_model_pdf(x = sort(results_2), 
-#                                          locations, 
-#                                          scales, 
-#                                          shapes, 
+# pdf_2 <- calculate_gev_mixture_model_pdf(x = sort(results_2),
+#                                          locations,
+#                                          scales,
+#                                          shapes,
 #                                          weights,
 #                                          kind = c("geometric", "arithmetic")[1])
 # 
 # #pdf_2
 # 
-# plot(sort(results_1), pdf_1, type = "l", ylim = range(c(pdf_1, pdf_2)))
+# plot(sort(results_1), pdf_1, type = "l", ylim = range(c(pdf_1, pdf_2)), xlim = range(c(results_1, results_2)))
 # lines(sort(results_2), pdf_2, type = "l", col = 4)
 # legend("topright", legend = c("arithmetic", "geometric"), col = c(1, 4), lty = c(1, 1))
