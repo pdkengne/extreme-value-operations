@@ -414,7 +414,7 @@ predict_gev_mixture_model_parameters <- function(x,
 # covariates
 # 
 # results <- predict_gev_mixture_model_parameters(x = x,
-#                                                 kind = c("geometric", "arithmetic")[1],
+#                                                 kind = c("geometric", "arithmetic")[2],
 #                                                 data = data,
 #                                                 location.fun = ~ trend,
 #                                                 scale.fun = ~ .,

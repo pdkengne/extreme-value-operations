@@ -44,7 +44,8 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
                                                      kind = kind)
   
   # get the pdf range
-  pdf_range <- range(c(theoretical_pdf, empirical_pdf))
+  #pdf_range <- range(c(theoretical_pdf, empirical_pdf))
+  pdf_range <- range(empirical_pdf)
   
   # define the non null threshold to use
   if (is.null(threshold)){
@@ -58,7 +59,8 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
   large_ordered_quantiles <- ordered_quantiles[position_large_quantities]
   large_empirical_pdf <- empirical_pdf[position_large_quantities]
   large_theoretical_pdf <- theoretical_pdf[position_large_quantities]
-  large_pdf_range <- range(c(large_theoretical_pdf, large_empirical_pdf))
+  #large_pdf_range <- range(c(large_theoretical_pdf, large_empirical_pdf))
+  large_pdf_range <- range(large_empirical_pdf)
   
   # plot densities
   if (zoom){

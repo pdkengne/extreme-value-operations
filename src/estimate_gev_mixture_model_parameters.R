@@ -210,6 +210,243 @@ estimate_gev_mixture_model_parameters <- function(x,
 
 # # example 1
 # 
+# source("./src/generate_gev_mixture_model_sample.R")
+# source("./src/calculate_gev_mixture_model_pdf.R")
+# source("./src/generate_gev_sample.R")
+# source("./src/plot_several_standardized_block_maxima_mean.R")
+# source("./src/estimate_gev_mixture_model_pdf.R")
+# source("./src/plot_gev_mixture_model_pdf.R")
+# 
+# weights <- c(0.5, 0.5)
+# 
+# shapes <- c(0.1, 0.1)
+# scales <- c(1, 1)
+# locations <- c(-2, +2)
+# 
+# n <- 1000
+# 
+# sample_1 <- generate_gev_mixture_model_sample(n = n,
+#                                               locations,
+#                                               scales,
+#                                               shapes,
+#                                               weights,
+#                                               iterations = 50,
+#                                               kind = c("geometric", "arithmetic")[2])
+# 
+# pdf_1 <- calculate_gev_mixture_model_pdf(x = sort(sample_1),
+#                                        locations,
+#                                        scales,
+#                                        shapes,
+#                                        weights,
+#                                        kind = c("geometric", "arithmetic")[2])
+# 
+# sample_2 <- generate_gev_mixture_model_sample(n = n,
+#                                              locations,
+#                                              scales,
+#                                              shapes,
+#                                              weights,
+#                                              iterations = 50,
+#                                              kind = c("geometric", "arithmetic")[1])
+# 
+# pdf_2 <- calculate_gev_mixture_model_pdf(x = sort(sample_2),
+#                                        locations,
+#                                        scales,
+#                                        shapes,
+#                                        weights,
+#                                        kind = c("geometric", "arithmetic")[1])
+# 
+# plot(sort(sample_1), pdf_1, type = "l", ylim = range(c(pdf_1, pdf_2)), xlim = range(c(sample_1, sample_2)))
+# lines(sort(sample_2), pdf_2, type = "l", col = 4)
+# legend("topright", legend = c("arithmetic", "geometric"), col = c(1, 4), lty = c(1, 1))
+# 
+# nlargest <- 1000
+# 
+# x <- sample_1
+# 
+# results <- estimate_gev_mixture_model_parameters(x,
+#                                                  kind = c("geometric", "arithmetic")[2],
+#                                                  block_sizes = NULL,
+#                                                  minimum_nblocks = 50,
+#                                                  threshold = NULL,
+#                                                  nlargest = nlargest,
+#                                                  confidence_level = 0.95,
+#                                                  use_extremal_index = TRUE,
+#                                                  use_lower_threshold = FALSE,
+#                                                  maximum_iterations = 1500,
+#                                                  log_mv = TRUE,
+#                                                  log_pw = TRUE,
+#                                                  trace = TRUE,
+#                                                  method = c("MLE", "GMLE", "Lmoments")[1])
+# 
+# #results
+# names(results)
+# 
+# # "data"                                      "data_largest"                              "use_lower_threshold"                       "block_sizes"
+# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_object"                       "block_maxima_indexes_object"
+# # "gev_models_object"                         "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
+# # "weighted_normalized_gev_parameters_object" "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
+# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"                      "automatic_weights_mw_statistics"
+# # "automatic_weights_pw_shape"                "automatic_weights_pw_scale"                "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+# 
+# # get the block sizes
+# results$block_sizes
+# 
+# # get the extremal indexes
+# results$extremal_indexes
+# 
+# # get the normalized gev parameters
+# results$normalized_gev_parameters_object
+# 
+# # get the full normalized gev parameters
+# results$full_normalized_gev_parameters_object
+# 
+# # get model wise automatic weights
+# results$automatic_weights_mw
+# 
+# # get the weighted normalized gev parameters
+# results$weighted_normalized_gev_parameters_object
+# 
+# # get the statistics about the estimation of weights
+# results$automatic_weights_mw_statistics
+# results$automatic_weights_pw_statistics
+# 
+# # plot the mean standardized block maxima
+# plot_several_standardized_block_maxima_mean(x = results$data_largest,
+#                                             block_sizes = results$block_sizes,
+#                                             confidence_level = 0.95,
+#                                             equivalent = FALSE,
+#                                             xlab = "Block Sizes",
+#                                             ylab = "Estimated Values",
+#                                             main = "Mean Standardized Block Maxima Plot")
+# 
+# # plot the mean standardized block maxima (only equivalent models)
+# plot_several_standardized_block_maxima_mean(x = results$data_largest,
+#                                             block_sizes = results$block_sizes,
+#                                             confidence_level = 0.95,
+#                                             equivalent = TRUE,
+#                                             xlab = "Block Sizes",
+#                                             ylab = "Estimated Values",
+#                                             main = "Mean Standardized Block Maxima Plot")
+# # get the rejected block sizes
+# results$rejected_block_sizes
+# 
+# # density plot
+# weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model = results,
+#                            kind = c("geometric", "arithmetic")[2],
+#                            type = "automatic_weights",
+#                            model_wise = TRUE,
+#                            zoom = FALSE,
+#                            xlab = "Quantile",
+#                            ylab = "Density",
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model = results,
+#                            kind = c("geometric", "arithmetic")[2],
+#                            type = "automatic_weights",
+#                            model_wise = TRUE,
+#                            zoom = TRUE,
+#                            xlab = "Quantile",
+#                            ylab = "Density",
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# 
+# x <- sample_2
+# 
+# results <- estimate_gev_mixture_model_parameters(x,
+#                                                  kind = c("geometric", "arithmetic")[1],
+#                                                  block_sizes = NULL,
+#                                                  minimum_nblocks = 50,
+#                                                  threshold = NULL,
+#                                                  nlargest = nlargest,
+#                                                  confidence_level = 0.95,
+#                                                  use_extremal_index = TRUE,
+#                                                  use_lower_threshold = FALSE,
+#                                                  maximum_iterations = 1500,
+#                                                  log_mv = TRUE,
+#                                                  log_pw = TRUE,
+#                                                  trace = TRUE,
+#                                                  method = c("MLE", "GMLE", "Lmoments")[1])
+# 
+# #results
+# names(results)
+# 
+# # "data"                                      "data_largest"                              "use_lower_threshold"                       "block_sizes"
+# # "equivalent_block_sizes"                    "rejected_block_sizes"                      "block_maxima_object"                       "block_maxima_indexes_object"
+# # "gev_models_object"                         "extremal_indexes"                          "normalized_gev_parameters_object"          "full_normalized_gev_parameters_object"
+# # "weighted_normalized_gev_parameters_object" "identic_weights_mw"                        "pessimistic_weights_mw"                    "pessimistic_weights_pw_shape"
+# # "pessimistic_weights_pw_scale"              "pessimistic_weights_pw_loc"                "automatic_weights_mw"                      "automatic_weights_mw_statistics"
+# # "automatic_weights_pw_shape"                "automatic_weights_pw_scale"                "automatic_weights_pw_loc"                  "automatic_weights_pw_statistics"
+# 
+# # get the block sizes
+# results$block_sizes
+# 
+# # get the extremal indexes
+# results$extremal_indexes
+# 
+# # get the normalized gev parameters
+# results$normalized_gev_parameters_object
+# 
+# # get the full normalized gev parameters
+# results$full_normalized_gev_parameters_object
+# 
+# # get model wise automatic weights
+# results$automatic_weights_mw
+# 
+# # get the weighted normalized gev parameters
+# results$weighted_normalized_gev_parameters_object
+# 
+# # get the statistics about the estimation of weights
+# results$automatic_weights_mw_statistics
+# results$automatic_weights_pw_statistics
+# 
+# # plot the mean standardized block maxima
+# plot_several_standardized_block_maxima_mean(x = results$data_largest,
+#                                             block_sizes = results$block_sizes,
+#                                             confidence_level = 0.95,
+#                                             equivalent = FALSE,
+#                                             xlab = "Block Sizes",
+#                                             ylab = "Estimated Values",
+#                                             main = "Mean Standardized Block Maxima Plot")
+# 
+# # plot the mean standardized block maxima (only equivalent models)
+# plot_several_standardized_block_maxima_mean(x = results$data_largest,
+#                                             block_sizes = results$block_sizes,
+#                                             confidence_level = 0.95,
+#                                             equivalent = TRUE,
+#                                             xlab = "Block Sizes",
+#                                             ylab = "Estimated Values",
+#                                             main = "Mean Standardized Block Maxima Plot")
+# # get the rejected block sizes
+# results$rejected_block_sizes
+# 
+# # density plot
+# weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model = results,
+#                            kind = c("geometric", "arithmetic")[1],
+#                            type = "automatic_weights",
+#                            model_wise = TRUE,
+#                            zoom = FALSE,
+#                            xlab = "Quantile",
+#                            ylab = "Density",
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# plot_gev_mixture_model_pdf(gev_mixture_model = results,
+#                            kind = c("geometric", "arithmetic")[1],
+#                            type = "automatic_weights",
+#                            model_wise = TRUE,
+#                            zoom = TRUE,
+#                            xlab = "Quantile",
+#                            ylab = "Density",
+#                            main = "Probability Density Function (PDF) Plot")
+# 
+# 
+# 
+# 
+# # example 2
+# 
 # source("./src/generate_gev_sample.R")
 # source("./src/plot_several_standardized_block_maxima_mean.R")
 # 
