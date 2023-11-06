@@ -6,7 +6,8 @@ source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 source("./src/estimate_gev_parameters.R")
 source("./src/estimate_gev_model_quantile.R")
 
-estimate_gev_mixture_model_quantile <- function(gev_mixture_model, 
+estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
+                                                kind = c("geometric", "arithmetic")[1],
                                                 alpha,
                                                 do.ci = TRUE,
                                                 confidence_level = 0.95,
@@ -21,6 +22,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                                    "empirical")[1]){
   # gev_mixture_model: an object associated with a result of the function 
   #                    "estimate_gev_mixture_model_parameters()" or "predict_gev_mixture_model_parameters()"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # alpha: order of the quantile to estimate
   # do.ci: boolean which indicates whether to return confidence interval or not
   # confidence_level: the desired confidence level for the estimated quantile
@@ -108,6 +110,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                         scales = gev_mixture_model_parameters_object$scale_star, 
                                                         shapes = gev_mixture_model_parameters_object$shape_star, 
                                                         weights = gev_mixture_model_weights_object[, "identic_weights"],
+                                                        kind = kind,
                                                         iterations = 100)
     }
     else if (estimator_type == "pessimistic_weights_mw"){
@@ -116,6 +119,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                         scales = gev_mixture_model_parameters_object$scale_star, 
                                                         shapes = gev_mixture_model_parameters_object$shape_star, 
                                                         weights = gev_mixture_model_weights_object[, "pessimistic_weights"],
+                                                        kind = kind,
                                                         iterations = 100)
     }
     else if (estimator_type == "automatic_weights_mw"){
@@ -124,6 +128,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                         scales = gev_mixture_model_parameters_object$scale_star, 
                                                         shapes = gev_mixture_model_parameters_object$shape_star, 
                                                         weights = gev_mixture_model_weights_object[, "automatic_weights"],
+                                                        kind = kind,
                                                         iterations = 100)
     }
     else if (estimator_type == "model_wise"){
@@ -249,12 +254,12 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # gev_mixture_model$automatic_weights_mw
 # 
 # 
-# estimator_types <- c("automatic_weights_mw", 
-#                      "pessimistic_weights_mw", 
-#                      "identic_weights_mw", 
+# estimator_types <- c("automatic_weights_mw",
+#                      "pessimistic_weights_mw",
+#                      "identic_weights_mw",
 #                      "automatic_weights_pw",
-#                      "pessimistic_weights_pw", 
-#                      "identic_weights_pw", 
+#                      "pessimistic_weights_pw",
+#                      "identic_weights_pw",
 #                      "model_wise",
 #                      "parameter_wise",
 #                      "empirical")
@@ -263,6 +268,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # alpha <- 10^(-14)
 # 
 # results_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                   kind = c("geometric", "arithmetic")[1],
 #                                                   alpha = alpha,
 #                                                   do.ci = TRUE,
 #                                                   confidence_level = 0.95,
@@ -271,6 +277,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # results_mw
 # 
 # results_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                   kind = c("geometric", "arithmetic")[1],
 #                                                   alpha = alpha,
 #                                                   do.ci = TRUE,
 #                                                   confidence_level = 0.95,
@@ -282,6 +289,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # true_rl
 # 
 # results_emp <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                    kind = c("geometric", "arithmetic")[1],
 #                                                    alpha = alpha,
 #                                                    do.ci = TRUE,
 #                                                    confidence_level = 0.95,
@@ -290,6 +298,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # results_emp
 # 
 # est_rl_pw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                  kind = c("geometric", "arithmetic")[1],
 #                                                  alpha = alpha,
 #                                                  do.ci = FALSE,
 #                                                  confidence_level = 0.95,
@@ -298,6 +307,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # est_rl_pw
 # 
 # est_rl_pw_ci <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                     kind = c("geometric", "arithmetic")[1],
 #                                                  alpha = alpha,
 #                                                  do.ci = TRUE,
 #                                                  confidence_level = 0.95,
@@ -309,6 +319,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # est_rl_pw_ci_range
 # 
 # est_rl_mw <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                  kind = c("geometric", "arithmetic")[1],
 #                                                  alpha = alpha,
 #                                                  do.ci = FALSE,
 #                                                  confidence_level = 0.95,
@@ -317,6 +328,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # est_rl_mw
 # 
 # est_rl_mw_ci <- estimate_gev_mixture_model_quantile(gev_mixture_model,
+#                                                     kind = c("geometric", "arithmetic")[1],
 #                                                     alpha = alpha,
 #                                                     do.ci = TRUE,
 #                                                     confidence_level = 0.95,
@@ -346,6 +358,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # 
 # 
 # plot_gev_mixture_model_pdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "automatic_weights",
 #                            model_wise = FALSE,
 #                            zoom = FALSE,
@@ -354,6 +367,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                            main = "Probability Density Function (PDF) Plot")
 # 
 # plot_gev_mixture_model_pdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "automatic_weights",
 #                            model_wise = FALSE,
 #                            zoom = TRUE,
@@ -363,6 +377,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 # 
 # 
 # plot_gev_mixture_model_pdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "automatic_weights",
 #                            model_wise = TRUE,
 #                            zoom = FALSE,
@@ -371,6 +386,7 @@ estimate_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                            main = "Probability Density Function (PDF) Plot")
 # 
 # plot_gev_mixture_model_pdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[2],
 #                            type = "automatic_weights",
 #                            model_wise = TRUE,
 #                            zoom = TRUE,

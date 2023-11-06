@@ -5,7 +5,8 @@ source("./src/calculate_gev_pdf.R")
 source("./src/extract_block_maxima.R")
 
 
-estimate_gev_mixture_model_pdf <- function(gev_mixture_model, 
+estimate_gev_mixture_model_pdf <- function(gev_mixture_model,
+                                           kind = c("geometric", "arithmetic")[1],
                                            x,
                                            estimator_type = c("automatic_weights_mw", 
                                                               "pessimistic_weights_mw", 
@@ -16,6 +17,7 @@ estimate_gev_mixture_model_pdf <- function(gev_mixture_model,
                                                               "empirical")[1]){
   # gev_mixture_model: an object associated with a result of the function 
   #                    "estimate_gev_mixture_model_parameters()" or "predict_gev_mixture_model_parameters()"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # x: vector of observations
   # estimator_type: density estimator to use from the set 
   # c("automatic_weights_mw", "pessimistic_weights_mw", "identic_weights_mw", "automatic_weights_pw",
@@ -88,21 +90,24 @@ estimate_gev_mixture_model_pdf <- function(gev_mixture_model,
                                                 locations = gev_mixture_model_parameters_object$loc_star, 
                                                 scales = gev_mixture_model_parameters_object$scale_star, 
                                                 shapes = gev_mixture_model_parameters_object$shape_star, 
-                                                weights = gev_mixture_model_weights_object[, "identic_weights"])
+                                                weights = gev_mixture_model_weights_object[, "identic_weights"],
+                                                kind = kind)
     }
     else if (estimator_type == "pessimistic_weights_mw"){
       output <- calculate_gev_mixture_model_pdf(x = x, 
                                                 locations = gev_mixture_model_parameters_object$loc_star, 
                                                 scales = gev_mixture_model_parameters_object$scale_star, 
                                                 shapes = gev_mixture_model_parameters_object$shape_star, 
-                                                weights = gev_mixture_model_weights_object[, "pessimistic_weights"])
+                                                weights = gev_mixture_model_weights_object[, "pessimistic_weights"],
+                                                kind = kind)
     }
     else if (estimator_type == "automatic_weights_mw"){
       output <- calculate_gev_mixture_model_pdf(x = x, 
                                                 locations = gev_mixture_model_parameters_object$loc_star, 
                                                 scales = gev_mixture_model_parameters_object$scale_star, 
                                                 shapes = gev_mixture_model_parameters_object$shape_star, 
-                                                weights = gev_mixture_model_weights_object[, "automatic_weights"])
+                                                weights = gev_mixture_model_weights_object[, "automatic_weights"],
+                                                kind = kind)
     }
     else{
       output <- EnvStats::demp(x = x, obs = raw_data)
@@ -159,12 +164,14 @@ estimate_gev_mixture_model_pdf <- function(gev_mixture_model,
 # q <- 4
 # 
 # results_mw <- estimate_gev_mixture_model_pdf(gev_mixture_model,
+#                                              kind = c("geometric", "arithmetic")[1],
 #                                              x = q,
 #                                              estimator_type = estimator_types[1])
 # 
 # results_mw
 # 
 # results_pw <- estimate_gev_mixture_model_pdf(gev_mixture_model,
+#                                              kind = c("geometric", "arithmetic")[1],
 #                                              x = q,
 #                                              estimator_type = estimator_types[4])
 # 

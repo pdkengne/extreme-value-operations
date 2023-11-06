@@ -6,7 +6,8 @@ source("./src/find_threshold_associated_with_given_block_size.R")
 source("./src/get_provided_covariates.R")
 source("./src/get_knn.R")
 
-estimate_ns_gev_mixture_model_automatic_weights_mw <- function(gev_models, 
+estimate_ns_gev_mixture_model_automatic_weights_mw <- function(gev_models,
+                                                               kind = c("geometric", "arithmetic")[1],
                                                                single_ns_gev_model,
                                                                covariates = NULL,
                                                                k = 50,
@@ -15,6 +16,7 @@ estimate_ns_gev_mixture_model_automatic_weights_mw <- function(gev_models,
                                                                use_extremal_index = TRUE,
                                                                use_lower_threshold = FALSE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()" or "predict_several_gev_models()"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # single_ns_gev_model: an object associated with a result of the function "estimate_single_ns_gev_model()"
   # covariates: a named list whose names match the fitted model parameter names,
   # k: the maximum number of nearest neighbors to search
@@ -70,7 +72,7 @@ estimate_ns_gev_mixture_model_automatic_weights_mw <- function(gev_models,
   
   # define the error function to optimize
   nlf <- function(w, y){
-    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w)
+    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w, kind = kind)
     
     empirical_cdf <- Fn(y)
     
@@ -84,7 +86,7 @@ estimate_ns_gev_mixture_model_automatic_weights_mw <- function(gev_models,
   # define the gradient of error function to optimize
   
   nlf_gradient <- function(w, y){
-    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w)
+    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w, kind = kind)
     
     empirical_cdf <- Fn(y)
     
@@ -189,6 +191,7 @@ estimate_ns_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 # names(gev_models)
 # 
 # results <- estimate_ns_gev_mixture_model_automatic_weights_mw(gev_models,
+#                                                               kind = c("geometric", "arithmetic")[1],
 #                                                               single_ns_gev_model,
 #                                                               covariates = NULL,
 #                                                               k = 50,
@@ -274,6 +277,7 @@ estimate_ns_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 # names(gev_models)
 # 
 # results <- estimate_ns_gev_mixture_model_automatic_weights_mw(gev_models,
+#                                                               kind = c("geometric", "arithmetic")[2],
 #                                                               single_ns_gev_model,
 #                                                               covariates = covariates,
 #                                                               k = 50,

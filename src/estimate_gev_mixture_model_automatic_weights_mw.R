@@ -4,12 +4,14 @@ source("./src/calculate_gev_cdf.R")
 source("./src/calculate_gev_mixture_model_cdf.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
 
-estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models, 
+estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
+                                                            kind = c("geometric", "arithmetic")[1],
                                                             maximum_iterations = 1500, 
                                                             trace = TRUE, 
                                                             use_extremal_index = TRUE,
                                                             use_lower_threshold = FALSE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # maximum_iterations: maximum number of iterations
   # trace: boolean value which indicates whether to print information on the progress of optimization
   # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
@@ -57,7 +59,7 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
   
   # define the error function to optimize
   nlf <- function(w, y){
-    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w)
+    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w, kind = kind)
     
     empirical_cdf <- Fn(y)
     
@@ -71,7 +73,7 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
   # define the gradient of error function to optimize
   
   nlf_gradient <- function(w, y){
-    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w)
+    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w, kind = kind)
     
     empirical_cdf <- Fn(y)
     
@@ -122,6 +124,7 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 }
 
 
+
 # # example 1
 # 
 # source("./src/estimate_several_gev_models.R")
@@ -153,7 +156,11 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = TRUE, use_extremal_index = TRUE, use_lower_threshold = FALSE)
+# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models,
+#                                                            kind = c("geometric", "arithmetic")[1],
+#                                                            trace = TRUE, 
+#                                                            use_extremal_index = TRUE, 
+#                                                            use_lower_threshold = FALSE)
 # 
 # results
 # 
@@ -190,7 +197,11 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models, trace = TRUE, use_extremal_index = TRUE, use_lower_threshold = FALSE)
+# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models,
+#                                                            kind = c("geometric", "arithmetic")[1],
+#                                                            trace = TRUE, 
+#                                                            use_extremal_index = TRUE, 
+#                                                            use_lower_threshold = FALSE)
 # 
 # results
 # 

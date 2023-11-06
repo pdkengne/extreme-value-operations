@@ -9,7 +9,8 @@ source("./src/estimate_gev_mixture_model_automatic_weights_pw.R")
 source("./src/estimate_gev_mixture_model_automatic_weights_mw_log.R")
 source("./src/estimate_gev_mixture_model_automatic_weights_pw_log.R")
 
-estimate_gev_mixture_model_parameters <- function(x, 
+estimate_gev_mixture_model_parameters <- function(x,
+                                                  kind = c("geometric", "arithmetic")[1],
                                                   block_sizes = NULL,
                                                   minimum_nblocks = 50,
                                                   threshold = NULL,
@@ -23,6 +24,7 @@ estimate_gev_mixture_model_parameters <- function(x,
                                                   trace = TRUE,
                                                   method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # block_sizes: vector containing the sizes of blocks to consider
   # trace: boolean value which indicates whether to print information on the progress of optimization
   # log_mv: a boolean which indicates whether the model wise loss function is at logarithmic scale or not
@@ -89,6 +91,7 @@ estimate_gev_mixture_model_parameters <- function(x,
   # estimate model wise automatic weights 
   if (log_mv){
     automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw_log(gev_models = gev_models,
+                                                                                       kind = kind,
                                                                                        maximum_iterations = maximum_iterations, 
                                                                                        trace = trace,
                                                                                        use_extremal_index = use_extremal_index,
@@ -96,6 +99,7 @@ estimate_gev_mixture_model_parameters <- function(x,
   }
   else{
     automatic_weights_mw_object <- estimate_gev_mixture_model_automatic_weights_mw(gev_models = gev_models,
+                                                                                   kind = kind,
                                                                                    maximum_iterations = maximum_iterations, 
                                                                                    trace = trace,
                                                                                    use_extremal_index = use_extremal_index,
@@ -216,6 +220,7 @@ estimate_gev_mixture_model_parameters <- function(x,
 # x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
 # 
 # results <- estimate_gev_mixture_model_parameters(x,
+#                                                  kind = c("geometric", "arithmetic")[1],
 #                                                  block_sizes = NULL,
 #                                                  minimum_nblocks = 50,
 #                                                  threshold = NULL,
@@ -280,4 +285,4 @@ estimate_gev_mixture_model_parameters <- function(x,
 #                                             main = "Mean Standardized Block Maxima Plot")
 # # get the rejected block sizes
 # results$rejected_block_sizes
-
+# 

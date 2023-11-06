@@ -11,7 +11,8 @@ source("./src/estimate_ns_gev_mixture_model_automatic_weights_mw_log.R")
 source("./src/estimate_ns_gev_mixture_model_automatic_weights_pw_log.R")
 
 
-predict_gev_mixture_model_parameters <- function(x, 
+predict_gev_mixture_model_parameters <- function(x,
+                                                 kind = c("geometric", "arithmetic")[1],
                                                  data = NULL,
                                                  location.fun = ~1,
                                                  scale.fun = ~1, 
@@ -32,6 +33,7 @@ predict_gev_mixture_model_parameters <- function(x,
                                                  trace = TRUE,
                                                  method = c("MLE", "GMLE")[1]){
   # x: vector of observations
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # data: dataframe of covariates for linear modeling of the gev model parameters
   # location.fun, scale.fun, shape.fun: formula describing a model for each parameter using columns from data. data
   #                                     must be supplied if any of these arguments are anything other than ~ 1.
@@ -129,6 +131,7 @@ predict_gev_mixture_model_parameters <- function(x,
   # estimate model wise automatic weights 
   if (log_mv){
     automatic_weights_mw_object <- estimate_ns_gev_mixture_model_automatic_weights_mw_log(gev_models = gev_models,
+                                                                                          kind = kind,
                                                                                           single_ns_gev_model = several_ns_gev_models[[1]],
                                                                                           covariates = covariates,
                                                                                           k = k,
@@ -139,6 +142,7 @@ predict_gev_mixture_model_parameters <- function(x,
   }
   else{
     automatic_weights_mw_object <- estimate_ns_gev_mixture_model_automatic_weights_mw(gev_models = gev_models,
+                                                                                      kind = kind,
                                                                                       single_ns_gev_model = several_ns_gev_models[[1]],
                                                                                       covariates = covariates,
                                                                                       k = k,
@@ -269,6 +273,7 @@ predict_gev_mixture_model_parameters <- function(x,
 # x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
 # 
 # results <- predict_gev_mixture_model_parameters(x = x,
+#                                                 kind = c("geometric", "arithmetic")[1],
 #                                                 data = NULL,
 #                                                 location.fun = ~1,
 #                                                 scale.fun = ~1,
@@ -409,6 +414,7 @@ predict_gev_mixture_model_parameters <- function(x,
 # covariates
 # 
 # results <- predict_gev_mixture_model_parameters(x = x,
+#                                                 kind = c("geometric", "arithmetic")[1],
 #                                                 data = data,
 #                                                 location.fun = ~ trend,
 #                                                 scale.fun = ~ .,
