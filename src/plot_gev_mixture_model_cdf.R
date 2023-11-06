@@ -4,6 +4,7 @@ source("./src/plot_normalized_gev_cdf.R")
 source("./src/plot_normalized_gev_mixture_model_cdf.R")
 
 plot_gev_mixture_model_cdf <- function(gev_mixture_model, 
+                                       kind = c("geometric", "arithmetic")[1],
                                        type = NULL,
                                        model_wise = FALSE,
                                        zoom = FALSE,
@@ -11,6 +12,7 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
                                        ylab = "Cumulative Probability", 
                                        main = "Cumulative Distribution Function (CDF) Plot"){
   # gev_mixture_model: an object associated with a result of the function "estimate_gev_mixture_model_parameters()"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # type: type of gev mixture model to consider. It is one of the following elements
   # model_wise: a boolean which indicates whether to use weights on models or on parameters
   #       ("identic_weights_pw", "pessimistic_weights_pw", "automatic_weights_pw",
@@ -72,6 +74,7 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
                                           scales = gev_mixture_model_parameters_object$scale_star, 
                                           shapes = gev_mixture_model_parameters_object$shape_star, 
                                           weights = gev_mixture_model_weights_object[, type],
+                                          kind = kind,
                                           zoom = zoom,
                                           threshold = threshold,
                                           xlab = xlab, 
@@ -94,8 +97,6 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
 # x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
 # 
 # gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
-#                                                            nsloc = NULL,
-#                                                            std.err = FALSE,
 #                                                            block_sizes = NULL,
 #                                                            minimum_nblocks = 50,
 #                                                            nlargest = nlargest,
@@ -106,6 +107,7 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
 # weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
 # 
 # plot_gev_mixture_model_cdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "identic_weights",
 #                            model_wise = FALSE,
 #                            zoom = FALSE,
@@ -114,6 +116,7 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
 #                            main = "Cumulative Distribution Function (CDF) Plot")
 # 
 # plot_gev_mixture_model_cdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "pessimistic_weights",
 #                            model_wise = FALSE,
 #                            zoom = FALSE,
@@ -122,6 +125,7 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
 #                            main = "Cumulative Distribution Function (CDF) Plot")
 # 
 # plot_gev_mixture_model_cdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "automatic_weights",
 #                            model_wise = FALSE,
 #                            zoom = FALSE,
@@ -130,6 +134,7 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
 #                            main = "Cumulative Distribution Function (CDF) Plot")
 # 
 # plot_gev_mixture_model_cdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "automatic_weights",
 #                            model_wise = FALSE,
 #                            zoom = TRUE,
@@ -141,6 +146,7 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
 # 
 # 
 # plot_gev_mixture_model_cdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "identic_weights",
 #                            model_wise = TRUE,
 #                            zoom = FALSE,
@@ -149,6 +155,7 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
 #                            main = "Cumulative Distribution Function (CDF) Plot")
 # 
 # plot_gev_mixture_model_cdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "pessimistic_weights",
 #                            model_wise = TRUE,
 #                            zoom = FALSE,
@@ -157,6 +164,7 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
 #                            main = "Cumulative Distribution Function (CDF) Plot")
 # 
 # plot_gev_mixture_model_cdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "automatic_weights",
 #                            model_wise = TRUE,
 #                            zoom = FALSE,
@@ -165,6 +173,7 @@ plot_gev_mixture_model_cdf <- function(gev_mixture_model,
 #                            main = "Cumulative Distribution Function (CDF) Plot")
 # 
 # plot_gev_mixture_model_cdf(gev_mixture_model,
+#                            kind = c("geometric", "arithmetic")[1],
 #                            type = "automatic_weights",
 #                            model_wise = TRUE,
 #                            zoom = TRUE,

@@ -7,6 +7,7 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
                                                   scales, 
                                                   shapes, 
                                                   weights, 
+                                                  kind = c("geometric", "arithmetic")[1],
                                                   zoom = FALSE,
                                                   threshold = NULL,
                                                   xlab = "Quantile", 
@@ -15,6 +16,7 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
   # x: vector of observations
   # weights: vector of weights
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # zoom: a boolean which indicates whether to focus on large values or not
   # threshold: smallest value above which to perform comparison. If not provided, comparison is performed on all data
   # xlab: label of the x-axis
@@ -38,7 +40,8 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
                                                      locations = locations, 
                                                      scales = scales, 
                                                      shapes = shapes, 
-                                                     weights = weights)
+                                                     weights = weights,
+                                                     kind = kind)
   
   # get the pdf range
   pdf_range <- range(c(theoretical_pdf, empirical_pdf))
@@ -117,8 +120,6 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 # x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.1)
 # 
 # gev_mixture_model <- estimate_gev_mixture_model_parameters(x,
-#                                                            nsloc = NULL,
-#                                                            std.err = FALSE,
 #                                                            block_sizes = NULL,
 #                                                            minimum_nblocks = 50,
 #                                                            nlargest = nlargest,
@@ -145,6 +146,7 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 #                                       scales = gev_mixture_model_parameters_scale,
 #                                       shapes = gev_mixture_model_parameters_shape,
 #                                       weights = gev_mixture_model_identic_weights,
+#                                       kind = c("geometric", "arithmetic")[1],
 #                                       zoom = FALSE,
 #                                       threshold = NULL,
 #                                       xlab = "Quantile",
@@ -156,6 +158,7 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 #                                       scales = gev_mixture_model_parameters_scale,
 #                                       shapes = gev_mixture_model_parameters_shape,
 #                                       weights = gev_mixture_model_pessimistic_weights,
+#                                       kind = c("geometric", "arithmetic")[1],
 #                                       zoom = FALSE,
 #                                       threshold = NULL,
 #                                       xlab = "Quantile",
@@ -171,6 +174,7 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 #                                       scales = gev_mixture_model_parameters_scale,
 #                                       shapes = gev_mixture_model_parameters_shape,
 #                                       weights = gev_mixture_model_automatic_weights,
+#                                       kind = c("geometric", "arithmetic")[1],
 #                                       zoom = FALSE,
 #                                       threshold = threshold,
 #                                       xlab = "Quantile",
@@ -182,6 +186,7 @@ plot_normalized_gev_mixture_model_pdf <- function(x,
 #                                       scales = gev_mixture_model_parameters_scale,
 #                                       shapes = gev_mixture_model_parameters_shape,
 #                                       weights = gev_mixture_model_automatic_weights,
+#                                       kind = c("geometric", "arithmetic")[1],
 #                                       zoom = TRUE,
 #                                       threshold = threshold,
 #                                       xlab = "Quantile",

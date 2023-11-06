@@ -38,7 +38,8 @@ calculate_gev_mixture_model_pdf <- function(x,
                                            locations = locations, 
                                            scales = scales, 
                                            shapes = shapes, 
-                                           weights = weights)
+                                           weights = weights,
+                                           kind = kind)
     
     if (length(x) == 1){
       output <- sum(S)*cdf

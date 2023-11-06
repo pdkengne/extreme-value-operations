@@ -5,6 +5,7 @@ plot_normalized_gev_mixture_model_probability <- function(x,
                                                           scales, 
                                                           shapes, 
                                                           weights,
+                                                          kind = c("geometric", "arithmetic")[1],
                                                           zoom = FALSE,
                                                           threshold = NULL,
                                                           xlab = "Theoretical Probability", 
@@ -14,6 +15,7 @@ plot_normalized_gev_mixture_model_probability <- function(x,
   # x: vector of observations
   # weights: vector of weights
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # zoom: a boolean which indicates whether to focus on large values or not
   # threshold: smallest value above which to perform comparison. If not provided, comparison is performed on all data
   # xlab: label of the x-axis
@@ -37,7 +39,8 @@ plot_normalized_gev_mixture_model_probability <- function(x,
                                                      locations = locations, 
                                                      scales = scales, 
                                                      shapes = shapes, 
-                                                     weights = weights)
+                                                     weights = weights,
+                                                     kind = kind)
   
   # get the probability range
   probability_range <- range(c(theoretical_cdf, empirical_cdf))
@@ -130,6 +133,7 @@ plot_normalized_gev_mixture_model_probability <- function(x,
 #                                               scales = scales,
 #                                               shapes = shapes,
 #                                               weights = weights,
+#                                               kind = c("geometric", "arithmetic")[1],
 #                                               zoom = FALSE,
 #                                               threshold = NULL,
 #                                               xlab = "Theoretical Probability",
@@ -143,6 +147,7 @@ plot_normalized_gev_mixture_model_probability <- function(x,
 #                                               scales = scales,
 #                                               shapes = shapes,
 #                                               weights = weights,
+#                                               kind = c("geometric", "arithmetic")[1],
 #                                               zoom = FALSE,
 #                                               threshold = threshold,
 #                                               xlab = "Theoretical Probability",
@@ -154,6 +159,7 @@ plot_normalized_gev_mixture_model_probability <- function(x,
 #                                               scales = scales,
 #                                               shapes = shapes,
 #                                               weights = weights,
+#                                               kind = c("geometric", "arithmetic")[1],
 #                                               zoom = TRUE,
 #                                               threshold = threshold,
 #                                               xlab = "Theoretical Probability",

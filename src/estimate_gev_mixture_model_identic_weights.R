@@ -43,7 +43,7 @@ estimate_gev_mixture_model_identic_weights <- function(gev_models, use_extremal_
 # equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 # 
-# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes, nsloc = NULL)
+# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
 # 
 # results <- estimate_gev_mixture_model_identic_weights(gev_models, use_extremal_index = TRUE)
 # 

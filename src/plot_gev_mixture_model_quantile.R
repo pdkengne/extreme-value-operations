@@ -3,7 +3,8 @@ source("./src/calculate_gev_mixture_model_cdf.R")
 source("./src/plot_normalized_gev_quantile.R")
 source("./src/plot_normalized_gev_mixture_model_quantile.R")
 
-plot_gev_mixture_model_quantile <- function(gev_mixture_model, 
+plot_gev_mixture_model_quantile <- function(gev_mixture_model,
+                                            kind = c("geometric", "arithmetic")[1],
                                             type = NULL,
                                             model_wise = FALSE,
                                             zoom = FALSE,
@@ -11,6 +12,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
                                             ylab = "Empirical Quantile", 
                                             main = "Quantile Plot"){
   # gev_mixture_model: an object associated with a result of the function "estimate_gev_mixture_model_parameters()"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # type: type of gev mixture model to consider. It is one of the following elements
   # model_wise: a boolean which indicates whether to use weights on models or on parameters
   #       ("identic_weights_pw", "pessimistic_weights_pw", "automatic_weights_pw",
@@ -72,6 +74,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
                                                scales = gev_mixture_model_parameters_object$scale_star, 
                                                shapes = gev_mixture_model_parameters_object$shape_star, 
                                                weights = gev_mixture_model_weights_object[, type],
+                                               kind = kind,
                                                zoom = zoom,
                                                threshold = threshold,
                                                xlab = xlab, 
@@ -107,6 +110,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 # weighted_gev_model_types = c("identic_weights", "pessimistic_weights", "automatic_weights")
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "identic_weights",
 #                                 model_wise = FALSE,
 #                                 zoom = FALSE,
@@ -115,6 +119,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                 main = "Quantile Plot")
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "identic_weights",
 #                                 model_wise = FALSE,
 #                                 zoom = TRUE,
@@ -124,6 +129,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 # #
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "pessimistic_weights",
 #                                 model_wise = FALSE,
 #                                 zoom = FALSE,
@@ -132,6 +138,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                 main = "Quantile Plot")
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "pessimistic_weights",
 #                                 model_wise = FALSE,
 #                                 zoom = TRUE,
@@ -141,6 +148,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 # #
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "automatic_weights",
 #                                 model_wise = FALSE,
 #                                 zoom = FALSE,
@@ -149,6 +157,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                 main = "Quantile Plot")
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "automatic_weights",
 #                                 model_wise = FALSE,
 #                                 zoom = TRUE,
@@ -159,6 +168,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 # #
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "identic_weights",
 #                                 model_wise = TRUE,
 #                                 zoom = FALSE,
@@ -167,6 +177,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                 main = "Quantile Plot")
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "identic_weights",
 #                                 model_wise = TRUE,
 #                                 zoom = TRUE,
@@ -177,6 +188,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 # #
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "pessimistic_weights",
 #                                 model_wise = TRUE,
 #                                 zoom = FALSE,
@@ -185,6 +197,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                 main = "Quantile Plot")
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "pessimistic_weights",
 #                                 model_wise = TRUE,
 #                                 zoom = FALSE,
@@ -195,6 +208,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 # #
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "automatic_weights",
 #                                 model_wise = TRUE,
 #                                 zoom = FALSE,
@@ -203,6 +217,7 @@ plot_gev_mixture_model_quantile <- function(gev_mixture_model,
 #                                 main = "Quantile Plot")
 # 
 # plot_gev_mixture_model_quantile(gev_mixture_model,
+#                                 kind = c("geometric", "arithmetic")[1],
 #                                 type = "automatic_weights",
 #                                 model_wise = TRUE,
 #                                 zoom = TRUE,
