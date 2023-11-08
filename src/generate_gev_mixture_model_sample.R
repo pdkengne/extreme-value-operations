@@ -7,14 +7,13 @@ generate_gev_mixture_model_sample <- function(n = 1,
                                               scales, 
                                               shapes, 
                                               weights, 
-                                              kind = c("geometric", "arithmetic")[1],
-                                              iterations = 50){
+                                              kind = c("geometric", "arithmetic")[1]){
   # n: number of observations to generate
   # weights: vector of weights
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
   # The vectors of parameters must have the same number of elements
   # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
-  # iterations: number of iterations to perform in the the dichotomy algorithm
+
   
   if (kind == "arithmetic"){
     output <- sapply(1:n, function(j){
@@ -78,7 +77,6 @@ generate_gev_mixture_model_sample <- function(n = 1,
 #                                              scales,
 #                                              shapes,
 #                                              weights,
-#                                              iterations = 50,
 #                                              kind = c("geometric", "arithmetic")[2])
 # 
 # #results_1
@@ -97,7 +95,6 @@ generate_gev_mixture_model_sample <- function(n = 1,
 #                                              scales,
 #                                              shapes,
 #                                              weights,
-#                                              iterations = 50,
 #                                              kind = c("geometric", "arithmetic")[1])
 # 
 # #results_2
@@ -120,7 +117,6 @@ generate_gev_mixture_model_sample <- function(n = 1,
 #                                              scales,
 #                                              shapes,
 #                                              weights,
-#                                              iterations = 50,
 #                                              kind = "merge")
 # 
 # 
@@ -133,6 +129,7 @@ generate_gev_mixture_model_sample <- function(n = 1,
 # 
 # shapes <- c(0.1, 0.1, 0.1)
 # scales <- c(1, 1, 1)
+# 
 # locations <- c(-2, +2, +6)
 # 
 # n <- 1500

@@ -14,7 +14,7 @@ get_one_hot_encoded_data <- function(data, newdata = NULL){
   
   # get data one hot encoder
   data_one_hot_encoder <- caret::dummyVars(formula = " ~ .", 
-                                           sep = NULL, 
+                                           sep = "_", 
                                            data = data)
   
   # get one hot encoded data
