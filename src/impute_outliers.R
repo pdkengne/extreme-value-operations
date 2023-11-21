@@ -13,7 +13,7 @@ impute_outliers <- function(x,
   output <- list()
   
   # create a boxplot object
-  boxplot_object <- boxplot(x, range = k)
+  boxplot_object <- boxplot.stats(x, coef = k)
   
   # extract the outlier values
   outlier_values <- boxplot_object$out
@@ -59,20 +59,20 @@ impute_outliers <- function(x,
 }
 
 
-# example 1
-
-x <- c(0.1, 0.2,6,5,5,6,7,8,8,9,9,9,10,10,25)
-
-results <- impute_outliers(x = x, 
-                           k = 3, 
-                           method = c("interpolate", "mode", "median", "mean")[1])
-
-results
-
-
-results <- impute_outliers(x = x, 
-                           k = 3, 
-                           method = "linear")
-
-results
+# # example 1
+# 
+# x <- c(0.1, 0.2,6,5,5,6,7,8,8,9,9,9,10,10,25)
+# 
+# results <- impute_outliers(x = x, 
+#                            k = 3, 
+#                            method = c("interpolate", "mode", "median", "mean")[1])
+# 
+# results
+# 
+# 
+# results <- impute_outliers(x = x, 
+#                            k = 3, 
+#                            method = "linear")
+# 
+# results
 
