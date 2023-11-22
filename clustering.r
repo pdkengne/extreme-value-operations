@@ -4,6 +4,7 @@ setwd("~/Documents/Doc-perso-2023/Job-Valeo/evops-project/extreme-value-operatio
 # https://robjhyndman.com/hyndsight/tsoutliers/
 # https://delladata.fr/comment-detecter-les-outliers-avec-r/
 # https://rpubs.com/Alema/1000582
+# https://essicolo.github.io/ecologie-mathematique-R/chapitre-ode.html
 
 # If Q1Q1 denotes the 25th percentile and Q3Q3 denotes the 75th percentile of the remainder values, 
 # then the interquartile range is defined as IQR=Q3−Q1IQR=Q3−Q1. Observations are labelled as outliers
@@ -18,10 +19,11 @@ setwd("~/Documents/Doc-perso-2023/Job-Valeo/evops-project/extreme-value-operatio
 
 
 # travailler avec les erreurs en valeurs absolues
+
 # identification des outliers à l'aide d'un boxplot
 # extraire la séries des outliers avec les covariables correspondantes, puis faire une eda sur ces données
 # identifier et supprimer les outliers, puis faire une eva sur ces données
-# identifier  et remplacer les outliers, puis faire uneeva sur ces données
+# identifier et remplacer les outliers, puis faire uneeva sur ces données
 
 
 

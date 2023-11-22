@@ -3,17 +3,17 @@
 source("./src/calculate_mode.R")
 
 impute_outliers <- function(x, 
-                            k = 1.5, 
+                            coefficient_iqr = 1.5, 
                             method = c("interpolate", "mode", "median", "mean")[1]){
   # x: vector of observations
   # method: indicates the method of outlier values imputation
-  # k: indicates the amont of interquartile range from the box
+  # coefficient_iqr: indicates the multiple of interquartile range to extend out from the box bounds
   
   # create an empty output object
   output <- list()
   
   # create a boxplot object
-  boxplot_object <- boxplot.stats(x, coef = k)
+  boxplot_object <- boxplot.stats(x, coef = coefficient_iqr)
   
   # extract the outlier values
   outlier_values <- boxplot_object$out
@@ -52,6 +52,7 @@ impute_outliers <- function(x,
   output[["outlier_positions"]] <- outlier_positions
   output[["outlier_substitutes"]] <- outlier_substitutes
   output[["method"]] <- method
+  output[["coefficient_iqr"]] <- coefficient_iqr
   output[["imputed_data"]] <- imputed_data
   output[["raw_data"]] <- x
   
@@ -64,14 +65,14 @@ impute_outliers <- function(x,
 # x <- c(0.1, 0.2,6,5,5,6,7,8,8,9,9,9,10,10,25)
 # 
 # results <- impute_outliers(x = x, 
-#                            k = 3, 
+#                            coefficient_iqr = 3, 
 #                            method = c("interpolate", "mode", "median", "mean")[1])
 # 
 # results
 # 
 # 
 # results <- impute_outliers(x = x, 
-#                            k = 3, 
+#                            coefficient_iqr = 3, 
 #                            method = "linear")
 # 
 # results
