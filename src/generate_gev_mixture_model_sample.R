@@ -139,7 +139,6 @@ generate_gev_mixture_model_sample <- function(n = 1,
 #                                                scales,
 #                                                shapes,
 #                                                weights,
-#                                                iterations = 50,
 #                                                kind = c("geometric", "arithmetic")[2])
 # 
 # #results_1
@@ -158,7 +157,6 @@ generate_gev_mixture_model_sample <- function(n = 1,
 #                                                scales,
 #                                                shapes,
 #                                                weights,
-#                                                iterations = 50,
 #                                                kind = c("geometric", "arithmetic")[1])
 # 
 # #results_2
