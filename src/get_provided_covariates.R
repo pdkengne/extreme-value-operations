@@ -99,148 +99,148 @@ get_provided_covariates <- function(single_ns_gev_model, covariates = NULL){
 }
 
 
-# example 1
-
-source("./src/generate_gev_sample.R")
-source("./src/estimate_single_ns_gev_model.R")
-
-n <- 1000
-
-x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = +0.2)
-
-single_ns_gev_model <- estimate_single_ns_gev_model(x,
-                                                    block_size = 1,
-                                                    data = NULL,
-                                                    location.fun = ~1,
-                                                    scale.fun = ~1,
-                                                    shape.fun = ~1,
-                                                    use.phi = TRUE,
-                                                    type = c("GEV", "Gumbel")[1],
-                                                    method = c("MLE", "GMLE")[1])
-
-names(single_ns_gev_model)
-
-results <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = NULL)
-
-results
-
-
-# example 2
-
-source("./src/generate_gev_sample.R")
-source("./src/estimate_single_ns_gev_model.R")
-
-n <- 1000
-
-x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
-
-trend <- (-49:50)/n
-rnd <- runif(n = n, min = -0.5, max = 0.5)
-data <- data.frame(trend = trend, random = rnd)
-
-single_ns_gev_model <- estimate_single_ns_gev_model(x,
-                                                    block_size = 1,
-                                                    data = data,
-                                                    location.fun = ~ trend + random,
-                                                    scale.fun = ~ trend,
-                                                    shape.fun = ~ random,
-                                                    use.phi = TRUE,
-                                                    type = c("GEV", "Gumbel")[1],
-                                                    method = c("MLE", "GMLE")[1])
-names(single_ns_gev_model)
-
-results <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = NULL)
-
-results
-
-covariates <- list(mu1 = 0.025,
-                   mu2 = 0.25,
-                   phi1 = 0.025,
-                   xi1 = 0.25)
-covariates
-
-results <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = covariates)
-
-names(results)
-
-head(results$used_gev_model_covariates)
-
-results$provided_gev_model_covariates
-
-
-# example 3
-
-source("./src/generate_gev_sample.R")
-source("./src/estimate_single_ns_gev_model.R")
-
-n <- 1000
-
-x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
-
-trend <- (-49:50)/n
-rnd <- runif(n = n, min = -0.5, max = 0.5)
-data <- data.frame(trend = trend, random = rnd)
-
-single_ns_gev_model <- estimate_single_ns_gev_model(x,
-                                                    block_size = 1,
-                                                    data = data,
-                                                    location.fun = ~ trend + random,
-                                                    scale.fun = ~ trend,
-                                                    shape.fun = ~ 1,
-                                                    use.phi = TRUE,
-                                                    type = c("GEV", "Gumbel")[1],
-                                                    method = c("MLE", "GMLE")[1])
-names(single_ns_gev_model)
-
-covariates <- list(mu0 = 1,
-                   mu1 = 0.025,
-                   mu2 = 0.25,
-                   phi0 = 1,
-                   phi1 = 0.025)
-covariates
-
-results <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = covariates)
-
-names(results)
-
-head(results$used_gev_model_covariates)
-
-results$provided_gev_model_covariates
-
-
-# example 4
-
-source("./src/generate_gev_sample.R")
-source("./src/estimate_single_ns_gev_model.R")
-
-n <- 1000
-
-x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
-
-trend <- (-49:50)/n
-rnd <- runif(n = n, min = -0.5, max = 0.5)
-data <- data.frame(trend = trend, random = rnd)
-
-single_ns_gev_model <- estimate_single_ns_gev_model(x,
-                                                    block_size = 1,
-                                                    data = data,
-                                                    location.fun = ~ .,
-                                                    scale.fun = ~ 1,
-                                                    shape.fun = ~ 1,
-                                                    use.phi = FALSE,
-                                                    type = c("GEV", "Gumbel")[1],
-                                                    method = c("MLE", "GMLE")[1])
-names(single_ns_gev_model)
-
-covariates <- list(mu0 = 1,
-                   mu1 = 0.025,
-                   mu2 = 0.25)
-covariates
-
-results <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = covariates)
-
-names(results)
-
-head(results$used_gev_model_covariates)
-
-results$provided_gev_model_covariates
+# # example 1
+# 
+# source("./src/generate_gev_sample.R")
+# source("./src/estimate_single_ns_gev_model.R")
+# 
+# n <- 1000
+# 
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = +0.2)
+# 
+# single_ns_gev_model <- estimate_single_ns_gev_model(x,
+#                                                     block_size = 1,
+#                                                     data = NULL,
+#                                                     location.fun = ~1,
+#                                                     scale.fun = ~1,
+#                                                     shape.fun = ~1,
+#                                                     use.phi = TRUE,
+#                                                     type = c("GEV", "Gumbel")[1],
+#                                                     method = c("MLE", "GMLE")[1])
+# 
+# names(single_ns_gev_model)
+# 
+# results <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = NULL)
+# 
+# results
+# 
+# 
+# # example 2
+# 
+# source("./src/generate_gev_sample.R")
+# source("./src/estimate_single_ns_gev_model.R")
+# 
+# n <- 1000
+# 
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# trend <- (-49:50)/n
+# rnd <- runif(n = n, min = -0.5, max = 0.5)
+# data <- data.frame(trend = trend, random = rnd)
+# 
+# single_ns_gev_model <- estimate_single_ns_gev_model(x,
+#                                                     block_size = 1,
+#                                                     data = data,
+#                                                     location.fun = ~ trend + random,
+#                                                     scale.fun = ~ trend,
+#                                                     shape.fun = ~ random,
+#                                                     use.phi = TRUE,
+#                                                     type = c("GEV", "Gumbel")[1],
+#                                                     method = c("MLE", "GMLE")[1])
+# names(single_ns_gev_model)
+# 
+# results <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = NULL)
+# 
+# results
+# 
+# covariates <- list(mu1 = 0.025,
+#                    mu2 = 0.25,
+#                    phi1 = 0.025,
+#                    xi1 = 0.25)
+# covariates
+# 
+# results <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = covariates)
+# 
+# names(results)
+# 
+# head(results$used_gev_model_covariates)
+# 
+# results$provided_gev_model_covariates
+# 
+# 
+# # example 3
+# 
+# source("./src/generate_gev_sample.R")
+# source("./src/estimate_single_ns_gev_model.R")
+# 
+# n <- 1000
+# 
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# trend <- (-49:50)/n
+# rnd <- runif(n = n, min = -0.5, max = 0.5)
+# data <- data.frame(trend = trend, random = rnd)
+# 
+# single_ns_gev_model <- estimate_single_ns_gev_model(x,
+#                                                     block_size = 1,
+#                                                     data = data,
+#                                                     location.fun = ~ trend + random,
+#                                                     scale.fun = ~ trend,
+#                                                     shape.fun = ~ 1,
+#                                                     use.phi = TRUE,
+#                                                     type = c("GEV", "Gumbel")[1],
+#                                                     method = c("MLE", "GMLE")[1])
+# names(single_ns_gev_model)
+# 
+# covariates <- list(mu0 = 1,
+#                    mu1 = 0.025,
+#                    mu2 = 0.25,
+#                    phi0 = 1,
+#                    phi1 = 0.025)
+# covariates
+# 
+# results <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = covariates)
+# 
+# names(results)
+# 
+# head(results$used_gev_model_covariates)
+# 
+# results$provided_gev_model_covariates
+# 
+# 
+# # example 4
+# 
+# source("./src/generate_gev_sample.R")
+# source("./src/estimate_single_ns_gev_model.R")
+# 
+# n <- 1000
+# 
+# x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# trend <- (-49:50)/n
+# rnd <- runif(n = n, min = -0.5, max = 0.5)
+# data <- data.frame(trend = trend, random = rnd)
+# 
+# single_ns_gev_model <- estimate_single_ns_gev_model(x,
+#                                                     block_size = 1,
+#                                                     data = data,
+#                                                     location.fun = ~ .,
+#                                                     scale.fun = ~ 1,
+#                                                     shape.fun = ~ 1,
+#                                                     use.phi = FALSE,
+#                                                     type = c("GEV", "Gumbel")[1],
+#                                                     method = c("MLE", "GMLE")[1])
+# names(single_ns_gev_model)
+# 
+# covariates <- list(mu0 = 1,
+#                    mu1 = 0.025,
+#                    mu2 = 0.25)
+# covariates
+# 
+# results <- get_provided_covariates(single_ns_gev_model = single_ns_gev_model, covariates = covariates)
+# 
+# names(results)
+# 
+# head(results$used_gev_model_covariates)
+# 
+# results$provided_gev_model_covariates

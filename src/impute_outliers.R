@@ -64,15 +64,15 @@ impute_outliers <- function(x,
 # 
 # x <- c(0.1, 0.2,6,5,5,6,7,8,8,9,9,9,10,10,25)
 # 
-# results <- impute_outliers(x = x, 
-#                            coefficient_iqr = 3, 
+# results <- impute_outliers(x = x,
+#                            coefficient_iqr = 3,
 #                            method = c("interpolate", "mode", "median", "mean")[1])
 # 
 # results
 # 
 # 
-# results <- impute_outliers(x = x, 
-#                            coefficient_iqr = 3, 
+# results <- impute_outliers(x = x,
+#                            coefficient_iqr = 3,
 #                            method = "linear")
 # 
 # results
