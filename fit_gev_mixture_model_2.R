@@ -35,7 +35,6 @@ loglik_em <- function(theta, x, weights){
 fit_gev_mixture_model_2 <- function(x, 
                                     nclusters = 1, 
                                     min_cluster_size = 10,
-                                    min_posterior = 10^(-4),
                                     max_iteration = 100,
                                     tolerance = 10^(-3)){
   
@@ -57,7 +56,7 @@ fit_gev_mixture_model_2 <- function(x,
     y <- x[which(z == k)]
     location <- rnorm(n = 1, mean = mean(y), sd = 1)
     log_scale <- log(sd(y))
-    shape <- -0.001
+    shape <- 0
     parameters <- c(location, log_scale, shape)
     names(parameters) <- c("location", "log_scale", "shape")
     parameters
@@ -94,8 +93,8 @@ fit_gev_mixture_model_2 <- function(x,
     
     y <- x[which(z == k)]
     model <- maxLik(logLik = loglik_em, 
-                    start = c(mu = mean(y), phi = log(sd(y)), gamma = -0.001), 
-                    method = c("NR", "BFGS")[1],
+                    start = c(mu = locations[k], phi = log_scales[k], gamma = shapes[k]), 
+                    method = c("NR", "BFGS", "SANN")[3],
                     x = x,
                     weights = weights)
     -as.numeric(logLik(model))
@@ -106,7 +105,7 @@ fit_gev_mixture_model_2 <- function(x,
   current_tolerance <- tolerance + 1
   current_iteration <- 1
   
-  print(paste0("Iteration: ", current_iteration, ", Negative loglikelihood: ", current_negative_loglik))
+  print(paste0("Iteration: ", current_iteration, ", Tolerance: ", current_tolerance))
   
   while (current_iteration < max_iteration & current_tolerance > tolerance){
     current_iteration <- current_iteration + 1
@@ -117,14 +116,11 @@ fit_gev_mixture_model_2 <- function(x,
       omega <- apply(posterior, 1, mean)
     }
     
-    cluster_sizes <- sapply(clusters_labels, function(k){
-      if (class(posterior)[1] == "numeric"){
-        weights <- as.numeric(posterior)
-      } else{
-        weights <- posterior[k, ]
-      }
-      length(weights[weights > min_posterior])
-    })
+    if (class(posterior)[1] == "numeric"){
+      cluster_sizes <- sum(as.numeric(posterior))
+    } else{
+      cluster_sizes <- apply(posterior, 1, sum)
+    }
     
     if (p > 1){
       if (min(cluster_sizes) < min_cluster_size){
@@ -152,8 +148,8 @@ fit_gev_mixture_model_2 <- function(x,
       
       y <- x[which(z == k)]
       model <- maxLik(logLik = loglik_em, 
-                      start = c(mu = mean(y), phi = log(sd(y)), gamma = -0.001), 
-                      method = c("NR", "BFGS")[1],
+                      start = c(mu = locations[k], phi = log_scales[k], gamma = shapes[k]), 
+                      method = c("NR", "BFGS", "SANN")[3],
                       x = x,
                       weights = weights)
       coefficients(model)
@@ -190,8 +186,8 @@ fit_gev_mixture_model_2 <- function(x,
       
       y <- x[which(z == k)]
       model <- maxLik(logLik = loglik_em, 
-                      start = c(mu = mean(y), phi = log(sd(y)), gamma = -0.001), 
-                      method = c("NR", "BFGS")[1],
+                      start = c(mu = locations[k], phi = log_scales[k], gamma = shapes[k]), 
+                      method = c("NR", "BFGS", "SANN")[3],
                       x = x,
                       weights = weights)
       -as.numeric(logLik(model))
@@ -200,7 +196,7 @@ fit_gev_mixture_model_2 <- function(x,
     current_tolerance <- abs(current_negative_loglik - sum(negative_loglik))
     current_negative_loglik <- sum(negative_loglik)
     
-    print(paste0("Iteration: ", current_iteration, ", Negative loglikelihood: ", current_negative_loglik))
+    print(paste0("Iteration: ", current_iteration, ", Tolerance: ", current_tolerance))
   }
   
   # print("The total number of iterations is equal to ", current_iteration)
@@ -215,8 +211,8 @@ fit_gev_mixture_model_2 <- function(x,
     
     y <- x[which(z == k)]
     model <- maxLik(logLik = loglik_em, 
-                    start = c(mu = mean(y), phi = log(sd(y)), gamma = -0.001), 
-                    method = c("NR", "BFGS")[1],
+                    start = c(mu = locations[k], phi = log_scales[k], gamma = shapes[k]), 
+                    method = c("NR", "BFGS", "SANN")[3],
                     x = x,
                     weights = weights)
     model
@@ -278,6 +274,8 @@ results
 
 #-------------------------------------------------------------------------------
 
+# plot 1 component
+
 support <- sort(x)
 
 model_1 <- results$cluster_models[[1]]
@@ -303,6 +301,8 @@ legend("topright",
 
 
 #-------------------------------------------------------------------------------
+
+# plot 2 components
 
 support <- sort(x)
 
@@ -345,7 +345,6 @@ hist(x,
      main = "Density plots")
 lines(support, dens_1, col = 3, lwd = 2, lty = "dotted")
 lines(support, dens_2, col = 4, lwd = 2, lty = "dotted")
-lines(support, dens_3, col = 5, lwd = 2, lty = "dotted")
 
 lines(density(x), col = 1, lwd = 2)
 
@@ -353,13 +352,13 @@ lines(support, pdf_1, col = 6, lwd = 2)
 lines(support, pdf_2, col = 7, lwd = 2)
 
 legend("topright", 
-       legend = c("empirical", "gev_1", "gev_2", "gev_3", "mix_gev_sum", "mix_gev_product"),
+       legend = c("empirical", "gev_1", "gev_2", "mix_gev_sum", "mix_gev_product"),
        lty = c(1, 2, 2, 2, 1, 1), col = c(1, 3, 4, 5, 7, 6))
 
 
 #-------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
+# plot 3 components
 
 support <- sort(x)
 
@@ -770,7 +769,7 @@ summary(bmixnorm.obj)
 
 
 #-------------------------------------------------------------------------------
-
+print(paste0("Iteration: ", current_iteration, ", Negative loglikelihood: ", current_negative_loglik))
 
 
 

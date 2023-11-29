@@ -78,12 +78,10 @@ fit_gev_mixture_model <- function(x,
   current_tolerance <- tolerance + 1
   current_iteration <- 1
   
-  print(paste0("Iteration: ", current_iteration, ", Negative loglikelihood: ", current_negative_loglik))
+  print(paste0("Iteration: ", current_iteration, ", Tolerance: ", current_tolerance))
   
   while (current_iteration < max_iteration & current_tolerance > tolerance){
     current_iteration <- current_iteration + 1
-    
-    print(paste0("This is my output of iteration ", current_iteration, "."))
     
     if (class(posterior)[1] == "numeric"){
       z <- as.numeric(posterior)
@@ -150,7 +148,7 @@ fit_gev_mixture_model <- function(x,
     current_tolerance <- abs(current_negative_loglik - sum(negative_loglik))
     current_negative_loglik <- sum(negative_loglik)
     
-    print(paste0("Iteration: ", current_iteration, ", Negative loglikelihood: ", current_negative_loglik))
+    print(paste0("Iteration: ", current_iteration, ", Tolerance: ", current_tolerance))
   }
   
   
@@ -189,7 +187,7 @@ shapes <- c(0.1, 0.1, 0.1)
 scales <- c(1, 1, 1)
 locations <- c(-2, +2, +6)
 
-n <- 10000
+n <- 2000
 
 x <- generate_gev_mixture_model_sample(n = n,
                                        locations,
@@ -214,6 +212,8 @@ results <- fit_gev_mixture_model(x,
 results
 
 #-------------------------------------------------------------------------------
+
+# plot 1 component
 
 support <- sort(x)
 
@@ -241,6 +241,7 @@ legend("topright",
 
 #-------------------------------------------------------------------------------
 
+# plot 2 components
 
 support <- sort(x)
 
@@ -294,7 +295,7 @@ legend("topright",
 
 #-------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
+# plot 3 components
 
 
 support <- sort(x)
