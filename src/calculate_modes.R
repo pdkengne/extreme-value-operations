@@ -11,7 +11,7 @@ calculate_modes <- function(x){
   
   # get the number of equally spaced points at which the density is to be estimated
   p <- floor(log(n)/log(2))
-  m <- 2^p
+  m <- max(c(512, 2^(p-2)))
   
   # estimate the empirical density
   density_object <- density(x, n = m)
@@ -48,17 +48,13 @@ calculate_modes <- function(x){
 }
 
 
-# example 1
-
-x <- rnorm(n = 100)
-
-results <- calculate_modes(x = x)
-
-results
-
-
-
-hist(x)
+# # example 1
+# 
+# x <- rnorm(n = 100)
+# 
+# results <- calculate_modes(x = x)
+# 
+# results
 
 
 
