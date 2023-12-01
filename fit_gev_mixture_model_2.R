@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 setwd("~/Documents/Doc-perso-2023/Job-Valeo/evops-project/extreme-value-operations")
-#-------------------------------------------------------------------------------
+#------normal-------------------------------------------------------------------------
 
 library(tidyverse)
 
@@ -15,6 +15,83 @@ library(bmixture)
 library(ggplot2)
 
 library(Hmisc)
+
+library(extraDistr)
+
+library(zoo)
+
+#-------------------------------------------------------------------------------
+
+n <- 10000
+
+x <- bmixture::rmixnorm(n = n, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
+
+#------
+
+density_object <- density(x, n = 1024)
+
+pdf <- density_object$y
+
+support <- density_object$x
+
+plot(support, pdf, type = "l", main = "PDF")
+
+cdf_object <- ecdf(x) 
+
+cdf <- cdf_object(support)
+
+plot(support, cdf, type = "l", main = "CDF")
+
+#------
+
+max_series <- zoo::rollapply(pdf, width = 2, FUN = max)
+
+max_series_diff <- diff(max_series)
+
+max_series_diff_zero_positions <- which(max_series_diff == 0)
+
+pdf_modes <- pdf[max_series_diff_zero_positions]
+
+support_modes <- support[max_series_diff_zero_positions]
+
+#------
+
+min_series <- zoo::rollapply(pdf, width = 2, FUN = min)
+
+min_series_diff <- diff(min_series)
+
+min_series_diff_zero_positions <- which(min_series_diff == 0)
+
+pdf_negative_modes <- pdf[min_series_diff_zero_positions]
+
+support_negative_modes <- support[min_series_diff_zero_positions]
+
+#------
+
+plot(support, pdf, type = "l", main = "density plot", lwd = 2)
+
+abline(h = pdf_modes, lty = "dotted", col = 2, lwd = 2)
+abline(h = pdf_negative_modes, lty = "dotted", col = 4, lwd = 2)
+
+abline(v = support_modes, lty = "dotted", col = 2, lwd = 2)
+abline(v = support_negative_modes, lty = "dotted", col = 4, lwd = 2)
+
+abline(h = 0, lty = "dotted", lwd = 2)
+
+#------
+
+plot(support, cdf, type = "l", main = "CDF", lwd = 2)
+
+abline(v = support_modes, lty = "dotted", col = 2, lwd = 2)
+abline(v = support_negative_modes, lty = "dotted", col = 4, lwd = 2)
+
+abline(h = c(0, 1), lty = "dotted", lwd = 2)
+
+
+#-------------------------------------------------------------------------------
+
+
+
 
 #-------------------------------------------------------------------------------
 
