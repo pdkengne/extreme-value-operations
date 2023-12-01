@@ -55,9 +55,14 @@ calculate_modes <- function(x){
 # results <- calculate_modes(x = x)
 # 
 # results
-
-
-
-
+# 
+# 
+# # example 2
+# 
+# x <- bmixture::rmixnorm(n = 10000, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
+# 
+# results <- calculate_modes(x = x)
+# 
+# results
 
 
