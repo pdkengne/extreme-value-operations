@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 setwd("~/Documents/Doc-perso-2023/Job-Valeo/evops-project/extreme-value-operations")
-#------normal-------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 library(tidyverse)
 
@@ -68,24 +68,13 @@ support_negative_modes <- support[min_series_diff_zero_positions]
 
 #------
 
-plot(support, pdf, type = "l", main = "density plot", lwd = 2)
+plot(support, pdf, type = "l", main = "PDF")
 
-abline(h = pdf_modes, lty = "dotted", col = 2, lwd = 2)
-abline(h = pdf_negative_modes, lty = "dotted", col = 4, lwd = 2)
+abline(h = pdf_modes, lty = "dotted")
+abline(h = pdf_negative_modes, lty = "dotted")
 
-abline(v = support_modes, lty = "dotted", col = 2, lwd = 2)
-abline(v = support_negative_modes, lty = "dotted", col = 4, lwd = 2)
-
-abline(h = 0, lty = "dotted", lwd = 2)
-
-#------
-
-plot(support, cdf, type = "l", main = "CDF", lwd = 2)
-
-abline(v = support_modes, lty = "dotted", col = 2, lwd = 2)
-abline(v = support_negative_modes, lty = "dotted", col = 4, lwd = 2)
-
-abline(h = c(0, 1), lty = "dotted", lwd = 2)
+abline(v = support_modes, lty = "dotted")
+abline(v = support_negative_modes, lty = "dotted")
 
 
 #-------------------------------------------------------------------------------
@@ -109,6 +98,8 @@ loglik_em <- function(theta, x, weights){
 
 #-------------------------------------------------------------------------------
 
+source("./src/calculate_modes.R")
+
 fit_gev_mixture_model_2 <- function(x, 
                                     nclusters = 1, 
                                     min_cluster_size = 10,
@@ -120,7 +111,12 @@ fit_gev_mixture_model_2 <- function(x,
   p <- nclusters
   
   if (p > 1){
-    z <- as.numeric(ggplot2::cut_number(x = x, n = p))
+    modes_object <- calculate_modes(x = x)
+    density_minima <- modes_object$density_minima 
+    density_minima_selected <- tail(sort(density_minima), n = p - 1)
+    breaks = modes_object$density_minima_argument
+    breaks <- c(min(x), breaks[density_minima %in% density_minima_selected], max(x))
+    z <- cut(x, breaks = breaks, labels = FALSE, include.lowest = TRUE)
   } else{
     z <- rep(x = 1, times = n)
   }
@@ -182,8 +178,6 @@ fit_gev_mixture_model_2 <- function(x,
   current_tolerance <- tolerance + 1
   current_iteration <- 1
   
-  print(paste0("Iteration: ", current_iteration, ", Tolerance: ", current_tolerance))
-  
   while (current_iteration < max_iteration & current_tolerance > tolerance){
     current_iteration <- current_iteration + 1
     
@@ -202,7 +196,14 @@ fit_gev_mixture_model_2 <- function(x,
     if (p > 1){
       if (min(cluster_sizes) < min_cluster_size){
         p <- p - 1
-        z <- as.numeric(ggplot2::cut_number(x = x, n = p))
+        
+        modes_object <- calculate_modes(x = x)
+        density_minima <- modes_object$density_minima 
+        density_minima_selected <- tail(sort(density_minima), n = p - 1)
+        breaks = modes_object$density_minima_argument
+        breaks <- c(min(x), breaks[density_minima %in% density_minima_selected], max(x))
+        z <- cut(x, breaks = breaks, labels = FALSE, include.lowest = TRUE)
+        
         clusters_freq <- table(z)
         clusters_labels <- as.numeric(names(clusters_freq))
         omega <- bmixture::rdirichlet(n = 1, alpha = rep(x = 1, times = p))[1, ]
@@ -339,7 +340,7 @@ x <- generate_gev_mixture_model_sample(n = n,
 
 # x <- bmixture::rmixnorm(n = n, weight = c(0.5, 0.5), mean = c(-5, 0), sd = c(1, 1))
 
-p <- 3
+p <- 2
 
 results <- fit_gev_mixture_model_2(x, 
                                    nclusters = p, 

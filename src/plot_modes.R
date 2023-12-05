@@ -4,7 +4,7 @@ plot_modes <- function(modes_object,
                        xlab = "support",
                        ylab = "pdf",
                        main = "density plot"){
-  # modes_object:an object associated with a result of the function "calculate_modes()"
+  # modes_object: an object associated with a result of the function "calculate_modes()"
   # xlab: label of the x-axis
   # ylab: label of the y-axis
   # main: title of the plot
@@ -48,6 +48,6 @@ plot_modes <- function(modes_object,
 # 
 # modes_object <- calculate_modes(x = x)
 # 
-# plot_modes(modes_object)
+# plot_modes(modes_object)     
 
 

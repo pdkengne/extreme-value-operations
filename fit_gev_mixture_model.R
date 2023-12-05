@@ -22,30 +22,78 @@ library(extraDistr)
 
 #-------------------------------------------------------------------------------
 
+source("./src/calculate_modes.R")
+
 fit_gev_mixture_model <- function(x, 
-                                  nclusters = 1, 
-                                  min_cluster_size = 10, 
-                                  max_iteration = 100,
-                                  tolerance = 10^(-3)){
+                                  nb_gev_models = 2, 
+                                  min_cluster_size = 20, 
+                                  max_iteration = 50,
+                                  tolerance = 10^(-3),
+                                  left_cluster_extension_size = 20,
+                                  right_cluster_extension_size = 20){
+  # x: vector of observations
+  # nb_gev_models: a positive integer which indicates the number of gev models to start with
+  # min_cluster_size: indicates the minimum number of elements in a cluster
+  # max_iteration: indicates the maximum number of iterations to perform in the CEM algorithm
+  # tolerance: indicates the threshold for the difference between two consecutive negative log likelihoods
+  # right_cluster_extension_size & left_cluster_extension_size: indicates the number of nearest observations
+  #                                                               from the surrounding clusters to includes
   
-  x <- x
+  # create an empty output object
+  output <- list()
+  
   n <- length(x)
-  p <- nclusters
+  p <- nb_gev_models
   
   if (p > 1){
-    z <- as.numeric(ggplot2::cut_number(x = x, n = p))
+    modes_object <- calculate_modes(x = x)
+    density_minima <- modes_object$density_minima 
+    density_minima_selected <- tail(sort(density_minima), n = p - 1)
+    breaks = modes_object$density_minima_argument
+    breaks <- c(min(x), breaks[density_minima %in% density_minima_selected], max(x))
+    z <- cut(x, breaks = breaks, labels = FALSE, include.lowest = TRUE)
   } else{
     z <- rep(x = 1, times = n)
   }
   
   clusters_freq <- table(z)
   clusters_labels <- as.numeric(names(clusters_freq))
-  omega <- bmixture::rdirichlet(n = 1, alpha = rep(x = 1, times = p))[1, ]
+  omega <- as.numeric(prop.table(clusters_freq))
+  
+  while (min(as.numeric(clusters_freq)) < min_cluster_size & p > 1){
+    p <- p - 1
+    
+    modes_object <- calculate_modes(x = x)
+    density_minima <- modes_object$density_minima 
+    density_minima_selected <- tail(sort(density_minima), n = p - 1)
+    breaks = modes_object$density_minima_argument
+    breaks <- c(min(x), breaks[density_minima %in% density_minima_selected], max(x))
+    z <- cut(x, breaks = breaks, labels = FALSE, include.lowest = TRUE)
+    
+    clusters_freq <- table(z)
+    clusters_labels <- as.numeric(names(clusters_freq))
+    omega <- as.numeric(prop.table(clusters_freq))
+  }
   
   theta <- sapply(clusters_labels, function(k){
-    y <- x[which(z == k)]
+    if (k < p){
+      if (k > 1){
+        y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size),
+               x[z == k], 
+               head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
+      } else{
+        y <- c(x[z == k], head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
+      }
+    } else{
+      y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size), x[z == k])
+    }
+    
     model <- extRemes::fevd(x = y, type = "GEV")
-    model$results$par
+    res <- summary(model, silent = TRUE)
+    
+    parameters <- c(model$results$par, res$nllh)
+    names(parameters) <- c("location", "scale", "shape", "nllh")
+    parameters
   })
   
   locations <- theta["location", ]
@@ -70,19 +118,9 @@ fit_gev_mixture_model <- function(x,
     likelihood/sum(likelihood)
   })
   
-  negative_loglik <- sapply(clusters_labels, function(k){
-    y <- x[which(z == k)]
-    model <- extRemes::fevd(x = y, type = "GEV")
-    res <- summary(model, silent = TRUE)
-    res$nllh
-  })
-  
-  current_negative_loglik <- sum(negative_loglik)
-  
+  current_negative_loglik <- sum(theta["nllh", ])
   current_tolerance <- tolerance + 1
   current_iteration <- 1
-  
-  print(paste0("Iteration: ", current_iteration, ", Tolerance: ", current_tolerance))
   
   while (current_iteration < max_iteration & current_tolerance > tolerance){
     current_iteration <- current_iteration + 1
@@ -95,29 +133,43 @@ fit_gev_mixture_model <- function(x,
     
     clusters_freq <- table(z)
     clusters_labels <- as.numeric(names(clusters_freq))
+    omega <- as.numeric(prop.table(clusters_freq))
     p <- length(clusters_labels)
     
-    if (p > 1){
-      if (min(as.numeric(clusters_freq)) < min_cluster_size){
-        p <- p - 1
-        z <- as.numeric(ggplot2::cut_number(x = x, n = p))
-        clusters_freq <- table(z)
-        clusters_labels <- as.numeric(names(clusters_freq))
-        omega <- bmixture::rdirichlet(n = 1, alpha = rep(x = 1, times = p))[1, ]
-      } else{
-        omega <- as.numeric(prop.table(clusters_freq))
-      }
-    } else{
-      z <- rep(x = 1, times = n)
+    while (min(as.numeric(clusters_freq)) < min_cluster_size & p > 1){
+      p <- p - 1
+      
+      modes_object <- calculate_modes(x = x)
+      density_minima <- modes_object$density_minima 
+      density_minima_selected <- tail(sort(density_minima), n = p - 1)
+      breaks = modes_object$density_minima_argument
+      breaks <- c(min(x), breaks[density_minima %in% density_minima_selected], max(x))
+      z <- cut(x, breaks = breaks, labels = FALSE, include.lowest = TRUE)
+      
       clusters_freq <- table(z)
       clusters_labels <- as.numeric(names(clusters_freq))
-      omega <- bmixture::rdirichlet(n = 1, alpha = rep(x = 1, times = p))[1, ]
+      omega <- as.numeric(prop.table(clusters_freq))
     }
     
     theta <- sapply(clusters_labels, function(k){
-      y <- x[which(z == k)]
+      if (k < p){
+        if (k > 1){
+          y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size),
+                 x[z == k], 
+                 head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
+        } else{
+          y <- c(x[z == k], head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
+        }
+      } else{
+        y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size), x[z == k])
+      }
+      
       model <- extRemes::fevd(x = y, type = "GEV")
-      model$results$par
+      res <- summary(model, silent = TRUE)
+      
+      parameters <- c(model$results$par, res$nllh)
+      names(parameters) <- c("location", "scale", "shape", "nllh")
+      parameters
     })
     
     locations <- theta["location", ]
@@ -142,33 +194,64 @@ fit_gev_mixture_model <- function(x,
       likelihood/sum(likelihood)
     })
     
-    negative_loglik <- sapply(clusters_labels, function(k){
-      y <- x[which(z == k)]
-      model <- extRemes::fevd(x = y, type = "GEV")
-      res <- summary(model, silent = TRUE)
-      res$nllh
-    })
-    
-    current_tolerance <- abs(current_negative_loglik - sum(negative_loglik))
-    current_negative_loglik <- sum(negative_loglik)
-    
+    current_tolerance <- abs(current_negative_loglik - sum(theta["nllh", ]))
+    current_negative_loglik <- sum(theta["nllh", ])
+
     print(paste0("Iteration: ", current_iteration, ", Tolerance: ", current_tolerance))
   }
   
   
   final_models <- lapply(clusters_labels, function(k){
-    y <- x[which(z == k)]
+    
+    if (k < p){
+      if (k > 1){
+        y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size),
+               x[z == k], 
+               head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
+      } else{
+        y <- c(x[z == k], head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
+      }
+    } else{
+      y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size), x[z == k])
+    }
+    
     model <- extRemes::fevd(x = y, type = "GEV")
     model
   })
   
+  parameters <- sapply(final_models, function(model){
+    res <- summary(model, silent = TRUE)
+    model$results$par
+  })
   
-  list(current_iteration = current_iteration,
-       current_tolerance = current_tolerance,
-       cluster_weights = omega,
-       clusters = z,
-       cluster_models = final_models)
+  nllh <- sapply(final_models, function(model){
+    res <- summary(model, silent = TRUE)
+    res$nllh
+  })
 
+  names(nllh) <- clusters_labels
+  
+  aic <- 2*sum(nllh) + 2*3*p
+  bic <- 2*sum(nllh) + log(n)*3*p
+  information_criterions <- c(aic, bic)
+  names(information_criterions) <- c("AIC", "BIC")
+  
+  cluster_sizes <- as.numeric(table(z))
+  names(cluster_sizes) <- clusters_labels
+  
+  # update the output object
+  output[["last_iteration"]] <- current_iteration
+  output[["last_tolerance"]] <- current_tolerance
+  output[["nclusters"]] <- p
+  output[["cluster_sizes"]] <- cluster_sizes
+  output[["cluster_weights"]] <- omega
+  output[["cluster_negative_loglikelihoods"]] <- nllh
+  output[["information_criterions"]] <- information_criterions
+  output[["cluster_gev_model_parameters"]] <- parameters
+  output[["clusters"]] <- z
+  output[["cluster_models"]] <- final_models
+  
+  output
 }
 
 
@@ -178,7 +261,7 @@ fit_gev_mixture_model <- function(x,
 source("./src/calculate_gev_mixture_model_pdf.R")
 source("./src/generate_gev_mixture_model_sample.R")
 
-weights <- c(0.5, 0.5)
+weights <- c(0.3, 0.8)
 
 shapes <- c(0.1, 0.1)
 scales <- c(1, 1)
@@ -191,7 +274,7 @@ shapes <- c(0.1, 0.1, 0.1)
 scales <- c(1, 1, 1)
 locations <- c(-2, +2, +6)
 
-n <- 10000
+n <- 5000
 
 x <- generate_gev_mixture_model_sample(n = n,
                                        locations,
@@ -208,9 +291,11 @@ x <- generate_gev_mixture_model_sample(n = n,
 p <- 3
 
 results <- fit_gev_mixture_model(x, 
-                                 nclusters = p, 
+                                 nb_gev_models = p, 
                                  min_cluster_size = 20, 
-                                 max_iteration = 100,
+                                 max_iteration = 40,
+                                 left_cluster_extension_size = 10,
+                                 right_cluster_extension_size = 40,
                                  tolerance = 10^(-3))
 
 results
@@ -223,7 +308,7 @@ support <- sort(x)
 
 model_1 <- results$cluster_models[[1]]
 par_model_1 <- model_1$results$par
-dens_1 <- devd(x = support, loc = par_model_1[1], scale = par_model_1[2], shape = par_model_1[3])
+dens_1 <- extRemes::devd(x = support, loc = par_model_1[1], scale = par_model_1[2], shape = par_model_1[3])
 
 parameters <- rbind(par_model_1)
 weights <- results$cluster_weights
@@ -251,13 +336,13 @@ support <- sort(x)
 
 model_1 <- results$cluster_models[[1]]
 par_model_1 <- model_1$results$par
-dens_1 <- devd(x = support, loc = par_model_1[1], scale = par_model_1[2], shape = par_model_1[3])
+dens_1 <- extRemes::devd(x = support, loc = par_model_1[1], scale = par_model_1[2], shape = par_model_1[3])
 
 
 
 model_2 <- results$cluster_models[[2]]
 par_model_2 <- model_2$results$par
-dens_2 <- devd(x = support, loc = par_model_2[1], scale = par_model_2[2], shape = par_model_2[3])
+dens_2 <- extRemes::devd(x = support, loc = par_model_2[1], scale = par_model_2[2], shape = par_model_2[3])
 
 
 parameters <- rbind(par_model_1, par_model_2)
@@ -306,18 +391,18 @@ support <- sort(x)
 
 model_1 <- results$cluster_models[[1]]
 par_model_1 <- model_1$results$par
-dens_1 <- devd(x = support, loc = par_model_1[1], scale = par_model_1[2], shape = par_model_1[3])
+dens_1 <- extRemes::devd(x = support, loc = par_model_1[1], scale = par_model_1[2], shape = par_model_1[3])
 
 
 
 model_2 <- results$cluster_models[[2]]
 par_model_2 <- model_2$results$par
-dens_2 <- devd(x = support, loc = par_model_2[1], scale = par_model_2[2], shape = par_model_2[3])
+dens_2 <- extRemes::devd(x = support, loc = par_model_2[1], scale = par_model_2[2], shape = par_model_2[3])
 
 
 model_3 <- results$cluster_models[[3]]
 par_model_3 <- model_3$results$par
-dens_3 <- devd(x = support, loc = par_model_3[1], scale = par_model_3[2], shape = par_model_3[3])
+dens_3 <- extRemes::devd(x = support, loc = par_model_3[1], scale = par_model_3[2], shape = par_model_3[3])
 
 
 parameters <- rbind(par_model_1, par_model_2, par_model_3)

@@ -6,6 +6,11 @@ setwd("~/Documents/Doc-perso-2023/Job-Valeo/evops-project/extreme-value-operatio
 # https://rpubs.com/Alema/1000582
 # https://essicolo.github.io/ecologie-mathematique-R/chapitre-ode.html
 
+
+# Mage.ai
+# https://www.mage.ai/
+
+
 # If Q1Q1 denotes the 25th percentile and Q3Q3 denotes the 75th percentile of the remainder values, 
 # then the interquartile range is defined as IQR=Q3−Q1IQR=Q3−Q1. Observations are labelled as outliers
 # if they are less than Q1−3×IQRQ1−3×IQR or greater than Q3+3×IQRQ3+3×IQR. 
