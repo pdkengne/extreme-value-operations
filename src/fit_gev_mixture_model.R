@@ -79,7 +79,7 @@ fit_gev_mixture_model <- function(x,
   
   posterior <- sapply(1:n, function(i){
     obs <- x[i]
-    likelihood <- sapply(1:p, function(k){
+    likelihood <- sapply(clusters_labels, function(k){
       location <- locations[k]
       scale <- scales[k]
       shape <- shapes[k]
@@ -161,7 +161,7 @@ fit_gev_mixture_model <- function(x,
     
     posterior <- sapply(1:n, function(i){
       obs <- x[i]
-      likelihood <- sapply(1:p, function(k){
+      likelihood <- sapply(clusters_labels, function(k){
         location <- locations[k]
         scale <- scales[k]
         shape <- shapes[k]
@@ -219,6 +219,8 @@ fit_gev_mixture_model <- function(x,
   
   names(nllh) <- clusters_labels
   
+  p <- length(clusters_labels)
+  
   aic <- 2*sum(nllh) + 2*3*p
   bic <- 2*sum(nllh) + log(n)*3*p
   information_criterions <- c(aic, bic)
@@ -237,6 +239,7 @@ fit_gev_mixture_model <- function(x,
   output[["information_criterions"]] <- information_criterions
   output[["cluster_gev_model_parameters"]] <- parameters
   output[["clusters"]] <- z
+  output[["data"]] <- x
   output[["cluster_models"]] <- final_models
   
   output
