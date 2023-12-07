@@ -11,6 +11,27 @@ library(BB)
 library(maxLik)
 
 
+
+y <- c(x[z == k], head(sort(x[z == k + 1]), n = right_cluster_extension_size))
+
+idx_1 <- which(z == k)
+y_1 <- x[idx_1]
+df_1 <- data %>% slice(idx_1)
+
+idx_2 <- which(z == k + 1)
+y_2 <- x[idx_2]
+df_2 <- data %>% slice(idx_2)
+
+idx_3 <- head(order(y_2), n = right_cluster_extension_size)
+y_3 <- y_2[idx_3]
+df_3 <- df_2 %>% slice(idx_3)
+
+y <- c(y_1, y_3)
+
+df <- data.frame(rbind(df_1, df_3))
+}
+
+
 #-------------------------------------------------------------------------------
 
 source <- "./applications/final_dataset.csv"

@@ -254,9 +254,9 @@ fit_gev_mixture_model <- function(x,
 # 
 # p <- 2
 # 
-# results <- fit_gev_mixture_model(x = x, 
-#                                  nb_gev_models = p, 
-#                                  min_cluster_size = 20, 
+# results <- fit_gev_mixture_model(x = x,
+#                                  nb_gev_models = p,
+#                                  min_cluster_size = 20,
 #                                  max_iteration = 40,
 #                                  left_cluster_extension_size = 20,
 #                                  right_cluster_extension_size = 20,
@@ -272,18 +272,51 @@ fit_gev_mixture_model <- function(x,
 # 
 # p <- 3
 # 
-# results <- fit_gev_mixture_model(x = x, 
-#                                  nb_gev_models = p, 
-#                                  min_cluster_size = 20, 
+# results <- fit_gev_mixture_model(x = x,
+#                                  nb_gev_models = p,
+#                                  min_cluster_size = 20,
 #                                  max_iteration = 40,
 #                                  left_cluster_extension_size = 20,
 #                                  right_cluster_extension_size = 20,
 #                                  tolerance = 10^(-3))
 # 
 # results
-
-
-
+# 
+# 
+# 
+# # example 3
+# 
+# 
+# source("./src/calculate_modes.R")
+# source("./src/plot_modes.R")
+# 
+# library(Hmisc)
+# 
+# data(faithful)
+# 
+# data <- faithful
+# 
+# data$scaled_waiting <- scale(data$waiting)
+# 
+# names(data)
+# 
+# x <- data$eruptions
+# 
+# modes_object <- calculate_modes(x = x)
+# 
+# plot_modes(modes_object)
+# 
+# p <- 2
+# 
+# results <- fit_gev_mixture_model(x = x,
+#                                  nb_gev_models = p,
+#                                  min_cluster_size = 20,
+#                                  max_iteration = 40,
+#                                  left_cluster_extension_size = 1,
+#                                  right_cluster_extension_size = 1,
+#                                  tolerance = 10^(-3))
+# 
+# results
 
 
 

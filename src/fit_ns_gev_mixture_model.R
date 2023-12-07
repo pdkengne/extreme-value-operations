@@ -1,5 +1,6 @@
-# library(extRemes)
+#library(extRemes)
 #library(tidyverse)
+
 
 library(dplyr)
 
@@ -348,6 +349,25 @@ fit_ns_gev_mixture_model <- function(x,
     model
   })
   
+  model_residuals <- lapply(final_models, function(model){
+    residuals <- extRemes::trans(model)
+    residuals
+  })
+  
+  model_residuals_fit <- lapply(model_residuals, function(residuals){
+    model <- extRemes::fevd(x = residuals, 
+                            type = "GEV", 
+                            method = "MLE")
+    model
+  })
+  
+  model_residuals_diagnosics <- lapply(model_residuals_fit, function(model){
+    confidence_intervals <- extRemes::ci.fevd(x = model, 
+                                              alpha = 0.05, 
+                                              type = "parameter")
+    confidence_intervals
+  })
+  
   model_parameters <- lapply(final_models, function(model){
     pars <- extRemes::findpars(model)
     pars
@@ -401,10 +421,14 @@ fit_ns_gev_mixture_model <- function(x,
   output[["clusters"]] <- z
   output[["data"]] <- x
   output[["covariates"]] <- data
+  output[["cluster_residuals_data"]] <- model_residuals
+  output[["cluster_residuals_models"]] <- model_residuals_fit
+  output[["cluster_residuals_diagnostics"]] <- model_residuals_diagnosics
   output[["cluster_models"]] <- final_models
   
   output
 }
+
 
 
 # # example 1
@@ -426,14 +450,14 @@ fit_ns_gev_mixture_model <- function(x,
 # 
 # p <- 2
 # 
-# results <- fit_ns_gev_mixture_model(x = x, 
+# results <- fit_ns_gev_mixture_model(x = x,
 #                                     data = data,
 #                                     location.fun = ~ AOindex,
 #                                     scale.fun = ~ 1,
 #                                     shape.fun = ~ 1,
 #                                     use.phi = FALSE,
-#                                     nb_gev_models = p, 
-#                                     min_cluster_size = 20, 
+#                                     nb_gev_models = p,
+#                                     min_cluster_size = 20,
 #                                     max_iteration = 50,
 #                                     tolerance = 10^(-3),
 #                                     left_cluster_extension_size = 20,
@@ -446,12 +470,64 @@ fit_ns_gev_mixture_model <- function(x,
 # # [7] "cluster_weights"                 "cluster_negative_loglikelihoods" "information_criterions"         
 # # [10] "cluster_gev_model_coefficients"  "cluster_gev_model_parameters"    "cluster_gev_model_observations" 
 # # [13] "cluster_gev_model_covariates"    "clusters"                        "data"                           
-# # [16] "covariates"                      "cluster_models" 
+# # [16] "covariates"                      "cluster_residuals_data"          "cluster_residuals_models"       
+# # [19] "cluster_residuals_diagnostics"   "cluster_models" 
+# 
+# 
+# results$cluster_gev_model_coefficients
+# 
+# results$cluster_residuals_diagnostics
+# 
+# 
+# # example 2
+# 
+# source("./src/calculate_modes.R")
+# source("./src/plot_modes.R")
+# 
+# library(Hmisc)
+# 
+# data(faithful)
+# 
+# data <- faithful
+# 
+# data$scaled_waiting <- scale(data$waiting)
+# 
+# names(data)
+# 
+# x <- data$eruptions
+# 
+# modes_object <- calculate_modes(x = x)
+# 
+# plot_modes(modes_object)
+# 
+# p <- 2
+# 
+# results <- fit_ns_gev_mixture_model(x = x,
+#                                     data = data,
+#                                     location.fun = ~ scaled_waiting,
+#                                     scale.fun = ~ scaled_waiting,
+#                                     shape.fun = ~ 1,
+#                                     use.phi = FALSE,
+#                                     nb_gev_models = p,
+#                                     min_cluster_size = 20,
+#                                     max_iteration = 50,
+#                                     tolerance = 10^(-3),
+#                                     left_cluster_extension_size = 5,
+#                                     right_cluster_extension_size = 5)
+# 
+# names(results)
+# 
+# # [1] "last_iteration"                  "last_tolerance"                  "left_cluster_extension_size"    
+# # [4] "right_cluster_extension_size"    "nclusters"                       "cluster_sizes"                  
+# # [7] "cluster_weights"                 "cluster_negative_loglikelihoods" "information_criterions"         
+# # [10] "cluster_gev_model_coefficients"  "cluster_gev_model_parameters"    "cluster_gev_model_observations" 
+# # [13] "cluster_gev_model_covariates"    "clusters"                        "data"                           
+# # [16] "covariates"                      "cluster_residuals_data"          "cluster_residuals_models"       
+# # [19] "cluster_residuals_diagnostics"   "cluster_models" 
 # 
 # 
 # results$cluster_gev_model_coefficients
 # 
 # results$cluster_gev_model_parameters
-
 
 
