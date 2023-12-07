@@ -3,8 +3,9 @@
 source("./src/get_ns_gev_model_parameters.R")
 source("./src/calculate_gev_mixture_model_cdf.R")
 
-get_full_ns_gev_mixture_model_cdf <- function(ns_gev_mixture_model){
+get_full_ns_gev_mixture_model_cdf <- function(ns_gev_mixture_model, kind = c("geometric", "arithmetic")[1]){
   # ns_gev_mixture_model: an object associated with a result of the function "fit_ns_gev_mixture_model()"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   
   p <- ns_gev_mixture_model$nclusters
   
@@ -32,22 +33,21 @@ get_full_ns_gev_mixture_model_cdf <- function(ns_gev_mixture_model){
       locations <- parameters_list$location
       scales <- parameters_list$scale
       shapes <- parameters_list$shape
+
+      coefficients <- c(locations[i], scales[i], shapes[i])
+      names(coefficients) <- c("location", "scale", "shape")
       
-      location <- locations[i]
-      scale <- scales[i]
-      shape <- shapes[i]
-      
-      cdf <- extRemes::pevd(q = obs, 
-                            loc = location, 
-                            scale = scale, 
-                            shape = shape, 
-                            log.p = FALSE, 
-                            type = "GEV")
-      
-      cdf
+      coefficients
     })
     
-    sum(cluster_weights*distributions)
+    cdf <- calculate_gev_mixture_model_cdf(q = obs,
+                                           locations = distributions["location", ],
+                                           scales = distributions["scale", ],
+                                           shapes = distributions["shape", ],
+                                           weights = cluster_weights,
+                                           kind = kind)
+
+    cdf
   })
   
   mixture_distributions
@@ -55,48 +55,57 @@ get_full_ns_gev_mixture_model_cdf <- function(ns_gev_mixture_model){
 
 
 
-# example 1
-
-source("./src/fit_ns_gev_mixture_model.R")
-source("./src/calculate_modes.R")
-source("./src/plot_modes.R")
-
-data(faithful, package = "datasets")
-
-data <- faithful
-
-data$scaled_waiting <- scale(data$waiting)
-
-names(data)
-
-x <- data$eruptions
-
-modes_object <- calculate_modes(x = x)
-
-plot_modes(modes_object)
-
-p <- 2
-
-ns_gev_mixture_model <- fit_ns_gev_mixture_model(x = x,
-                                                 data = data,
-                                                 location.fun = ~ scaled_waiting,
-                                                 scale.fun = ~ 1,
-                                                 shape.fun = ~ 1,
-                                                 use.phi = FALSE,
-                                                 nb_gev_models = p,
-                                                 min_cluster_size = 20,
-                                                 max_iteration = 50,
-                                                 tolerance = 10^(-3),
-                                                 left_cluster_extension_size = 5,
-                                                 right_cluster_extension_size = 10)
-
-ns_gev_mixture_model$cluster_gev_model_coefficients
-
-results <- get_full_ns_gev_mixture_model_cdf(ns_gev_mixture_model)
-
-results
-
-hist(results)
-
-ks.test(x = results ,y = "punif", min = 0, max = 1)
+# # example 1
+# 
+# source("./src/fit_ns_gev_mixture_model.R")
+# source("./src/calculate_modes.R")
+# source("./src/plot_modes.R")
+# 
+# data(faithful, package = "datasets")
+# 
+# data <- faithful
+# 
+# data$scaled_waiting <- scale(data$waiting)
+# 
+# names(data)
+# 
+# x <- data$eruptions
+# 
+# modes_object <- calculate_modes(x = x)
+# 
+# plot_modes(modes_object)
+# 
+# p <- 2
+# 
+# ns_gev_mixture_model <- fit_ns_gev_mixture_model(x = x,
+#                                                  data = data,
+#                                                  location.fun = ~ scaled_waiting,
+#                                                  scale.fun = ~ 1,
+#                                                  shape.fun = ~ 1,
+#                                                  use.phi = FALSE,
+#                                                  nb_gev_models = p,
+#                                                  min_cluster_size = 20,
+#                                                  max_iteration = 50,
+#                                                  tolerance = 10^(-3),
+#                                                  left_cluster_extension_size = 5,
+#                                                  right_cluster_extension_size = 10)
+# 
+# ns_gev_mixture_model$cluster_gev_model_coefficients
+# 
+# results_1 <- get_full_ns_gev_mixture_model_cdf(ns_gev_mixture_model, kind = c("geometric", "arithmetic")[1])
+# 
+# results_1
+# 
+# hist(results_1)
+# 
+# ks.test(x = results_1 ,y = "punif", min = 0, max = 1)
+# 
+# 
+# results_2 <- get_full_ns_gev_mixture_model_cdf(ns_gev_mixture_model, kind = c("geometric", "arithmetic")[2])
+# 
+# results_2
+# 
+# hist(results_2)
+# 
+# ks.test(x = results_2 ,y = "punif", min = 0, max = 1)
 
