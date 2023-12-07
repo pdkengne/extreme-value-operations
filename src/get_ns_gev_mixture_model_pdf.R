@@ -1,9 +1,9 @@
 # library(extRemes)
 
 source("./src/get_ns_gev_model_parameters.R")
-source("./src/calculate_gev_mixture_model_cdf.R")
+source("./src/calculate_gev_mixture_model_pdf.R")
 
-get_ns_gev_mixture_model_cdf <- function(ns_gev_mixture_model){
+get_ns_gev_mixture_model_pdf <- function(ns_gev_mixture_model){
   # ns_gev_mixture_model: an object associated with a result of the function "fit_ns_gev_mixture_model()"
   
   p <- ns_gev_mixture_model$nclusters
@@ -23,10 +23,10 @@ get_ns_gev_mixture_model_cdf <- function(ns_gev_mixture_model){
     parameters
   })
   
-  mixture_distributions <- sapply(1:n, function(i){
+  mixture_densities <- sapply(1:n, function(i){
     obs <- x[i]
     
-    distributions <- sapply(1:p, function(k){
+    densities <- sapply(1:p, function(k){
       parameters_list <- cluster_parameters[[k]]
       
       locations <- parameters_list$location
@@ -37,20 +37,20 @@ get_ns_gev_mixture_model_cdf <- function(ns_gev_mixture_model){
       scale <- scales[i]
       shape <- shapes[i]
       
-      cdf <- extRemes::pevd(q = obs, 
+      cdf <- extRemes::devd(x = obs, 
                             loc = location, 
                             scale = scale, 
                             shape = shape, 
-                            log.p = FALSE, 
+                            log = FALSE, 
                             type = "GEV")
       
       cdf
     })
     
-    sum(cluster_weights*distributions)
+    sum(cluster_weights*densities)
   })
   
-  mixture_distributions
+  mixture_densities
 }
 
 
@@ -92,11 +92,12 @@ get_ns_gev_mixture_model_cdf <- function(ns_gev_mixture_model){
 # 
 # ns_gev_mixture_model$cluster_gev_model_coefficients
 # 
-# results <- get_ns_gev_mixture_model_cdf(ns_gev_mixture_model)
+# results <- get_ns_gev_mixture_model_pdf(ns_gev_mixture_model)
 # 
 # results
 # 
-# hist(results)
+# plot(density(x), ylim = range(c(results, density(x)$y)))
 # 
-# ks.test(x = results ,y = "punif", min = 0, max = 1)
+# lines(x, results, type = "p", col = 4, lwd = 2)
+
 
