@@ -121,7 +121,7 @@ fit_ns_gev_mixture_model <- function(x,
                             method = "MLE")
     
     res <- summary(model, silent = TRUE)
-    par <- extRemes::findpars(model)
+    par <- calculate_ns_gev_model_parameters(model, data)
     
     parameters <- append(par, res$nllh)
     names(parameters) <- c("location", "scale", "shape", "nllh")
@@ -248,7 +248,7 @@ fit_ns_gev_mixture_model <- function(x,
                               method = "MLE")
       
       res <- summary(model, silent = TRUE)
-      par <- extRemes::findpars(model)
+      par <- calculate_ns_gev_model_parameters(model, data)
       
       parameters <- append(par, res$nllh)
       names(parameters) <- c("location", "scale", "shape", "nllh")
@@ -466,14 +466,13 @@ fit_ns_gev_mixture_model <- function(x,
 # 
 # names(results)
 # 
-# # [1] "last_iteration"                  "last_tolerance"                  "left_cluster_extension_size"    
-# # [4] "right_cluster_extension_size"    "nclusters"                       "cluster_sizes"                  
-# # [7] "cluster_weights"                 "cluster_negative_loglikelihoods" "information_criterions"         
-# # [10] "cluster_gev_model_coefficients"  "cluster_gev_model_parameters"    "cluster_gev_model_observations" 
-# # [13] "cluster_gev_model_covariates"    "clusters"                        "data"                           
-# # [16] "covariates"                      "cluster_residuals_data"          "cluster_residuals_models"       
-# # [19] "cluster_residuals_diagnostics"   "cluster_models" 
-# 
+# # [1] "last_iteration"                  "last_tolerance"                  "left_cluster_extension_size"
+# # [4] "right_cluster_extension_size"    "nclusters"                       "cluster_sizes"
+# # [7] "cluster_weights"                 "cluster_negative_loglikelihoods" "information_criterions"
+# # [10] "cluster_gev_model_coefficients"  "cluster_gev_model_parameters"    "cluster_gev_model_observations"
+# # [13] "cluster_gev_model_covariates"    "clusters"                        "data"
+# # [16] "covariates"                      "cluster_residuals_data"          "cluster_residuals_models"
+# # [19] "cluster_residuals_diagnostics"   "cluster_models"
 # 
 # results$cluster_gev_model_coefficients
 # 
@@ -485,9 +484,7 @@ fit_ns_gev_mixture_model <- function(x,
 # source("./src/calculate_modes.R")
 # source("./src/plot_modes.R")
 # 
-# library(Hmisc)
-# 
-# data(faithful)
+# data(faithful, package = "datasets")
 # 
 # data <- faithful
 # 
@@ -518,17 +515,16 @@ fit_ns_gev_mixture_model <- function(x,
 # 
 # names(results)
 # 
-# # [1] "last_iteration"                  "last_tolerance"                  "left_cluster_extension_size"    
-# # [4] "right_cluster_extension_size"    "nclusters"                       "cluster_sizes"                  
-# # [7] "cluster_weights"                 "cluster_negative_loglikelihoods" "information_criterions"         
-# # [10] "cluster_gev_model_coefficients"  "cluster_gev_model_parameters"    "cluster_gev_model_observations" 
-# # [13] "cluster_gev_model_covariates"    "clusters"                        "data"                           
-# # [16] "covariates"                      "cluster_residuals_data"          "cluster_residuals_models"       
-# # [19] "cluster_residuals_diagnostics"   "cluster_models" 
-# 
+# # [1] "last_iteration"                  "last_tolerance"                  "left_cluster_extension_size"
+# # [4] "right_cluster_extension_size"    "nclusters"                       "cluster_sizes"
+# # [7] "cluster_weights"                 "cluster_negative_loglikelihoods" "information_criterions"
+# # [10] "cluster_gev_model_coefficients"  "cluster_gev_model_parameters"    "cluster_gev_model_observations"
+# # [13] "cluster_gev_model_covariates"    "clusters"                        "data"
+# # [16] "covariates"                      "cluster_residuals_data"          "cluster_residuals_models"
+# # [19] "cluster_residuals_diagnostics"   "cluster_models"
 # 
 # results$cluster_gev_model_coefficients
 # 
-# results$cluster_gev_model_parameters
+# results$cluster_residuals_diagnostics
 
 
