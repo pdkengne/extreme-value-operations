@@ -5,6 +5,7 @@
 library(dplyr)
 
 source("./src/calculate_modes.R")
+source("./src/calculate_ns_gev_model_parameters.R")
 
 
 # use the function: extRemes::findpars(x, use.blocks = FALSE, ..., qcov = NULL)
