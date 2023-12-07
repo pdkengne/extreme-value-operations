@@ -5,7 +5,7 @@
 library(dplyr)
 
 source("./src/calculate_modes.R")
-source("./src/calculate_ns_gev_model_parameters.R")
+source("./src/get_ns_gev_model_parameters.R")
 
 
 # use the function: extRemes::findpars(x, use.blocks = FALSE, ..., qcov = NULL)
@@ -121,7 +121,7 @@ fit_ns_gev_mixture_model <- function(x,
                             method = "MLE")
     
     res <- summary(model, silent = TRUE)
-    par <- calculate_ns_gev_model_parameters(model, data)
+    par <- get_ns_gev_model_parameters(model, data)
     
     parameters <- append(par, res$nllh)
     names(parameters) <- c("location", "scale", "shape", "nllh")
@@ -248,7 +248,7 @@ fit_ns_gev_mixture_model <- function(x,
                               method = "MLE")
       
       res <- summary(model, silent = TRUE)
-      par <- calculate_ns_gev_model_parameters(model, data)
+      par <- get_ns_gev_model_parameters(model, data)
       
       parameters <- append(par, res$nllh)
       names(parameters) <- c("location", "scale", "shape", "nllh")
@@ -503,7 +503,7 @@ fit_ns_gev_mixture_model <- function(x,
 # results <- fit_ns_gev_mixture_model(x = x,
 #                                     data = data,
 #                                     location.fun = ~ scaled_waiting,
-#                                     scale.fun = ~ scaled_waiting,
+#                                     scale.fun = ~ 1,
 #                                     shape.fun = ~ 1,
 #                                     use.phi = FALSE,
 #                                     nb_gev_models = p,
@@ -511,7 +511,7 @@ fit_ns_gev_mixture_model <- function(x,
 #                                     max_iteration = 50,
 #                                     tolerance = 10^(-3),
 #                                     left_cluster_extension_size = 5,
-#                                     right_cluster_extension_size = 5)
+#                                     right_cluster_extension_size = 10)
 # 
 # names(results)
 # 
@@ -523,8 +523,14 @@ fit_ns_gev_mixture_model <- function(x,
 # # [16] "covariates"                      "cluster_residuals_data"          "cluster_residuals_models"
 # # [19] "cluster_residuals_diagnostics"   "cluster_models"
 # 
+# results$nclusters
+# 
 # results$cluster_gev_model_coefficients
 # 
 # results$cluster_residuals_diagnostics
-
-
+# 
+# results$information_criterions
+# 
+# results$cluster_gev_model_parameters
+# 
+# results$cluster_residuals_diagnostics

@@ -3,8 +3,7 @@
 
 library(tidyverse)
 
-
-calculate_ns_gev_model_parameters <- function(ns_gev_model, data){
+get_ns_gev_model_parameters <- function(ns_gev_model, data){
   # ns_gev_model: an object associated with a result of the function "extRemes::fevd()"
   # data: dataframe of covariates for linear modeling of the gev model parameters
   
@@ -122,7 +121,7 @@ calculate_ns_gev_model_parameters <- function(ns_gev_model, data){
 # 
 # ns_gev_model <- fevd(x, data, location.fun=~1, use.phi = FALSE, units="deg C")
 # 
-# results <- calculate_ns_gev_model_parameters(ns_gev_model, data)
+# results <- get_ns_gev_model_parameters(ns_gev_model, data)
 # 
 # results
 # 
@@ -139,7 +138,7 @@ calculate_ns_gev_model_parameters <- function(ns_gev_model, data){
 # 
 # ns_gev_model <- fevd(x, data, location.fun=~AOindex, units="deg C")
 # 
-# results <- calculate_ns_gev_model_parameters(ns_gev_model, data)
+# results <- get_ns_gev_model_parameters(ns_gev_model, data)
 # 
 # results
 # 
@@ -156,7 +155,7 @@ calculate_ns_gev_model_parameters <- function(ns_gev_model, data){
 # 
 # ns_gev_model <- fevd(x, data, scale.fun=~AOindex, use.phi = TRUE, units="deg C")
 # 
-# results <- calculate_ns_gev_model_parameters(ns_gev_model, data)
+# results <- get_ns_gev_model_parameters(ns_gev_model, data)
 # 
 # results
 # 

@@ -250,7 +250,17 @@ fit_gev_mixture_model <- function(x,
 
 # # example 1
 # 
+# source("./src/calculate_modes.R")
+# source("./src/plot_modes.R")
+# source("./src/plot_fit_gev_mixture_model.R")
+# 
 # x <- rnorm(n = 1000)
+# 
+# 
+# modes_object <- calculate_modes(x = x)
+# 
+# plot_modes(modes_object)
+# 
 # 
 # p <- 2
 # 
@@ -262,13 +272,37 @@ fit_gev_mixture_model <- function(x,
 #                                  right_cluster_extension_size = 20,
 #                                  tolerance = 10^(-3))
 # 
-# results
+# names(results)
+# 
+# # [1] "last_iteration"                  "last_tolerance"                  "nclusters"                       "cluster_sizes"                   "cluster_weights"                
+# # [6] "cluster_negative_loglikelihoods" "information_criterions"          "cluster_gev_model_parameters"    "clusters"                        "data"                           
+# # [11] "cluster_models"
+# 
+# 
+# results$nclusters
+# 
+# results$cluster_sizes
+# 
+# results$information_criterions
+# 
+# results$cluster_gev_model_parameters
+# 
+# results$cluster_models
 # 
 # 
 # # example 2
 # 
+# source("./src/calculate_modes.R")
+# source("./src/plot_modes.R")
+# source("./src/plot_fit_gev_mixture_model.R")
+# 
 # 
 # x <- bmixture::rmixnorm(n = 3000, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
+# 
+# modes_object <- calculate_modes(x = x)
+# 
+# plot_modes(modes_object)
+# 
 # 
 # p <- 3
 # 
@@ -276,12 +310,30 @@ fit_gev_mixture_model <- function(x,
 #                                  nb_gev_models = p,
 #                                  min_cluster_size = 20,
 #                                  max_iteration = 40,
-#                                  left_cluster_extension_size = 20,
+#                                  left_cluster_extension_size = 1,
 #                                  right_cluster_extension_size = 20,
 #                                  tolerance = 10^(-3))
 # 
-# results
+# names(results)
 # 
+# results$nclusters
+# 
+# results$cluster_sizes
+# 
+# results$cluster_weights
+# 
+# results$information_criterions
+# 
+# results$cluster_gev_model_parameters
+# 
+# results$cluster_models
+# 
+# 
+# plot_fit_gev_mixture_model(gev_mixture_model_object = results,
+#                            xlab = "support",
+#                            ylab = "density",
+#                            main = "density plot",
+#                            legend_position = "topright")
 # 
 # 
 # # example 3
@@ -289,8 +341,7 @@ fit_gev_mixture_model <- function(x,
 # 
 # source("./src/calculate_modes.R")
 # source("./src/plot_modes.R")
-# 
-# library(Hmisc)
+# source("./src/plot_fit_gev_mixture_model.R")
 # 
 # data(faithful)
 # 
@@ -308,15 +359,37 @@ fit_gev_mixture_model <- function(x,
 # 
 # p <- 2
 # 
-# results <- fit_gev_mixture_model(x = x,
+# z <- x[x > 3]
+# 
+# results <- fit_gev_mixture_model(x = z,
 #                                  nb_gev_models = p,
 #                                  min_cluster_size = 20,
 #                                  max_iteration = 40,
-#                                  left_cluster_extension_size = 1,
-#                                  right_cluster_extension_size = 1,
+#                                  left_cluster_extension_size = 0,
+#                                  right_cluster_extension_size = 0,
 #                                  tolerance = 10^(-3))
 # 
-# results
-
+# names(results)
+# 
+# results$nclusters
+# 
+# results$cluster_sizes
+# 
+# results$cluster_weights
+# 
+# results$information_criterions
+# 
+# results$cluster_gev_model_parameters
+# 
+# results$cluster_models
+# 
+# 
+# plot_fit_gev_mixture_model(gev_mixture_model_object = results,
+#                            xlab = "support",
+#                            ylab = "density",
+#                            main = "density plot",
+#                            legend_position = "topright")
+# 
+# abline(h = 0, lty = "dotted")
 
 
