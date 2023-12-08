@@ -108,4 +108,46 @@ get_full_ns_gev_mixture_model_cdf <- function(ns_gev_mixture_model, kind = c("ge
 # hist(results_2)
 # 
 # ks.test(x = results_2 ,y = "punif", min = 0, max = 1)
+# 
+# 
+# theoretical_quantiles <- 1:n/(n+1)
+# empirical_quantiles <- sort(results_2)
+# 
+# plot(x = theoretical_quantiles, 
+#      y = empirical_quantiles,
+#      type = "p",
+#      lwd = 3,
+#      xlab = "theoretical quantiles",
+#      ylab = "empirical quantiles",
+#      main = "quantile plot of residuals against the standard uniform distribution")
+# 
+# abline(a = 0, b = 1, col = 2, lwd = 2)
+# 
+# 
+# plot(x = -log(theoretical_quantiles)/log(10), 
+#      y = -log(empirical_quantiles)/log(10),
+#      type = "p",
+#      lwd = 3,
+#      col = 4,
+#      xlab = "theoretical quantiles: -log10(observed)",
+#      ylab = "empirical quantiles: -log10(expected)",
+#      main = "quantile plot of residuals against the standard uniform distribution")
+# 
+# abline(a = 0, b = 1, col = 2, lwd = 2)
+# 
+# 
+# 
+# library(gap)
+# 
+# ?qqunif
+# 
+# gap::qqunif(u = results_2,
+#             type = "unif",
+#             logscale = TRUE,
+#             base = 10,
+#             col = palette()[4],
+#             lcol = palette()[2],
+#             ci = TRUE,
+#             alpha = 0.05)
+
 
