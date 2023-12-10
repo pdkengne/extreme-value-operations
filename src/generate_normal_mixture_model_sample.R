@@ -85,8 +85,8 @@ generate_normal_mixture_model_sample <- function(n = 1,
 # support_density_1 <- density_1$x
 # value_density_1 <- density_1$y
 # 
-# hist(x = results_1, 
-#      freq = FALSE, 
+# hist(x = results_1,
+#      freq = FALSE,
 #      ylim = range(c(value_density_1, pdf_1)),
 #      ylab = "density",
 #      xlab = "support",
@@ -102,7 +102,8 @@ generate_normal_mixture_model_sample <- function(n = 1,
 #                                                   locations,
 #                                                   scales,
 #                                                   weights,
-#                                                   kind = c("geometric", "arithmetic")[1])
+#                                                   kind = c("geometric", "arithmetic")[1],
+#                                                   iterations = 25)
 # 
 # #results_2
 # 
@@ -119,8 +120,8 @@ generate_normal_mixture_model_sample <- function(n = 1,
 # support_density_2 <- density_2$x
 # value_density_2 <- density_2$y
 # 
-# hist(x = results_2, 
-#      freq = FALSE, 
+# hist(x = results_2,
+#      freq = FALSE,
 #      ylim = range(c(value_density_2, pdf_2)),
 #      ylab = "density",
 #      xlab = "support",
@@ -132,12 +133,12 @@ generate_normal_mixture_model_sample <- function(n = 1,
 # legend("topleft", legend = c("empirical", "theoretical"), col = c(1, 4), lty = c(1, 1))
 # 
 # 
-# plot(x = sort(results_1), 
-#      y = pdf_1, 
-#      type = "l", 
+# plot(x = sort(results_1),
+#      y = pdf_1,
+#      type = "l",
 #      col = 7,
 #      lwd = 2,
-#      ylim = range(c(pdf_1, pdf_2)), 
+#      ylim = range(c(pdf_1, pdf_2)),
 #      xlim = range(c(results_1, results_2)),
 #      xlab = "support",
 #      ylab = "density",
@@ -188,8 +189,8 @@ generate_normal_mixture_model_sample <- function(n = 1,
 # support_density_1 <- density_1$x
 # value_density_1 <- density_1$y
 # 
-# hist(x = results_1, 
-#      freq = FALSE, 
+# hist(x = results_1,
+#      freq = FALSE,
 #      ylim = range(c(value_density_1, pdf_1)),
 #      ylab = "density",
 #      xlab = "support",
@@ -206,7 +207,8 @@ generate_normal_mixture_model_sample <- function(n = 1,
 #                                                   locations,
 #                                                   scales,
 #                                                   weights,
-#                                                   kind = c("geometric", "arithmetic")[1])
+#                                                   kind = c("geometric", "arithmetic")[1],
+#                                                   iterations = 25)
 # 
 # #results_2
 # 
@@ -224,8 +226,8 @@ generate_normal_mixture_model_sample <- function(n = 1,
 # support_density_2 <- density_2$x
 # value_density_2 <- density_2$y
 # 
-# hist(x = results_2, 
-#      freq = FALSE, 
+# hist(x = results_2,
+#      freq = FALSE,
 #      ylim = range(c(value_density_2, pdf_2)),
 #      ylab = "density",
 #      xlab = "support",
@@ -238,12 +240,12 @@ generate_normal_mixture_model_sample <- function(n = 1,
 # 
 # 
 # 
-# plot(x = sort(results_1), 
-#      y = pdf_1, 
-#      type = "l", 
+# plot(x = sort(results_1),
+#      y = pdf_1,
+#      type = "l",
 #      col = 7,
 #      lwd = 2,
-#      ylim = range(c(pdf_1, pdf_2)), 
+#      ylim = range(c(pdf_1, pdf_2)),
 #      xlim = range(c(results_1, results_2)),
 #      xlab = "support",
 #      ylab = "density",
