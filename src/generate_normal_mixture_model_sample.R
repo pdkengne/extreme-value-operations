@@ -1,17 +1,15 @@
 source("./src/calculate_normal_mixture_model_inverse_cdf.R")
 
 generate_normal_mixture_model_sample <- function(n = 1, 
-                                              locations, 
-                                              scales, 
-                                              weights, 
-                                              kind = c("geometric", "arithmetic")[1],
-                                              iterations = 50){
+                                                 locations, 
+                                                 scales, 
+                                                 weights, 
+                                                 kind = c("geometric", "arithmetic")[1]){
   # n: number of observations to generate
   # weights: vector of weights
   # locations, scales: vectors of location and scale parameters of the considered distributions
   # The vectors of parameters must have the same number of elements
   # kind: indicates the type of mixture model. Possible values are "geometric" or "arithmetic"
-  # iterations: number of iterations to perform in the the dichotomy algorithm
   
   
   if (kind == "arithmetic"){
@@ -31,18 +29,19 @@ generate_normal_mixture_model_sample <- function(n = 1,
   }
   else if (kind == "geometric"){
     output <- sapply(1:n, function(j){
-      p <- runif(n = 1, min = 0, max = 1)
+      out <- sapply(1:length(weights), function(k){
+        power_random_variates <- exp(-rexp(n = 1, rate = weights[k]))
+        
+        random_value <- qnorm(p = power_random_variates, 
+                              mean = locations[k], 
+                              sd = scales[k])
+        
+        random_value
+      })
       
-      sample <- calculate_normal_mixture_model_inverse_cdf(p = p, 
-                                                           locations = locations, 
-                                                           scales = scales, 
-                                                           weights = weights, 
-                                                           kind = kind, 
-                                                           iterations = iterations)
-      
-      sample
+      max(out)
     })
-
+    
   }
   else{
     stop("Please enter a correct value to the argument 'kind'. Possible values are 'geometric' or 'arithmetic'!")
@@ -102,8 +101,7 @@ generate_normal_mixture_model_sample <- function(n = 1,
 #                                                   locations,
 #                                                   scales,
 #                                                   weights,
-#                                                   kind = c("geometric", "arithmetic")[1],
-#                                                   iterations = 25)
+#                                                   kind = c("geometric", "arithmetic")[1])
 # 
 # #results_2
 # 
@@ -207,8 +205,7 @@ generate_normal_mixture_model_sample <- function(n = 1,
 #                                                   locations,
 #                                                   scales,
 #                                                   weights,
-#                                                   kind = c("geometric", "arithmetic")[1],
-#                                                   iterations = 25)
+#                                                   kind = c("geometric", "arithmetic")[1])
 # 
 # #results_2
 # 
