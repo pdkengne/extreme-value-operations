@@ -51,38 +51,38 @@ calculate_normal_mixture_model_cdf <- function(q,
 }
 
 
-# example 1
-
-# library(extraDistr)
-
-p <- 3
-
-weights <- as.numeric(extraDistr::rdirichlet(n = 1, alpha = rep(1, times = p)))
-
-scales <- rexp(n = p)
-locations <- rnorm(n = p)
-
-results <- calculate_normal_mixture_model_cdf(q = 1:10,
-                                              locations,
-                                              scales,
-                                              weights,
-                                              kind = c("geometric", "arithmetic")[1])
-
-results
-
-
-results <- calculate_normal_mixture_model_cdf(q = 1:10,
-                                           locations,
-                                           scales,
-                                           weights,
-                                           kind = c("geometric", "arithmetic")[2])
-
-results
-
-
-results <- calculate_normal_mixture_model_cdf(q = 10,
-                                           locations,
-                                           scales,
-                                           weights,
-                                           kind = "geom")
+# # example 1
+# 
+# # library(extraDistr)
+# 
+# p <- 3
+# 
+# weights <- as.numeric(extraDistr::rdirichlet(n = 1, alpha = rep(1, times = p)))
+# 
+# scales <- rexp(n = p)
+# locations <- rnorm(n = p)
+# 
+# results <- calculate_normal_mixture_model_cdf(q = 1:10,
+#                                               locations,
+#                                               scales,
+#                                               weights,
+#                                               kind = c("geometric", "arithmetic")[1])
+# 
+# results
+# 
+# 
+# results <- calculate_normal_mixture_model_cdf(q = 1:10,
+#                                            locations,
+#                                            scales,
+#                                            weights,
+#                                            kind = c("geometric", "arithmetic")[2])
+# 
+# results
+# 
+# 
+# results <- calculate_normal_mixture_model_cdf(q = 10,
+#                                            locations,
+#                                            scales,
+#                                            weights,
+#                                            kind = "geom")
 
