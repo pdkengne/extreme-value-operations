@@ -5,7 +5,7 @@ calculate_normal_mixture_model_cdf <- function(q,
                                                kind = c("geometric", "arithmetic")[1]){
   # q: vector of observations
   # weights: vector of weights
-  # locations, scales: vectors of location, scale and shape parameters of the considered distributions
+  # locations, scales: vectors of location and scale parameters of the considered distributions
   # The vectors of parameters must have the same number of elements
   # kind: indicates the type of mixture model. Possible values are "geometric" or "arithmetic"
   
@@ -72,17 +72,17 @@ calculate_normal_mixture_model_cdf <- function(q,
 # 
 # 
 # results <- calculate_normal_mixture_model_cdf(q = 1:10,
-#                                            locations,
-#                                            scales,
-#                                            weights,
-#                                            kind = c("geometric", "arithmetic")[2])
+#                                               locations,
+#                                               scales,
+#                                               weights,
+#                                               kind = c("geometric", "arithmetic")[2])
 # 
 # results
 # 
 # 
 # results <- calculate_normal_mixture_model_cdf(q = 10,
-#                                            locations,
-#                                            scales,
-#                                            weights,
-#                                            kind = "geom")
+#                                               locations,
+#                                               scales,
+#                                               weights,
+#                                               kind = "geom")
 
