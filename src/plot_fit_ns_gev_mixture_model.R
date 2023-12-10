@@ -21,8 +21,8 @@ plot_fit_ns_gev_mixture_model <- function(ns_gev_mixture_model_object, log_scale
          type = "p",
          lwd = 2,
          col = 4,
-         xlab = "theoretical quantiles: -log10(observed)",
-         ylab = "empirical quantiles: -log10(expected)",
+         xlab = "theoretical quantiles: -log10(expected)",
+         ylab = "empirical quantiles: -log10(observed)",
          main = "quantile plot of residuals against the standard uniform distribution")
   } else{
     plot(x = theoretical_quantiles, 

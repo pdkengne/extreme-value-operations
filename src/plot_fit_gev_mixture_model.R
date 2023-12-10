@@ -47,6 +47,7 @@ plot_fit_gev_mixture_model <- function(gev_mixture_model_object,
          lwd = 2)  
     
     lines(support, theoretical_densities, col = 3, lwd = 2)
+    abline(h = 0, lty = "dotted")
     
     legend(legend_position, 
            legend = c("empirical", "gev"),
@@ -79,6 +80,7 @@ plot_fit_gev_mixture_model <- function(gev_mixture_model_object,
     
     lines(support, theoretical_densities_1, col = 6, lwd = 2)
     lines(support, theoretical_densities_2, col = 7, lwd = 2)
+    abline(h = 0, lty = "dotted")
     
     legend(legend_position, 
            legend = c("empirical", "geometric", "arithmetic"),
