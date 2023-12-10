@@ -173,7 +173,7 @@ generate_gev_mixture_model_sample <- function(n = 1,
 # 
 # source("./src/calculate_gev_mixture_model_pdf.R")
 # 
-# weights <- c(0.5, 0.5, 0.5)
+# weights <- c(1/3, 1/3, 1/3)
 # 
 # shapes <- c(0.001, 0.01, 0.1)
 # scales <- c(1, 1, 1)
