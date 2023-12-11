@@ -3,12 +3,12 @@ source("./src/calculate_gp_mixture_model_cdf.R")
 source("./src/dichotomy.R")
 
 calculate_gp_mixture_model_inverse_cdf <- function(p, 
-                                                    thresholds, 
-                                                    scales, 
-                                                    shapes, 
-                                                    weights, 
-                                                    kind = c("geometric", "arithmetic")[1],
-                                                    iterations = 100){
+                                                   thresholds, 
+                                                   scales, 
+                                                   shapes, 
+                                                   weights, 
+                                                   kind = c("geometric", "arithmetic")[1],
+                                                   iterations = 100){
   # p: vector of probabilities
   # weights: vector of weights
   # thresholds, scales, shapes: vectors of threshold, scale and shape parameters of the considered gp distributions
@@ -21,11 +21,11 @@ calculate_gp_mixture_model_inverse_cdf <- function(p,
       # define the nonlinear equation to solve
       nle <- function(q){
         f <- -p + calculate_gp_mixture_model_cdf(q = q, 
-                                                  thresholds = thresholds, 
-                                                  scales = scales, 
-                                                  shapes = shapes, 
-                                                  weights = weights,
-                                                  kind = kind)
+                                                 thresholds = thresholds, 
+                                                 scales = scales, 
+                                                 shapes = shapes, 
+                                                 weights = weights,
+                                                 kind = kind)
         f
       }
       
@@ -40,9 +40,9 @@ calculate_gp_mixture_model_inverse_cdf <- function(p,
       
       # calculates some initial guesses for the root of the nonlinear equation to solve
       q_initial_guesses <- sapply(1:length(weights), function(j) calculate_gp_inverse_cdf(p = p, 
-                                                                                           threshold = thresholds[j], 
-                                                                                           scale = scales[j], 
-                                                                                           shape = shapes[j])) 
+                                                                                          threshold = thresholds[j], 
+                                                                                          scale = scales[j], 
+                                                                                          shape = shapes[j])) 
       
       # estimate the root of the nonlinear equation to solve
       answer <- dichotomy(func = nle, a = min(q_initial_guesses), b = max(q_initial_guesses), n = iterations)
@@ -72,50 +72,50 @@ calculate_gp_mixture_model_inverse_cdf <- function(p,
 # 
 # p <- seq(from = 0.01, to = 0.09, length.out = 9)
 # 
-# results <- calculate_gp_mixture_model_inverse_cdf(p = p, 
-#                                                    thresholds, 
-#                                                    scales, 
-#                                                    shapes, 
-#                                                    weights, 
-#                                                    iterations = 100,
-#                                                    kind = c("geometric", "arithmetic")[1])
+# results <- calculate_gp_mixture_model_inverse_cdf(p = p,
+#                                                   thresholds,
+#                                                   scales,
+#                                                   shapes,
+#                                                   weights,
+#                                                   iterations = 100,
+#                                                   kind = c("geometric", "arithmetic")[1])
 # 
 # results
 # 
-# calculate_gp_mixture_model_cdf(q = results, 
-#                                 thresholds, 
-#                                 scales, shapes, 
-#                                 weights,
-#                                 kind = c("geometric", "arithmetic")[1])
+# calculate_gp_mixture_model_cdf(q = results,
+#                                thresholds,
+#                                scales, shapes,
+#                                weights,
+#                                kind = c("geometric", "arithmetic")[1])
 # p
 # 
 # 
-# results <- calculate_gp_mixture_model_inverse_cdf(p = p, 
-#                                                    thresholds, 
-#                                                    scales, 
-#                                                    shapes, 
-#                                                    weights, 
-#                                                    iterations = 100,
-#                                                    kind = c("geometric", "arithmetic")[2])
+# results <- calculate_gp_mixture_model_inverse_cdf(p = p,
+#                                                   thresholds,
+#                                                   scales,
+#                                                   shapes,
+#                                                   weights,
+#                                                   iterations = 100,
+#                                                   kind = c("geometric", "arithmetic")[2])
 # 
 # results
 # 
-# calculate_gp_mixture_model_cdf(q = results, 
-#                                 thresholds, 
-#                                 scales, 
-#                                 shapes, 
-#                                 weights,
-#                                 kind = c("geometric", "arithmetic")[2])
+# calculate_gp_mixture_model_cdf(q = results,
+#                                thresholds,
+#                                scales,
+#                                shapes,
+#                                weights,
+#                                kind = c("geometric", "arithmetic")[2])
 # p
 # 
 # 
-# results <- calculate_gp_mixture_model_inverse_cdf(p = p, 
-#                                                    thresholds, 
-#                                                    scales, 
-#                                                    shapes, 
-#                                                    weights, 
-#                                                    iterations = 100,
-#                                                    kind = "mix")
+# results <- calculate_gp_mixture_model_inverse_cdf(p = p,
+#                                                   thresholds,
+#                                                   scales,
+#                                                   shapes,
+#                                                   weights,
+#                                                   iterations = 100,
+#                                                   kind = "mix")
 # 
 # 
 # 
@@ -132,39 +132,39 @@ calculate_gp_mixture_model_inverse_cdf <- function(p,
 # 
 # p <- seq(from = 0.90, to = 0.99, length.out = 10)
 # 
-# results <- calculate_gp_mixture_model_inverse_cdf(p = p, 
-#                                                    thresholds, 
-#                                                    scales, 
-#                                                    shapes, 
-#                                                    weights, 
-#                                                    iterations = 100,
-#                                                    kind = c("geometric", "arithmetic")[1])
+# results <- calculate_gp_mixture_model_inverse_cdf(p = p,
+#                                                   thresholds,
+#                                                   scales,
+#                                                   shapes,
+#                                                   weights,
+#                                                   iterations = 100,
+#                                                   kind = c("geometric", "arithmetic")[1])
 # 
 # results
 # 
-# calculate_gp_mixture_model_cdf(q = results, 
-#                                 thresholds, 
-#                                 scales, shapes, 
-#                                 weights,
-#                                 kind = c("geometric", "arithmetic")[1])
+# calculate_gp_mixture_model_cdf(q = results,
+#                                thresholds,
+#                                scales, shapes,
+#                                weights,
+#                                kind = c("geometric", "arithmetic")[1])
 # p
 # 
 # 
-# results <- calculate_gp_mixture_model_inverse_cdf(p = p, 
-#                                                    thresholds, 
-#                                                    scales, 
-#                                                    shapes, 
-#                                                    weights, 
-#                                                    iterations = 100,
-#                                                    kind = c("geometric", "arithmetic")[2])
+# results <- calculate_gp_mixture_model_inverse_cdf(p = p,
+#                                                   thresholds,
+#                                                   scales,
+#                                                   shapes,
+#                                                   weights,
+#                                                   iterations = 100,
+#                                                   kind = c("geometric", "arithmetic")[2])
 # 
 # results
 # 
-# calculate_gp_mixture_model_cdf(q = results, 
-#                                 thresholds, 
-#                                 scales, 
-#                                 shapes, 
-#                                 weights,
-#                                 kind = c("geometric", "arithmetic")[2])
+# calculate_gp_mixture_model_cdf(q = results,
+#                                thresholds,
+#                                scales,
+#                                shapes,
+#                                weights,
+#                                kind = c("geometric", "arithmetic")[2])
 # p
 
