@@ -1,13 +1,14 @@
 source("./src/calculate_gp_mixture_model_inverse_cdf.R")
-source("./src/calculate_power_gp_parameters.R")
+source("./src/calculate_gp_inverse_cdf.R")
 source("./src/generate_gp_sample.R")
 
+
 generate_gp_mixture_model_sample <- function(n = 1, 
-                                              thresholds, 
-                                              scales, 
-                                              shapes, 
-                                              weights, 
-                                              kind = c("geometric", "arithmetic")[1]){
+                                             thresholds, 
+                                             scales, 
+                                             shapes, 
+                                             weights, 
+                                             kind = c("geometric", "arithmetic")[1]){
   # n: number of observations to generate
   # weights: vector of weights
   # thresholds, scales, shapes: vectors of threshold, scale and shape parameters of the considered gp distributions
@@ -24,9 +25,9 @@ generate_gp_mixture_model_sample <- function(n = 1,
                   prob = weights)
       
       out <- generate_gp_sample(n = 1, 
-                                 threshold = thresholds[k], 
-                                 scale = scales[k], 
-                                 shape = shapes[k])
+                                threshold = thresholds[k], 
+                                scale = scales[k], 
+                                shape = shapes[k])
       
       out
     })
@@ -34,15 +35,12 @@ generate_gp_mixture_model_sample <- function(n = 1,
   else if (kind == "geometric"){
     output <- sapply(1:n, function(j){
       out <- sapply(1:length(weights), function(k){
-        parameter_star <- calculate_power_gp_parameters(threshold = thresholds[k], 
-                                                         scale = scales[k], 
-                                                         shape = shapes[k], 
-                                                         exponent = weights[k])
+        power_random_variates <- exp(-rexp(n = 1, rate = weights[k]))
         
-        random_value <- generate_gp_sample(n = 1, 
-                                            threshold = parameter_star["threshold_star"], 
-                                            scale = parameter_star["scale_star"], 
-                                            shape = parameter_star["shape_star"])
+        random_value <- calculate_gp_inverse_cdf(p = power_random_variates, 
+                                                 threshold = thresholds[k], 
+                                                 scale = scales[k], 
+                                                 shape = shapes[k])
         
         random_value
       })
@@ -60,211 +58,211 @@ generate_gp_mixture_model_sample <- function(n = 1,
 
 
 
-# example 1
-
-source("./src/calculate_gp_mixture_model_pdf.R")
-
-weights <- c(0.5, 0.5)
-
-shapes <- c(0.01, 0.1)
-scales <- c(1, 1)
-thresholds <- c(-2, 4)
-
-n <- 10000
-
-results_1 <- generate_gp_mixture_model_sample(n = n,
-                                               thresholds,
-                                               scales,
-                                               shapes,
-                                               weights,
-                                               kind = c("geometric", "arithmetic")[2])
-
-#results_1
-
-pdf_1 <- calculate_gp_mixture_model_pdf(x = sort(results_1),
-                                         thresholds,
-                                         scales,
-                                         shapes,
-                                         weights,
-                                         kind = c("geometric", "arithmetic")[2])
-
-#pdf_1
-
-density_1 <- density(results_1)
-
-support_density_1 <- density_1$x
-value_density_1 <- density_1$y
-
-hist(x = results_1,
-     freq = FALSE,
-     ylim = range(c(value_density_1, pdf_1)),
-     ylab = "density",
-     xlab = "support",
-     main = "mixture model density plot")
-
-lines(x = support_density_1, y = value_density_1, col = 1, lwd = 2)
-lines(x = sort(results_1), y = pdf_1, col = 4, lwd = 2)
-
-legend("topright", legend = c("empirical", "theoretical"), col = c(1, 4), lty = c(1, 1))
-
-
-results_2 <- generate_gp_mixture_model_sample(n = n,
-                                               thresholds,
-                                               scales,
-                                               shapes,
-                                               weights,
-                                               kind = c("geometric", "arithmetic")[1])
-
-#results_2
-
-pdf_2 <- calculate_gp_mixture_model_pdf(x = sort(results_2),
-                                         thresholds,
-                                         scales,
-                                         shapes,
-                                         weights,
-                                         kind = c("geometric", "arithmetic")[1])
-
-#pdf_2
-
-density_2 <- density(results_2)
-
-support_density_2 <- density_2$x
-value_density_2 <- density_2$y
-
-hist(x = results_2,
-     freq = FALSE,
-     ylim = range(c(value_density_2, pdf_2)),
-     ylab = "density",
-     xlab = "support",
-     main = "mixture model density plot")
-
-lines(x = support_density_2, y = value_density_2, col = 1, lwd = 2)
-lines(x = sort(results_2), y = pdf_2, col = 4, lwd = 2)
-
-legend("topright", legend = c("empirical", "theoretical"), col = c(1, 4), lty = c(1, 1))
-
-
-plot(x = sort(results_1),
-     y = pdf_1,
-     type = "l",
-     col = 7,
-     lwd = 2,
-     ylim = range(c(pdf_1, pdf_2)),
-     xlim = range(c(results_1, results_2)),
-     xlab = "support",
-     ylab = "density",
-     main = "mixture model density plot")
-
-lines(x = sort(results_2), y  = pdf_2, type = "l", col = 6, lwd = 2)
-
-legend("topright", legend = c("arithmetic", "geometric"), col = c(7, 6), lty = c(1, 1))
-
-
-results <- generate_gp_mixture_model_sample(n = n,
-                                             thresholds,
-                                             scales,
-                                             shapes,
-                                             weights,
-                                             kind = "merge")
-
-
-
-# example 2
-
-source("./src/calculate_gp_mixture_model_pdf.R")
-
-weights <- c(1/3, 1/3, 1/3)
-
-shapes <- c(0.001, 0.01, 0.1)
-scales <- c(1, 1, 1)
-
-thresholds <- c(-2, +4, +10)
-
-n <- 10000
-
-results_1 <- generate_gp_mixture_model_sample(n = n,
-                                               thresholds,
-                                               scales,
-                                               shapes,
-                                               weights,
-                                               kind = c("geometric", "arithmetic")[2])
-
-#results_1
-
-pdf_1 <- calculate_gp_mixture_model_pdf(x = sort(results_1),
-                                         thresholds,
-                                         scales,
-                                         shapes,
-                                         weights,
-                                         kind = c("geometric", "arithmetic")[2])
-
-#pdf_1
-
-density_1 <- density(results_1)
-
-support_density_1 <- density_1$x
-value_density_1 <- density_1$y
-
-hist(x = results_1,
-     freq = FALSE,
-     ylim = range(c(value_density_1, pdf_1)),
-     ylab = "density",
-     xlab = "support",
-     main = "mixture model density plot")
-
-lines(x = support_density_1, y = value_density_1, col = 1, lwd = 2)
-lines(x = sort(results_1), y = pdf_1, col = 4, lwd = 2)
-
-legend("topright", legend = c("empirical", "theoretical"), col = c(1, 4), lty = c(1, 1))
-
-
-results_2 <- generate_gp_mixture_model_sample(n = n,
-                                               thresholds,
-                                               scales,
-                                               shapes,thresholdation
-                                               weights,
-                                               kind = c("geometric", "arithmetic")[1])
-
-#results_2
-
-pdf_2 <- calculate_gp_mixture_model_pdf(x = sort(results_2),
-                                         thresholds,
-                                         scales,
-                                         shapes,
-                                         weights,
-                                         kind = c("geometric", "arithmetic")[1])
-
-#pdf_2
-
-density_2 <- density(results_2)
-
-support_density_2 <- density_2$x
-value_density_2 <- density_2$y
-
-hist(x = results_2,
-     freq = FALSE,
-     ylim = range(c(value_density_2, pdf_2)),
-     ylab = "density",
-     xlab = "support",
-     main = "mixture model density plot")
-
-lines(x = support_density_2, y = value_density_2, col = 1, lwd = 2)
-lines(x = sort(results_2), y = pdf_2, col = 4, lwd = 2)
-
-legend("topright", legend = c("empirical", "theoretical"), col = c(1, 4), lty = c(1, 1))
-
-
-plot(x = sort(results_1),
-     y = pdf_1,
-     type = "l",
-     col = 7,
-     lwd = 2,
-     ylim = range(c(pdf_1, pdf_2)),
-     xlim = range(c(results_1, results_2)),
-     xlab = "support",
-     ylab = "density",
-     main = "mixture model density plot")
-
-lines(x = sort(results_2), y  = pdf_2, type = "l", col = 6, lwd = 2)
-
-legend("topright", legend = c("arithmetic", "geometric"), col = c(7, 6), lty = c(1, 1))
+# # example 1
+# 
+# source("./src/calculate_gp_mixture_model_pdf.R")
+# 
+# weights <- c(0.5, 0.5)
+# 
+# shapes <- c(0.01, 0.1)
+# scales <- c(1, 1)
+# thresholds <- c(-2, +2)
+# 
+# n <- 10000
+# 
+# results_1 <- generate_gp_mixture_model_sample(n = n,
+#                                               thresholds,
+#                                               scales,
+#                                               shapes,
+#                                               weights,
+#                                               kind = c("geometric", "arithmetic")[2])
+# 
+# #results_1
+# 
+# pdf_1 <- calculate_gp_mixture_model_pdf(x = sort(results_1),
+#                                         thresholds,
+#                                         scales,
+#                                         shapes,
+#                                         weights,
+#                                         kind = c("geometric", "arithmetic")[2])
+# 
+# #pdf_1
+# 
+# density_1 <- density(results_1)
+# 
+# support_density_1 <- density_1$x
+# value_density_1 <- density_1$y
+# 
+# hist(x = results_1,
+#      freq = FALSE,
+#      ylim = range(c(value_density_1, pdf_1)),
+#      ylab = "density",
+#      xlab = "support",
+#      main = "mixture model density plot")
+# 
+# lines(x = support_density_1, y = value_density_1, col = 1, lwd = 2)
+# lines(x = sort(results_1), y = pdf_1, col = 4, lwd = 2)
+# 
+# legend("topright", legend = c("empirical", "theoretical"), col = c(1, 4), lty = c(1, 1))
+# 
+# 
+# results_2 <- generate_gp_mixture_model_sample(n = n,
+#                                               thresholds,
+#                                               scales,
+#                                               shapes,
+#                                               weights,
+#                                               kind = c("geometric", "arithmetic")[1])
+# 
+# #results_2
+# 
+# pdf_2 <- calculate_gp_mixture_model_pdf(x = sort(results_2),
+#                                         thresholds,
+#                                         scales,
+#                                         shapes,
+#                                         weights,
+#                                         kind = c("geometric", "arithmetic")[1])
+# 
+# #pdf_2
+# 
+# density_2 <- density(results_2)
+# 
+# support_density_2 <- density_2$x
+# value_density_2 <- density_2$y
+# 
+# hist(x = results_2,
+#      freq = FALSE,
+#      ylim = range(c(value_density_2, pdf_2)),
+#      ylab = "density",
+#      xlab = "support",
+#      main = "mixture model density plot")
+# 
+# lines(x = support_density_2, y = value_density_2, col = 1, lwd = 2)
+# lines(x = sort(results_2), y = pdf_2, col = 4, lwd = 2)
+# 
+# legend("topright", legend = c("empirical", "theoretical"), col = c(1, 4), lty = c(1, 1))
+# 
+# 
+# plot(x = sort(results_1),
+#      y = pdf_1,
+#      type = "l",
+#      col = 7,
+#      lwd = 2,
+#      ylim = range(c(pdf_1, pdf_2)),
+#      xlim = range(c(results_1, results_2)),
+#      xlab = "support",
+#      ylab = "density",
+#      main = "mixture model density plot")
+# 
+# lines(x = sort(results_2), y  = pdf_2, type = "l", col = 6, lwd = 2)
+# 
+# legend("topright", legend = c("arithmetic", "geometric"), col = c(7, 6), lty = c(1, 1))
+# 
+# 
+# results <- generate_gp_mixture_model_sample(n = n,
+#                                             thresholds,
+#                                             scales,
+#                                             shapes,
+#                                             weights,
+#                                             kind = "merge")
+# 
+# 
+# 
+# # example 2
+# 
+# source("./src/calculate_gp_mixture_model_pdf.R")
+# 
+# weights <- c(1/3, 1/3, 1/3)
+# 
+# shapes <- c(0.001, 0.01, 0.1)
+# scales <- c(1, 1, 1)
+# 
+# thresholds <- c(-2, +4, +10)
+# 
+# n <- 10000
+# 
+# results_1 <- generate_gp_mixture_model_sample(n = n,
+#                                               thresholds,
+#                                               scales,
+#                                               shapes,
+#                                               weights,
+#                                               kind = c("geometric", "arithmetic")[2])
+# 
+# #results_1
+# 
+# pdf_1 <- calculate_gp_mixture_model_pdf(x = sort(results_1),
+#                                         thresholds,
+#                                         scales,
+#                                         shapes,
+#                                         weights,
+#                                         kind = c("geometric", "arithmetic")[2])
+# 
+# #pdf_1
+# 
+# density_1 <- density(results_1)
+# 
+# support_density_1 <- density_1$x
+# value_density_1 <- density_1$y
+# 
+# hist(x = results_1,
+#      freq = FALSE,
+#      ylim = range(c(value_density_1, pdf_1)),
+#      ylab = "density",
+#      xlab = "support",
+#      main = "mixture model density plot")
+# 
+# lines(x = support_density_1, y = value_density_1, col = 1, lwd = 2)
+# lines(x = sort(results_1), y = pdf_1, col = 4, lwd = 2)
+# 
+# legend("topright", legend = c("empirical", "theoretical"), col = c(1, 4), lty = c(1, 1))
+# 
+# 
+# results_2 <- generate_gp_mixture_model_sample(n = n,
+#                                               thresholds,
+#                                               scales,
+#                                               shapes,
+#                                               weights,
+#                                               kind = c("geometric", "arithmetic")[1])
+# 
+# #results_2
+# 
+# pdf_2 <- calculate_gp_mixture_model_pdf(x = sort(results_2),
+#                                         thresholds,
+#                                         scales,
+#                                         shapes,
+#                                         weights,
+#                                         kind = c("geometric", "arithmetic")[1])
+# 
+# #pdf_2
+# 
+# density_2 <- density(results_2)
+# 
+# support_density_2 <- density_2$x
+# value_density_2 <- density_2$y
+# 
+# hist(x = results_2,
+#      freq = FALSE,
+#      ylim = range(c(value_density_2, pdf_2)),
+#      ylab = "density",
+#      xlab = "support",
+#      main = "mixture model density plot")
+# 
+# lines(x = support_density_2, y = value_density_2, col = 1, lwd = 2)
+# lines(x = sort(results_2), y = pdf_2, col = 4, lwd = 2)
+# 
+# legend("topright", legend = c("empirical", "theoretical"), col = c(1, 4), lty = c(1, 1))
+# 
+# 
+# plot(x = sort(results_1),
+#      y = pdf_1,
+#      type = "l",
+#      col = 7,
+#      lwd = 2,
+#      ylim = range(c(pdf_1, pdf_2)),
+#      xlim = range(c(results_1, results_2)),
+#      xlab = "support",
+#      ylab = "density",
+#      main = "mixture model density plot")
+# 
+# lines(x = sort(results_2), y  = pdf_2, type = "l", col = 6, lwd = 2)
+# 
+# legend("topright", legend = c("arithmetic", "geometric"), col = c(7, 6), lty = c(1, 1))
