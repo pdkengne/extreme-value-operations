@@ -53,110 +53,110 @@ calculate_laplace_mixture_model_inverse_cdf <- function(p,
 
 
 
-# example 1
-
-m <- 3
-
-weights <- as.numeric(extraDistr::rdirichlet(n = 1, alpha = rep(1, times = m)))
-
-scales <- rexp(n = m)
-locations <- rnorm(n = m)
-
-p <- seq(from = 0.01, to = 0.09, length.out = 9)
-
-results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
-                                                       locations,
-                                                       scales,
-                                                       weights,
-                                                       iterations = 100,
-                                                       kind = c("geometric", "arithmetic")[1])
-
-results
-
-calculate_laplace_mixture_model_cdf(q = results,
-                                    locations,
-                                    scales,
-                                    weights,
-                                    kind = c("geometric", "arithmetic")[1])
-p
-
-
-results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
-                                                       locations,
-                                                       scales,
-                                                       weights,
-                                                       iterations = 100,
-                                                       kind = c("geometric", "arithmetic")[2])
-
-results
-
-calculate_laplace_mixture_model_cdf(q = results,
-                                    locations,
-                                    scales,
-                                    weights,
-                                    kind = c("geometric", "arithmetic")[2])
-p
-
-
-results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
-                                                       locations,
-                                                       scales,
-                                                       weights,
-                                                       iterations = 100,
-                                                       kind = "mix")
-
-
-
-# example 2
-
-m <- 3
-
-weights <- as.numeric(extraDistr::rdirichlet(n = 1, alpha = rep(1, times = m)))
-
-scales <- rexp(n = m)
-locations <- rnorm(n = m)
-
-p <- seq(from = 0.90, to = 0.99, length.out = 10)
-
-results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
-                                                       locations,
-                                                       scales,
-                                                       weights,
-                                                       iterations = 100,
-                                                       kind = c("geometric", "arithmetic")[1])
-
-results
-
-calculate_laplace_mixture_model_cdf(q = results,
-                                    locations,
-                                    scales,
-                                    weights,
-                                    kind = c("geometric", "arithmetic")[1])
-p
-
-
-results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
-                                                       locations,
-                                                       scales,
-                                                       weights,
-                                                       iterations = 100,
-                                                       kind = c("geometric", "arithmetic")[2])
-
-results
-
-calculate_laplace_mixture_model_cdf(q = results,
-                                    locations,
-                                    scales,
-                                    weights,
-                                    kind = c("geometric", "arithmetic")[2])
-p
-
-
-results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
-                                                       locations,
-                                                       scales,
-                                                       weights,
-                                                       iterations = 100,
-                                                       kind = "mix")
+# # example 1
+# 
+# m <- 3
+# 
+# weights <- as.numeric(extraDistr::rdirichlet(n = 1, alpha = rep(1, times = m)))
+# 
+# scales <- rexp(n = m)
+# locations <- rnorm(n = m)
+# 
+# p <- seq(from = 0.01, to = 0.09, length.out = 9)
+# 
+# results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
+#                                                        locations,
+#                                                        scales,
+#                                                        weights,
+#                                                        iterations = 100,
+#                                                        kind = c("geometric", "arithmetic")[1])
+# 
+# results
+# 
+# calculate_laplace_mixture_model_cdf(q = results,
+#                                     locations,
+#                                     scales,
+#                                     weights,
+#                                     kind = c("geometric", "arithmetic")[1])
+# p
+# 
+# 
+# results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
+#                                                        locations,
+#                                                        scales,
+#                                                        weights,
+#                                                        iterations = 100,
+#                                                        kind = c("geometric", "arithmetic")[2])
+# 
+# results
+# 
+# calculate_laplace_mixture_model_cdf(q = results,
+#                                     locations,
+#                                     scales,
+#                                     weights,
+#                                     kind = c("geometric", "arithmetic")[2])
+# p
+# 
+# 
+# results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
+#                                                        locations,
+#                                                        scales,
+#                                                        weights,
+#                                                        iterations = 100,
+#                                                        kind = "mix")
+# 
+# 
+# 
+# # example 2
+# 
+# m <- 3
+# 
+# weights <- as.numeric(extraDistr::rdirichlet(n = 1, alpha = rep(1, times = m)))
+# 
+# scales <- rexp(n = m)
+# locations <- rnorm(n = m)
+# 
+# p <- seq(from = 0.90, to = 0.99, length.out = 10)
+# 
+# results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
+#                                                        locations,
+#                                                        scales,
+#                                                        weights,
+#                                                        iterations = 100,
+#                                                        kind = c("geometric", "arithmetic")[1])
+# 
+# results
+# 
+# calculate_laplace_mixture_model_cdf(q = results,
+#                                     locations,
+#                                     scales,
+#                                     weights,
+#                                     kind = c("geometric", "arithmetic")[1])
+# p
+# 
+# 
+# results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
+#                                                        locations,
+#                                                        scales,
+#                                                        weights,
+#                                                        iterations = 100,
+#                                                        kind = c("geometric", "arithmetic")[2])
+# 
+# results
+# 
+# calculate_laplace_mixture_model_cdf(q = results,
+#                                     locations,
+#                                     scales,
+#                                     weights,
+#                                     kind = c("geometric", "arithmetic")[2])
+# p
+# 
+# 
+# results <- calculate_laplace_mixture_model_inverse_cdf(p = p,
+#                                                        locations,
+#                                                        scales,
+#                                                        weights,
+#                                                        iterations = 100,
+#                                                        kind = "mix")
 
 
