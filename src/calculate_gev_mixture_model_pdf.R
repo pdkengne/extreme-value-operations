@@ -76,132 +76,132 @@ calculate_gev_mixture_model_pdf <- function(x,
 
 
 
-# example 1
-
-p <- 10
-
-y <- runif(p)
-weights <- y/sum(y)
-
-shapes <- runif(n = p, min = -0.1, max = +0.1)
-scales <- rexp(n = p)
-locations <- rnorm(n = p)
-
-x <- 1
-
-results <- calculate_gev_mixture_model_pdf(x = x,
-                                           locations,
-                                           scales,
-                                           shapes,
-                                           weights,
-                                           kind = c("geometric", "arithmetic")[1])
-
-results
-
-results <- calculate_gev_mixture_model_pdf(x = x,
-                                           locations,
-                                           scales,
-                                           shapes,
-                                           weights,
-                                           kind = c("geometric", "arithmetic")[2])
-
-results
-
-results <- calculate_gev_mixture_model_pdf(x = x,
-                                           locations,
-                                           scales,
-                                           shapes,
-                                           weights,
-                                           kind = "arith")
-
-
-# example 2
-
-weights <- c(0.5, 0.5)
-
-shapes <- c(0.1, 0.1)
-scales <- c(1, 1)
-locations <- c(-2, +2)
-
-x <- seq(from = -5, to = 10, length.out = 500)
-
-results_1 <- calculate_gev_mixture_model_pdf(x = x,
-                                           locations,
-                                           scales,
-                                           shapes,
-                                           weights,
-                                           kind = c("geometric", "arithmetic")[1])
-
-#results_1
-
-
-results_2 <- calculate_gev_mixture_model_pdf(x = x,
-                                           locations,
-                                           scales,
-                                           shapes,
-                                           weights,
-                                           kind = c("geometric", "arithmetic")[2])
-
-#results_2
-
-support <- c(results_1, results_2)
-
-plot(x = x,
-     y = results_1,
-     ylim = range(support),
-     type = "l",
-     col = 6,
-     main = "mixture model density plot",
-     xlab = "support",
-     ylab = "density")
-
-lines(x, results_2, type = "l", col = 7)
-
-legend("topright", legend = c("geometric", "arithmetic"), col = c(6, 7), lty = c(1, 1))
-
-
-# example 3
-
-weights <- c(0.5, 0.5, 0.5)
-
-shapes <- c(0.1, 0.1, 0.1)
-scales <- c(1, 1, 1)
-locations <- c(-2, +2, +6)
-
-x <- seq(from = -5, to = 15, length.out = 500)
-
-results_1 <- calculate_gev_mixture_model_pdf(x = x,
-                                           locations,
-                                           scales,
-                                           shapes,
-                                           weights,
-                                           kind = c("geometric", "arithmetic")[1])
-
-#results_1
-
-
-results_2 <- calculate_gev_mixture_model_pdf(x = x,
-                                           locations,
-                                           scales,
-                                           shapes,
-                                           weights,
-                                           kind = c("geometric", "arithmetic")[2])
-
-#results_2
-
-support <- c(results_1, results_2)
-
-plot(x = x,
-     y = results_1,
-     ylim = range(support),
-     type = "l",
-     col = 6,
-     main = "mixture model density plot",
-     xlab = "support",
-     ylab = "density")
-
-lines(x, results_2, type = "l", col = 7)
-
-legend("topright", legend = c("geometric", "arithmetic"), col = c(6, 7), lty = c(1, 1))
+# # example 1
+# 
+# p <- 10
+# 
+# y <- runif(p)
+# weights <- y/sum(y)
+# 
+# shapes <- runif(n = p, min = -0.1, max = +0.1)
+# scales <- rexp(n = p)
+# locations <- rnorm(n = p)
+# 
+# x <- 1
+# 
+# results <- calculate_gev_mixture_model_pdf(x = x,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
+#                                            weights,
+#                                            kind = c("geometric", "arithmetic")[1])
+# 
+# results
+# 
+# results <- calculate_gev_mixture_model_pdf(x = x,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
+#                                            weights,
+#                                            kind = c("geometric", "arithmetic")[2])
+# 
+# results
+# 
+# results <- calculate_gev_mixture_model_pdf(x = x,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
+#                                            weights,
+#                                            kind = "arith")
+# 
+# 
+# # example 2
+# 
+# weights <- c(0.5, 0.5)
+# 
+# shapes <- c(0.1, 0.1)
+# scales <- c(1, 1)
+# locations <- c(-2, +2)
+# 
+# x <- seq(from = -5, to = 10, length.out = 500)
+# 
+# results_1 <- calculate_gev_mixture_model_pdf(x = x,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
+#                                            weights,
+#                                            kind = c("geometric", "arithmetic")[1])
+# 
+# #results_1
+# 
+# 
+# results_2 <- calculate_gev_mixture_model_pdf(x = x,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
+#                                            weights,
+#                                            kind = c("geometric", "arithmetic")[2])
+# 
+# #results_2
+# 
+# support <- c(results_1, results_2)
+# 
+# plot(x = x,
+#      y = results_1,
+#      ylim = range(support),
+#      type = "l",
+#      col = 6,
+#      main = "mixture model density plot",
+#      xlab = "support",
+#      ylab = "density")
+# 
+# lines(x, results_2, type = "l", col = 7)
+# 
+# legend("topright", legend = c("geometric", "arithmetic"), col = c(6, 7), lty = c(1, 1))
+# 
+# 
+# # example 3
+# 
+# weights <- c(1/3, 1/3, 1/3)
+# 
+# shapes <- c(0.1, 0.1, 0.1)
+# scales <- c(1, 1, 1)
+# locations <- c(-2, +2, +6)
+# 
+# x <- seq(from = -5, to = 15, length.out = 500)
+# 
+# results_1 <- calculate_gev_mixture_model_pdf(x = x,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
+#                                            weights,
+#                                            kind = c("geometric", "arithmetic")[1])
+# 
+# #results_1
+# 
+# 
+# results_2 <- calculate_gev_mixture_model_pdf(x = x,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
+#                                            weights,
+#                                            kind = c("geometric", "arithmetic")[2])
+# 
+# #results_2
+# 
+# support <- c(results_1, results_2)
+# 
+# plot(x = x,
+#      y = results_1,
+#      ylim = range(support),
+#      type = "l",
+#      col = 6,
+#      main = "mixture model density plot",
+#      xlab = "support",
+#      ylab = "density")
+# 
+# lines(x, results_2, type = "l", col = 7)
+# 
+# legend("topright", legend = c("geometric", "arithmetic"), col = c(6, 7), lty = c(1, 1))
 
 
