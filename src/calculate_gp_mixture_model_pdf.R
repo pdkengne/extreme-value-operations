@@ -85,7 +85,7 @@ calculate_gp_mixture_model_pdf <- function(x,
 # 
 # shapes <- runif(n = p, min = -0.1, max = +0.1)
 # scales <- rexp(n = p)
-# thresholds <- rnorm(n = p)
+# thresholds <- rep(0, times = p)
 # 
 # x <- 1
 # 
@@ -98,7 +98,7 @@ calculate_gp_mixture_model_pdf <- function(x,
 # 
 # results
 # 
-# results <- calculate_gp_mixture_model_pdf(x = x, 
+# results <- calculate_gp_mixture_model_pdf(x = x,
 #                                           thresholds,
 #                                           scales,
 #                                           shapes,
@@ -119,27 +119,27 @@ calculate_gp_mixture_model_pdf <- function(x,
 # 
 # weights <- c(0.5, 0.5)
 # 
-# shapes <- c(0.1, 0.1)
-# scales <- c(1, 1)
-# thresholds <- c(-2, +2)
+# shapes <- c(0.01, 0.1)
+# scales <- c(1, 5)
+# thresholds <- c(0, 0)
 # 
-# x <- seq(from = -1, to = 10, length.out = 500)
+# x <- seq(from = -1, to = 20, length.out = 500)
 # 
 # results_1 <- calculate_gp_mixture_model_pdf(x = x,
-#                                           thresholds,
-#                                           scales,
-#                                           shapes,
-#                                           weights,
-#                                           kind = c("geometric", "arithmetic")[1])
+#                                             thresholds,
+#                                             scales,
+#                                             shapes,
+#                                             weights,
+#                                             kind = c("geometric", "arithmetic")[1])
 # 
 # #results
 # 
 # results_2 <- calculate_gp_mixture_model_pdf(x = x,
-#                                           thresholds,
-#                                           scales,
-#                                           shapes,
-#                                           weights,
-#                                           kind = c("geometric", "arithmetic")[2])
+#                                             thresholds,
+#                                             scales,
+#                                             shapes,
+#                                             weights,
+#                                             kind = c("geometric", "arithmetic")[2])
 # 
 # #results_2
 # 
@@ -164,27 +164,27 @@ calculate_gp_mixture_model_pdf <- function(x,
 # 
 # weights <- c(1/3, 1/3, 1/3)
 # 
-# shapes <- c(0.1, 0.1, 0.1)
-# scales <- c(1, 1, 1)
-# thresholds <- c(-2, 0, +2)
+# shapes <- c(0.001, 0.01, 0.1)
+# scales <- c(1, 3, 5)
+# thresholds <- c(0, 0, 0)
 # 
-# x <- seq(from = -1, to = 10, length.out = 500)
+# x <- seq(from = -1, to = 15, length.out = 500)
 # 
 # results_1 <- calculate_gp_mixture_model_pdf(x = x,
-#                                           thresholds,
-#                                           scales,
-#                                           shapes,
-#                                           weights,
-#                                           kind = c("geometric", "arithmetic")[1])
+#                                             thresholds,
+#                                             scales,
+#                                             shapes,
+#                                             weights,
+#                                             kind = c("geometric", "arithmetic")[1])
 # 
 # #results_1
 # 
 # results_2 <- calculate_gp_mixture_model_pdf(x = x,
-#                                           thresholds,
-#                                           scales,
-#                                           shapes,
-#                                           weights,
-#                                           kind = c("geometric", "arithmetic")[2])
+#                                             thresholds,
+#                                             scales,
+#                                             shapes,
+#                                             weights,
+#                                             kind = c("geometric", "arithmetic")[2])
 # 
 # #results_2
 # 
