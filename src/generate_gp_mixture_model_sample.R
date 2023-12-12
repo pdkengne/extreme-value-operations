@@ -65,8 +65,8 @@ generate_gp_mixture_model_sample <- function(n = 1,
 # weights <- c(0.5, 0.5)
 # 
 # shapes <- c(0.01, 0.1)
-# scales <- c(1, 1)
-# thresholds <- c(-2, +2)
+# scales <- c(1, 0.5)
+# thresholds <- c(0, 0)
 # 
 # n <- 10000
 # 
@@ -173,10 +173,10 @@ generate_gp_mixture_model_sample <- function(n = 1,
 # 
 # weights <- c(1/3, 1/3, 1/3)
 # 
-# shapes <- c(0.001, 0.01, 0.1)
+# shapes <- c(0.01, 0.01, 0.05)
 # scales <- c(1, 1, 1)
 # 
-# thresholds <- c(-2, +4, +10)
+# thresholds <- c(0, 0, 0)
 # 
 # n <- 10000
 # 
@@ -266,3 +266,4 @@ generate_gp_mixture_model_sample <- function(n = 1,
 # lines(x = sort(results_2), y  = pdf_2, type = "l", col = 6, lwd = 2)
 # 
 # legend("topright", legend = c("arithmetic", "geometric"), col = c(7, 6), lty = c(1, 1))
+
