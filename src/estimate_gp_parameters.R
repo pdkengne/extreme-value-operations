@@ -1,14 +1,16 @@
-# library(evd)
+# library(extRemes)
 
 options(digits = 10)
 
-estimate_gp_parameters <- function(x, threshold){
-  # x: vector of observations
-  # threshold: threshold to consider
+estimate_gp_parameters <- function(x,
+                                   type = c("GEV", "Gumbel")[1],
+                                   method = c("MLE", "GMLE", "Lmoments")[1]){
+  # x: vector of observations (assumed to be excesses) 
   
-  gp_model <- evd::fpot(x, threshold, model = "gpd", npp = length(x), cmax = FALSE, 
-                         r = 1, ulow = -Inf, rlow = 1, mper = NULL, std.err = TRUE, 
-                         corr = FALSE, method = "BFGS", warn.inf = TRUE)
+  gp_model <- extRemes::fevd(x = x,
+                             threshold = 0, 
+                             type = type, 
+                             method = method)
   
   gp_model
 }
@@ -20,12 +22,9 @@ estimate_gp_parameters <- function(x, threshold){
 # source("./src/generate_gp_sample.R")
 # source("./src/find_minimum_threshold.R")
 # 
-# x <- generate_gp_sample(n = 1000, loc = 1, scale = 0.5, shape = +0.2)
+# x <- generate_gp_sample(n = 1000, threshold = 0, scale = 0.5, shape = +0.2)
 # 
-# threshold <- find_minimum_threshold(x)
-# threshold
-# 
-# results<- estimate_gp_parameters(x, threshold)
+# results<- estimate_gp_parameters(x)
 # 
 # results
 # names(results)
@@ -36,12 +35,9 @@ estimate_gp_parameters <- function(x, threshold){
 # source("./src/generate_gp_sample.R")
 # source("./src/find_minimum_threshold.R")
 # 
-# x <- generate_gp_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
+# x <- generate_gp_sample(n = 1000, threshold = 0, scale = 0.5, shape = -0.2)
 # 
-# threshold <- find_minimum_threshold(x)
-# threshold
-# 
-# results<- estimate_gp_parameters(x, threshold)
+# results<- estimate_gp_parameters(x)
 # 
 # results
 # names(results)
@@ -52,12 +48,9 @@ estimate_gp_parameters <- function(x, threshold){
 # source("./src/generate_gp_sample.R")
 # source("./src/find_minimum_threshold.R")
 # 
-# x <- generate_gp_sample(n = 1000, loc = 1, scale = 0.5, shape = 0)
+# x <- generate_gp_sample(n = 1000, threshold = 0, scale = 0.5, shape = 0)
 # 
-# threshold <- find_minimum_threshold(x)
-# threshold
-# 
-# results<- estimate_gp_parameters(x, threshold)
+# results<- estimate_gp_parameters(x)
 # 
 # results
 # names(results)
