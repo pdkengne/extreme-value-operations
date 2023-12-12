@@ -41,7 +41,9 @@ calculate_nsbeta_mixture_model_inverse_cdf <- function(p,
       # calculates some initial guesses for the root of the nonlinear equation to solve
       q_initial_guesses <- sapply(1:length(weights), function(j) extraDistr::qnsbeta(p = p, 
                                                                                      shape1 = shapes1[j], 
-                                                                                     shape2 = shapes2[j])) 
+                                                                                     shape2 = shapes2[j],
+                                                                                     min = lowers[j],
+                                                                                     max = uppers[j])) 
       
       # estimate the root of the nonlinear equation to solve
       answer <- dichotomy(func = nle, a = min(q_initial_guesses), b = max(q_initial_guesses), n = iterations)
