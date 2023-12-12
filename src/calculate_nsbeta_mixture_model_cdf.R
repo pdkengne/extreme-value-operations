@@ -1,9 +1,9 @@
 calculate_nsbeta_mixture_model_cdf <- function(q, 
                                                shapes1, 
                                                shapes2,
-                                               weights, 
                                                lowers, 
                                                uppers,
+                                               weights,
                                                kind = c("geometric", "arithmetic")[1]){
   # q: vector of observations
   # weights: vector of weights
@@ -72,32 +72,32 @@ calculate_nsbeta_mixture_model_cdf <- function(q,
 # uppers <- rep(1, times = p)
 # 
 # results <- calculate_nsbeta_mixture_model_cdf(q = runif(n = 10),
-#                                               shapes1,
+#                                               shapes1, 
 #                                               shapes2,
-#                                               weights,
 #                                               lowers, 
 #                                               uppers,
+#                                               weights,
 #                                               kind = c("geometric", "arithmetic")[1])
 # 
 # results
 # 
 # 
 # results <- calculate_nsbeta_mixture_model_cdf(q = runif(n = 10),
-#                                               shapes1,
+#                                               shapes1, 
 #                                               shapes2,
-#                                               weights,
 #                                               lowers, 
 #                                               uppers,
+#                                               weights,
 #                                               kind = c("geometric", "arithmetic")[2])
 # 
 # results
 # 
 # 
 # results <- calculate_nsbeta_mixture_model_cdf(q = runif(n = 10),
-#                                               shapes1,
+#                                               shapes1, 
 #                                               shapes2,
-#                                               weights,
 #                                               lowers, 
 #                                               uppers,
+#                                               weights,
 #                                               kind = "geom")
-
+# 
