@@ -1,15 +1,26 @@
 # library(extRemes) 
 
-source("./src/calculate_modes.R")
+source("./src/extract_nlargest_sample.R")
+source("./src/get_candidate_block_sizes.R")
+source("./src/estimate_several_gev_models.R")
+source("./src/estimate_several_standardized_block_maxima_mean.R")
+
+source("./src/estimate_gev_mixture_model_automatic_weights.R")
+
+
+source("./src/extract_peaks_over_threshold.R")
+source("./src/find_threshold_associated_with_given_block_size.R")
+
+source("./src/extract_block_maxima.R")
 
 
 fit_unimodal_gev_mixture_model <- function(x, 
-                                           nb_gev_models = 2, 
-                                           min_cluster_size = 20, 
-                                           max_iteration = 50,
-                                           tolerance = 10^(-3),
-                                           left_cluster_extension_size = 20,
-                                           right_cluster_extension_size = 20){
+                                           block_sizes = NULL,
+                                           minimum_nblocks = 50,
+                                           threshold = NULL,
+                                           confidence_level = 0.95,
+                                           use_extremal_index = TRUE,
+                                           method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations
   # nb_gev_models: a positive integer which indicates the number of gev models to start with
   # min_cluster_size: indicates the minimum number of elements in a cluster
@@ -22,41 +33,13 @@ fit_unimodal_gev_mixture_model <- function(x,
   output <- list()
   
   n <- length(x)
-  p <- nb_gev_models
   
-  if (p > 1){
-    z <- as.numeric(ggplot2::cut_number(x = x, n = p))
-  } else{
-    z <- rep(x = 1, times = n)
-  }
+  p <- length(block_sizes)
   
-  clusters_freq <- table(z)
-  clusters_labels <- as.numeric(names(clusters_freq))
-  omega <- as.numeric(prop.table(clusters_freq))
+  omega <- rep(x = 1, times = p)/p
   
-  while (min(as.numeric(clusters_freq)) < min_cluster_size & p > 1){
-    p <- p - 1
-    
-    z <- as.numeric(ggplot2::cut_number(x = x, n = p))
-    
-    clusters_freq <- table(z)
-    clusters_labels <- as.numeric(names(clusters_freq))
-    omega <- as.numeric(prop.table(clusters_freq))
-  }
-  
-  theta <- sapply(clusters_labels, function(k){
-    if (k < p){
-      if (k > 1){
-        y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size),
-               x[z == k], 
-               head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
-      } else{
-        y <- c(x[z == k], head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
-      }
-    } else{
-      y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size), x[z == k])
-    }
-    
+  theta <- sapply(1:p, function(k){
+    y <-  extract_block_maxima(x, block_size = block_sizes[k])
     model <- extRemes::fevd(x = y, type = "GEV")
     res <- summary(model, silent = TRUE)
     
@@ -71,7 +54,7 @@ fit_unimodal_gev_mixture_model <- function(x,
   
   posterior <- sapply(1:n, function(i){
     obs <- x[i]
-    likelihood <- sapply(clusters_labels, function(k){
+    likelihood <- sapply(1:p, function(k){
       location <- locations[k]
       scale <- scales[k]
       shape <- shapes[k]
@@ -93,103 +76,18 @@ fit_unimodal_gev_mixture_model <- function(x,
     stop("Sorry, algorithm does not converge with the current inputs !")
   }
   
-  current_negative_loglik <- sum(theta["nllh", ])
-  current_tolerance <- tolerance + 1
-  current_iteration <- 1
   
-  while (current_iteration < max_iteration & current_tolerance > tolerance){
-    current_iteration <- current_iteration + 1
-    
-    if (class(posterior)[1] == "numeric"){
-      z <- as.numeric(posterior)
-    } else{
-      z <- apply(posterior, 2, which.max)
-    }
-    
-    clusters_freq <- table(z)
-    clusters_labels <- as.numeric(names(clusters_freq))
-    omega <- as.numeric(prop.table(clusters_freq))
-    p <- length(clusters_labels)
-    
-    while (min(as.numeric(clusters_freq)) < min_cluster_size & p > 1){
-      p <- p - 1
-      
-      z <- as.numeric(ggplot2::cut_number(x = x, n = p))
-      
-      clusters_freq <- table(z)
-      clusters_labels <- as.numeric(names(clusters_freq))
-      omega <- as.numeric(prop.table(clusters_freq))
-    }
-    
-    theta <- sapply(clusters_labels, function(k){
-      if (k < p){
-        if (k > 1){
-          y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size),
-                 x[z == k], 
-                 head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
-        } else{
-          y <- c(x[z == k], head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
-        }
-      } else{
-        y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size), x[z == k])
-      }
-      
-      model <- extRemes::fevd(x = y, type = "GEV")
-      res <- summary(model, silent = TRUE)
-      
-      parameters <- c(model$results$par, res$nllh)
-      names(parameters) <- c("location", "scale", "shape", "nllh")
-      parameters
-    })
-    
-    locations <- theta["location", ]
-    scales <- theta["scale", ]
-    shapes <- theta["shape", ]
-    
-    posterior <- sapply(1:n, function(i){
-      obs <- x[i]
-      likelihood <- sapply(clusters_labels, function(k){
-        location <- locations[k]
-        scale <- scales[k]
-        shape <- shapes[k]
-        dens <- extRemes::devd(x = obs, 
-                               loc = location, 
-                               scale = scale, 
-                               shape = shape, 
-                               log = FALSE, 
-                               type = "GEV")
-        prior <- omega[k]
-        prior*dens
-      })
-      likelihood/sum(likelihood)
-    })
-    
-    posterior_nb_na <- sum(is.na(posterior))
-    
-    if (posterior_nb_na != 0){
-      stop("Sorry, algorithm does not converge with the current inputs !")
-    }
-    
-    current_tolerance <- abs(current_negative_loglik - sum(theta["nllh", ]))
-    current_negative_loglik <- sum(theta["nllh", ])
-    
-    print(paste0("Iteration: ", current_iteration, ", Tolerance: ", current_tolerance))
-  }
+  #--------------------
+  z <- apply(posterior, 2, which.max)
+  clusters_freq <- table(z)
+  clusters_labels <- as.numeric(names(clusters_freq))
+  omega <- as.numeric(prop.table(clusters_freq))
+  #--------------------
+  
+  selected_block_sizes <- block_sizes[clusters_labels]
   
   final_models <- lapply(clusters_labels, function(k){
-    
-    if (k < p){
-      if (k > 1){
-        y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size),
-               x[z == k], 
-               head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
-      } else{
-        y <- c(x[z == k], head(sort(x[z == k + 1]), n  = right_cluster_extension_size))
-      }
-    } else{
-      y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size), x[z == k])
-    }
-    
+    y <-  extract_block_maxima(x, block_size = block_sizes[k])
     model <- extRemes::fevd(x = y, type = "GEV")
     model
   })
@@ -217,10 +115,9 @@ fit_unimodal_gev_mixture_model <- function(x,
   names(cluster_sizes) <- clusters_labels
   
   # update the output object
-  output[["last_iteration"]] <- current_iteration
-  output[["last_tolerance"]] <- current_tolerance
-  output[["nclusters"]] <- p
+  output[["nclusters"]] <- length(cluster_sizes)
   output[["cluster_sizes"]] <- cluster_sizes
+  output[["selected_block_sizes"]] <- selected_block_sizes
   output[["cluster_weights"]] <- omega
   output[["cluster_negative_loglikelihoods"]] <- nllh
   output[["information_criterions"]] <- information_criterions
@@ -233,206 +130,265 @@ fit_unimodal_gev_mixture_model <- function(x,
 }
 
 
-# # example 1
-# 
-# source("./src/calculate_modes.R")
-# source("./src/plot_modes.R")
-# source("./src/plot_fit_gev_mixture_model.R")
-# 
-# x <- rnorm(n = 1000)
-# 
-# 
-# modes_object <- calculate_modes(x = x)
-# 
-# plot_modes(modes_object)
-# 
-# 
-# p <- 3
-# 
-# results <- fit_unimodal_gev_mixture_model(x = x,
-#                                           nb_gev_models = p,
-#                                           min_cluster_size = 20,
-#                                           max_iteration = 40,
-#                                           left_cluster_extension_size = 50,
-#                                           right_cluster_extension_size = 50,
-#                                           tolerance = 10^(-3))
-# 
-# names(results)
-# 
-# # [1] "last_iteration"                  "last_tolerance"                  "nclusters"                       "cluster_sizes"                   "cluster_weights"
-# # [6] "cluster_negative_loglikelihoods" "information_criterions"          "cluster_gev_model_parameters"    "clusters"                        "data"
-# # [11] "cluster_models"
-# 
-# 
-# results$nclusters
-# 
-# results$cluster_sizes
-# 
-# results$information_criterions
-# 
-# results$cluster_gev_model_parameters
-# 
-# results$cluster_models
-# 
-# 
-# plot_fit_gev_mixture_model(gev_mixture_model_object = results,
-#                            xlab = "support",
-#                            ylab = "density",
-#                            main = "density plot",
-#                            legend_position = "topright")
-# 
-# 
-# 
-# # example 2
-# 
-# source("./src/calculate_modes.R")
-# source("./src/plot_modes.R")
-# source("./src/plot_fit_gev_mixture_model.R")
-# 
-# 
-# x <- bmixture::rmixnorm(n = 3000, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
-# 
-# modes_object <- calculate_modes(x = x)
-# 
-# plot_modes(modes_object)
-# 
-# 
-# p <- 2
-# 
-# results <- fit_unimodal_gev_mixture_model(x = x,
-#                                           nb_gev_models = p,
-#                                           min_cluster_size = 20,
-#                                           max_iteration = 40,
-#                                           left_cluster_extension_size = 5,
-#                                           right_cluster_extension_size = 10,
-#                                           tolerance = 10^(-3))
-# 
-# names(results)
-# 
-# results$nclusters
-# 
-# results$cluster_sizes
-# 
-# results$cluster_weights
-# 
-# results$information_criterions
-# 
-# results$cluster_gev_model_parameters
-# 
-# results$cluster_models
-# 
-# 
-# plot_fit_gev_mixture_model(gev_mixture_model_object = results,
-#                            xlab = "support",
-#                            ylab = "density",
-#                            main = "density plot",
-#                            legend_position = "topright")
-# 
-# 
-# # example 3
-# 
-# 
-# source("./src/calculate_modes.R")
-# source("./src/plot_modes.R")
-# source("./src/plot_fit_gev_mixture_model.R")
-# 
-# data(faithful, package = "datasets")
-# 
-# data <- faithful
-# 
-# data$scaled_waiting <- scale(data$waiting)
-# 
-# names(data)
-# 
-# x <- data$eruptions
-# 
-# modes_object <- calculate_modes(x = x)
-# 
-# plot_modes(modes_object)
-# 
-# p <- 2
-# 
-# z <- x[x > 3]
-# 
-# results <- fit_unimodal_gev_mixture_model(x = z,
-#                                           nb_gev_models = p,
-#                                           min_cluster_size = 20,
-#                                           max_iteration = 40,
-#                                           left_cluster_extension_size = 5,
-#                                           right_cluster_extension_size = 10,
-#                                           tolerance = 10^(-3))
-# 
-# names(results)
-# 
-# results$nclusters
-# 
-# results$cluster_sizes
-# 
-# results$cluster_weights
-# 
-# results$information_criterions
-# 
-# results$cluster_gev_model_parameters
-# 
-# results$cluster_models
-# 
-# 
-# plot_fit_gev_mixture_model(gev_mixture_model_object = results,
-#                            xlab = "support",
-#                            ylab = "density",
-#                            main = "density plot",
-#                            legend_position = "topright")
-# 
-# abline(h = 0, lty = "dotted")
-# 
-# 
-# # example 4
-# 
-# source("./src/calculate_modes.R")
-# source("./src/plot_modes.R")
-# source("./src/plot_fit_gev_mixture_model.R")
-# 
-# x <- rexp(n = 10000)
-# 
-# 
-# modes_object <- calculate_modes(x = x)
-# 
-# plot_modes(modes_object)
-# 
-# 
-# p <- 10
-# 
-# results <- fit_unimodal_gev_mixture_model(x = x,
-#                                           nb_gev_models = p,
-#                                           min_cluster_size = 20,
-#                                           max_iteration = 40,
-#                                           left_cluster_extension_size = 10,
-#                                           right_cluster_extension_size = 10,
-#                                           tolerance = 10^(-3))
-# 
-# names(results)
-# 
-# # [1] "last_iteration"                  "last_tolerance"                  "nclusters"                       "cluster_sizes"                   "cluster_weights"
-# # [6] "cluster_negative_loglikelihoods" "information_criterions"          "cluster_gev_model_parameters"    "clusters"                        "data"
-# # [11] "cluster_models"
-# 
-# 
-# results$nclusters
-# 
-# results$cluster_sizes
-# 
-# results$information_criterions
-# 
-# results$cluster_gev_model_parameters
-# 
-# results$cluster_models
-# 
-# 
-# plot_fit_gev_mixture_model(gev_mixture_model_object = results,
-#                            xlab = "support",
-#                            ylab = "density",
-#                            main = "density plot",
-#                            legend_position = "topright")
+# example 1
+
+source("./src/calculate_modes.R")
+source("./src/plot_modes.R")
+source("./src/plot_fit_gev_mixture_model.R")
+source("./src/plot_several_standardized_block_maxima_mean.R")
+
+#x <- rnorm(n = 1000)
+
+n <- 3000
+
+loc <- 0
+scale <- 1
+shape <- 0.01
+
+x <- extRemes::revd(n = n, loc = loc, scale = scale, shape = shape)
+
+dens <- extRemes::devd(x = sort(x), loc = loc, scale = scale, shape = shape)
+
+modes_object <- calculate_modes(x = x)
+
+plot_modes(modes_object)
+
+results <- fit_unimodal_gev_mixture_model(x = x, block_sizes = c(1:50))
+
+names(results)
+
+# [1] "last_iteration"                  "last_tolerance"                  "nclusters"                       "cluster_sizes"                   "cluster_weights"
+# [6] "cluster_negative_loglikelihoods" "information_criterions"          "cluster_gev_model_parameters"    "clusters"                        "data"
+# [11] "cluster_models"
+
+
+results$nclusters
+
+results$cluster_sizes
+
+results$selected_block_sizes
+
+results$information_criterions
+
+results$cluster_gev_model_parameters
+
+results$cluster_weights
+
+#results$cluster_models
+
+
+plot_fit_gev_mixture_model(gev_mixture_model_object = results,
+                           xlab = "support",
+                           ylab = "density",
+                           main = "density plot",
+                           legend_position = "topright")
+
+
+lines(sort(x), dens, col = 4, lwd = 2)
+
+
+# example 2
+
+source("./src/calculate_modes.R")
+source("./src/plot_modes.R")
+source("./src/plot_fit_gev_mixture_model.R")
+source("./src/plot_several_standardized_block_maxima_mean.R")
+
+
+x <- bmixture::rmixnorm(n = 3000, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
+
+modes_object <- calculate_modes(x = x)
+
+plot_modes(modes_object)
+
+
+results <- fit_unimodal_gev_mixture_model(x = x, block_sizes = c(1:50))
+
+names(results)
+
+results$nclusters
+
+results$cluster_sizes
+
+results$selected_block_sizes
+
+results$information_criterions
+
+results$cluster_gev_model_parameters
+
+results$cluster_weights
+
+#results$cluster_models
+
+
+plot_fit_gev_mixture_model(gev_mixture_model_object = results,
+                           xlab = "support",
+                           ylab = "density",
+                           main = "density plot",
+                           legend_position = "topright")
+
+
+
+
+plot_several_standardized_block_maxima_mean(x = x,
+                                            block_sizes = results$selected_block_sizes,
+                                            confidence_level = 0.95,
+                                            equivalent = FALSE,
+                                            method = c("MLE", "GMLE", "Lmoments")[1])
+
+
+plot_several_standardized_block_maxima_mean(x = x,
+                                            block_sizes = results$selected_block_sizes,
+                                            confidence_level = 0.95,
+                                            equivalent = TRUE,
+                                            method = c("MLE", "GMLE", "Lmoments")[1])
+
+
+selection <- estimate_several_standardized_block_maxima_mean(x = x, 
+                                                             block_sizes = results$selected_block_sizes, 
+                                                             confidence_level = 0.95, 
+                                                             method = c("MLE", "GMLE", "Lmoments")[1])
+
+selection
+
+blocks <- as.numeric(rownames(selection$selected))
+blocks
+
+
+final_results <- fit_unimodal_gev_mixture_model(x = x, block_sizes = blocks)
+
+#names(final_results)
+
+final_results$nclusters
+
+final_results$cluster_sizes
+
+final_results$selected_block_sizes
+
+final_results$information_criterions
+
+final_results$cluster_gev_model_parameters
+
+final_results$cluster_weights
+
+#final_results$cluster_models
+
+
+plot_fit_gev_mixture_model(gev_mixture_model_object = final_results,
+                           xlab = "support",
+                           ylab = "density",
+                           main = "density plot",
+                           legend_position = "topright")
+
+
+lines(sort(x), dens, col = 4, lwd = 2)
+
+
+
+# example 3
+
+
+source("./src/calculate_modes.R")
+source("./src/plot_modes.R")
+source("./src/plot_fit_gev_mixture_model.R")
+
+data(faithful, package = "datasets")
+
+data <- faithful
+
+data$scaled_waiting <- scale(data$waiting)
+
+names(data)
+
+x <- data$eruptions
+
+modes_object <- calculate_modes(x = x)
+
+plot_modes(modes_object)
+
+p <- 2
+
+z <- x[x > 3]
+
+results <- fit_unimodal_gev_mixture_model(x = z,
+                                          nb_gev_models = p,
+                                          min_cluster_size = 20,
+                                          max_iteration = 40,
+                                          left_cluster_extension_size = 5,
+                                          right_cluster_extension_size = 10,
+                                          tolerance = 10^(-3))
+
+names(results)
+
+results$nclusters
+
+results$cluster_sizes
+
+results$cluster_weights
+
+results$information_criterions
+
+results$cluster_gev_model_parameters
+
+results$cluster_models
+
+
+plot_fit_gev_mixture_model(gev_mixture_model_object = results,
+                           xlab = "support",
+                           ylab = "density",
+                           main = "density plot",
+                           legend_position = "topright")
+
+abline(h = 0, lty = "dotted")
+
+
+# example 4
+
+source("./src/calculate_modes.R")
+source("./src/plot_modes.R")
+source("./src/plot_fit_gev_mixture_model.R")
+
+x <- rexp(n = 10000)
+
+
+modes_object <- calculate_modes(x = x)
+
+plot_modes(modes_object)
+
+
+p <- 10
+
+results <- fit_unimodal_gev_mixture_model(x = x,
+                                          nb_gev_models = p,
+                                          min_cluster_size = 20,
+                                          max_iteration = 40,
+                                          left_cluster_extension_size = 10,
+                                          right_cluster_extension_size = 10,
+                                          tolerance = 10^(-3))
+
+names(results)
+
+# [1] "last_iteration"                  "last_tolerance"                  "nclusters"                       "cluster_sizes"                   "cluster_weights"
+# [6] "cluster_negative_loglikelihoods" "information_criterions"          "cluster_gev_model_parameters"    "clusters"                        "data"
+# [11] "cluster_models"
+
+
+results$nclusters
+
+results$cluster_sizes
+
+results$information_criterions
+
+results$cluster_gev_model_parameters
+
+results$cluster_models
+
+
+plot_fit_gev_mixture_model(gev_mixture_model_object = results,
+                           xlab = "support",
+                           ylab = "density",
+                           main = "density plot",
+                           legend_position = "topright")
 
 
 

@@ -96,6 +96,7 @@ plot_fit_gev_mixture_model <- function(gev_mixture_model_object,
 # # example 1
 # 
 # source("./src/fit_gev_mixture_model.R")
+# source("./src/fit_unimodal_gev_mixture_model_test.R")
 # 
 # x <- bmixture::rmixnorm(n = 3000, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
 # 
@@ -104,7 +105,7 @@ plot_fit_gev_mixture_model <- function(gev_mixture_model_object,
 # gev_mixture_model_object <- fit_gev_mixture_model(x = x,
 #                                                   nb_gev_models = p,
 #                                                   min_cluster_size = 20,
-#                                                   max_iteration = 40,
+#                                                   max_iteration = 1,
 #                                                   left_cluster_extension_size = 10,
 #                                                   right_cluster_extension_size = 100,
 #                                                   tolerance = 10^(-3))

@@ -53,6 +53,7 @@ fit_unimodal_gev_mixture_model <- function(x,
       y <- c(tail(sort(x[z == k - 1]), n  = left_cluster_extension_size), x[z == k])
     }
     
+    y <- extRemes::revd(n = 1000)
     model <- extRemes::fevd(x = y, type = "GEV")
     res <- summary(model, silent = TRUE)
     
@@ -88,6 +89,13 @@ fit_unimodal_gev_mixture_model <- function(x,
   if (posterior_nb_na != 0){
     stop("Sorry, algorithm does not converge with the current inputs !")
   }
+  
+  #--------------------
+  z <- apply(posterior, 2, which.max)
+  clusters_freq <- table(z)
+  clusters_labels <- as.numeric(names(clusters_freq))
+  omega <- as.numeric(prop.table(clusters_freq))
+  #--------------------
   
   current_negative_loglik <- sum(theta["nllh", ])
   current_tolerance <- tolerance + 1
@@ -235,22 +243,22 @@ source("./src/calculate_modes.R")
 source("./src/plot_modes.R")
 source("./src/plot_fit_gev_mixture_model.R")
 
-x <- rnorm(n = 1000)
+# x <- rnorm(n = 2000)
 
+x <- extRemes::revd(n = 2000)
 
 modes_object <- calculate_modes(x = x)
 
 plot_modes(modes_object)
 
-
-p <- 2
+p <- 5
 
 results <- fit_unimodal_gev_mixture_model(x = x,
                                           nb_gev_models = p,
                                           min_cluster_size = 20,
-                                          max_iteration = 40,
-                                          left_cluster_extension_size = 50,
-                                          right_cluster_extension_size = 50,
+                                          max_iteration = 1,
+                                          left_cluster_extension_size = 20,
+                                          right_cluster_extension_size = 20,
                                           tolerance = 10^(-3))
 
 names(results)
@@ -264,11 +272,14 @@ results$nclusters
 
 results$cluster_sizes
 
+
 results$information_criterions
 
 results$cluster_gev_model_parameters
 
-results$cluster_models
+results$cluster_weights
+
+#results$cluster_models
 
 
 plot_fit_gev_mixture_model(gev_mixture_model_object = results,

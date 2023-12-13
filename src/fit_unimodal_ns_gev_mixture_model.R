@@ -41,11 +41,7 @@ fit_unimodal_ns_gev_mixture_model <- function(x,
   n <- length(x)
   p <- nb_gev_models
   
-  if (p > 1){
-    z <- as.numeric(ggplot2::cut_number(x = x, n = p))
-  } else{
-    z <- rep(x = 1, times = n)
-  }
+  z <- as.numeric(ggplot2::cut_number(x = x, n = p))
   
   clusters_freq <- table(z)
   clusters_labels <- as.numeric(names(clusters_freq))
