@@ -11,7 +11,10 @@ source("./src/estimate_gev_mixture_model_automatic_weights.R")
 source("./src/extract_peaks_over_threshold.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
 
+source("./src/estimate_extremal_index.R")
+source("./src/calculate_power_gev_parameters.R")
 source("./src/extract_block_maxima.R")
+source("./src/extract_block_maxima_with_indexes.R")
 
 
 fit_unimodal_gev_mixture_model <- function(x, 
