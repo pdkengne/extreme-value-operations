@@ -1,4 +1,5 @@
 # library(extRemes) 
+# library(fitdistrplus)
 
 source("./src/extract_nlargest_sample.R")
 source("./src/get_candidate_block_sizes.R")
@@ -23,11 +24,12 @@ fit_unimodal_gev_mixture_model <- function(x,
                                            threshold = NULL,
                                            confidence_level = 0.95,
                                            use_extremal_index = TRUE,
+                                           prior = c("identic", "pessimistic"),
                                            method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations
   # nb_gev_models: a positive integer which indicates the number of gev models to start with
   # min_cluster_size: indicates the minimum number of elements in a cluster
-  # max_iteration: indicates the maximum number of iterations to perform in the CEM algorithm
+  # max_iteration: indicates the maximumlibrary(fitdistrplus) number of iterations to perform in the CEM algorithm
   # tolerance: indicates the threshold for the difference between two consecutive negative log likelihoods
   # right_cluster_extension_size & left_cluster_extension_size: indicates the number of nearest observations
   #                                                               from the surrounding clusters to includes
