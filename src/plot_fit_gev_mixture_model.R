@@ -25,6 +25,8 @@ plot_fit_gev_mixture_model <- function(gev_mixture_model_object,
   
   parameters <- gev_mixture_model_object$cluster_gev_model_parameters
   
+  parameters_star <- gev_mixture_model_object$cluster_gev_model_parameters_star
+  
   weights <- gev_mixture_model_object$cluster_weights
   
   nclusters <- gev_mixture_model_object$nclusters
@@ -54,16 +56,16 @@ plot_fit_gev_mixture_model <- function(gev_mixture_model_object,
            lty = c(1, 1), col = c(1, 3))
   } else{
     theoretical_densities_1 <- calculate_gev_mixture_model_pdf(x = support,
-                                                               locations = parameters["location", ],
-                                                               scales =  parameters["scale", ],
-                                                               shapes = parameters["shape", ],
+                                                               locations = parameters_star["loc_star", ],
+                                                               scales =  parameters_star["scale_star", ],
+                                                               shapes = parameters_star["shape_star", ],
                                                                weights = weights,
                                                                kind = c("geometric", "arithmetic")[1])
     
     theoretical_densities_2 <- calculate_gev_mixture_model_pdf(x = support,
-                                                               locations = parameters["location", ],
-                                                               scales =  parameters["scale", ],
-                                                               shapes = parameters["shape", ],
+                                                               locations = parameters_star["loc_star", ],
+                                                               scales =  parameters_star["scale_star", ],
+                                                               shapes = parameters_star["shape_star", ],
                                                                weights = weights,
                                                                kind = c("geometric", "arithmetic")[2])
     

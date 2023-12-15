@@ -39,17 +39,29 @@ fit_unimodal_gev_mixture_model <- function(x,
   
   n <- length(x)
   
+  selection <- estimate_several_standardized_block_maxima_mean(x = x, 
+                                                               block_sizes = block_sizes, 
+                                                               confidence_level = confidence_level, 
+                                                               method = method)
+  
+  block_sizes <- as.numeric(rownames(selection$selected))
+  
   p <- length(block_sizes)
   
   omega <- rep(x = 1, times = p)/p
   
+  sample_index <- 1:p
+  
   theta <- sapply(1:p, function(k){
     y <-  extract_block_maxima(x, block_size = block_sizes[k])
     model <- extRemes::fevd(x = y, type = "GEV")
-    res <- summary(model, silent = TRUE)
-    
-    parameters <- c(model$results$par, res$nllh)
-    names(parameters) <- c("location", "scale", "shape", "nllh")
+  
+    estimates <- model$results$par
+    parameters <- calculate_power_gev_parameters(loc = estimates["location"], 
+                                                     scale = estimates["scale"], 
+                                                     shape = estimates["shape"], 
+                                                     exponent = 1/block_sizes[k])
+    names(parameters) <- c("location", "scale", "shape")
     parameters
   })
   
@@ -63,17 +75,39 @@ fit_unimodal_gev_mixture_model <- function(x,
       location <- locations[k]
       scale <- scales[k]
       shape <- shapes[k]
-      dens <- extRemes::devd(x = obs, 
-                             loc = location, 
-                             scale = scale, 
-                             shape = shape, 
-                             log = FALSE, 
+      dens <- extRemes::devd(x = obs,
+                             loc = location,
+                             scale = scale,
+                             shape = shape,
+                             log = FALSE,
                              type = "GEV")
       prior <- omega[k]
       prior*dens
     })
     likelihood/sum(likelihood)
   })
+  
+  
+  # s <- floor(log(n)/log(2))
+  # m <- 2^s
+  # empirical_density_object <- density(x = x, n = m)
+  # support <- empirical_density_object$x
+  # empirical_density <- empirical_density_object$y
+  # 
+  # density_index <- 1:length(support)
+  # 
+  # posterior <- sapply(density_index, function(i){
+  #   obs <- support[i]
+  #   likelihood <- sapply(sample_index, function(k){
+  #     dens <- extRemes::devd(x = obs, 
+  #                            loc = locations[k], 
+  #                            scale = scales[k],
+  #                            shape = shapes[k])
+  #     dens
+  #   })
+  #   abs(likelihood - empirical_density[i])
+  # })
+  
   
   posterior_nb_na <- sum(is.na(posterior))
   
@@ -98,8 +132,16 @@ fit_unimodal_gev_mixture_model <- function(x,
   })
   
   parameters <- sapply(final_models, function(model){
-    res <- summary(model, silent = TRUE)
     model$results$par
+  })
+  
+  parameters_star <- sapply(1:length(clusters_labels), function(k){
+    estimates <- parameters[, k]
+    estimates_star <- calculate_power_gev_parameters(loc = estimates["location"],
+                                                     scale = estimates["scale"],
+                                                     shape = estimates["shape"],
+                                                     exponent = 1/selected_block_sizes[k])
+    estimates_star
   })
   
   nllh <- sapply(final_models, function(model){
@@ -110,9 +152,10 @@ fit_unimodal_gev_mixture_model <- function(x,
   names(nllh) <- clusters_labels
   
   p <- length(clusters_labels)
+  q <- nrow(theta)
   
-  aic <- 2*sum(nllh) + 2*3*p
-  bic <- 2*sum(nllh) + log(n)*3*p
+  aic <- 2*sum(nllh) + 2*(q*p + p)
+  bic <- 2*sum(nllh) + log(n)*(q*p + p)
   information_criterions <- c(aic, bic)
   names(information_criterions) <- c("AIC", "BIC")
   
@@ -127,6 +170,7 @@ fit_unimodal_gev_mixture_model <- function(x,
   output[["cluster_negative_loglikelihoods"]] <- nllh
   output[["information_criterions"]] <- information_criterions
   output[["cluster_gev_model_parameters"]] <- parameters
+  output[["cluster_gev_model_parameters_star"]] <- parameters_star
   output[["clusters"]] <- z
   output[["data"]] <- x
   output[["cluster_models"]] <- final_models
@@ -142,7 +186,9 @@ source("./src/plot_modes.R")
 source("./src/plot_fit_gev_mixture_model.R")
 source("./src/plot_several_standardized_block_maxima_mean.R")
 
-#x <- rnorm(n = 1000)
+#x <- rnorm(n = 3000)
+
+#x <- rexp(n = 3000)
 
 n <- 3000
 
@@ -158,12 +204,12 @@ modes_object <- calculate_modes(x = x)
 
 plot_modes(modes_object)
 
-results <- fit_unimodal_gev_mixture_model(x = x, block_sizes = c(1:50))
+results <- fit_unimodal_gev_mixture_model(x = x, block_sizes = c(10:50))
 
 names(results)
 
-# [1] "last_iteration"                  "last_tolerance"                  "nclusters"                       "cluster_sizes"                   "cluster_weights"
-# [6] "cluster_negative_loglikelihoods" "information_criterions"          "cluster_gev_model_parameters"    "clusters"                        "data"
+# [1] "nclusters"                         "cluster_sizes"                     "selected_block_sizes"              "cluster_weights"                   "cluster_negative_loglikelihoods"  
+# [6] "information_criterions"            "cluster_gev_model_parameters"      "cluster_gev_model_parameters_star" "clusters"                          "data"                             
 # [11] "cluster_models"
 
 
@@ -177,6 +223,8 @@ results$information_criterions
 
 results$cluster_gev_model_parameters
 
+results$cluster_gev_model_parameters_star
+
 results$cluster_weights
 
 #results$cluster_models
@@ -189,7 +237,6 @@ plot_fit_gev_mixture_model(gev_mixture_model_object = results,
                            legend_position = "topright")
 
 
-lines(sort(x), dens, col = 4, lwd = 2)
 
 
 # example 2
@@ -207,7 +254,7 @@ modes_object <- calculate_modes(x = x)
 plot_modes(modes_object)
 
 
-results <- fit_unimodal_gev_mixture_model(x = x, block_sizes = c(1:50))
+results <- fit_unimodal_gev_mixture_model(x = x, block_sizes = c(3:50))
 
 names(results)
 
@@ -220,6 +267,8 @@ results$selected_block_sizes
 results$information_criterions
 
 results$cluster_gev_model_parameters
+
+results$cluster_gev_model_parameters_star
 
 results$cluster_weights
 
@@ -315,13 +364,7 @@ p <- 2
 
 z <- x[x > 3]
 
-results <- fit_unimodal_gev_mixture_model(x = z,
-                                          nb_gev_models = p,
-                                          min_cluster_size = 20,
-                                          max_iteration = 40,
-                                          left_cluster_extension_size = 5,
-                                          right_cluster_extension_size = 10,
-                                          tolerance = 10^(-3))
+results <- fit_unimodal_gev_mixture_model(x = z, block_sizes = c(3:5))
 
 names(results)
 
@@ -334,6 +377,8 @@ results$cluster_weights
 results$information_criterions
 
 results$cluster_gev_model_parameters
+
+results$cluster_gev_model_parameters_star
 
 results$cluster_models
 

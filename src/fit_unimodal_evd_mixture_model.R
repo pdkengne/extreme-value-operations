@@ -58,7 +58,7 @@ fit_unimodal_evd_mixture_model <- function(x,
       dens <- devd(x = obs, 
                    loc = theta["loc", k], 
                    scale = theta["scale", k],
-                   shape = theta["shape", k],)
+                   shape = theta["shape", k])
       dens
     })
     abs(likelihood - empirical_density[i])
