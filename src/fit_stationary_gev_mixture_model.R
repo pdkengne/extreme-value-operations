@@ -18,21 +18,22 @@ source("./src/extract_block_maxima.R")
 source("./src/extract_block_maxima_with_indexes.R")
 
 
-fit_unimodal_gev_mixture_model <- function(x, 
-                                           block_sizes = NULL,
-                                           minimum_nblocks = 50,
-                                           threshold = NULL,
-                                           confidence_level = 0.95,
-                                           use_extremal_index = TRUE,
-                                           prior = c("identic", "pessimistic"),
-                                           method = c("MLE", "GMLE", "Lmoments")[1]){
+fit_stationary_gev_mixture_model <- function(x, 
+                                             block_sizes = NULL,
+                                             minimum_nblocks = 50,
+                                             threshold = NULL,
+                                             confidence_level = 0.95,
+                                             use_extremal_index = TRUE,
+                                             prior = c("identic", "pessimistic"),
+                                             method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations
-  # nb_gev_models: a positive integer which indicates the number of gev models to start with
-  # min_cluster_size: indicates the minimum number of elements in a cluster
-  # max_iteration: indicates the maximumlibrary(fitdistrplus) number of iterations to perform in the CEM algorithm
-  # tolerance: indicates the threshold for the difference between two consecutive negative log likelihoods
-  # right_cluster_extension_size & left_cluster_extension_size: indicates the number of nearest observations
-  #                                                               from the surrounding clusters to includes
+  # block_sizes: vector containing the sizes of blocks to consider
+  # threshold: lower bound of block maxima
+  # confidence_level: desired confidence level when extraction equivalent block sizes. 
+  #                   Note that this value is ignored if block_sizes != NULL.
+  # minimum_nblocks: desired minimum number of blocks. Note that this number is used to infer the largest block size.
+  #                  Moreover, this number is ignored if block_sizes != NULL.
+  # method: estimation method to use
   
   # create an empty output object
   output <- list()
@@ -86,27 +87,6 @@ fit_unimodal_gev_mixture_model <- function(x,
     })
     likelihood/sum(likelihood)
   })
-  
-  
-  # s <- floor(log(n)/log(2))
-  # m <- 2^s
-  # empirical_density_object <- density(x = x, n = m)
-  # support <- empirical_density_object$x
-  # empirical_density <- empirical_density_object$y
-  # 
-  # density_index <- 1:length(support)
-  # 
-  # posterior <- sapply(density_index, function(i){
-  #   obs <- support[i]
-  #   likelihood <- sapply(sample_index, function(k){
-  #     dens <- extRemes::devd(x = obs, 
-  #                            loc = locations[k], 
-  #                            scale = scales[k],
-  #                            shape = shapes[k])
-  #     dens
-  #   })
-  #   abs(likelihood - empirical_density[i])
-  # })
   
   
   posterior_nb_na <- sum(is.na(posterior))
@@ -204,7 +184,7 @@ modes_object <- calculate_modes(x = x)
 
 plot_modes(modes_object)
 
-results <- fit_unimodal_gev_mixture_model(x = x, block_sizes = c(10:50))
+results <- fit_stationary_gev_mixture_model(x = x, block_sizes = c(10:50))
 
 names(results)
 
@@ -254,7 +234,7 @@ modes_object <- calculate_modes(x = x)
 plot_modes(modes_object)
 
 
-results <- fit_unimodal_gev_mixture_model(x = x, block_sizes = c(3:50))
+results <- fit_stationary_gev_mixture_model(x = x, block_sizes = c(3:50))
 
 names(results)
 
@@ -309,7 +289,7 @@ blocks <- as.numeric(rownames(selection$selected))
 blocks
 
 
-final_results <- fit_unimodal_gev_mixture_model(x = x, block_sizes = blocks)
+final_results <- fit_stationary_gev_mixture_model(x = x, block_sizes = blocks)
 
 #names(final_results)
 
@@ -364,7 +344,7 @@ p <- 2
 
 z <- x[x > 3]
 
-results <- fit_unimodal_gev_mixture_model(x = z, block_sizes = c(1:5))
+results <- fit_stationary_gev_mixture_model(x = z, block_sizes = c(1:5))
 
 names(results)
 
@@ -408,7 +388,7 @@ plot_modes(modes_object)
 
 p <- 10
 
-results <- fit_unimodal_gev_mixture_model(x = x,
+results <- fit_stationary_gev_mixture_model(x = x,
                                           nb_gev_models = p,
                                           min_cluster_size = 20,
                                           max_iteration = 40,
