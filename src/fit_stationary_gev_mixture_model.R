@@ -35,12 +35,15 @@ fit_stationary_gev_mixture_model <- function(x,
                                                        threshold = threshold, 
                                                        m = minimum_nblocks)
   }
+  else{
+    candidate_block_sizes <- block_sizes
+  }
   
   # get equivalent block sizes
   equivalent_block_sizes_object <- estimate_several_standardized_block_maxima_mean(x = x, 
-                                                                                  block_sizes = candidate_block_sizes, 
-                                                                                  confidence_level = confidence_level,
-                                                                                  method = method)
+                                                                                   block_sizes = candidate_block_sizes, 
+                                                                                   confidence_level = confidence_level,
+                                                                                   method = method)
   
   equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
   
@@ -59,69 +62,77 @@ fit_stationary_gev_mixture_model <- function(x,
   # extract the selected block sizes
   selected_block_sizes <- automatic_weights_object$selected_block_sizes
   
-  # extract the unweighted block sizes
-  unweighted_block_sizes <- automatic_weights_object$unweighted_block_sizes
+  # extract the unselected block sizes
+  unselected_block_sizes <- automatic_weights_object$unselected_block_sizes
   
+  # extract the labels of selected models
+  selected_model_labels <- automatic_weights_object$selected_model_labels
   
+  # extract the vector of selected models per observation
+  selected_model_per_obs <- automatic_weights_object$selected_model_per_obs
   
-  #--------------------
-  z <- apply(posterior, 2, which.max)
-  clusters_freq <- table(z)
-  clusters_labels <- as.numeric(names(clusters_freq))
-  omega <- as.numeric(prop.table(clusters_freq))
-  #--------------------
+  # extract the vector of frequencies
+  frequencies <- as.numeric(table(selected_model_per_obs))
+  names(frequencies) <- selected_block_sizes
   
+  # extract the vector of weights
+  weights <- automatic_weights_object$weights
+  names(weights) <- selected_block_sizes
   
-  
-  final_models <- lapply(clusters_labels, function(k){
-    y <-  extract_block_maxima(x, block_size = block_sizes[k])
-    model <- extRemes::fevd(x = y, type = "GEV")
+  # extract all estimated gev model objects
+  gev_models_objects <- gev_models$gev_models_object
+    
+  # extract the selected gev models
+  selected_gev_models <- lapply(selected_model_labels, function(k){
+    model <- gev_models_objects[[k]]
     model
   })
   
-  parameters <- sapply(final_models, function(model){
-    model$results$par
-  })
+  names(selected_gev_models) <- selected_block_sizes
   
-  parameters_star <- sapply(1:length(clusters_labels), function(k){
-    estimates <- parameters[, k]
-    estimates_star <- calculate_power_gev_parameters(loc = estimates["location"],
-                                                     scale = estimates["scale"],
-                                                     shape = estimates["shape"],
-                                                     exponent = 1/selected_block_sizes[k])
-    estimates_star
-  })
+  # extract the extremal indexes associated with the selected gev models
+  extremal_indexes <- gev_models$extremal_indexes[selected_model_labels]
   
-  nllh <- sapply(final_models, function(model){
+  # extract the normalized gev parameters associated with the selected gev models
+  normalized_gev_parameters_object <- gev_models$normalized_gev_parameters_object[selected_model_labels, ]
+  
+  # extract the full normalized gev parameters associated with the selected gev models
+  full_normalized_gev_parameters_object <- gev_models$full_normalized_gev_parameters_object[selected_model_labels, ]
+  
+  # extract the negative log-likelihood associated with the selected gev models
+  nllh <- sapply(selected_gev_models, function(model){
     res <- summary(model, silent = TRUE)
     res$nllh
   })
   
-  names(nllh) <- clusters_labels
+  names(nllh) <- selected_block_sizes
   
-  p <- length(clusters_labels)
-  q <- nrow(theta)
+  # calculate the information criteria, namely aic and bic
+  p <- nrow(normalized_gev_parameters_object)
+  q <- ncol(normalized_gev_parameters_object)
   
-  aic <- 2*sum(nllh) + 2*(q*p + p)
-  bic <- 2*sum(nllh) + log(n)*(q*p + p)
-  information_criterions <- c(aic, bic)
-  names(information_criterions) <- c("AIC", "BIC")
+  aic <- 2*sum(nllh) + 2*(q*p + p - 1)
+  bic <- 2*sum(nllh) + log(n)*(q*p + p - 1)
   
-  cluster_sizes <- as.numeric(table(z))
-  names(cluster_sizes) <- clusters_labels
+  information_criteria <- c(aic, bic)
+  names(information_criteria) <- c("AIC", "BIC")
   
   # update the output object
-  output[["nclusters"]] <- length(cluster_sizes)
-  output[["cluster_sizes"]] <- cluster_sizes
+  output[["equivalent_block_sizes"]] <- equivalent_block_sizes
+  output[["unequivalent_block_sizes"]] <- unequivalent_block_sizes
   output[["selected_block_sizes"]] <- selected_block_sizes
-  output[["cluster_weights"]] <- omega
-  output[["cluster_negative_loglikelihoods"]] <- nllh
-  output[["information_criterions"]] <- information_criterions
-  output[["cluster_gev_model_parameters"]] <- parameters
-  output[["cluster_gev_model_parameters_star"]] <- parameters_star
-  output[["clusters"]] <- z
+  output[["unselected_block_sizes"]] <- unselected_block_sizes
+  output[["weights"]] <- weights
+  output[["frequencies"]] <- frequencies
+  output[["use_extremal_index"]] <- use_extremal_index
+  output[["extremal_indexes"]] <- extremal_indexes
+  output[["negative_log_likelihoods"]] <- nllh
+  output[["information_criteria"]] <- information_criteria
+  output[["normalized_gev_parameters_object"]] <- normalized_gev_parameters_object
+  output[["full_normalized_gev_parameters_object"]] <- full_normalized_gev_parameters_object
+  output[["selected_model_per_obs"]] <- selected_model_per_obs
   output[["data"]] <- x
-  output[["cluster_models"]] <- final_models
+  output[["selected_gev_models"]] <- selected_gev_models
   
   output
 }
@@ -131,7 +142,7 @@ fit_stationary_gev_mixture_model <- function(x,
 
 source("./src/calculate_modes.R")
 source("./src/plot_modes.R")
-source("./src/plot_fit_gev_mixture_model.R")
+source("./src/plot_fit_stationary_gev_mixture_model.R")
 source("./src/plot_several_standardized_block_maxima_mean.R")
 
 #x <- rnorm(n = 3000)
@@ -152,33 +163,57 @@ modes_object <- calculate_modes(x = x)
 
 plot_modes(modes_object)
 
-results <- fit_stationary_gev_mixture_model(x = x, block_sizes = c(10:50))
+results <- fit_stationary_gev_mixture_model(x = x, 
+                                            block_sizes = 50,
+                                            minimum_nblocks = 50,
+                                            threshold = NULL,
+                                            confidence_level = 0.95,
+                                            use_extremal_index = TRUE,
+                                            use_uniform_prior = TRUE,
+                                            method = c("MLE", "GMLE", "Lmoments")[1])
 
 names(results)
 
-# [1] "nclusters"                         "cluster_sizes"                     "selected_block_sizes"              "cluster_weights"                   "cluster_negative_loglikelihoods"  
-# [6] "information_criterions"            "cluster_gev_model_parameters"      "cluster_gev_model_parameters_star" "clusters"                          "data"                             
-# [11] "cluster_models"
+# [1] "equivalent_block_sizes"                "unequivalent_block_sizes"              "selected_block_sizes"                 
+# [4] "unselected_block_sizes"                "weights"                               "frequencies"                          
+# [7] "use_extremal_index"                    "extremal_indexes"                      "negative_log_likelihoods"             
+# [10] "information_criteria"                  "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object"
+# [13] "selected_model_per_obs"                "data"                                  "selected_gev_models"
 
 
-results$nclusters
+results$equivalent_block_sizes
 
-results$cluster_sizes
+results$unequivalent_block_sizes
 
 results$selected_block_sizes
 
-results$information_criterions
+results$unselected_block_sizes
 
-results$cluster_gev_model_parameters
+results$weights
 
-results$cluster_gev_model_parameters_star
+results$frequencies
 
-results$cluster_weights
+results$use_extremal_index
 
-#results$cluster_models
+results$extremal_indexes
+
+results$negative_log_likelihoods
+
+results$information_criteria
+
+results$normalized_gev_parameters_object
+
+results$full_normalized_gev_parameters_object
+
+results$selected_model_per_obs
+
+results$data
+
+results$selected_gev_models
 
 
-plot_fit_gev_mixture_model(gev_mixture_model_object = results,
+
+plot_fit_stationary_gev_mixture_model(gev_mixture_model_object = results,
                            xlab = "support",
                            ylab = "density",
                            main = "density plot",
@@ -191,7 +226,7 @@ plot_fit_gev_mixture_model(gev_mixture_model_object = results,
 
 source("./src/calculate_modes.R")
 source("./src/plot_modes.R")
-source("./src/plot_fit_gev_mixture_model.R")
+source("./src/plot_fit_stationary_gev_mixture_model.R")
 source("./src/plot_several_standardized_block_maxima_mean.R")
 
 
@@ -223,7 +258,7 @@ results$cluster_weights
 #results$cluster_models
 
 
-plot_fit_gev_mixture_model(gev_mixture_model_object = results,
+plot_fit_stationary_gev_mixture_model(gev_mixture_model_object = results,
                            xlab = "support",
                            ylab = "density",
                            main = "density plot",
@@ -276,7 +311,7 @@ final_results$cluster_weights
 #final_results$cluster_models
 
 
-plot_fit_gev_mixture_model(gev_mixture_model_object = final_results,
+plot_fit_stationary_gev_mixture_model(gev_mixture_model_object = final_results,
                            xlab = "support",
                            ylab = "density",
                            main = "density plot",
@@ -292,7 +327,7 @@ lines(sort(x), dens, col = 4, lwd = 2)
 
 source("./src/calculate_modes.R")
 source("./src/plot_modes.R")
-source("./src/plot_fit_gev_mixture_model.R")
+source("./src/plot_fit_stationary_gev_mixture_model.R")
 
 data(faithful, package = "datasets")
 
@@ -331,7 +366,7 @@ results$cluster_gev_model_parameters_star
 results$cluster_models
 
 
-plot_fit_gev_mixture_model(gev_mixture_model_object = results,
+plot_fit_stationary_gev_mixture_model(gev_mixture_model_object = results,
                            xlab = "support",
                            ylab = "density",
                            main = "density plot",
@@ -344,7 +379,7 @@ abline(h = 0, lty = "dotted")
 
 source("./src/calculate_modes.R")
 source("./src/plot_modes.R")
-source("./src/plot_fit_gev_mixture_model.R")
+source("./src/plot_fit_stationary_gev_mixture_model.R")
 
 x <- rexp(n = 10000)
 
@@ -382,7 +417,7 @@ results$cluster_gev_model_parameters
 results$cluster_models
 
 
-plot_fit_gev_mixture_model(gev_mixture_model_object = results,
+plot_fit_stationary_gev_mixture_model(gev_mixture_model_object = results,
                            xlab = "support",
                            ylab = "density",
                            main = "density plot",

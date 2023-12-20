@@ -17,6 +17,11 @@ estimate_several_gev_models <- function(x, block_sizes, method = c("MLE", "GMLE"
   extremal_indexes <- sapply(models, function(model) model$extremal_index)
   names(extremal_indexes) <- block_sizes
   
+  # extract the unnormalized gev parameters with block size
+  unnormalized_gev_parameters_object <- sapply(models, function(model) model$gev_model$results$par)
+  unnormalized_gev_parameters_object <- data.frame(t(unnormalized_gev_parameters_object))
+  rownames(unnormalized_gev_parameters_object) <- block_sizes
+  
   # extract the normalized gev parameters with block size
   normalized_gev_parameters_object <- sapply(models, function(model) model$normalized_gev_parameters)
   normalized_gev_parameters_object <- data.frame(t(normalized_gev_parameters_object))
@@ -46,6 +51,7 @@ estimate_several_gev_models <- function(x, block_sizes, method = c("MLE", "GMLE"
   output[["block_maxima_indexes_object"]] <- block_maxima_indexes_object
   output[["gev_models_object"]] <- gev_models_object
   output[["extremal_indexes"]] <- extremal_indexes
+  output[["unnormalized_gev_parameters_object"]] <- unnormalized_gev_parameters_object
   output[["normalized_gev_parameters_object"]] <- normalized_gev_parameters_object
   output[["full_normalized_gev_parameters_object"]] <- full_normalized_gev_parameters_object
   
@@ -83,6 +89,10 @@ estimate_several_gev_models <- function(x, block_sizes, method = c("MLE", "GMLE"
 # #results
 # names(results)
 # 
+# # [1] "data"                                  "block_sizes"                           "block_maxima_object"                  
+# # [4] "block_maxima_indexes_object"           "gev_models_object"                     "extremal_indexes"                     
+# # [7] "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object"
+# 
 # # get the block sizes
 # results$block_sizes
 # 
@@ -94,6 +104,9 @@ estimate_several_gev_models <- function(x, block_sizes, method = c("MLE", "GMLE"
 # 
 # # get the associated block maxima indexes
 # results$block_maxima_indexes_object
+# 
+# # get the unnormalized gev parameters
+# results$unnormalized_gev_parameters_object
 # 
 # # get the normalized gev parameters
 # results$normalized_gev_parameters_object
