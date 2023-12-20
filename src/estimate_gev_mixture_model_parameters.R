@@ -52,7 +52,7 @@ estimate_gev_mixture_model_parameters <- function(x,
   }
   
   # get equivalent block sizes
-  equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x = data_largest, 
+  equivalent_block_sizes_object <- estimate_several_standardized_block_maxima_mean(x = data_largest, 
                                                                                   block_sizes = block_sizes, 
                                                                                   confidence_level = confidence_level,
                                                                                   method = method)

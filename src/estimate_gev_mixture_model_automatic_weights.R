@@ -2,18 +2,12 @@
 
 source("./src/calculate_gev_pdf.R")
 
-estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
-                                                            kind = c("geometric", "arithmetic")[1],
-                                                            maximum_iterations = 1500, 
-                                                            trace = TRUE, 
-                                                            use_extremal_index = TRUE,
-                                                            use_lower_threshold = FALSE){
+estimate_gev_mixture_model_automatic_weights <- function(gev_models,
+                                                         use_uniform_prior = TRUE,
+                                                         use_extremal_index = TRUE){
   # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
-  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
-  # maximum_iterations: maximum number of iterations
-  # trace: boolean value which indicates whether to print information on the progress of optimization
+  # use_uniform_prior: a boolean which indicates whether to use a uniform prior (TRUE) or a pessimistic prior (FALSE)
   # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
-  # use_lower_threshold: a boolean which indicates whether to use threshold associated with the smallest or largest block size
   
   # create an empty output object
   output <- list()
@@ -21,7 +15,7 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
   # get the normalized gev parameters
   if (use_extremal_index){
     normalized_gev_parameters <- gev_models$full_normalized_gev_parameters_object
-  }
+  } 
   else{
     normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
   }
@@ -30,93 +24,57 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
   scales <- normalized_gev_parameters$scale_star
   locations <- normalized_gev_parameters$loc_star
   
-  # extract the largest data to use
-  x <- gev_models$data
+  # extract the vector of block sizes
   block_sizes <- gev_models$block_sizes
-  if (use_lower_threshold){
-    block_size <- min(block_sizes)
-  }
+  
+  # extract the vector of observations
+  x <- gev_models$data
+  
+  # calculate the prior probability w.r.t. every gev model
+  if (use_uniform_prior){
+    unnormalized_prior <- block_sizes/block_sizes
+    prior <- unnormalized_prior/sum(unnormalized_prior)
+  } 
   else{
-    block_size <- max(block_sizes)
-  }
-  threshold <- find_threshold_associated_with_given_block_size(x, block_size)
-  y <- x[x > threshold]
-  
-  # estimate the empirical distribution function
-  Fn <- ecdf(x)
-  
-  # get the number of gev models
-  p <- nrow(normalized_gev_parameters)
-  
-  # define the constraints on the unknown weights
-  lower <- rep(0, p)
-  upper <- rep(1, p)
-  
-  # define an initial vector of weights
-  initial_weights <- rep(1, p)/p
-  
-  # define the error function to optimize
-  nlf <- function(w, y){
-    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w, kind = kind)
-    
-    empirical_cdf <- Fn(y)
-    
-    errors <- (theoretical_cdf - empirical_cdf)^2
-    
-    loss <- sum(errors)
-    
-    loss
+    unnormalized_prior <- exp(shapes)
+    prior <- unnormalized_prior/sum(unnormalized_prior)
   }
   
-  # define the gradient of error function to optimize
+  # calculate the posterior probability w.r.t. every gev model
+  normalized_posterior <- sapply(x, function(obs){
+    unnormalized_posterior <- sapply(1:length(block_sizes), function(k){
+      likelihood <- calculate_gev_pdf(x = obs,
+                                      loc = locations[k],
+                                      scale = scales[k],
+                                      shape = shapes[k])
+      likelihood*prior[k]
+    })
+    unnormalized_posterior/sum(unnormalized_posterior)
+  })
   
-  nlf_gradient <- function(w, y){
-    theoretical_cdf <- calculate_gev_mixture_model_cdf(q = y, locations, scales, shapes, weights = w, kind = kind)
-    
-    empirical_cdf <- Fn(y)
-    
-    errors <- theoretical_cdf - empirical_cdf
-    
-    gradient_object <- sapply(1:p, function(j) errors*theoretical_cdf*log(calculate_gev_cdf(q = y, 
-                                                                                            loc = locations[j], 
-                                                                                            scale = scales[j], 
-                                                                                            shape = shapes[j])))
-    
-    gradient <- 2*apply(gradient_object, 2, sum)
-    
-    gradient
+  # check the consistency of the estimated gev models
+  posterior_nb_na <- sum(is.na(normalized_posterior))
+  if (posterior_nb_na != 0){
+    stop("Sorry, at least one of the estimated GEV models is inconsistent!")
   }
+
+  # calculate the vector of weights
+  selected_model_per_obs <- apply(normalized_posterior, 2, which.max)
+  selected_model_freq <- table(selected_model_per_obs)
+  selected_model_labels <- as.numeric(names(selected_model_freq))
+  weights <- as.numeric(prop.table(selected_model_freq))
   
-  # minimize the error function
-  answer <- BB::BBoptim(par = initial_weights,
-                        fn = nlf,
-                        gr = nlf_gradient,
-                        y = y,
-                        lower = lower,
-                        upper = upper,
-                        project = "projectLinear",
-                        projectArgs = list(A = matrix(1, nrow = 1, ncol = p), b = 1, meq = 1),
-                        control = list(maximize = FALSE, 
-                                       trace = trace, 
-                                       maxit = maximum_iterations,
-                                       # ftol = 1.e-10, 
-                                       # gtol = 1e-5, 
-                                       # eps = 1e-7,
-                                       # maxfeval = 10000,
-                                       # triter = 10,
-                                       checkGrad = FALSE))
+  # get the vector of selected block sizes
+  selected_block_sizes <- block_sizes[selected_model_labels]
   
-  automatic_weights <- answer$par
-  names(automatic_weights) <- block_sizes
+  # get the vector of unweighted block sizes
+  unweighted_block_sizes <- block_sizes[-selected_model_labels]
   
   # update the output object
-  output[["automatic_weights"]] <- automatic_weights
-  output[["function_value"]] <- answer$value
-  output[["gradient_value"]] <- answer$gradient
-  output[["function_reduction"]] <- answer$fn.reduction
-  output[["number_iterations"]] <- answer$iter
-  output[["convergence"]] <- answer$convergence
-  output[["message"]] <- answer$message
+  output[["unweighted_block_sizes"]] <- unweighted_block_sizes
+  output[["selected_block_sizes"]] <- selected_block_sizes
+  output[["selected_model_labels"]] <- selected_model_labels
+  output[["weights"]] <- weights
   
   output
 }
@@ -154,15 +112,12 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models,
-#                                                            kind = c("geometric", "arithmetic")[1],
-#                                                            trace = TRUE, 
-#                                                            use_extremal_index = TRUE, 
-#                                                            use_lower_threshold = FALSE)
+# results <- estimate_gev_mixture_model_automatic_weights(gev_models = gev_models,
+#                                                         use_uniform_prior = TRUE,
+#                                                         use_extremal_index = TRUE)
 # 
 # results
 # 
-# sum(results$automatic_weights)
 # 
 # 
 # # example 2
@@ -195,12 +150,9 @@ estimate_gev_mixture_model_automatic_weights_mw <- function(gev_models,
 # 
 # gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
 # 
-# results <- estimate_gev_mixture_model_automatic_weights_mw(gev_models,
-#                                                            kind = c("geometric", "arithmetic")[1],
-#                                                            trace = TRUE, 
-#                                                            use_extremal_index = TRUE, 
-#                                                            use_lower_threshold = FALSE)
+# results <- estimate_gev_mixture_model_automatic_weights(gev_models = gev_models,
+#                                                         use_uniform_prior = TRUE,
+#                                                         use_extremal_index = TRUE)
 # 
 # results
-# 
-# sum(results$automatic_weights)
+

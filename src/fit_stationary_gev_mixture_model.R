@@ -1,21 +1,10 @@
 # library(extRemes) 
 # library(fitdistrplus)
 
-source("./src/extract_nlargest_sample.R")
 source("./src/get_candidate_block_sizes.R")
 source("./src/estimate_several_gev_models.R")
 source("./src/estimate_several_standardized_block_maxima_mean.R")
-
 source("./src/estimate_gev_mixture_model_automatic_weights.R")
-
-
-source("./src/extract_peaks_over_threshold.R")
-source("./src/find_threshold_associated_with_given_block_size.R")
-
-source("./src/estimate_extremal_index.R")
-source("./src/calculate_power_gev_parameters.R")
-source("./src/extract_block_maxima.R")
-source("./src/extract_block_maxima_with_indexes.R")
 
 
 fit_stationary_gev_mixture_model <- function(x, 
@@ -24,11 +13,13 @@ fit_stationary_gev_mixture_model <- function(x,
                                              threshold = NULL,
                                              confidence_level = 0.95,
                                              use_extremal_index = TRUE,
-                                             prior = c("identic", "pessimistic"),
+                                             use_uniform_prior = TRUE,
                                              method = c("MLE", "GMLE", "Lmoments")[1]){
   # x: vector of observations
   # block_sizes: vector containing the sizes of blocks to consider
   # threshold: lower bound of block maxima
+  # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
+  # use_uniform_prior: a boolean which indicates whether to use a uniform prior (TRUE) or a pessimistic prior (FALSE)
   # confidence_level: desired confidence level when extraction equivalent block sizes. 
   #                   Note that this value is ignored if block_sizes != NULL.
   # minimum_nblocks: desired minimum number of blocks. Note that this number is used to infer the largest block size.
@@ -38,62 +29,39 @@ fit_stationary_gev_mixture_model <- function(x,
   # create an empty output object
   output <- list()
   
-  n <- length(x)
-  
-  selection <- estimate_several_standardized_block_maxima_mean(x = x, 
-                                                               block_sizes = block_sizes, 
-                                                               confidence_level = confidence_level, 
-                                                               method = method)
-  
-  block_sizes <- as.numeric(rownames(selection$selected))
-  
-  p <- length(block_sizes)
-  
-  omega <- rep(x = 1, times = p)/p
-  
-  sample_index <- 1:p
-  
-  theta <- sapply(1:p, function(k){
-    y <-  extract_block_maxima(x, block_size = block_sizes[k])
-    model <- extRemes::fevd(x = y, type = "GEV")
-  
-    estimates <- model$results$par
-    parameters <- calculate_power_gev_parameters(loc = estimates["location"], 
-                                                     scale = estimates["scale"], 
-                                                     shape = estimates["shape"], 
-                                                     exponent = 1/block_sizes[k])
-    names(parameters) <- c("location", "scale", "shape")
-    parameters
-  })
-  
-  locations <- theta["location", ]
-  scales <- theta["scale", ]
-  shapes <- theta["shape", ]
-  
-  posterior <- sapply(1:n, function(i){
-    obs <- x[i]
-    likelihood <- sapply(1:p, function(k){
-      location <- locations[k]
-      scale <- scales[k]
-      shape <- shapes[k]
-      dens <- extRemes::devd(x = obs,
-                             loc = location,
-                             scale = scale,
-                             shape = shape,
-                             log = FALSE,
-                             type = "GEV")
-      prior <- omega[k]
-      prior*dens
-    })
-    likelihood/sum(likelihood)
-  })
-  
-  
-  posterior_nb_na <- sum(is.na(posterior))
-  
-  if (posterior_nb_na != 0){
-    stop("Sorry, algorithm does not converge with the current inputs !")
+  # get candidate block sizes
+  if (is.null(block_sizes)){
+    candidate_block_sizes <- get_candidate_block_sizes(x = x, 
+                                                       threshold = threshold, 
+                                                       m = minimum_nblocks)
   }
+  
+  # get equivalent block sizes
+  equivalent_block_sizes_object <- estimate_several_standardized_block_maxima_mean(x = x, 
+                                                                                  block_sizes = candidate_block_sizes, 
+                                                                                  confidence_level = confidence_level,
+                                                                                  method = method)
+  
+  equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+  
+  # get eventual rejected block sizes from the equivalent ones
+  unequivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+  
+  # estimate several gev models associated with the equivalent block sizes
+  gev_models <- estimate_several_gev_models(x = x, 
+                                            block_sizes = equivalent_block_sizes,
+                                            method = method)
+  
+  # estimate the gev model weights
+  automatic_weights_object <- estimate_gev_mixture_model_automatic_weights(gev_models = gev_models,
+                                                                           use_uniform_prior = use_uniform_prior,
+                                                                           use_extremal_index = use_extremal_index)
+  # extract the selected block sizes
+  selected_block_sizes <- automatic_weights_object$selected_block_sizes
+  
+  # extract the unweighted block sizes
+  unweighted_block_sizes <- automatic_weights_object$unweighted_block_sizes
+  
   
   
   #--------------------
@@ -103,7 +71,7 @@ fit_stationary_gev_mixture_model <- function(x,
   omega <- as.numeric(prop.table(clusters_freq))
   #--------------------
   
-  selected_block_sizes <- block_sizes[clusters_labels]
+  
   
   final_models <- lapply(clusters_labels, function(k){
     y <-  extract_block_maxima(x, block_size = block_sizes[k])
