@@ -1,6 +1,7 @@
 # library(extRemes) 
 # library(fitdistrplus)
 
+source("./src/find_threshold_associated_with_given_block_size.R")
 source("./src/get_candidate_block_sizes.R")
 source("./src/estimate_several_gev_models.R")
 source("./src/estimate_several_standardized_block_maxima_mean.R")
@@ -49,6 +50,10 @@ fit_stationary_gev_mixture_model <- function(x,
   
   # get eventual rejected block sizes from the equivalent ones
   unequivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+  
+  # find the threshold above which data are used to estimate weights
+  threshold <- find_threshold_associated_with_given_block_size(x = x, 
+                                                               block_size = min(equivalent_block_sizes))
   
   # estimate several gev models associated with the equivalent block sizes
   gev_models <- estimate_several_gev_models(x = x, 
@@ -121,6 +126,7 @@ fit_stationary_gev_mixture_model <- function(x,
   names(information_criteria) <- c("AIC", "BIC")
   
   # update the output object
+  output[["threshold"]] <- threshold
   output[["equivalent_block_sizes"]] <- equivalent_block_sizes
   output[["unequivalent_block_sizes"]] <- unequivalent_block_sizes
   output[["selected_block_sizes"]] <- selected_block_sizes
@@ -172,7 +178,7 @@ plot_modes(modes_object)
 results <- fit_stationary_gev_mixture_model(x = x, 
                                             block_sizes = NULL,
                                             minimum_nblocks = 50,
-                                            threshold = 1,
+                                            threshold = NULL,
                                             confidence_level = 0.95,
                                             use_extremal_index = TRUE,
                                             use_uniform_prior = TRUE,
@@ -180,13 +186,14 @@ results <- fit_stationary_gev_mixture_model(x = x,
 
 names(results)
 
-# [1] "equivalent_block_sizes"                "unequivalent_block_sizes"              "selected_block_sizes"                 
-# [4] "unselected_block_sizes"                "weights"                               "frequencies"                          
-# [7] "use_extremal_index"                    "extremal_indexes"                      "negative_log_likelihoods"             
-# [10] "information_criteria"                  "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"     
-# [13] "full_normalized_gev_parameters_object" "selected_model_per_obs"                "data"                                 
-# [16] "selected_gev_models"
+# [1] "threshold"                             "equivalent_block_sizes"                "unequivalent_block_sizes"             
+# [4] "selected_block_sizes"                  "unselected_block_sizes"                "weights"                              
+# [7] "frequencies"                           "use_extremal_index"                    "extremal_indexes"                     
+# [10] "negative_log_likelihoods"              "information_criteria"                  "unnormalized_gev_parameters_object"   
+# [13] "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object" "selected_model_per_obs"               
+# [16] "data"                                  "selected_gev_models" 
 
+results$threshold
 
 results$equivalent_block_sizes
 
@@ -245,6 +252,15 @@ plot_modes(modes_object)
 results <- fit_stationary_gev_mixture_model(x = x, block_sizes = c(3:50))
 
 names(results)
+
+# [1] "threshold"                             "equivalent_block_sizes"                "unequivalent_block_sizes"             
+# [4] "selected_block_sizes"                  "unselected_block_sizes"                "weights"                              
+# [7] "frequencies"                           "use_extremal_index"                    "extremal_indexes"                     
+# [10] "negative_log_likelihoods"              "information_criteria"                  "unnormalized_gev_parameters_object"   
+# [13] "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object" "selected_model_per_obs"               
+# [16] "data"                                  "selected_gev_models" 
+
+results$threshold
 
 results$equivalent_block_sizes
 

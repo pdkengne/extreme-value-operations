@@ -1,5 +1,6 @@
 # library(BB)
 
+source("./src/find_threshold_associated_with_given_block_size.R")
 source("./src/calculate_gev_pdf.R")
 
 estimate_gev_mixture_model_automatic_weights <- function(gev_models,
@@ -30,6 +31,13 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models,
   # extract the vector of observations
   x <- gev_models$data
   
+  # find the threshold to use
+  threshold <- find_threshold_associated_with_given_block_size(x = x, 
+                                                               block_size = min(block_sizes))
+  
+  # extract the largest data to use
+  x <- x[x > threshold]
+  
   # calculate the prior probability w.r.t. every gev model
   if (use_uniform_prior){
     unnormalized_prior <- block_sizes/block_sizes
@@ -53,11 +61,11 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models,
     unnormalized_posterior/sum(unnormalized_posterior)
   })
   
-  # # check the consistency of the estimated gev models
-  # posterior_nb_na <- sum(is.na(normalized_posterior))
-  # if (posterior_nb_na != 0){
-  #   stop("Sorry, at least one of the estimated GEV models is inconsistent!")
-  # }
+  # check the consistency of the estimated gev models
+  posterior_nb_na <- sum(is.na(normalized_posterior))
+  if (posterior_nb_na != 0){
+    stop("Sorry, at least one of the estimated GEV models is inconsistent!")
+  }
 
   # calculate the vector of weights
   if (class(normalized_posterior)[1] == "numeric"){
@@ -75,13 +83,14 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models,
   selected_block_sizes <- block_sizes[selected_model_labels]
   
   # extract as factor the vector of selected models per observation
-  selected_model_per_obs <- factor(selected_model_per_obs)
+  selected_model_per_obs <- selected_model_per_obs
   levels(selected_model_per_obs) <- selected_block_sizes
   
   # get the vector of unselected block sizes
   unselected_block_sizes <- block_sizes[-selected_model_labels]
   
   # update the output object
+  output[["threshold"]] <- threshold
   output[["selected_model_per_obs"]] <- selected_model_per_obs
   output[["unselected_block_sizes"]] <- unselected_block_sizes
   output[["selected_block_sizes"]] <- selected_block_sizes
@@ -130,7 +139,8 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models,
 # 
 # names(results)
 # 
-# 
+# # [1] "threshold"              "selected_model_per_obs" "unselected_block_sizes" "selected_block_sizes"   "selected_model_labels" 
+# # [6] "weights"  
 # 
 # # example 2
 # 

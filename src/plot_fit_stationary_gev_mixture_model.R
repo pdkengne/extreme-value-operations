@@ -1,15 +1,16 @@
 # library(extRemes)
 
+source("./src/find_threshold_associated_with_given_block_size.R")
 source("./src/calculate_modes.R")
 source("./src/calculate_gev_pdf.R")
 source("./src/calculate_gev_mixture_model_pdf.R")
 
 
 plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
-                                       xlab = "support",
-                                       ylab = "density",
-                                       main = "density plot",
-                                       legend_position = "topright"){
+                                                  xlab = "support",
+                                                  ylab = "density",
+                                                  main = "density plot",
+                                                  legend_position = "topright"){
   # gev_mixture_model_object: an object associated with a result of the function "fit_stationary_gev_mixture_model()"
   # xlab: label of the x-axis
   # ylab: label of the y-axis
@@ -17,6 +18,10 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
   # legend_position: position of the legend
   
   x <- gev_mixture_model_object$data
+
+  threshold <- gev_mixture_model_object$threshold
+  
+  #x <- x[x >= threshold]
   
   modes_object <- calculate_modes(x = x)
   
@@ -56,6 +61,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
     
     lines(support, theoretical_densities, col = 3, lwd = 2)
     abline(h = 0, lty = "dotted")
+    abline(v = threshold, lty = "dotted")
     
     legend(legend_position, 
            legend = c("empirical", "gev"),
@@ -89,6 +95,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
     lines(support, theoretical_densities_1, col = 6, lwd = 2)
     lines(support, theoretical_densities_2, col = 7, lwd = 2)
     abline(h = 0, lty = "dotted")
+    abline(v = threshold, lty = "dotted")
     
     legend(legend_position, 
            legend = c("empirical", "geometric", "arithmetic"),
@@ -99,60 +106,76 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 
 
 
-# example 1
-
-source("./src/fit_stationary_gev_mixture_model.R")
-
-x <- bmixture::rmixnorm(n = 3000, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
-
-gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x, 
-                                                             block_sizes = 15:58,
-                                                             minimum_nblocks = 50,
-                                                             threshold = NULL,
-                                                             confidence_level = 0.95,
-                                                             use_extremal_index = TRUE,
-                                                             use_uniform_prior = TRUE,
-                                                             method = c("MLE", "GMLE", "Lmoments")[1])
-
-
-plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
-                                      xlab = "support",
-                                      ylab = "density",
-                                      main = "density plot",
-                                      legend_position = "topright")
-
-# example 2
-
-source("./src/fit_stationary_gev_mixture_model.R")
-source("./src/generate_gev_mixture_model_sample.R")
-
-weights <- c(1/3, 1/3, 1/3)
-
-shapes <- c(0.1, 0.1, 0.1)
-scales <- c(1, 1, 1)
-locations <- c(-2, +2, +6)
-
-n <- 3000
-
-x <- generate_gev_mixture_model_sample(n = n,
-                                       locations,
-                                       scales,
-                                       shapes,
-                                       weights,
-                                       kind = c("geometric", "arithmetic")[2])
-
-gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x, 
-                                                             block_sizes = NULL,
-                                                             minimum_nblocks = 50,
-                                                             threshold = NULL,
-                                                             confidence_level = 0.95,
-                                                             use_extremal_index = TRUE,
-                                                             use_uniform_prior = TRUE,
-                                                             method = c("MLE", "GMLE", "Lmoments")[1])
-
-plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
-                                      xlab = "support",
-                                      ylab = "density",
-                                      main = "density plot",
-                                      legend_position = "topright")
-
+# # example 1
+# 
+# source("./src/fit_stationary_gev_mixture_model.R")
+# source("./src/generate_gev_sample.R")
+# 
+# n <- 3000
+# 
+# x <- bmixture::rmixnorm(n = n, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
+# 
+# x <- rnorm(n = n)
+# 
+# #x <- rexp(n = n, rate = 1)
+# 
+# #x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.01)
+# 
+# gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x, 
+#                                                              block_sizes = NULL,
+#                                                              minimum_nblocks = 50,
+#                                                              threshold = 1,
+#                                                              confidence_level = 0.95,
+#                                                              use_extremal_index = TRUE,
+#                                                              use_uniform_prior = TRUE,
+#                                                              method = c("MLE", "GMLE", "Lmoments")[1])
+# 
+# gev_mixture_model_object$unnormalized_gev_parameters_object
+# gev_mixture_model_object$weights
+# gev_mixture_model_object$threshold
+# 
+# plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
+#                                       xlab = "support",
+#                                       ylab = "density",
+#                                       main = "density plot",
+#                                       legend_position = "topright")
+# 
+# 
+# # example 2
+# 
+# source("./src/fit_stationary_gev_mixture_model.R")
+# source("./src/generate_gev_mixture_model_sample.R")
+# 
+# weights <- c(1/3, 1/3, 1/3)
+# 
+# shapes <- c(0.01, 0.01, 0.01)
+# scales <- c(1, 1, 1)
+# locations <- c(-2, +2, +6)
+# 
+# n <- 3000
+# 
+# x <- generate_gev_mixture_model_sample(n = n,
+#                                        locations,
+#                                        scales,
+#                                        shapes,
+#                                        weights,
+#                                        kind = c("geometric", "arithmetic")[2])
+# 
+# gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x, 
+#                                                              block_sizes = NULL,
+#                                                              minimum_nblocks = 50,
+#                                                              threshold = 3,
+#                                                              confidence_level = 0.95,
+#                                                              use_extremal_index = TRUE,
+#                                                              use_uniform_prior = TRUE,
+#                                                              method = c("MLE", "GMLE", "Lmoments")[1])
+# 
+# gev_mixture_model_object$unnormalized_gev_parameters_object
+# gev_mixture_model_object$weights
+# gev_mixture_model_object$threshold
+# 
+# plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
+#                                       xlab = "support",
+#                                       ylab = "density",
+#                                       main = "density plot",
+#                                       legend_position = "topright")
