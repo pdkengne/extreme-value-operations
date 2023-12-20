@@ -17,11 +17,9 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
   # main: title of the plot
   # legend_position: position of the legend
   
-  x <- gev_mixture_model_object$data
+  x <- gev_mixture_model_object$partial_data
 
   threshold <- gev_mixture_model_object$threshold
-  
-  #x <- x[x >= threshold]
   
   modes_object <- calculate_modes(x = x)
   
@@ -124,7 +122,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x, 
 #                                                              block_sizes = NULL,
 #                                                              minimum_nblocks = 50,
-#                                                              threshold = 1,
+#                                                              threshold = NULL,
 #                                                              confidence_level = 0.95,
 #                                                              use_extremal_index = TRUE,
 #                                                              use_uniform_prior = TRUE,
@@ -164,7 +162,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x, 
 #                                                              block_sizes = NULL,
 #                                                              minimum_nblocks = 50,
-#                                                              threshold = 3,
+#                                                              threshold = NULL,
 #                                                              confidence_level = 0.95,
 #                                                              use_extremal_index = TRUE,
 #                                                              use_uniform_prior = TRUE,
