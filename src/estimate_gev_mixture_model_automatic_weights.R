@@ -93,78 +93,77 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models,
 
 
 
-# example 1
-
-source("./src/estimate_several_gev_models.R")
-source("./src/find_minimum_block_size.R")
-source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-source("./src/generate_gev_sample.R")
-source("./src/plot_several_standardized_block_maxima_mean.R")
-source("./src/estimate_several_standardized_block_maxima_mean.R")
-
-x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
-
-minimum_block_size <- find_minimum_block_size(x)
-minimum_block_size
-
-maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
-maximum_block_size
-
-block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
-
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
-
-equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
-equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
-equivalent_block_sizes
-
-rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
-rejected_block_sizes
-
-gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
-
-results <- estimate_gev_mixture_model_automatic_weights(gev_models = gev_models,
-                                                        use_uniform_prior = TRUE,
-                                                        use_extremal_index = TRUE)
-
-names(results)
-
-
-
-# example 2
-
-source("./src/estimate_several_gev_models.R")
-source("./src/find_minimum_block_size.R")
-source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-source("./src/plot_several_standardized_block_maxima_mean.R")
-source("./src/estimate_several_standardized_block_maxima_mean.R")
-
-x <- rnorm(n = 1000)
-
-minimum_block_size <- find_minimum_block_size(x)
-minimum_block_size
-
-maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
-maximum_block_size
-
-block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
-
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
-
-equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
-equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
-equivalent_block_sizes
-
-rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
-rejected_block_sizes
-
-gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
-
-results <- estimate_gev_mixture_model_automatic_weights(gev_models = gev_models,
-                                                        use_uniform_prior = TRUE,
-                                                        use_extremal_index = TRUE)
-
-names(results)
-
+# # example 1
+# 
+# source("./src/estimate_several_gev_models.R")
+# source("./src/find_minimum_block_size.R")
+# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# source("./src/generate_gev_sample.R")
+# source("./src/plot_several_standardized_block_maxima_mean.R")
+# source("./src/estimate_several_standardized_block_maxima_mean.R")
+# 
+# x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# minimum_block_size <- find_minimum_block_size(x)
+# minimum_block_size
+# 
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+# maximum_block_size
+# 
+# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# 
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# 
+# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+# equivalent_block_sizes
+# 
+# rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+# rejected_block_sizes
+# 
+# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
+# 
+# results <- estimate_gev_mixture_model_automatic_weights(gev_models = gev_models,
+#                                                         use_uniform_prior = TRUE,
+#                                                         use_extremal_index = TRUE)
+# 
+# names(results)
+# 
+# 
+# 
+# # example 2
+# 
+# source("./src/estimate_several_gev_models.R")
+# source("./src/find_minimum_block_size.R")
+# source("./src/find_block_size_associated_with_given_number_of_blocks.R")
+# source("./src/plot_several_standardized_block_maxima_mean.R")
+# source("./src/estimate_several_standardized_block_maxima_mean.R")
+# 
+# x <- rnorm(n = 1000)
+# 
+# minimum_block_size <- find_minimum_block_size(x)
+# minimum_block_size
+# 
+# maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m = 50)
+# maximum_block_size
+# 
+# block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
+# 
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# 
+# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
+# equivalent_block_sizes
+# 
+# rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
+# rejected_block_sizes
+# 
+# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
+# 
+# results <- estimate_gev_mixture_model_automatic_weights(gev_models = gev_models,
+#                                                         use_uniform_prior = TRUE,
+#                                                         use_extremal_index = TRUE)
+# 
+# names(results)

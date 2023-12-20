@@ -93,6 +93,9 @@ fit_stationary_gev_mixture_model <- function(x,
   # extract the extremal indexes associated with the selected gev models
   extremal_indexes <- gev_models$extremal_indexes[selected_model_labels]
   
+  # extract the unnormalized gev parameters associated with the selected gev models
+  unnormalized_gev_parameters_object <- gev_models$unnormalized_gev_parameters_object[selected_model_labels, ]
+  
   # extract the normalized gev parameters associated with the selected gev models
   normalized_gev_parameters_object <- gev_models$normalized_gev_parameters_object[selected_model_labels, ]
   
@@ -128,6 +131,7 @@ fit_stationary_gev_mixture_model <- function(x,
   output[["extremal_indexes"]] <- extremal_indexes
   output[["negative_log_likelihoods"]] <- nllh
   output[["information_criteria"]] <- information_criteria
+  output[["unnormalized_gev_parameters_object"]] <- unnormalized_gev_parameters_object
   output[["normalized_gev_parameters_object"]] <- normalized_gev_parameters_object
   output[["full_normalized_gev_parameters_object"]] <- full_normalized_gev_parameters_object
   output[["selected_model_per_obs"]] <- selected_model_per_obs
@@ -157,6 +161,8 @@ shape <- 0.01
 
 x <- extRemes::revd(n = n, loc = loc, scale = scale, shape = shape)
 
+x <- rnorm(n)
+
 dens <- extRemes::devd(x = sort(x), loc = loc, scale = scale, shape = shape)
 
 modes_object <- calculate_modes(x = x)
@@ -164,9 +170,9 @@ modes_object <- calculate_modes(x = x)
 plot_modes(modes_object)
 
 results <- fit_stationary_gev_mixture_model(x = x, 
-                                            block_sizes = 50,
+                                            block_sizes = NULL,
                                             minimum_nblocks = 50,
-                                            threshold = NULL,
+                                            threshold = 1,
                                             confidence_level = 0.95,
                                             use_extremal_index = TRUE,
                                             use_uniform_prior = TRUE,
@@ -177,8 +183,9 @@ names(results)
 # [1] "equivalent_block_sizes"                "unequivalent_block_sizes"              "selected_block_sizes"                 
 # [4] "unselected_block_sizes"                "weights"                               "frequencies"                          
 # [7] "use_extremal_index"                    "extremal_indexes"                      "negative_log_likelihoods"             
-# [10] "information_criteria"                  "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object"
-# [13] "selected_model_per_obs"                "data"                                  "selected_gev_models"
+# [10] "information_criteria"                  "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"     
+# [13] "full_normalized_gev_parameters_object" "selected_model_per_obs"                "data"                                 
+# [16] "selected_gev_models"
 
 
 results$equivalent_block_sizes
@@ -201,6 +208,8 @@ results$negative_log_likelihoods
 
 results$information_criteria
 
+results$unnormalized_gev_parameters_object
+
 results$normalized_gev_parameters_object
 
 results$full_normalized_gev_parameters_object
@@ -211,15 +220,11 @@ results$data
 
 results$selected_gev_models
 
-
-
 plot_fit_stationary_gev_mixture_model(gev_mixture_model_object = results,
-                           xlab = "support",
-                           ylab = "density",
-                           main = "density plot",
-                           legend_position = "topright")
-
-
+                                      xlab = "support",
+                                      ylab = "density",
+                                      main = "density plot",
+                                      legend_position = "topright")
 
 
 # example 2
@@ -241,28 +246,44 @@ results <- fit_stationary_gev_mixture_model(x = x, block_sizes = c(3:50))
 
 names(results)
 
-results$nclusters
+results$equivalent_block_sizes
 
-results$cluster_sizes
+results$unequivalent_block_sizes
 
 results$selected_block_sizes
 
-results$information_criterions
+results$unselected_block_sizes
 
-results$cluster_gev_model_parameters
+results$weights
 
-results$cluster_gev_model_parameters_star
+results$frequencies
 
-results$cluster_weights
+results$use_extremal_index
 
-#results$cluster_models
+results$extremal_indexes
+
+results$negative_log_likelihoods
+
+results$information_criteria
+
+results$unnormalized_gev_parameters_object
+
+results$normalized_gev_parameters_object
+
+results$full_normalized_gev_parameters_object
+
+results$selected_model_per_obs
+
+results$data
+
+results$selected_gev_models
 
 
 plot_fit_stationary_gev_mixture_model(gev_mixture_model_object = results,
-                           xlab = "support",
-                           ylab = "density",
-                           main = "density plot",
-                           legend_position = "topright")
+                                      xlab = "support",
+                                      ylab = "density",
+                                      main = "density plot",
+                                      legend_position = "topright")
 
 
 
