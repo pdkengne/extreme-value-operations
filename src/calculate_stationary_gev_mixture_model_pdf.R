@@ -1,11 +1,12 @@
-source("./src/calculate_gev_mixture_model_cdf.R")
+source("./src/calculate_gev_mixture_model_pdf.R")
 
-calculate_stationary_gev_mixture_model_cdf <- function(gev_mixture_model_object,
-                                                       q,
+
+calculate_stationary_gev_mixture_model_pdf <- function(gev_mixture_model_object,
+                                                       x,
                                                        kind = c("geometric", "arithmetic")[1]){
   # gev_mixture_model_object: an object associated with a result of the function "fit_stationary_gev_mixture_model()"
   # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
-  # q: vector of observations
+  # x: vector of observations
   
   # get the normalized gev parameters
   if (gev_mixture_model_object$use_extremal_index){
@@ -21,9 +22,9 @@ calculate_stationary_gev_mixture_model_cdf <- function(gev_mixture_model_object,
   
   # get the vector of weights
   weights <- gev_mixture_model_object$weights
-
-  # calculate the vector of cdf
-  output <- calculate_gev_mixture_model_cdf(q = q, 
+  
+  # calculate the vector of pdf
+  output <- calculate_gev_mixture_model_pdf(x = x, 
                                             locations = locations, 
                                             scales = scales, 
                                             shapes = shapes, 
@@ -61,16 +62,16 @@ calculate_stationary_gev_mixture_model_cdf <- function(gev_mixture_model_object,
 # 
 # range(x)
 # 
-# q <- median(x)
+# x <- median(x)
 # 
-# results_geometric <- calculate_stationary_gev_mixture_model_cdf(gev_mixture_model_object,
-#                                                                 q = q,
+# results_geometric <- calculate_stationary_gev_mixture_model_pdf(gev_mixture_model_object,
+#                                                                 x = x,
 #                                                                 kind = c("geometric", "arithmetic")[1])
 # 
 # results_geometric
 # 
-# results_arithmetic <- calculate_stationary_gev_mixture_model_cdf(gev_mixture_model_object,
-#                                                                  q = q,
+# results_arithmetic <- calculate_stationary_gev_mixture_model_pdf(gev_mixture_model_object,
+#                                                                  x = x,
 #                                                                  kind = c("geometric", "arithmetic")[2])
 # 
 # results_arithmetic
