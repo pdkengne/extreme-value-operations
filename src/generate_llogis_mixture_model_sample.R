@@ -34,6 +34,10 @@ generate_llogis_mixture_model_sample <- function(n = 1,
       out <- sapply(1:length(weights), function(k){
         power_random_variates <- exp(-rexp(n = 1, rate = weights[k]))
         
+        while (power_random_variates == 0 | power_random_variates == 1) {
+          power_random_variates <- exp(-rexp(n = 1, rate = weights[k]))
+        }
+        
         random_value <- actuar::qllogis(p = power_random_variates, 
                                         scale = scales[k], 
                                         shape = shapes[k])
