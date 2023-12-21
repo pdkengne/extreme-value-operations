@@ -7,6 +7,7 @@ calculate_stationary_gev_mixture_model_inverse_cdf <- function(gev_mixture_model
   # gev_mixture_model_object: an object associated with a result of the function "fit_stationary_gev_mixture_model()"
   # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
   # p: vector of probabilities
+  # iterations: number of iterations to perform in the the dichotomy algorithm
   
   # get the normalized gev parameters
   if (gev_mixture_model_object$use_extremal_index){
