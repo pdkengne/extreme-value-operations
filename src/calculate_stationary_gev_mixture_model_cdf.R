@@ -1,12 +1,13 @@
-source("./src/generate_gev_mixture_model_sample.R")
+# library(EnvStats)
 
+source("./src/calculate_gev_mixture_model_cdf.R")
 
-generate_stationary_gev_mixture_model_sample <- function(gev_mixture_model_object,
-                                                         n = 1,
-                                                         kind = c("geometric", "arithmetic")[1]){
+calculate_stationary_gev_mixture_model_cdf <- function(gev_mixture_model_object,
+                                                       q,
+                                                       kind = c("geometric", "arithmetic")[1]){
   # gev_mixture_model_object: an object associated with a result of the function "fit_stationary_gev_mixture_model()"
   # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
-  # n: number of observations to generate
+  # q: vector of observations
   
   # get the normalized gev parameters
   if (gev_mixture_model_object$use_extremal_index){
@@ -22,14 +23,14 @@ generate_stationary_gev_mixture_model_sample <- function(gev_mixture_model_objec
   
   # get the vector of weights
   weights <- gev_mixture_model_object$weights
-  
-  # simulate a vector of random values
-  output <- generate_gev_mixture_model_sample(n = n, 
-                                              locations = locations, 
-                                              scales = scales, 
-                                              shapes = shapes, 
-                                              weights = weights,
-                                              kind = kind)
+
+  # calculate the vector of cdf
+  output <- calculate_gev_mixture_model_cdf(q = q, 
+                                            locations = locations, 
+                                            scales = scales, 
+                                            shapes = shapes, 
+                                            weights = weights,
+                                            kind = kind)
   
   output
 }
@@ -60,18 +61,19 @@ generate_stationary_gev_mixture_model_sample <- function(gev_mixture_model_objec
 #                                                              use_uniform_prior = TRUE,
 #                                                              method = c("MLE", "GMLE", "Lmoments")[1])
 # 
-# gev_mixture_model_object$unnormalized_gev_parameters_object
-# gev_mixture_model_object$weights
-# gev_mixture_model_object$threshold
+# range(x)
 # 
-# results_geometric <- generate_stationary_gev_mixture_model_sample(gev_mixture_model_object,
-#                                                                   kind = c("geometric", "arithmetic")[1],
-#                                                                   n = n)
+# q <- median(x)
 # 
-# hist(results_geometric)
+# results_geometric <- calculate_stationary_gev_mixture_model_cdf(gev_mixture_model_object,
+#                                                                 q = q,
+#                                                                 kind = c("geometric", "arithmetic")[1])
 # 
-# results_arithmetic <- generate_stationary_gev_mixture_model_sample(gev_mixture_model_object,
-#                                                                    kind = c("geometric", "arithmetic")[2],
-#                                                                    n = n)
+# results_geometric
 # 
-# hist(results_arithmetic)
+# results_arithmetic <- calculate_stationary_gev_mixture_model_cdf(gev_mixture_model_object,
+#                                                                  q = q,
+#                                                                  kind = c("geometric", "arithmetic")[2])
+# 
+# results_arithmetic
+
