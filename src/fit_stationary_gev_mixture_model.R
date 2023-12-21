@@ -142,6 +142,7 @@ fit_stationary_gev_mixture_model <- function(x,
   output[["unselected_block_sizes"]] <- unselected_block_sizes
   output[["weights"]] <- weights
   output[["frequencies"]] <- frequencies
+  output[["use_uniform_prior"]] <- use_uniform_prior
   output[["use_extremal_index"]] <- use_extremal_index
   output[["extremal_indexes"]] <- extremal_indexes
   output[["negative_log_likelihoods"]] <- nllh

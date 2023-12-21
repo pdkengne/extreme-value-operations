@@ -36,6 +36,10 @@ generate_gev_mixture_model_sample <- function(n = 1,
       out <- sapply(1:length(weights), function(k){
         power_random_variates <- exp(-rexp(n = 1, rate = weights[k]))
         
+        while (power_random_variates == 0 | power_random_variates == 1) {
+          power_random_variates <- exp(-rexp(n = 1, rate = weights[k]))
+        }
+        
         random_value <- calculate_gev_inverse_cdf(p = power_random_variates, 
                                                   loc = locations[k], 
                                                   scale = scales[k], 
@@ -54,7 +58,6 @@ generate_gev_mixture_model_sample <- function(n = 1,
   
   output
 }
-
 
 
 # # example 1
