@@ -84,23 +84,23 @@ fit_non_stationary_gev_mixture_model <- function(x,
                                                                block_size = min(equivalent_block_sizes))
   
   # estimate several non-stationary gev models associated with the equivalent block sizes
-  gev_models <- estimate_several_ns_gev_models(x = partial_data, 
-                                               block_sizes = equivalent_block_sizes,
-                                               data = partial_data_covariates,
-                                               location.fun = location.fun,
-                                               scale.fun = scale.fun,
-                                               shape.fun = shape.fun,
-                                               use.phi = use.phi,
-                                               method = method)
+  several_ns_gev_models <- estimate_several_ns_gev_models(x = partial_data, 
+                                                          block_sizes = equivalent_block_sizes,
+                                                          data = partial_data_covariates,
+                                                          location.fun = location.fun,
+                                                          scale.fun = scale.fun,
+                                                          shape.fun = shape.fun,
+                                                          use.phi = use.phi,
+                                                          method = method)
   
   # extract non-stationary gev model coefficients associated with the equivalent block sizes
-  several_ns_gev_coefficients <- sapply(gev_models, function(single_ns_gev_model) 
+  several_ns_gev_coefficients <- sapply(several_ns_gev_models, function(single_ns_gev_model) 
     single_ns_gev_model$gev_model$results$par)
   
   several_ns_gev_coefficients <- data.frame(t(several_ns_gev_coefficients))
   
   # estimate the gev model weights
-  automatic_weights_object <- estimate_gev_mixture_model_automatic_weights(gev_models = gev_models,
+  automatic_weights_object <- estimate_gev_mixture_model_automatic_weights(several_ns_gev_models = several_ns_gev_models,
                                                                            use_uniform_prior = use_uniform_prior,
                                                                            use_extremal_index = use_extremal_index)
   # extract the selected block sizes
@@ -124,30 +124,30 @@ fit_non_stationary_gev_mixture_model <- function(x,
   names(weights) <- selected_block_sizes
   
   # extract all estimated gev model objects
-  gev_models_objects <- gev_models$gev_models_object
+  several_ns_gev_models_objects <- several_ns_gev_models$several_ns_gev_models_object
   
   # extract the selected gev models
-  selected_gev_models <- lapply(selected_model_labels, function(k){
-    model <- gev_models_objects[[k]]
+  selected_several_ns_gev_models <- lapply(selected_model_labels, function(k){
+    model <- several_ns_gev_models_objects[[k]]
     model
   })
   
-  names(selected_gev_models) <- selected_block_sizes
+  names(selected_several_ns_gev_models) <- selected_block_sizes
   
   # extract the extremal indexes associated with the selected gev models
-  extremal_indexes <- gev_models$extremal_indexes[selected_model_labels]
+  extremal_indexes <- several_ns_gev_models$extremal_indexes[selected_model_labels]
   
   # extract the unnormalized gev parameters associated with the selected gev models
-  unnormalized_gev_parameters_object <- gev_models$unnormalized_gev_parameters_object[selected_model_labels, ]
+  unnormalized_gev_parameters_object <- several_ns_gev_models$unnormalized_gev_parameters_object[selected_model_labels, ]
   
   # extract the normalized gev parameters associated with the selected gev models
-  normalized_gev_parameters_object <- gev_models$normalized_gev_parameters_object[selected_model_labels, ]
+  normalized_gev_parameters_object <- several_ns_gev_models$normalized_gev_parameters_object[selected_model_labels, ]
   
   # extract the full normalized gev parameters associated with the selected gev models
-  full_normalized_gev_parameters_object <- gev_models$full_normalized_gev_parameters_object[selected_model_labels, ]
+  full_normalized_gev_parameters_object <- several_ns_gev_models$full_normalized_gev_parameters_object[selected_model_labels, ]
   
   # extract the negative log-likelihood associated with the selected gev models
-  nllh <- sapply(selected_gev_models, function(model){
+  nllh <- sapply(selected_several_ns_gev_models, function(model){
     res <- summary(model, silent = TRUE)
     res$nllh
   })
@@ -183,7 +183,7 @@ fit_non_stationary_gev_mixture_model <- function(x,
   output[["selected_model_per_obs"]] <- selected_model_per_obs
   output[["partial_data"]] <- partial_data
   output[["all_data"]] <- all_data
-  output[["selected_gev_models"]] <- selected_gev_models
+  output[["selected_several_ns_gev_models"]] <- selected_several_ns_gev_models
   
   output
 }
@@ -228,7 +228,7 @@ names(results)
 # [7] "frequencies"                           "use_extremal_index"                    "extremal_indexes"
 # [10] "negative_log_likelihoods"              "information_criteria"                  "unnormalized_gev_parameters_object"
 # [13] "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object" "selected_model_per_obs"
-# [16] "partial_data"                          "all_data"                              "selected_gev_models"
+# [16] "partial_data"                          "all_data"                              "selected_several_ns_gev_models"
 
 results$threshold
 
@@ -264,7 +264,7 @@ results$partial_data
 
 results$all_data
 
-results$selected_gev_models
+results$selected_several_ns_gev_models
 
 plot_fit_non_stationary_gev_mixture_model(gev_mixture_model_object = results,
                                       xlab = "support",
@@ -301,7 +301,7 @@ names(results)
 # [7] "frequencies"                           "use_extremal_index"                    "extremal_indexes"
 # [10] "negative_log_likelihoods"              "information_criteria"                  "unnormalized_gev_parameters_object"
 # [13] "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object" "selected_model_per_obs"
-# [16] "partial_data"                          "all_data"                              "selected_gev_models"
+# [16] "partial_data"                          "all_data"                              "selected_several_ns_gev_models"
 
 results$threshold
 
@@ -337,7 +337,7 @@ results$partial_data
 
 results$all_data
 
-results$selected_gev_models
+results$selected_several_ns_gev_models
 
 
 plot_fit_non_stationary_gev_mixture_model(gev_mixture_model_object = results,
