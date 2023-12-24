@@ -3,6 +3,7 @@
 
 library(tidyverse)
 
+source("./src/get_ns_gev_model_parameters.R")
 source("./src/calculate_power_gev_parameters.R")
 
 
@@ -16,107 +17,30 @@ get_ns_gev_model_normalized_parameters <- function(ns_gev_model,
   # block_size: size of blocks to consider
   # extremal_index: value of the extremal index to consider
   
-  # create an empty output object
-  output <- list()
+  # calculate the gev model parameters object
+  gev_parameters_object <- get_ns_gev_model_parameters(ns_gev_model = ns_gev_model, data = data)
   
-  n <-  nrow(data)
-  parameters <- ns_gev_model$results$par
-  parameter_names <- names(parameters)
+  # extract the vector gev model parameters
+  locations <- gev_parameters_object$location
+  scales <- gev_parameters_object$scale
+  shapes <- gev_parameters_object$shape
   
-  model_parameters <- ns_gev_model$par.models
-  model_parameters_variable_names <- model_parameters$term.names
+  # calculate the normalization exponent
+  exponent <- extremal_index/block_size
   
-  model_location_function <- model_parameters$location
-  model_scale_function <- model_parameters$scale
-  model_shape_function <- model_parameters$shape
+  # calculate the gev model normalized parameters object 
+  gev_normalized_parameters_object <- sapply(1:nrow(data), function(k){
+    calculate_power_gev_parameters(loc = locations[k], 
+                                   scale = scales[k], 
+                                   shape = shapes[k], 
+                                   exponent = exponent)
+  })
   
-  if (extRemes::is.fixedfevd(x = ns_gev_model)){
-    
-    location <- rep(as.numeric(parameters["location"]), times = n)
-    shape <- rep(as.numeric(parameters["shape"]), times = n)
-    
-    if (model_parameters$log.scale){
-      scale <- rep(exp(as.numeric(parameters["log.scale"])), times = n)
-    } else{
-      scale <- rep(as.numeric(parameters["scale"]), times = n)
-    }
-    
-  } else{
-    
-    if (extRemes::check.constant(x = model_location_function)){
-      location <- rep(as.numeric(parameters["location"]), times = n)
-    } else{
-      model_location_variable_names <- model_parameters_variable_names$location
-      if (is.element(el = ".", set = model_location_variable_names)){
-        model_location_variable_names <- names(data)
-      }
-      model_location_data <- data %>% select(all_of(model_location_variable_names))
-      model_location_data <- t(model_location_data %>% add_column("constant" = 1, .before = 1))
-      
-      location_parameter_positions <- stringr::str_detect(string = parameter_names, 
-                                                          pattern  = "mu", 
-                                                          negate = FALSE)
-      location_parameters <- parameters[location_parameter_positions]
-      
-      location <- location_parameters %*% model_location_data
-    }
-    
-    
-    if (extRemes::check.constant(x = model_scale_function)){
-      scale <- rep(as.numeric(parameters["scale"]), times = n)
-    } else{
-      model_scale_variable_names <- model_parameters_variable_names$scale
-      if (is.element(el = ".", set = model_scale_variable_names)){
-        model_scale_variable_names <- names(data)
-      }
-      model_scale_data <- data %>% select(all_of(model_scale_variable_names))
-      model_scale_data <- t(model_scale_data %>% add_column("constant" = 1, .before = 1))
-      
-      if (model_parameters$log.scale){
-        scale_parameter_positions <- stringr::str_detect(string = parameter_names, 
-                                                         pattern  = "phi", 
-                                                         negate = FALSE)
-        scale_parameters <- parameters[scale_parameter_positions]
-        
-        scale <- exp(scale_parameters %*% model_scale_data)
-      } else{
-        scale_parameter_positions <- stringr::str_detect(string = parameter_names, 
-                                                         pattern  = "sigma", 
-                                                         negate = FALSE)
-        scale_parameters <- parameters[scale_parameter_positions]
-        
-        scale <- scale_parameters %*% model_scale_data
-      }
-    }
-    
-    
-    if (extRemes::check.constant(x = model_shape_function)){
-      shape <- rep(as.numeric(parameters["shape"]), times = n)
-    } else{
-      model_shape_variable_names <- model_parameters_variable_names$shape
-      if (is.element(el = ".", set = model_shape_variable_names)){
-        model_shape_variable_names <- names(data)
-      }
-      model_shape_data <- data %>% select(all_of(model_shape_variable_names))
-      model_shape_data <- t(model_shape_data %>% add_column("constant" = 1, .before = 1))
-      
-      shape_parameter_positions <- stringr::str_detect(string = parameter_names, 
-                                                       pattern  = "xi", 
-                                                       negate = FALSE)
-      shape_parameters <- parameters[shape_parameter_positions]
-      
-      shape <- shape_parameters %*% model_shape_data
-    }
-    
-  }
+  gev_normalized_parameters_object <- data.frame(t(gev_normalized_parameters_object))
+  names(gev_normalized_parameters_object) <- c("location", "scale", "shape")
+  rownames(gev_normalized_parameters_object) <- NULL
   
-  
-  # update the output object
-  output[["location"]] <- location
-  output[["scale"]] <- scale
-  output[["shape"]] <- shape
-  
-  output
+  gev_normalized_parameters_object
 }
 
 
@@ -128,9 +52,12 @@ get_ns_gev_model_normalized_parameters <- function(ns_gev_model,
 # 
 # x <- PORTw$TMX1
 # 
-# ns_gev_model <- fevd(x, data, location.fun=~1, use.phi = FALSE, units="deg C")
+# ns_gev_model <- extRemes::fevd(x, data, location.fun=~1, use.phi = FALSE, units="deg C")
 # 
-# results <- get_ns_gev_model_normalized_parameters(ns_gev_model, data)
+# results <- get_ns_gev_model_normalized_parameters(ns_gev_model, 
+#                                                   data,
+#                                                   block_size = 1,
+#                                                   extremal_index = 1)
 # 
 # results
 # 
@@ -145,9 +72,12 @@ get_ns_gev_model_normalized_parameters <- function(ns_gev_model,
 # 
 # x <- PORTw$TMX1
 # 
-# ns_gev_model <- fevd(x, data, location.fun=~AOindex, units="deg C")
+# ns_gev_model <- extRemes::fevd(x, data, location.fun=~AOindex, units="deg C")
 # 
-# results <- get_ns_gev_model_normalized_parameters(ns_gev_model, data)
+# results <- get_ns_gev_model_normalized_parameters(ns_gev_model, 
+#                                                   data,
+#                                                   block_size = 1,
+#                                                   extremal_index = 1)
 # 
 # results
 # 
@@ -162,9 +92,12 @@ get_ns_gev_model_normalized_parameters <- function(ns_gev_model,
 # 
 # x <- PORTw$TMX1
 # 
-# ns_gev_model <- fevd(x, data, scale.fun=~AOindex, use.phi = TRUE, units="deg C")
+# ns_gev_model <- extRemes::fevd(x, data, scale.fun=~AOindex, use.phi = TRUE, units="deg C")
 # 
-# results <- get_ns_gev_model_normalized_parameters(ns_gev_model, data)
+# results <- get_ns_gev_model_normalized_parameters(ns_gev_model, 
+#                                                   data,
+#                                                   block_size = 1,
+#                                                   extremal_index = 1)
 # 
 # results
 # 
