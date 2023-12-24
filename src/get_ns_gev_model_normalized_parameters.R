@@ -3,10 +3,18 @@
 
 library(tidyverse)
 
-get_ns_gev_model_parameters <- function(ns_gev_model, data){
+source("./src/calculate_power_gev_parameters.R")
+
+
+get_ns_gev_model_normalized_parameters <- function(ns_gev_model, 
+                                                   data,
+                                                   block_size = 1,
+                                                   extremal_index = 1){
   # ns_gev_model: an object associated with a result of the function 
   #               "estimate_gev_parameters()" or "estimate_ns_gev_parameters()"
   # data: dataframe of covariates for linear modeling of the gev model parameters
+  # block_size: size of blocks to consider
+  # extremal_index: value of the extremal index to consider
   
   # create an empty output object
   output <- list()
@@ -21,7 +29,7 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data){
   model_location_function <- model_parameters$location
   model_scale_function <- model_parameters$scale
   model_shape_function <- model_parameters$shape
-
+  
   if (extRemes::is.fixedfevd(x = ns_gev_model)){
     
     location <- rep(as.numeric(parameters["location"]), times = n)
@@ -122,7 +130,7 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data){
 # 
 # ns_gev_model <- fevd(x, data, location.fun=~1, use.phi = FALSE, units="deg C")
 # 
-# results <- get_ns_gev_model_parameters(ns_gev_model, data)
+# results <- get_ns_gev_model_normalized_parameters(ns_gev_model, data)
 # 
 # results
 # 
@@ -139,7 +147,7 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data){
 # 
 # ns_gev_model <- fevd(x, data, location.fun=~AOindex, units="deg C")
 # 
-# results <- get_ns_gev_model_parameters(ns_gev_model, data)
+# results <- get_ns_gev_model_normalized_parameters(ns_gev_model, data)
 # 
 # results
 # 
@@ -156,7 +164,7 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data){
 # 
 # ns_gev_model <- fevd(x, data, scale.fun=~AOindex, use.phi = TRUE, units="deg C")
 # 
-# results <- get_ns_gev_model_parameters(ns_gev_model, data)
+# results <- get_ns_gev_model_normalized_parameters(ns_gev_model, data)
 # 
 # results
 # 
