@@ -83,7 +83,7 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models,
   selected_block_sizes <- block_sizes[selected_model_labels]
   
   # extract as factor the vector of selected models per observation
-  selected_model_per_obs <- selected_model_per_obs
+  selected_model_per_obs <- factor(selected_model_per_obs)
   levels(selected_model_per_obs) <- selected_block_sizes
   
   # get the vector of unselected block sizes

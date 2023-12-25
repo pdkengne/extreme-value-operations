@@ -1,12 +1,16 @@
-# library(BB)
-
 source("./src/find_threshold_associated_with_given_block_size.R")
 source("./src/calculate_gev_pdf.R")
+source("./src/get_several_ns_gev_model_normalized_parameters.R")
+
 
 estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
-                                                         use_uniform_prior = TRUE,
-                                                         use_extremal_index = TRUE){
-  # gev_models: an object associated with a result of the function "estimate_several_gev_models()"
+                                                            x,
+                                                            data,
+                                                            use_uniform_prior = TRUE,
+                                                            use_extremal_index = TRUE){
+  # gev_models: an object associated with a result of the function "estimate_several_ns_gev_models()"
+  # x: vector of observations
+  # data: dataframe of covariates for linear modeling of the gev model parameters
   # use_uniform_prior: a boolean which indicates whether to use a uniform prior (TRUE) or a pessimistic prior (FALSE)
   # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
   
@@ -14,22 +18,14 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
   output <- list()
   
   # get the normalized gev parameters
-  if (use_extremal_index){
-    normalized_gev_parameters <- gev_models$full_normalized_gev_parameters_object
-  } 
-  else{
-    normalized_gev_parameters <- gev_models$normalized_gev_parameters_object
-  }
-  
-  shapes <- normalized_gev_parameters$shape_star
-  scales <- normalized_gev_parameters$scale_star
-  locations <- normalized_gev_parameters$loc_star
-  
+  normalized_gev_parameters <- get_several_ns_gev_model_normalized_parameters(several_ns_gev_models = gev_models, 
+                                                                              data = data, 
+                                                                              use_extremal_index = use_extremal_index)
+
   # extract the vector of block sizes
-  block_sizes <- gev_models$block_sizes
-  
-  # extract the vector of observations
-  x <- gev_models$data
+  block_sizes <- sapply(gev_models, function(single_ns_gev_model){
+    single_ns_gev_model$block_size
+  })
   
   # find the threshold to use
   threshold <- find_threshold_associated_with_given_block_size(x = x, 
@@ -37,6 +33,7 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
   
   # extract the largest data to use
   x <- x[x > threshold]
+  data <- data[x > threshold, ]
   
   # calculate the prior probability w.r.t. every gev model
   if (use_uniform_prior){
@@ -44,17 +41,28 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
     prior <- unnormalized_prior/sum(unnormalized_prior)
   } 
   else{
-    unnormalized_prior <- exp(shapes)
+    highest_shapes <- sapply(1:length(normalized_gev_parameters), function(k){
+      shape <- max(normalized_gev_parameters[[k]]$shape)
+      shape
+    })
+    unnormalized_prior <- exp(highest_shapes)
     prior <- unnormalized_prior/sum(unnormalized_prior)
   }
   
   # calculate the posterior probability w.r.t. every gev model
-  normalized_posterior <- sapply(x, function(obs){
+  normalized_posterior <- sapply(1:length(x), function(i){
+    obs <- x[i]
     unnormalized_posterior <- sapply(1:length(block_sizes), function(k){
+      parameters <- normalized_gev_parameters[[k]]
+      
+      location <- parameters$location[i]
+      scale <- parameters$scale[i]
+      shape <- parameters$shape[i]
+      
       likelihood <- calculate_gev_pdf(x = obs,
-                                      loc = locations[k],
-                                      scale = scales[k],
-                                      shape = shapes[k])
+                                      loc = location,
+                                      scale = scale,
+                                      shape = shape)
       # likelihood*prior[k]
       exp(likelihood*prior[k])
     })
@@ -83,7 +91,7 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
   selected_block_sizes <- block_sizes[selected_model_labels]
   
   # extract as factor the vector of selected models per observation
-  selected_model_per_obs <- selected_model_per_obs
+  selected_model_per_obs <- factor(selected_model_per_obs)
   levels(selected_model_per_obs) <- selected_block_sizes
   
   # get the vector of unselected block sizes
@@ -104,12 +112,12 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
 
 # # example 1
 # 
-# source("./src/estimate_several_gev_models.R")
+# source("./src/estimate_several_ns_gev_models.R")
 # source("./src/find_minimum_block_size.R")
 # source("./src/find_block_size_associated_with_given_number_of_blocks.R")
 # source("./src/generate_gev_sample.R")
-# source("./src/plot_several_standardized_block_maxima_mean.R")
-# source("./src/estimate_several_standardized_block_maxima_mean.R")
+# source("./src/plot_several_ns_standardized_block_maxima_mean.R")
+# source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
 # 
 # x <- generate_gev_sample(n = 1000, loc = 1, scale = 0.5, shape = -0.2)
 # 
@@ -121,34 +129,38 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# plot_several_ns_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_ns_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
 # 
-# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# equivalent_block_sizes_object<- estimate_several_ns_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 # equivalent_block_sizes
 # 
 # rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
 # rejected_block_sizes
 # 
-# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
+# gev_models <- estimate_several_ns_gev_models(x, block_sizes = equivalent_block_sizes)
+# 
+# data <- data.frame(x)
 # 
 # results <- estimate_ns_gev_mixture_model_automatic_weights(gev_models = gev_models,
-#                                                         use_uniform_prior = TRUE,
-#                                                         use_extremal_index = TRUE)
+#                                                            x = x,
+#                                                            data = data,
+#                                                            use_uniform_prior = TRUE,
+#                                                            use_extremal_index = TRUE)
 # 
 # names(results)
 # 
-# # [1] "threshold"              "selected_model_per_obs" "unselected_block_sizes" "selected_block_sizes"   "selected_model_labels" 
-# # [6] "weights"  
+# # [1] "threshold"              "selected_model_per_obs" "unselected_block_sizes" "selected_block_sizes"   "selected_model_labels"
+# # [6] "weights"
 # 
 # # example 2
 # 
-# source("./src/estimate_several_gev_models.R")
+# source("./src/estimate_several_ns_gev_models.R")
 # source("./src/find_minimum_block_size.R")
 # source("./src/find_block_size_associated_with_given_number_of_blocks.R")
-# source("./src/plot_several_standardized_block_maxima_mean.R")
-# source("./src/estimate_several_standardized_block_maxima_mean.R")
+# source("./src/plot_several_ns_standardized_block_maxima_mean.R")
+# source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
 # 
 # x <- rnorm(n = 1000)
 # 
@@ -160,20 +172,26 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
-# plot_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
+# plot_several_ns_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = FALSE)
+# plot_several_ns_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95, equivalent = TRUE)
 # 
-# equivalent_block_sizes_object<- estimate_several_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
+# equivalent_block_sizes_object<- estimate_several_ns_standardized_block_maxima_mean(x, block_sizes, confidence_level = 0.95)
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 # equivalent_block_sizes
 # 
 # rejected_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
 # rejected_block_sizes
 # 
-# gev_models <- estimate_several_gev_models(x, block_sizes = equivalent_block_sizes)
+# gev_models <- estimate_several_ns_gev_models(x, block_sizes = equivalent_block_sizes)
+# 
+# data <- data.frame(x)
 # 
 # results <- estimate_ns_gev_mixture_model_automatic_weights(gev_models = gev_models,
-#                                                         use_uniform_prior = TRUE,
-#                                                         use_extremal_index = TRUE)
+#                                                            x = x,
+#                                                            data = data,
+#                                                            use_uniform_prior = TRUE,
+#                                                            use_extremal_index = TRUE)
 # 
 # names(results)
+# 
+# results

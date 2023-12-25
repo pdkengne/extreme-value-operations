@@ -7,8 +7,7 @@ source("./src/get_candidate_block_sizes.R")
 source("./src/estimate_several_ns_gev_models.R")
 source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
 source("./src/estimate_ns_gev_mixture_model_automatic_weights.R")
-source("./src/get_ns_gev_model_normalized_parameters.R")
-source("./src/get_ns_gev_model_parameters.R")
+
 
 fit_non_stationary_gev_mixture_model <- function(x,
                                                  data = NULL,
@@ -100,9 +99,11 @@ fit_non_stationary_gev_mixture_model <- function(x,
   several_ns_gev_coefficients <- data.frame(t(several_ns_gev_coefficients))
   
   # estimate the gev model weights
-  automatic_weights_object <- estimate_gev_mixture_model_automatic_weights(several_ns_gev_models = several_ns_gev_models,
-                                                                           use_uniform_prior = use_uniform_prior,
-                                                                           use_extremal_index = use_extremal_index)
+  automatic_weights_object <- estimate_ns_gev_mixture_model_automatic_weights(several_ns_gev_models = several_ns_gev_models,
+                                                                              x = partial_data,
+                                                                              data = partial_data_covariates,
+                                                                              use_uniform_prior = use_uniform_prior,
+                                                                              use_extremal_index = use_extremal_index)
   # extract the selected block sizes
   selected_block_sizes <- automatic_weights_object$selected_block_sizes
   
@@ -135,7 +136,11 @@ fit_non_stationary_gev_mixture_model <- function(x,
   names(selected_several_ns_gev_models) <- selected_block_sizes
   
   # extract the extremal indexes associated with the selected gev models
-  extremal_indexes <- several_ns_gev_models$extremal_indexes[selected_model_labels]
+  extremal_indexes <- sapply(several_ns_gev_models, function(single_ns_gev_model){
+    single_ns_gev_model$extremal_index
+  })
+  
+  extremal_indexes <- extremal_indexes[selected_model_labels]
   
   # extract the unnormalized gev parameters associated with the selected gev models
   unnormalized_gev_parameters_object <- several_ns_gev_models$unnormalized_gev_parameters_object[selected_model_labels, ]
