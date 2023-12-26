@@ -1,36 +1,64 @@
 source("./src/get_ns_gev_model_normalized_parameters.R")
 
 get_several_ns_gev_model_normalized_parameters <- function(several_ns_gev_models, 
-                                                           data, 
+                                                           data = NULL, 
                                                            use_extremal_index = TRUE){
   # several_ns_gev_models: an object associated with a result of the function "estimate_several_ns_gev_models()"
   # data: dataframe of covariates for linear modeling of the gev model parameters
   # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
   
   # calculate the gev model normalized parameters object associated with every model
-  several_gev_normalized_parameters_object <- lapply(several_ns_gev_models, function(single_ns_gev_model){
-    # extract the block size
-    block_size <- single_ns_gev_model$block_size
-    
-    # extract the extremal index
-    if (use_extremal_index){
-      extremal_index <- single_ns_gev_model$extremal_index
-    }
-    else{
-      extremal_index <- 1
-    }
-    
-    
-    # extract the non-stationary gev model
-    ns_gev_model <- single_ns_gev_model$gev_model
-    
-    # calculate the gev model normalized parameters object
-    get_ns_gev_model_normalized_parameters(ns_gev_model = ns_gev_model, 
-                                           data = data,
-                                           block_size = block_size,
-                                           extremal_index = extremal_index)
-    
-  })
+  if (is.null(data)){
+    several_gev_normalized_parameters_object <- lapply(several_ns_gev_models, function(single_ns_gev_model){
+      # extract the block size
+      block_size <- single_ns_gev_model$block_size
+      
+      # extract the extremal index
+      if (use_extremal_index){
+        extremal_index <- single_ns_gev_model$extremal_index
+      }
+      else{
+        extremal_index <- 1
+      }
+      
+      # extract the non-stationary gev model
+      ns_gev_model <- single_ns_gev_model$gev_model
+      
+      # extract the dataset of covariates
+      data <- ns_gev_model$cov.data
+      
+      # calculate the gev model normalized parameters object
+      get_ns_gev_model_normalized_parameters(ns_gev_model = ns_gev_model, 
+                                             data = data,
+                                             block_size = block_size,
+                                             extremal_index = extremal_index)
+      
+    })
+  }
+  else{
+    several_gev_normalized_parameters_object <- lapply(several_ns_gev_models, function(single_ns_gev_model){
+      # extract the block size
+      block_size <- single_ns_gev_model$block_size
+      
+      # extract the extremal index
+      if (use_extremal_index){
+        extremal_index <- single_ns_gev_model$extremal_index
+      }
+      else{
+        extremal_index <- 1
+      }
+      
+      # extract the non-stationary gev model
+      ns_gev_model <- single_ns_gev_model$gev_model
+      
+      # calculate the gev model normalized parameters object
+      get_ns_gev_model_normalized_parameters(ns_gev_model = ns_gev_model, 
+                                             data = data,
+                                             block_size = block_size,
+                                             extremal_index = extremal_index)
+      
+    })
+  }
   
   several_gev_normalized_parameters_object
 }
@@ -95,6 +123,7 @@ get_several_ns_gev_model_normalized_parameters <- function(several_ns_gev_models
 #                                                                                    use.phi = TRUE,
 #                                                                                    type = c("GEV", "Gumbel")[1],
 #                                                                                    method = c("MLE", "GMLE")[2])
+# 
 # equivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$selected))
 # 
 # several_ns_gev_models <- estimate_several_ns_gev_models(x = x,
@@ -114,3 +143,12 @@ get_several_ns_gev_model_normalized_parameters <- function(several_ns_gev_models
 # names(results)
 # 
 # results[[1]]
+# 
+# 
+# results <- get_several_ns_gev_model_normalized_parameters(several_ns_gev_models, data = NULL, use_extremal_index = TRUE)
+# 
+# #results
+# names(results)
+# 
+# results[[31]]
+

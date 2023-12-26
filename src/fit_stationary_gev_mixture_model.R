@@ -1,5 +1,5 @@
 # library(extRemes) 
-# library(fitdistrplus)
+# library(tidyverse)
 
 source("./src/extract_nlargest_sample.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
@@ -85,11 +85,11 @@ fit_stationary_gev_mixture_model <- function(x,
   # extract the vector of selected models per observation
   selected_model_per_obs <- automatic_weights_object$selected_model_per_obs
   
-  # extract the vector of frequencies
+  # extract the vector of frequencies associated with the selected models
   frequencies <- as.numeric(table(selected_model_per_obs))
   names(frequencies) <- selected_block_sizes
   
-  # extract the vector of weights
+  # extract the vector of weights associated with the selected models
   weights <- automatic_weights_object$weights
   names(weights) <- selected_block_sizes
   

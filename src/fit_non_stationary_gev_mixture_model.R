@@ -1,5 +1,5 @@
 # library(extRemes) 
-# library(fitdistrplus)
+# library(tidyverse)
 
 source("./src/extract_nlargest_sample.R")
 source("./src/find_threshold_associated_with_given_block_size.R")
@@ -7,6 +7,7 @@ source("./src/get_candidate_block_sizes.R")
 source("./src/estimate_several_ns_gev_models.R")
 source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
 source("./src/estimate_ns_gev_mixture_model_automatic_weights.R")
+source("./src/get_several_ns_gev_model_normalized_parameters.R")
 
 
 fit_non_stationary_gev_mixture_model <- function(x,
@@ -49,8 +50,18 @@ fit_non_stationary_gev_mixture_model <- function(x,
   partial_data <- extract_nlargest_sample(x = all_data, n = nlargest)
   
   # extract covariates associated with the sample of largest values
+  if (is.null(data)){
+    data <- data.frame("x" = x)
+  }
+  
   partial_data_positions <- which(x >= min(partial_data))
-  partial_data_covariates <- data[partial_data_positions, ]
+  
+  if (ncol(data) == 1){
+    partial_data_covariates <- data.frame("x" = data[partial_data_positions, ])
+  } 
+  else{
+    partial_data_covariates <- data[partial_data_positions, ]
+  }
   
   # get candidate block sizes
   if (is.null(block_sizes)){
@@ -92,14 +103,8 @@ fit_non_stationary_gev_mixture_model <- function(x,
                                                           use.phi = use.phi,
                                                           method = method)
   
-  # extract non-stationary gev model coefficients associated with the equivalent block sizes
-  several_ns_gev_coefficients <- sapply(several_ns_gev_models, function(single_ns_gev_model) 
-    single_ns_gev_model$gev_model$results$par)
-  
-  several_ns_gev_coefficients <- data.frame(t(several_ns_gev_coefficients))
-  
   # estimate the gev model weights
-  automatic_weights_object <- estimate_ns_gev_mixture_model_automatic_weights(several_ns_gev_models = several_ns_gev_models,
+  automatic_weights_object <- estimate_ns_gev_mixture_model_automatic_weights(gev_models = several_ns_gev_models,
                                                                               x = partial_data,
                                                                               data = partial_data_covariates,
                                                                               use_uniform_prior = use_uniform_prior,
@@ -116,37 +121,56 @@ fit_non_stationary_gev_mixture_model <- function(x,
   # extract the vector of selected models per observation
   selected_model_per_obs <- automatic_weights_object$selected_model_per_obs
   
-  # extract the vector of frequencies
+  # extract the vector of frequencies associated with the selected models
   frequencies <- as.numeric(table(selected_model_per_obs))
   names(frequencies) <- selected_block_sizes
   
-  # extract the vector of weights
+  # extract the vector of weights associated with the selected models
   weights <- automatic_weights_object$weights
   names(weights) <- selected_block_sizes
   
-  # extract all estimated gev model objects
-  several_ns_gev_models_objects <- several_ns_gev_models$several_ns_gev_models_object
+  # extract all non-stationary gev model coefficients associated with the equivalent block sizes
+  several_ns_gev_coefficients <- sapply(several_ns_gev_models, function(single_ns_gev_model) 
+    single_ns_gev_model$gev_model$results$par)
   
-  # extract the selected gev models
-  selected_several_ns_gev_models <- lapply(selected_model_labels, function(k){
+  several_ns_gev_coefficients <- data.frame(t(several_ns_gev_coefficients))
+  
+  # extract the non-stationary gev model coefficients associated with the selected equivalent block sizes
+  selected_ns_gev_coefficients <- several_ns_gev_coefficients[selected_model_labels, ]
+  
+  # extract all estimated non-stationary gev model objects
+  several_ns_gev_models_objects<- lapply(several_ns_gev_models, function(single_ns_gev_model){
+    single_ns_gev_model$gev_model
+  })
+  
+  # extract the selected non-stationary gev models
+  selected_ns_gev_models <- lapply(selected_model_labels, function(k){
     model <- several_ns_gev_models_objects[[k]]
     model
   })
   
   names(selected_several_ns_gev_models) <- selected_block_sizes
   
-  # extract the extremal indexes associated with the selected gev models
+  # extract all extremal indexes associated with the equivalent gev models
   extremal_indexes <- sapply(several_ns_gev_models, function(single_ns_gev_model){
     single_ns_gev_model$extremal_index
   })
   
+  # extract the extremal indexes associated with the selected gev models
   extremal_indexes <- extremal_indexes[selected_model_labels]
   
   # extract the unnormalized gev parameters associated with the selected gev models
-  unnormalized_gev_parameters_object <- several_ns_gev_models$unnormalized_gev_parameters_object[selected_model_labels, ]
+  unnormalized_ns_gev_parameters_object <- lapply(selected_ns_gev_models, function(model){
+    pars <- extRemes::findpars(model)
+    pars
+  })
+    
+  names(unnormalized_ns_gev_parameters_object) <- selected_block_sizes
   
   # extract the normalized gev parameters associated with the selected gev models
-  normalized_gev_parameters_object <- several_ns_gev_models$normalized_gev_parameters_object[selected_model_labels, ]
+  normalized_gev_parameters_object <- get_several_ns_gev_model_normalized_parameters(several_ns_gev_models = several_ns_gev_models[selected_model_labels],
+                                                                                     data = NULL,
+                                                                                     use_extremal_index = use_extremal_index)
   
   # extract the full normalized gev parameters associated with the selected gev models
   full_normalized_gev_parameters_object <- several_ns_gev_models$full_normalized_gev_parameters_object[selected_model_labels, ]
@@ -199,14 +223,14 @@ fit_non_stationary_gev_mixture_model <- function(x,
 source("./src/calculate_modes.R")
 source("./src/plot_modes.R")
 source("./src/plot_fit_non_stationary_gev_mixture_model.R")
-source("./src/plot_several_standardized_block_maxima_mean.R")
+source("./src/plot_several_ns_standardized_block_maxima_mean.R")
 source("./src/generate_gev_sample.R")
 
 #x <- rnorm(n = 3000)
 
 #x <- rexp(n = 3000)
 
-n <- 10000
+n <- 3000
 
 loc <- 0
 scale <- 1
@@ -217,14 +241,15 @@ x <- generate_gev_sample(n = n, loc = loc, scale = scale, shape = shape)
 #x <- rnorm(n)
 
 results <- fit_non_stationary_gev_mixture_model(x = x,
-                                            nlargest = Inf,
-                                            block_sizes = NULL,
-                                            minimum_nblocks = 50,
-                                            threshold = NULL,
-                                            confidence_level = 0.95,
-                                            use_extremal_index = TRUE,
-                                            use_uniform_prior = TRUE,
-                                            method = c("MLE", "GMLE", "Lmoments")[1])
+                                                data = NULL,
+                                                nlargest = Inf,
+                                                block_sizes = NULL,
+                                                minimum_nblocks = 50,
+                                                threshold = NULL,
+                                                confidence_level = 0.95,
+                                                use_extremal_index = TRUE,
+                                                use_uniform_prior = TRUE,
+                                                method = c("MLE", "GMLE")[1])
 
 names(results)
 
@@ -283,21 +308,22 @@ plot_fit_non_stationary_gev_mixture_model(gev_mixture_model_object = results,
 source("./src/calculate_modes.R")
 source("./src/plot_modes.R")
 source("./src/plot_fit_non_stationary_gev_mixture_model.R")
-source("./src/plot_several_standardized_block_maxima_mean.R")
+source("./src/plot_several_ns_standardized_block_maxima_mean.R")
 
-n <- 10000
+n <- 3000
 
 x <- bmixture::rmixnorm(n = n, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
 
 results <- fit_non_stationary_gev_mixture_model(x = x,
-                                            nlargest = 3000,
-                                            block_sizes = NULL,
-                                            minimum_nblocks = 50,
-                                            threshold = NULL,
-                                            confidence_level = 0.95,
-                                            use_extremal_index = TRUE,
-                                            use_uniform_prior = FALSE,
-                                            method = c("MLE", "GMLE", "Lmoments")[1])
+                                                data = NULL,
+                                                nlargest = 3000,
+                                                block_sizes = NULL,
+                                                minimum_nblocks = 50,
+                                                threshold = NULL,
+                                                confidence_level = 0.95,
+                                                use_extremal_index = TRUE,
+                                                use_uniform_prior = FALSE,
+                                                method = c("MLE", "GMLE")[1])
 
 names(results)
 
@@ -352,14 +378,14 @@ plot_fit_non_stationary_gev_mixture_model(gev_mixture_model_object = results,
                                       legend_position = "topright")
 
 
-plot_several_standardized_block_maxima_mean(x = x,
+plot_several_ns_standardized_block_maxima_mean(x = x,
                                             block_sizes = results$selected_block_sizes,
                                             confidence_level = 0.95,
                                             equivalent = FALSE,
                                             method = c("MLE", "GMLE", "Lmoments")[1])
 
 
-plot_several_standardized_block_maxima_mean(x = x,
+plot_several_ns_standardized_block_maxima_mean(x = x,
                                             block_sizes = results$selected_block_sizes,
                                             confidence_level = 0.95,
                                             equivalent = TRUE,
