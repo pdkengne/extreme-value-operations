@@ -127,6 +127,7 @@ fit_stationary_gev_mixture_model <- function(x,
   # calculate the information criteria, namely aic and bic
   p <- nrow(normalized_gev_parameters_object)
   q <- ncol(normalized_gev_parameters_object)
+  n <- length(partial_data)
   
   aic <- 2*sum(nllh) + 2*(q*p + p - 1)
   bic <- 2*sum(nllh) + log(n)*(q*p + p - 1)
@@ -140,16 +141,21 @@ fit_stationary_gev_mixture_model <- function(x,
   output[["unequivalent_block_sizes"]] <- unequivalent_block_sizes
   output[["selected_block_sizes"]] <- selected_block_sizes
   output[["unselected_block_sizes"]] <- unselected_block_sizes
+  
+  output[["use_uniform_prior"]] <- use_uniform_prior
   output[["weights"]] <- weights
   output[["frequencies"]] <- frequencies
-  output[["use_uniform_prior"]] <- use_uniform_prior
+  
   output[["use_extremal_index"]] <- use_extremal_index
   output[["extremal_indexes"]] <- extremal_indexes
+  
   output[["negative_log_likelihoods"]] <- nllh
   output[["information_criteria"]] <- information_criteria
+  
   output[["unnormalized_gev_parameters_object"]] <- unnormalized_gev_parameters_object
   output[["normalized_gev_parameters_object"]] <- normalized_gev_parameters_object
   output[["full_normalized_gev_parameters_object"]] <- full_normalized_gev_parameters_object
+  
   output[["selected_model_per_obs"]] <- selected_model_per_obs
   output[["partial_data"]] <- partial_data
   output[["all_data"]] <- all_data
