@@ -3,13 +3,17 @@
 
 library(tidyverse)
 
-get_ns_gev_model_parameters <- function(ns_gev_model, data){
+get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
   # ns_gev_model: an object associated with a result of the function 
   #               "estimate_gev_parameters()" or "estimate_ns_gev_parameters()"
   # data: dataframe of covariates for linear modeling of the gev model parameters
   
   # create an empty output object
   output <- list()
+  
+  if (is.null(data)){
+    data <- ns_gev_model$cov.data
+  }
   
   n <-  nrow(data)
   parameters <- ns_gev_model$results$par
@@ -120,7 +124,7 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data){
 # 
 # x <- PORTw$TMX1
 # 
-# ns_gev_model <- fevd(x, data, location.fun=~1, use.phi = FALSE, units="deg C")
+# ns_gev_model <- extRemes::fevd(x, data, location.fun=~1, use.phi = FALSE, units="deg C")
 # 
 # results <- get_ns_gev_model_parameters(ns_gev_model, data)
 # 
@@ -137,11 +141,20 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data){
 # 
 # x <- PORTw$TMX1
 # 
-# ns_gev_model <- fevd(x, data, location.fun=~AOindex, units="deg C")
+# ns_gev_model <- extRemes::fevd(x, data, location.fun=~AOindex, units="deg C")
 # 
 # results <- get_ns_gev_model_parameters(ns_gev_model, data)
 # 
 # results
+# 
+# 
+# results <- get_ns_gev_model_parameters(ns_gev_model, data = NULL)
+# 
+# results
+# 
+# df <-  as.data.frame(do.call(cbind, results))
+# 
+# df
 # 
 # # findpars(ns_gev_model)
 # 
@@ -154,7 +167,7 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data){
 # 
 # x <- PORTw$TMX1
 # 
-# ns_gev_model <- fevd(x, data, scale.fun=~AOindex, use.phi = TRUE, units="deg C")
+# ns_gev_model <- extRemes::fevd(x, data, scale.fun=~AOindex, use.phi = TRUE, units="deg C")
 # 
 # results <- get_ns_gev_model_parameters(ns_gev_model, data)
 # 

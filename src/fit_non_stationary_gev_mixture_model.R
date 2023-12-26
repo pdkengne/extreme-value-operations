@@ -8,6 +8,7 @@ source("./src/estimate_several_ns_gev_models.R")
 source("./src/estimate_several_ns_standardized_block_maxima_mean.R")
 source("./src/estimate_ns_gev_mixture_model_automatic_weights.R")
 source("./src/get_several_ns_gev_model_normalized_parameters.R")
+source("./src/get_ns_gev_model_parameters.R")
 
 
 fit_non_stationary_gev_mixture_model <- function(x,
@@ -161,8 +162,8 @@ fit_non_stationary_gev_mixture_model <- function(x,
   
   # extract the unnormalized gev parameters associated with the selected gev models
   unnormalized_ns_gev_parameters_object <- lapply(selected_ns_gev_models, function(model){
-    pars <- extRemes::findpars(model)
-    pars
+    pars <- get_ns_gev_model_parameters(model, data = NULL)
+    as.data.frame(do.call(cbind, pars))
   })
     
   names(unnormalized_ns_gev_parameters_object) <- selected_block_sizes
