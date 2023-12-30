@@ -35,7 +35,7 @@ estimate_single_ns_gev_model <- function(x,
   # get the index of block maxima
   block_maxima_indexes <- block_maxima_with_indexes$block_maxima_indexes
   
-  # estimate the (non stationary) gev model
+  # check if the provided dataset is null
   if (is.null(data)){
     data <- data.frame("intercept" = rep(1, length(x)))
   }

@@ -18,11 +18,12 @@ estimate_ns_gev_parameters <- function(x,
   # type: type of model to use
   # method: estimation method to use
   
-  # estimate the non-stationary gev model
+  # check if the provided dataset is null
   if (is.null(data)){
     data <- data.frame("intercept" = rep(1, length(x)))
   }
   
+  # estimate the non-stationary gev model
   gev_model <- extRemes::fevd(x = x, 
                               data = data, 
                               location.fun = location.fun,

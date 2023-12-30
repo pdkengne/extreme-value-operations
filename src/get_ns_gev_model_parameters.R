@@ -1,16 +1,17 @@
 # library(stringr)
 # library(extRemes)
+# library(dplyr)
+# library(tibble)
 
-library(tidyverse)
 
 get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
-  # ns_gev_model: an object associated with a result of the function 
-  #               "estimate_gev_parameters()" or "estimate_ns_gev_parameters()"
+  # ns_gev_model: an object associated with a result of the function "estimate_ns_gev_parameters()"
   # data: dataframe of covariates for linear modeling of the gev model parameters
   
   # create an empty output object
   output <- list()
   
+  # check if the provided dataset is null
   if (is.null(data)){
     data <- ns_gev_model$cov.data
   }
@@ -46,8 +47,8 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
       if (is.element(el = ".", set = model_location_variable_names)){
         model_location_variable_names <- names(data)
       }
-      model_location_data <- data %>% select(all_of(model_location_variable_names))
-      model_location_data <- t(model_location_data %>% add_column("constant" = 1, .before = 1))
+      model_location_data <- dplyr::select(data, all_of(model_location_variable_names))
+      model_location_data <- t(tibble::add_column(model_location_data, "constant" = 1, .before = 1))
       
       location_parameter_positions <- stringr::str_detect(string = parameter_names, 
                                                           pattern  = "mu", 
@@ -55,6 +56,8 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
       location_parameters <- parameters[location_parameter_positions]
       
       location <- location_parameters %*% model_location_data
+      
+      location <- location[1, ]
     }
     
     
@@ -65,8 +68,8 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
       if (is.element(el = ".", set = model_scale_variable_names)){
         model_scale_variable_names <- names(data)
       }
-      model_scale_data <- data %>% select(all_of(model_scale_variable_names))
-      model_scale_data <- t(model_scale_data %>% add_column("constant" = 1, .before = 1))
+      model_scale_data <- dplyr::select(data, all_of(model_scale_variable_names))
+      model_scale_data <- t(tibble::add_column(model_scale_data, "constant" = 1, .before = 1))
       
       if (model_parameters$log.scale){
         scale_parameter_positions <- stringr::str_detect(string = parameter_names, 
@@ -83,6 +86,8 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
         
         scale <- scale_parameters %*% model_scale_data
       }
+      
+      scale <- scale[1, ]
     }
     
     
@@ -93,8 +98,8 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
       if (is.element(el = ".", set = model_shape_variable_names)){
         model_shape_variable_names <- names(data)
       }
-      model_shape_data <- data %>% select(all_of(model_shape_variable_names))
-      model_shape_data <- t(model_shape_data %>% add_column("constant" = 1, .before = 1))
+      model_shape_data <- dplyr::select(data, all_of(model_shape_variable_names))
+      model_shape_data <- t(tibble::add_column(model_shape_data, "constant" = 1, .before = 1))
       
       shape_parameter_positions <- stringr::str_detect(string = parameter_names, 
                                                        pattern  = "xi", 
@@ -102,6 +107,8 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
       shape_parameters <- parameters[shape_parameter_positions]
       
       shape <- shape_parameters %*% model_shape_data
+      
+      shape <- shape[1, ]
     }
     
   }
@@ -130,7 +137,7 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
 # 
 # results
 # 
-# # findpars(ns_gev_model)
+# # extRemes::findpars(ns_gev_model)
 # 
 # 
 # # example 2
@@ -156,7 +163,7 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
 # 
 # df
 # 
-# # findpars(ns_gev_model)
+# # extRemes::findpars(ns_gev_model)
 # 
 # 
 # # example 3
@@ -173,4 +180,4 @@ get_ns_gev_model_parameters <- function(ns_gev_model, data = NULL){
 # 
 # results
 # 
-# # findpars(ns_gev_model)
+# # extRemes::findpars(ns_gev_model)
