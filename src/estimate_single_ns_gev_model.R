@@ -37,32 +37,23 @@ estimate_single_ns_gev_model <- function(x,
   
   # estimate the (non stationary) gev model
   if (is.null(data)){
-    data <- data.frame("x" = x)
-    
-    # extract covariates associated to block maxima
-    block_maxima_covariates <- data.frame(data[block_maxima_indexes, ])
-    rownames(block_maxima_covariates) <- block_maxima_indexes
-    names(block_maxima_covariates) <- names(data)
-    
-    gev_model <- estimate_ns_gev_parameters(x = block_maxima,
-                                            type = type,
-                                            method = method)
+    data <- data.frame("intercept" = rep(1, length(x)))
   }
-  else{
-    # extract covariates associated to block maxima
-    block_maxima_covariates <- data.frame(data[block_maxima_indexes, ])
-    rownames(block_maxima_covariates) <- block_maxima_indexes
-    names(block_maxima_covariates) <- names(data)
-    
-    gev_model <- estimate_ns_gev_parameters(x = block_maxima,
-                                            data = block_maxima_covariates, 
-                                            location.fun = location.fun,
-                                            scale.fun = scale.fun, 
-                                            shape.fun = shape.fun, 
-                                            use.phi = use.phi,
-                                            type = type,
-                                            method = method)
-  }
+  
+  # extract covariates associated to block maxima
+  block_maxima_covariates <- data.frame(data[block_maxima_indexes, ])
+  rownames(block_maxima_covariates) <- block_maxima_indexes
+  names(block_maxima_covariates) <- names(data)
+  
+  # estimate the non-stationary gev model
+  gev_model <- estimate_ns_gev_parameters(x = block_maxima,
+                                          data = block_maxima_covariates, 
+                                          location.fun = location.fun,
+                                          scale.fun = scale.fun, 
+                                          shape.fun = shape.fun, 
+                                          use.phi = use.phi,
+                                          type = type,
+                                          method = method)
   
   # calculate the extremal index
   threshold <- find_threshold_associated_with_given_block_size(x, block_size)

@@ -18,7 +18,7 @@ estimate_ns_gev_parameters <- function(x,
   # type: type of model to use
   # method: estimation method to use
   
-  # estimate the (non stationary) gev model
+  # estimate the non-stationary gev model
   if (is.null(data)){
     data <- data.frame("intercept" = rep(1, length(x)))
   }
