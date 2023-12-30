@@ -20,21 +20,17 @@ estimate_ns_gev_parameters <- function(x,
   
   # estimate the (non stationary) gev model
   if (is.null(data)){
-    gev_model <- extRemes::fevd(x = x, 
-                                type = type,
-                                method = method)
-    
+    data <- data.frame("intercept" = rep(1, length(x)))
   }
-  else{
-    gev_model <- extRemes::fevd(x = x, 
-                                data = data, 
-                                location.fun = location.fun,
-                                scale.fun = scale.fun, 
-                                shape.fun = shape.fun, 
-                                use.phi = use.phi,
-                                type = type,
-                                method = method)
-  }
+  
+  gev_model <- extRemes::fevd(x = x, 
+                              data = data, 
+                              location.fun = location.fun,
+                              scale.fun = scale.fun, 
+                              shape.fun = shape.fun, 
+                              use.phi = use.phi,
+                              type = type,
+                              method = method)
   
   gev_model
 }
@@ -52,7 +48,7 @@ estimate_ns_gev_parameters <- function(x,
 # 
 # results <- estimate_ns_gev_parameters(x,
 #                                       data = NULL,
-#                                       location.fun = ~1,
+#                                       location.fun = ~ times,
 #                                       scale.fun = ~1,
 #                                       shape.fun = ~1,
 #                                       use.phi = TRUE,
