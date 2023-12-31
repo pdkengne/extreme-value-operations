@@ -1,3 +1,5 @@
+# library(dplyr)
+
 source("./src/extract_block_maxima_with_indexes.R")
 source("./src/estimate_gev_parameters.R")
 source("./src/estimate_ns_gev_parameters.R")
@@ -41,10 +43,9 @@ estimate_single_ns_gev_model <- function(x,
   }
   
   # extract covariates associated to block maxima
-  block_maxima_covariates <- data.frame(data[block_maxima_indexes, ])
+  block_maxima_covariates <- dplyr::slice(data, block_maxima_indexes)
   rownames(block_maxima_covariates) <- block_maxima_indexes
-  names(block_maxima_covariates) <- names(data)
-  
+
   # estimate the non-stationary gev model
   gev_model <- estimate_ns_gev_parameters(x = block_maxima,
                                           data = block_maxima_covariates, 
@@ -87,7 +88,7 @@ estimate_single_ns_gev_model <- function(x,
 # results<- estimate_single_ns_gev_model(x = x,
 #                                        block_size = block_size,
 #                                        data = NULL,
-#                                        location.fun = ~ .,
+#                                        location.fun = ~ 1,
 #                                        scale.fun = ~1,
 #                                        shape.fun = ~1,
 #                                        use.phi = FALSE,

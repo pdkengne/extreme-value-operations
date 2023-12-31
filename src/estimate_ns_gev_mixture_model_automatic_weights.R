@@ -6,18 +6,19 @@ source("./src/get_several_ns_gev_model_normalized_parameters.R")
 
 
 estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
-                                                            x,
-                                                            data,
                                                             use_uniform_prior = TRUE,
                                                             use_extremal_index = TRUE){
   # gev_models: an object associated with a result of the function "estimate_several_ns_gev_models()"
-  # x: vector of observations
-  # data: dataframe of covariates for linear modeling of the gev model parameters
   # use_uniform_prior: a boolean which indicates whether to use a uniform prior (TRUE) or a pessimistic prior (FALSE)
   # use_extremal_index: a boolean which indicates whether to use the estimates extremal indexes or not
   
   # create an empty output object
   output <- list()
+  
+  # extract the dataset of observations and covariates
+  model <- gev_models[[1]]
+  x <- model$data
+  data <- model$covariates
   
   # extract the vector of block sizes
   block_sizes <- sapply(gev_models, function(single_ns_gev_model){
@@ -28,8 +29,7 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
   threshold <- find_threshold_associated_with_given_block_size(x = x, block_size = min(block_sizes))
   
   # extract the largest data to use
-  y <- 1:length(x)
-  index <- y[x > threshold]
+  index <- which(x > threshold)
   x <- x[index]
   data <- dplyr::slice(data, index)
   
@@ -190,8 +190,6 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
 #                                                         method = c("MLE", "GMLE")[2])
 # 
 # results <- estimate_ns_gev_mixture_model_automatic_weights(gev_models = several_ns_gev_models,
-#                                                            x = x,
-#                                                            data = data,
 #                                                            use_uniform_prior = TRUE,
 #                                                            use_extremal_index = TRUE)
 # 
@@ -279,8 +277,6 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
 #                                                         method = c("MLE", "GMLE")[2])
 # 
 # results <- estimate_ns_gev_mixture_model_automatic_weights(gev_models = several_ns_gev_models,
-#                                                            x = x,
-#                                                            data = data,
 #                                                            use_uniform_prior = TRUE,
 #                                                            use_extremal_index = TRUE)
 # 
@@ -294,3 +290,4 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
 # results$selected_block_sizes
 # 
 # results$unselected_block_sizes
+
