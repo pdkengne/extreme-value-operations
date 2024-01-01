@@ -119,7 +119,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # #x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.01)
 # 
-# gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x, 
+# gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x,
 #                                                              block_sizes = NULL,
 #                                                              minimum_nblocks = 50,
 #                                                              threshold = NULL,
@@ -159,7 +159,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 #                                        weights,
 #                                        kind = c("geometric", "arithmetic")[2])
 # 
-# gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x, 
+# gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x,
 #                                                              block_sizes = NULL,
 #                                                              minimum_nblocks = 50,
 #                                                              threshold = NULL,
