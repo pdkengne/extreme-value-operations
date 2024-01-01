@@ -1,16 +1,18 @@
-source("./src/calculate_gev_mixture_model_cdf.R")
+# library(dplyr)
+
+source("./src/calculate_gev_mixture_model_pdf.R")
 source("./src/get_several_ns_gev_model_normalized_parameters.R")
 
 
-calculate_non_stationary_gev_mixture_model_cdf <- function(ns_gev_mixture_model_object,
-                                                           q = NULL,
+calculate_non_stationary_gev_mixture_model_pdf <- function(ns_gev_mixture_model_object,
+                                                           x = NULL,
                                                            data = NULL,
                                                            kind = c("geometric", "arithmetic")[1]){
   # ns_gev_mixture_model_object: an object associated with a result of the function "fit_non_stationary_gev_mixture_model()"
   # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
-  # q: vector of observations
+  # x: vector of observations
   # data: dataframe of covariates for linear modeling of the gev model parameters
-  #       note that the following condition must be satisfied nrow(data) == length(q) or nrow(data) == 1
+  #       note that the following condition must be satisfied nrow(data) == length(x) or nrow(data) == 1
   
   # extract the selected full non-stationary gev models 
   selected_full_ns_gev_models <- ns_gev_mixture_model_object$selected_full_ns_gev_models
@@ -29,31 +31,38 @@ calculate_non_stationary_gev_mixture_model_cdf <- function(ns_gev_mixture_model_
   
   # extract the dataset of covariates to use
   if (is.null(data)){
-    y <- 1:length(partial_data)
-    index <- y[partial_data > threshold]
-    data <- partial_data_covariates %>% slice(index)
+    index <- which(partial_data > threshold)
+    data <- dplyr::slice(partial_data_covariates, index)
   }
   
   # extract the vector of observations to use
-  if (is.null(q)){
-    q <- partial_data[partial_data > threshold]
+  if (is.null(x)){
+    x <- partial_data[partial_data > threshold]
   }
   
   # check if the required condition on input arguments is satisfied
-  if (nrow(data) != length(q) & nrow(data) > 1){
-    stop("Sorry, the information in the input arguments must satisfy nrow(data) == length(q) or nrow(data) == 1 !")
+  if (nrow(data) != length(x) & nrow(data) > 1){
+    stop("Sorry, the information in the input arguments must satisfy nrow(data) == length(x) or nrow(data) == 1 !")
+  }
+  
+  # balance nrow(data) and length(x)
+  if (nrow(data) == 1){
+    idx <- rep(x = 1, times = length(x))
+    data <- dplyr::slice(data, idx)
   }
   
   # calculate the normalized gev parameters
   if (ns_gev_mixture_model_object$use_extremal_index){
     normalized_gev_parameters <- get_several_ns_gev_model_normalized_parameters(several_ns_gev_models = selected_full_ns_gev_models,
                                                                                 data = data,
-                                                                                use_extremal_index = TRUE)
+                                                                                use_extremal_index = TRUE,
+                                                                                normalize_parameters = TRUE)
   } 
   else{
     normalized_gev_parameters <- get_several_ns_gev_model_normalized_parameters(several_ns_gev_models = selected_full_ns_gev_models,
                                                                                 data = data,
-                                                                                use_extremal_index = FALSE)
+                                                                                use_extremal_index = FALSE,
+                                                                                normalize_parameters = TRUE)
   }
   
   # calculate the vector of cdf
@@ -70,14 +79,14 @@ calculate_non_stationary_gev_mixture_model_cdf <- function(ns_gev_mixture_model_
       coefficients
     })
     
-    cdf <- calculate_gev_mixture_model_cdf(q = obs,
+    pdf <- calculate_gev_mixture_model_pdf(x = obs,
                                            locations = distributions["location", ],
                                            scales = distributions["scale", ],
                                            shapes = distributions["shape", ],
                                            weights = weights,
                                            kind = kind)
     
-    cdf
+    pdf
   })
   
   mixture_distributions
@@ -90,7 +99,7 @@ calculate_non_stationary_gev_mixture_model_cdf <- function(ns_gev_mixture_model_
 # source("./src/fit_non_stationary_gev_mixture_model.R")
 # source("./src/generate_gev_sample.R")
 # 
-# n <- 3000
+# n <- 10000
 # 
 # x <- rnorm(n = n)
 # 
@@ -98,10 +107,9 @@ calculate_non_stationary_gev_mixture_model_cdf <- function(ns_gev_mixture_model_
 # 
 # #x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.01)
 # 
-# #x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.01)
-# 
 # ns_gev_mixture_model_object <- fit_non_stationary_gev_mixture_model(x = x,
 #                                                                     data = NULL,
+#                                                                     nlargest = 3000,
 #                                                                     block_sizes = NULL,
 #                                                                     minimum_nblocks = 50,
 #                                                                     threshold = NULL,
@@ -112,32 +120,56 @@ calculate_non_stationary_gev_mixture_model_cdf <- function(ns_gev_mixture_model_
 # 
 # range(x)
 # 
-# q <- median(x)
-# data <- ns_gev_mixture_model_object$all_data_covariates %>% slice(1)
+# h <- ns_gev_mixture_model_object$threshold
+# y <- ns_gev_mixture_model_object$partial_data
 # 
-# results_geometric <- calculate_non_stationary_gev_mixture_model_cdf(ns_gev_mixture_model_object,
-#                                                                     q = NULL,
+# data <- dplyr::slice(ns_gev_mixture_model_object$all_data_covariates, 1)
+# 
+# results_geometric <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
+#                                                                     x = NULL,
 #                                                                     data = NULL,
 #                                                                     kind = c("geometric", "arithmetic")[1])
 # 
-# results_geometric
+# z <- y[y > h]
 # 
-# results_geometric <- calculate_non_stationary_gev_mixture_model_cdf(ns_gev_mixture_model_object,
-#                                                                     q = q,
+# ord <- order(z)
+# 
+# support <- sort(z)
+# dens <- results_geometric[ord]
+# 
+# plot(x = support, y = dens, type = "l", col = 6)
+# 
+# results_geometric <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
+#                                                                     x = median(x),
 #                                                                     data = data,
 #                                                                     kind = c("geometric", "arithmetic")[1])
 # 
 # results_geometric
 # 
-# results_arithmetic <- calculate_non_stationary_gev_mixture_model_cdf(ns_gev_mixture_model_object,
-#                                                                      q = NULL,
+# results_arithmetic <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
+#                                                                      x = NULL,
 #                                                                      data = NULL,
+#                                                                      kind = c("geometric", "arithmetic")[2])
+# 
+# z <- y[y > h]
+# 
+# ord <- order(z)
+# 
+# support <- sort(z)
+# dens <- results_arithmetic[ord]
+# 
+# lines(x = support, y = dens, col = 7)
+# 
+# results_arithmetic <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
+#                                                                      x = 1:3,
+#                                                                      data = data,
 #                                                                      kind = c("geometric", "arithmetic")[2])
 # 
 # results_arithmetic
 # 
-# results_arithmetic <- calculate_non_stationary_gev_mixture_model_cdf(ns_gev_mixture_model_object,
-#                                                                      q = 3:4,
+# 
+# results_arithmetic <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
+#                                                                      x = c(3, 3, 3),
 #                                                                      data = data,
 #                                                                      kind = c("geometric", "arithmetic")[2])
 # 
