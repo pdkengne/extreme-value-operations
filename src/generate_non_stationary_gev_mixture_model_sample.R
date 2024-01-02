@@ -1,5 +1,6 @@
 # library(dplyr)
 
+source("./src/get_several_ns_gev_model_normalized_parameters.R")
 source("./src/generate_gev_mixture_model_sample.R")
 
 
@@ -29,8 +30,7 @@ generate_non_stationary_gev_mixture_model_sample <- function(ns_gev_mixture_mode
   
   # extract the dataset of covariates to use
   if (is.null(data)){
-    observations <- partial_data[partial_data > threshold]
-    index <- which.max(observations)
+    index <- which.max(partial_data)
     data <- dplyr::slice(partial_data_covariates, index)
   }
   
