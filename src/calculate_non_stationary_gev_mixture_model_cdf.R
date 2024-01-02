@@ -120,7 +120,9 @@ calculate_non_stationary_gev_mixture_model_cdf <- function(ns_gev_mixture_model_
 # 
 # range(x)
 # 
-# q <- median(x)
+# h <- ns_gev_mixture_model_object$threshold
+# y <- ns_gev_mixture_model_object$partial_data
+# 
 # data <- dplyr::slice(ns_gev_mixture_model_object$all_data_covariates, 1)
 # 
 # results_geometric <- calculate_non_stationary_gev_mixture_model_cdf(ns_gev_mixture_model_object,
@@ -128,10 +130,17 @@ calculate_non_stationary_gev_mixture_model_cdf <- function(ns_gev_mixture_model_
 #                                                                     data = NULL,
 #                                                                     kind = c("geometric", "arithmetic")[1])
 # 
-# hist(results_geometric, freq = FALSE)
+# z <- y[y > h]
+# 
+# ord <- order(z)
+# 
+# support <- sort(z)
+# dist <- results_geometric[ord]
+# 
+# plot(x = support, y = dist, type = "l", col = 6)
 # 
 # results_geometric <- calculate_non_stationary_gev_mixture_model_cdf(ns_gev_mixture_model_object,
-#                                                                     q = q,
+#                                                                     q = median(x),
 #                                                                     data = data,
 #                                                                     kind = c("geometric", "arithmetic")[1])
 # 
@@ -142,7 +151,15 @@ calculate_non_stationary_gev_mixture_model_cdf <- function(ns_gev_mixture_model_
 #                                                                      data = NULL,
 #                                                                      kind = c("geometric", "arithmetic")[2])
 # 
-# hist(results_arithmetic, freq = FALSE)
+# z <- y[y > h]
+# 
+# ord <- order(z)
+# 
+# support <- sort(z)
+# dist <- results_arithmetic[ord]
+# 
+# lines(x = support, y = dist, type = "l", col = 7)
+# 
 # 
 # results_arithmetic <- calculate_non_stationary_gev_mixture_model_cdf(ns_gev_mixture_model_object,
 #                                                                      q = 1:3,
