@@ -60,10 +60,6 @@ fit_stationary_gev_mixture_model <- function(x,
   # get eventual rejected block sizes from the equivalent ones
   unequivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
   
-  # find the threshold above which data are used to estimate weights
-  threshold <- find_threshold_associated_with_given_block_size(x = partial_data, 
-                                                               block_size = min(equivalent_block_sizes))
-  
   # estimate several gev models associated with the equivalent block sizes
   gev_models <- estimate_several_gev_models(x = partial_data, 
                                             block_sizes = equivalent_block_sizes,
@@ -73,6 +69,10 @@ fit_stationary_gev_mixture_model <- function(x,
   automatic_weights_object <- estimate_gev_mixture_model_automatic_weights(gev_models = gev_models,
                                                                            use_uniform_prior = use_uniform_prior,
                                                                            use_extremal_index = use_extremal_index)
+  
+  # extract the threshold above which data are used to estimate weights
+  threshold <- automatic_weights_object$threshold
+  
   # extract the selected block sizes
   selected_block_sizes <- automatic_weights_object$selected_block_sizes
   
@@ -135,6 +135,26 @@ fit_stationary_gev_mixture_model <- function(x,
   information_criteria <- c(aic, bic)
   names(information_criteria) <- c("AIC", "BIC")
   
+  # calculate model residuals associated with the selected stationary gev models
+  several_residuals <- lapply(selected_gev_models, function(model){
+    residuals <- extRemes::trans(model)
+    residuals
+  })
+  
+  # fit stationary gev model to the calculated model residuals
+  several_residuals_fit <- lapply(several_residuals, function(single_residuals){
+    model <- estimate_gev_parameters(x = single_residuals)
+    model
+  })
+  
+  # estimate confidence intervals associated with the residuals models
+  several_residuals_diagnosics <- lapply(several_residuals_fit, function(single_residuals_fit){
+    confidence_intervals <- extRemes::ci.fevd(x = single_residuals_fit, 
+                                              alpha = 0.05, 
+                                              type = "parameter")
+    confidence_intervals
+  })
+  
   # update the output object
   output[["threshold"]] <- threshold
   output[["equivalent_block_sizes"]] <- equivalent_block_sizes
@@ -156,13 +176,19 @@ fit_stationary_gev_mixture_model <- function(x,
   output[["normalized_gev_parameters_object"]] <- normalized_gev_parameters_object
   output[["full_normalized_gev_parameters_object"]] <- full_normalized_gev_parameters_object
   
-  output[["selected_model_per_obs"]] <- selected_model_per_obs
   output[["partial_data"]] <- partial_data
   output[["all_data"]] <- all_data
+  
+  output[["selected_model_per_obs"]] <- selected_model_per_obs
   output[["selected_gev_models"]] <- selected_gev_models
+  
+  output[["several_residuals"]] <- several_residuals
+  output[["several_residuals_fit"]] <- several_residuals_fit
+  output[["several_residuals_diagnosics"]] <- several_residuals_diagnosics
   
   output
 }
+
 
 
 # # example 1
@@ -187,8 +213,8 @@ fit_stationary_gev_mixture_model <- function(x,
 # 
 # #x <- rnorm(n)
 # 
-# results <- fit_stationary_gev_mixture_model(x = x, 
-#                                             nlargest = Inf,
+# results <- fit_stationary_gev_mixture_model(x = x,
+#                                             nlargest = 3000,
 #                                             block_sizes = NULL,
 #                                             minimum_nblocks = 50,
 #                                             threshold = NULL,
@@ -200,11 +226,13 @@ fit_stationary_gev_mixture_model <- function(x,
 # names(results)
 # 
 # # [1] "threshold"                             "equivalent_block_sizes"                "unequivalent_block_sizes"             
-# # [4] "selected_block_sizes"                  "unselected_block_sizes"                "weights"                              
-# # [7] "frequencies"                           "use_extremal_index"                    "extremal_indexes"                     
-# # [10] "negative_log_likelihoods"              "information_criteria"                  "unnormalized_gev_parameters_object"   
-# # [13] "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object" "selected_model_per_obs"               
-# # [16] "partial_data"                          "all_data"                              "selected_gev_models"   
+# # [4] "selected_block_sizes"                  "unselected_block_sizes"                "use_uniform_prior"                    
+# # [7] "weights"                               "frequencies"                           "use_extremal_index"                   
+# # [10] "extremal_indexes"                      "negative_log_likelihoods"              "information_criteria"                 
+# # [13] "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object"
+# # [16] "partial_data"                          "all_data"                              "selected_model_per_obs"               
+# # [19] "selected_gev_models"                   "several_residuals"                     "several_residuals_fit"                
+# # [22] "several_residuals_diagnosics"
 # 
 # results$threshold
 # 
@@ -241,6 +269,15 @@ fit_stationary_gev_mixture_model <- function(x,
 # results$all_data
 # 
 # results$selected_gev_models
+# 
+# results$several_residuals
+# 
+# results$several_residuals_fit
+# 
+# results$several_residuals_diagnosics
+# 
+# 
+# 
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object = results,
 #                                       xlab = "support",
@@ -260,7 +297,7 @@ fit_stationary_gev_mixture_model <- function(x,
 # 
 # x <- bmixture::rmixnorm(n = n, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
 # 
-# results <- fit_stationary_gev_mixture_model(x = x, 
+# results <- fit_stationary_gev_mixture_model(x = x,
 #                                             nlargest = 3000,
 #                                             block_sizes = NULL,
 #                                             minimum_nblocks = 50,
@@ -273,11 +310,13 @@ fit_stationary_gev_mixture_model <- function(x,
 # names(results)
 # 
 # # [1] "threshold"                             "equivalent_block_sizes"                "unequivalent_block_sizes"             
-# # [4] "selected_block_sizes"                  "unselected_block_sizes"                "weights"                              
-# # [7] "frequencies"                           "use_extremal_index"                    "extremal_indexes"                     
-# # [10] "negative_log_likelihoods"              "information_criteria"                  "unnormalized_gev_parameters_object"   
-# # [13] "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object" "selected_model_per_obs"               
-# # [16] "partial_data"                          "all_data"                              "selected_gev_models"  
+# # [4] "selected_block_sizes"                  "unselected_block_sizes"                "use_uniform_prior"                    
+# # [7] "weights"                               "frequencies"                           "use_extremal_index"                   
+# # [10] "extremal_indexes"                      "negative_log_likelihoods"              "information_criteria"                 
+# # [13] "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object"
+# # [16] "partial_data"                          "all_data"                              "selected_model_per_obs"               
+# # [19] "selected_gev_models"                   "several_residuals"                     "several_residuals_fit"                
+# # [22] "several_residuals_diagnosics"
 # 
 # results$threshold
 # 
@@ -314,6 +353,13 @@ fit_stationary_gev_mixture_model <- function(x,
 # results$all_data
 # 
 # results$selected_gev_models
+# 
+# results$several_residuals
+# 
+# results$several_residuals_fit
+# 
+# results$several_residuals_diagnosics
+# 
 # 
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object = results,
