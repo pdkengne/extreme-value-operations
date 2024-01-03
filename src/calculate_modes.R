@@ -37,7 +37,7 @@ calculate_modes <- function(x){
   density_argmin <- support[min_series_diff_zero_positions]
   
   # update the output object
-  output[["denity_values"]] <- pdf
+  output[["density_values"]] <- pdf
   output[["density_support"]] <- support
   output[["density_maxima"]] <- density_max
   output[["density_maxima_argument"]] <- density_argmax

@@ -3,17 +3,22 @@
 source("./src/find_threshold_associated_with_given_block_size.R")
 source("./src/calculate_modes.R")
 source("./src/calculate_gev_pdf.R")
+source("./src/calculate_gev_cdf.R")
+source("./src/calculate_gev_inverse_cdf.R")
 source("./src/calculate_gev_mixture_model_pdf.R")
+source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 
 
 plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
-                                                  model_index = 1,
+                                                  model_index = 0,
+                                                  iterations = 10,
                                                   xlab = "support",
                                                   ylab = "density",
                                                   main = "density plot",
                                                   legend_position = "topright"){
   # gev_mixture_model_object: an object associated with a result of the function "fit_stationary_gev_mixture_model()"
-  # model_index: indicates the index of the model to display. Possible values are 1, 2, ... 
+  # model_index: indicates the index of the model to display. Possible values are 0, 1, 2, ... 
+  # iterations: number of iterations to perform in the the dichotomy algorithm
   # xlab: label of the x-axis
   # ylab: label of the y-axis
   # main: title of the plot
@@ -21,9 +26,13 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
   
   weights <- gev_mixture_model_object$weights
   
-  if (model_index > length(weights)){
-    stop(paste0("Sorry, the value of the index argument must be smaller than or equal to: ", length(weights)))
+  if (model_index > length(weights) | model_index < 0){
+    stop(paste0("Sorry, the value of the index argument must be a positive integer smaller than or equal to: ", length(weights)))
   }
+  
+  model_index <- floor(model_index)
+  
+  selected_gev_models <- gev_mixture_model_object$selected_gev_models
   
   threshold <- gev_mixture_model_object$threshold
   
@@ -38,62 +47,133 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
   scales <- normalized_gev_parameters$scale_star
   locations <- normalized_gev_parameters$loc_star
   
-  selected_model <- gev_mixture_model_object$selected_gev_models[[model_index]]
+  several_standard_uniform_residuals <- lapply(selected_gev_models, function(model){
+    standard_gumbel_residuals <- extRemes::trans(model)
+    standard_uniform_residuals <- calculate_gev_cdf(q = standard_gumbel_residuals,
+                                                    loc = 0, 
+                                                    scale = 1, 
+                                                    shape = 0)
+    standard_uniform_residuals
+  })
   
-  normalized_data <- extRemes::trans(selected_model)
+  unified_standard_uniform_residuals <- unlist(several_standard_uniform_residuals)
   
-  unnormalized_data <- extRemes::revtrans.evd(z = normalized_data,
-                                              location = locations[model_index], 
-                                              scale = scales[model_index], 
-                                              shape = shapes[model_index],
-                                              type = "GEV")
+  unnormalized_data_1 <- calculate_gev_mixture_model_inverse_cdf(p = unified_standard_uniform_residuals,
+                                                                 locations = locations,
+                                                                 scales =  scales,
+                                                                 shapes = shapes,
+                                                                 weights = weights,
+                                                                 kind = c("geometric", "arithmetic")[1],
+                                                                 iterations = iterations)
   
-  modes_object <- calculate_modes(x = unnormalized_data)
+  unnormalized_data_2 <- calculate_gev_mixture_model_inverse_cdf(p = unified_standard_uniform_residuals,
+                                                                 locations = locations,
+                                                                 scales =  scales,
+                                                                 shapes = shapes,
+                                                                 weights = weights,
+                                                                 kind = c("geometric", "arithmetic")[2],
+                                                                 iterations = iterations)
   
-  support <- modes_object$density_support
+  modes_object_1 <- calculate_modes(x = unnormalized_data_1)
+  modes_object_2 <- calculate_modes(x = unnormalized_data_2)
   
-  empirical_density <- modes_object$denity_values
+  support_1 <- modes_object_1$density_support 
+  support_2 <- modes_object_2$density_support
   
-  theoretical_densities <- calculate_gev_pdf(x = support, 
-                                             loc = locations[model_index], 
-                                             scale = scales[model_index], 
-                                             shape = shapes[model_index])
+  empirical_density_1 <- modes_object_1$density_values
+  empirical_density_2 <- modes_object_2$density_values
   
-  theoretical_densities_1 <- calculate_gev_mixture_model_pdf(x = support,
+  theoretical_densities_1 <- calculate_gev_mixture_model_pdf(x = support_1,
                                                              locations = locations,
                                                              scales =  scales,
                                                              shapes = shapes,
                                                              weights = weights,
                                                              kind = c("geometric", "arithmetic")[1])
   
-  theoretical_densities_2 <- calculate_gev_mixture_model_pdf(x = support,
+  theoretical_densities_2 <- calculate_gev_mixture_model_pdf(x = support_2,
                                                              locations = locations,
                                                              scales =  scales,
                                                              shapes = shapes,
                                                              weights = weights,
                                                              kind = c("geometric", "arithmetic")[2])
+                                                               
+  if (model_index != 0){
+    unnormalized_data_3 <- calculate_gev_inverse_cdf(p = unified_standard_uniform_residuals,
+                                                     loc = locations[model_index], 
+                                                     scale = scales[model_index], 
+                                                     shape = shapes[model_index])
+    
+    modes_object_3 <- calculate_modes(x = unnormalized_data_3)
+    
+    support_3 <- modes_object_3$density_support
+    
+    empirical_density_3 <- modes_object_3$density_values
+    
+    theoretical_densities_3 <- calculate_gev_pdf(x = support_3, 
+                                               loc = locations[model_index], 
+                                               scale = scales[model_index], 
+                                               shape = shapes[model_index])
+    
+    densities <- c(empirical_density_1, empirical_density_2, empirical_density_3, 
+                   theoretical_densities_1, theoretical_densities_2, theoretical_densities_3)
+    
+    support <- c(support_1, support_2, support_3)
+    
+    plot(x = support_1, 
+         y = empirical_density_1, 
+         type = "l",
+         lty = "dotted",
+         ylim = range(densities),
+         xlim = range(support),
+         xlab = xlab, 
+         ylab = ylab, 
+         main = main, 
+         col = 6,
+         lwd = 2)  
+    
+    lines(support_2, empirical_density_2, col = 7, lwd = 2, lty = "dotted")
+    lines(support_1, theoretical_densities_1, col = 6, lwd = 2)
+    lines(support_2, theoretical_densities_2, col = 7, lwd = 2)
+    lines(support_3, empirical_density_3, col = 3, lwd = 2, lty = "dotted")
+    lines(support_3, theoretical_densities_3, col = 3, lwd = 2)
+    abline(h = 0, lty = "dotted")
+    abline(v = threshold, lty = "dotted")
+    
+    legend(legend_position, 
+           legend = c("empirical_model", "empirical_geometric", "empirical_arithmetic", 
+                      "theoretical_model", "theoretical_geometric", "theoretical_arithmetic"),
+           lty = c(2, 2, 2, 1, 1, 1), col = c(3, 6, 7, 3, 6, 7), lwd = 2)
+  }
+  else{
+    densities <- c(empirical_density_1, empirical_density_2, 
+                   theoretical_densities_1, theoretical_densities_2)
+    
+    support <- c(support_1, support_2)
+    
+    plot(x = support_1, 
+         y = empirical_density_1, 
+         type = "l",
+         lty = "dotted",
+         ylim = range(densities),
+         xlim = range(support),
+         xlab = xlab, 
+         ylab = ylab, 
+         main = main, 
+         col = 6,
+         lwd = 2)  
+    
+    lines(support_2, empirical_density_2, col = 7, lwd = 2, lty = "dotted")
+    lines(support_1, theoretical_densities_1, col = 6, lwd = 2)
+    lines(support_2, theoretical_densities_2, col = 7, lwd = 2)
+    abline(h = 0, lty = "dotted")
+    abline(v = threshold, lty = "dotted")
+    
+    legend(legend_position, 
+           legend = c("empirical_geometric", "empirical_arithmetic", 
+                      "theoretical_geometric", "theoretical_arithmetic"),
+           lty = c(2, 2, 1, 1), col = c(6, 7, 6, 7), lwd = 2)
+  }
   
-  densities <- c(empirical_density, theoretical_densities, theoretical_densities_1, theoretical_densities_2)
-  
-  plot(x = support, 
-       y = empirical_density, 
-       type = "l",
-       ylim = range(densities),
-       xlab = xlab, 
-       ylab = ylab, 
-       main = main, 
-       lwd = 2)  
-  
-  lines(support, theoretical_densities, col = 3, lwd = 2)
-  lines(support, theoretical_densities_1, col = 6, lwd = 2)
-  lines(support, theoretical_densities_2, col = 7, lwd = 2)
-  abline(h = 0, lty = "dotted")
-  abline(v = threshold, lty = "dotted")
-  
-  legend(legend_position, 
-         legend = c("empirical", "theoretical", "geometric", "arithmetic"),
-         lty = c(1, 1, 1, 1), col = c(1, 3, 6, 7))
-
 }
 
 
@@ -129,7 +209,16 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # gev_mixture_model_object$threshold
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
-#                                       model_index = 1,
+#                                       model_index = 0,
+#                                       iterations = 10,
+#                                       xlab = "support",
+#                                       ylab = "density",
+#                                       main = "density plot",
+#                                       legend_position = "topright")
+# 
+# plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
+#                                       model_index = 4,
+#                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
 #                                       main = "density plot",
@@ -173,6 +262,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 2,
+#                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
 #                                       main = "density plot",
