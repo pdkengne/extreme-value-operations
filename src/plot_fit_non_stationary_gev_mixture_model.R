@@ -255,6 +255,7 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 # 
 # ns_gev_mixture_model_object$unnormalized_gev_parameters_object
 # ns_gev_mixture_model_object$full_normalized_gev_parameters_object
+# ns_gev_mixture_model_object$selected_ns_gev_coefficients
 # ns_gev_mixture_model_object$weights
 # ns_gev_mixture_model_object$threshold
 # 
@@ -269,7 +270,7 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 # 
 # plot_fit_non_stationary_gev_mixture_model.R(ns_gev_mixture_model_object,
 #                                             data_index = 0,
-#                                             model_index = 5,
+#                                             model_index = 4,
 #                                             iterations = 10,
 #                                             xlab = "support",
 #                                             ylab = "density",
@@ -279,12 +280,15 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 # 
 # # example 2
 # 
-# source("./src/calculate_modes.R")
-# source("./src/plot_modes.R")
+# source("./src/fit_non_stationary_gev_mixture_model.R")
+# source("./src/generate_gev_sample.R")
+# 
 # 
 # n <- 10000
 # 
-# x <- bmixture::rmixnorm(n = n, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
+# x <- rnorm(n = n)
+# 
+# #x <- bmixture::rmixnorm(n = n, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
 # 
 # 
 # trend <- (-49:50)/n
@@ -309,9 +313,9 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 # 
 # names(ns_gev_mixture_model_object)
 # 
-# 
 # ns_gev_mixture_model_object$unnormalized_gev_parameters_object
 # ns_gev_mixture_model_object$full_normalized_gev_parameters_object
+# ns_gev_mixture_model_object$selected_ns_gev_coefficients
 # ns_gev_mixture_model_object$weights
 # ns_gev_mixture_model_object$threshold
 # 
@@ -325,11 +329,11 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 #                                             legend_position = "topright")
 # 
 # plot_fit_non_stationary_gev_mixture_model.R(ns_gev_mixture_model_object,
-#                                             data_index = 1,
-#                                             model_index = 5,
+#                                             data_index = 0,
+#                                             model_index = 4,
 #                                             iterations = 10,
 #                                             xlab = "support",
 #                                             ylab = "density",
 #                                             main = "density plot",
 #                                             legend_position = "topright")
-
+# 

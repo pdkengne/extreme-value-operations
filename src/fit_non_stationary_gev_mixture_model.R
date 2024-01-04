@@ -215,6 +215,7 @@ fit_non_stationary_gev_mixture_model <- function(x,
   output[["negative_log_likelihoods"]] <- nllh
   output[["information_criteria"]] <- information_criteria
   
+  output[["selected_ns_gev_coefficients"]] <- selected_ns_gev_coefficients
   output[["unnormalized_gev_parameters_object"]] <- unnormalized_gev_parameters_object
   output[["normalized_gev_parameters_object"]] <- normalized_gev_parameters_object
   output[["full_normalized_gev_parameters_object"]] <- full_normalized_gev_parameters_object
@@ -277,15 +278,15 @@ fit_non_stationary_gev_mixture_model <- function(x,
 # 
 # names(results)
 # 
-# # [1] "threshold"                             "equivalent_block_sizes"                "unequivalent_block_sizes"
-# # [4] "selected_block_sizes"                  "unselected_block_sizes"                "use_uniform_prior"
-# # [7] "weights"                               "frequencies"                           "use_extremal_index"
-# # [10] "extremal_indexes"                      "negative_log_likelihoods"              "information_criteria"
-# # [13] "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object"
-# # [16] "selected_model_per_obs"                "all_data_covariates"                   "partial_data_covariates"
-# # [19] "partial_data"                          "all_data"                              "selected_ns_gev_models"
-# # [22] "selected_full_ns_gev_models"           "several_residuals"                     "several_residuals_fit"
-# # [25] "several_residuals_diagnosics"
+# # [1] "threshold"                             "equivalent_block_sizes"                "unequivalent_block_sizes"             
+# # [4] "selected_block_sizes"                  "unselected_block_sizes"                "use_uniform_prior"                    
+# # [7] "weights"                               "frequencies"                           "use_extremal_index"                   
+# # [10] "extremal_indexes"                      "negative_log_likelihoods"              "information_criteria"                 
+# # [13] "selected_ns_gev_coefficients"          "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"     
+# # [16] "full_normalized_gev_parameters_object" "selected_model_per_obs"                "all_data_covariates"                  
+# # [19] "partial_data_covariates"               "partial_data"                          "all_data"                             
+# # [22] "selected_ns_gev_models"                "selected_full_ns_gev_models"           "several_residuals"                    
+# # [25] "several_residuals_fit"                 "several_residuals_diagnosics"
 # 
 # results$threshold
 # 
@@ -308,6 +309,8 @@ fit_non_stationary_gev_mixture_model <- function(x,
 # results$negative_log_likelihoods
 # 
 # results$information_criteria
+# 
+# results$selected_ns_gev_coefficients
 # 
 # results$unnormalized_gev_parameters_object
 # 
@@ -366,15 +369,15 @@ fit_non_stationary_gev_mixture_model <- function(x,
 # 
 # names(results)
 # 
-# # [1] "threshold"                             "equivalent_block_sizes"                "unequivalent_block_sizes"
-# # [4] "selected_block_sizes"                  "unselected_block_sizes"                "use_uniform_prior"
-# # [7] "weights"                               "frequencies"                           "use_extremal_index"
-# # [10] "extremal_indexes"                      "negative_log_likelihoods"              "information_criteria"
-# # [13] "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object"
-# # [16] "selected_model_per_obs"                "all_data_covariates"                   "partial_data_covariates"
-# # [19] "partial_data"                          "all_data"                              "selected_ns_gev_models"
-# # [22] "selected_full_ns_gev_models"           "several_residuals"                     "several_residuals_fit"
-# # [25] "several_residuals_diagnosics"
+# # [1] "threshold"                             "equivalent_block_sizes"                "unequivalent_block_sizes"             
+# # [4] "selected_block_sizes"                  "unselected_block_sizes"                "use_uniform_prior"                    
+# # [7] "weights"                               "frequencies"                           "use_extremal_index"                   
+# # [10] "extremal_indexes"                      "negative_log_likelihoods"              "information_criteria"                 
+# # [13] "selected_ns_gev_coefficients"          "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"     
+# # [16] "full_normalized_gev_parameters_object" "selected_model_per_obs"                "all_data_covariates"                  
+# # [19] "partial_data_covariates"               "partial_data"                          "all_data"                             
+# # [22] "selected_ns_gev_models"                "selected_full_ns_gev_models"           "several_residuals"                    
+# # [25] "several_residuals_fit"                 "several_residuals_diagnosics"
 # 
 # results$threshold
 # 
@@ -398,6 +401,8 @@ fit_non_stationary_gev_mixture_model <- function(x,
 # 
 # results$information_criteria
 # 
+# results$selected_ns_gev_coefficients
+# 
 # results$unnormalized_gev_parameters_object
 # 
 # results$normalized_gev_parameters_object
@@ -419,4 +424,5 @@ fit_non_stationary_gev_mixture_model <- function(x,
 # results$several_residuals_fit
 # 
 # results$several_residuals_diagnosics
+
 
