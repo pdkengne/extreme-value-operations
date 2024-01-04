@@ -36,13 +36,14 @@ estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixture_mo
   partial_data_covariates <- ns_gev_mixture_model_object$partial_data_covariates
   
   # extract the threshold
-  threshold <- ns_gev_mixture_model_object$threshold
+  # threshold <- ns_gev_mixture_model_object$threshold
   
   # extract the vector of observations to use
-  observations <- partial_data[partial_data > threshold]
+  # observations <- partial_data[partial_data > threshold]
   
   # calculate the proportion of largest data
-  partial_data_proportion <- length(observations)/length(all_data)
+  # partial_data_proportion <- length(observations)/length(all_data)
+  partial_data_proportion <- length(partial_data)/length(all_data)
   
   # update the quantile order
   beta <- alpha/partial_data_proportion
@@ -168,6 +169,9 @@ estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixture_mo
 #                                                                     method = c("MLE", "GMLE")[1])
 # 
 # 
+# ns_gev_mixture_model_object$selected_ns_gev_coefficients
+# ns_gev_mixture_model_object$weights
+# 
 # alpha <- n^(-2)
 # 
 # true_quantile <- qnorm(p = 1 - alpha)
@@ -211,3 +215,4 @@ estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixture_mo
 # abline(h = results_geometric$largest_upper_ci_bound, col = 7, lwd = 2, lty = "dotted")
 # 
 # abline(h = true_quantile, col = 4, lwd = 2)
+
