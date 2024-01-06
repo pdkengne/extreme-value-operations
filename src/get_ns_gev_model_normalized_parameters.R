@@ -28,7 +28,7 @@ get_ns_gev_model_normalized_parameters <- function(ns_gev_model,
   shapes <- gev_parameters_object$shape
   
   # calculate the normalization exponent
-  exponent <- extremal_index/block_size
+  exponent <- 1/(block_size*extremal_index)
   
   # calculate the gev model normalized parameters object 
   gev_normalized_parameters_object <- sapply(1:nrow(data), function(k){

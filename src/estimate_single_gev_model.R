@@ -52,7 +52,7 @@ estimate_single_gev_model <- function(x,
                                                               exponent = exponent_bs)
   
   # calculate the normalized gev parameters with both block size and extremal index
- exponent_bs_ei <- (1/block_size)*extremal_index
+ exponent_bs_ei <- 1/(block_size*extremal_index)
   
  full_normalized_gev_parameters <- calculate_power_gev_parameters(loc = gev_parameters["location"], 
                                                                   scale = gev_parameters["scale"], 
