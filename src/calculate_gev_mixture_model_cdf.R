@@ -5,12 +5,12 @@ calculate_gev_mixture_model_cdf <- function(q,
                                             scales, 
                                             shapes, 
                                             weights, 
-                                            kind = c("geometric", "arithmetic")[1]){
+                                            kind = c("geometric", "arithmetic", "harmonic")[1]){
   # q: vector of observations
   # weights: vector of weights
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
   # The vectors of parameters must have the same number of elements
-  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic" or "harmonic"
   
   if (kind == "geometric"){
     output <- sapply(q, function(q) {
@@ -48,8 +48,29 @@ calculate_gev_mixture_model_cdf <- function(q,
       G
     })
   }
+  else if (kind == "harmonic"){
+    output <- sapply(q, function(q) {
+      S <- sapply(1:length(shapes), function(j) {
+        prob <- calculate_gev_cdf(q = q, 
+                                  loc = locations[j], 
+                                  scale = scales[j], 
+                                  shape = shapes[j])
+        
+        prob
+      })
+      
+      if (min(S) == 0){
+        G <- 0
+      }
+      else{
+        G <- 1/sum(weights/S)
+      }
+      
+      G
+    })
+  }
   else{
-    stop("Please enter a correct value to the argument 'kind'. Possible values are 'geometric' or 'arithmetic'!")
+    stop("Please enter a correct value to the argument 'kind'. Possible values are 'geometric' or 'arithmetic' or 'harmonic'!")
   }
   
   output
@@ -68,30 +89,39 @@ calculate_gev_mixture_model_cdf <- function(q,
 # scales <- rexp(n = p)
 # locations <- rnorm(n = p)
 # 
-# results <- calculate_gev_mixture_model_cdf(q = 10, 
-#                                            locations, 
-#                                            scales, 
-#                                            shapes, 
+# results <- calculate_gev_mixture_model_cdf(q = 10,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
 #                                            weights,
-#                                            kind = c("geometric", "arithmetic")[1])
+#                                            kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # results
 # 
 # 
-# results <- calculate_gev_mixture_model_cdf(q = 10, 
-#                                            locations, 
-#                                            scales, 
-#                                            shapes, 
+# results <- calculate_gev_mixture_model_cdf(q = 10,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
 #                                            weights,
-#                                            kind = c("geometric", "arithmetic")[2])
+#                                            kind = c("geometric", "arithmetic", "harmonic")[2])
+# 
+# results
+# 
+# results <- calculate_gev_mixture_model_cdf(q = 10,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
+#                                            weights,
+#                                            kind = c("geometric", "arithmetic", "harmonic")[3])
 # 
 # results
 # 
 # 
-# results <- calculate_gev_mixture_model_cdf(q = 10, 
-#                                            locations, 
-#                                            scales, 
-#                                            shapes, 
+# results <- calculate_gev_mixture_model_cdf(q = 10,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
 #                                            weights,
 #                                            kind = "geom")
 # 
@@ -107,20 +137,29 @@ calculate_gev_mixture_model_cdf <- function(q,
 # scales <- rexp(n = p)
 # locations <- rnorm(n = p)
 # 
-# results <- calculate_gev_mixture_model_cdf(q = c(2, 3, 5, 7, 11, 13, 17, 19), 
-#                                            locations, 
-#                                            scales, 
-#                                            shapes, 
+# results <- calculate_gev_mixture_model_cdf(q = c(2, 3, 5, 7, 11, 13, 17, 19),
+#                                            locations,
+#                                            scales,
+#                                            shapes,
 #                                            weights,
-#                                            kind = c("geometric", "arithmetic")[1])
+#                                            kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # results
 # 
-# results <- calculate_gev_mixture_model_cdf(q = c(2, 3, 5, 7, 11, 13, 17, 19), 
-#                                            locations, 
-#                                            scales, 
-#                                            shapes, 
+# results <- calculate_gev_mixture_model_cdf(q = c(2, 3, 5, 7, 11, 13, 17, 19),
+#                                            locations,
+#                                            scales,
+#                                            shapes,
 #                                            weights,
-#                                            kind = c("geometric", "arithmetic")[2])
+#                                            kind = c("geometric", "arithmetic", "harmonic")[2])
+# 
+# results
+# 
+# results <- calculate_gev_mixture_model_cdf(q = c(2, 3, 5, 7, 11, 13, 17, 19),
+#                                            locations,
+#                                            scales,
+#                                            shapes,
+#                                            weights,
+#                                            kind = c("geometric", "arithmetic", "harmonic")[3])
 # 
 # results
