@@ -7,16 +7,16 @@ calculate_gev_mixture_model_inverse_cdf <- function(p,
                                                     scales, 
                                                     shapes, 
                                                     weights, 
-                                                    kind = c("geometric", "arithmetic")[1],
+                                                    kind = c("geometric", "arithmetic", "harmonic")[1],
                                                     iterations = 100){
   # p: vector of probabilities
   # weights: vector of weights
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
   # The vectors of parameters must have the same number of elements
   # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
-  # iterations: number of iterations to perform in the the dichotomy algorithm
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic" or "harmonic"
   
-  if (is.element(el = kind, set = c("geometric", "arithmetic"))){
+  if (is.element(el = kind, set = c("geometric", "arithmetic", "harmonic"))){
     output <- sapply(p, function(p){
       # define the nonlinear equation to solve
       nle <- function(q){
@@ -51,7 +51,7 @@ calculate_gev_mixture_model_inverse_cdf <- function(p,
     })
   }
   else{
-    stop("Please enter a correct value to the argument 'kind'. Possible values are 'geometric' or 'arithmetic'!")
+    stop("Please enter a correct value to the argument 'kind'. Possible values are 'geometric' or 'arithmetic' or 'harmonic'!")
   }
   
   output
@@ -72,48 +72,67 @@ calculate_gev_mixture_model_inverse_cdf <- function(p,
 # 
 # p <- seq(from = 0.01, to = 0.09, length.out = 9)
 # 
-# results <- calculate_gev_mixture_model_inverse_cdf(p = p, 
-#                                                    locations, 
-#                                                    scales, 
-#                                                    shapes, 
-#                                                    weights, 
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p,
+#                                                    locations,
+#                                                    scales,
+#                                                    shapes,
+#                                                    weights,
 #                                                    iterations = 100,
-#                                                    kind = c("geometric", "arithmetic")[1])
+#                                                    kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # results
 # 
-# calculate_gev_mixture_model_cdf(q = results, 
-#                                 locations, 
-#                                 scales, shapes, 
+# calculate_gev_mixture_model_cdf(q = results,
+#                                 locations,
+#                                 scales, shapes,
 #                                 weights,
-#                                 kind = c("geometric", "arithmetic")[1])
+#                                 kind = c("geometric", "arithmetic", "harmonic")[1])
 # p
 # 
 # 
-# results <- calculate_gev_mixture_model_inverse_cdf(p = p, 
-#                                                    locations, 
-#                                                    scales, 
-#                                                    shapes, 
-#                                                    weights, 
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p,
+#                                                    locations,
+#                                                    scales,
+#                                                    shapes,
+#                                                    weights,
 #                                                    iterations = 100,
-#                                                    kind = c("geometric", "arithmetic")[2])
+#                                                    kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # results
 # 
-# calculate_gev_mixture_model_cdf(q = results, 
-#                                 locations, 
-#                                 scales, 
-#                                 shapes, 
+# calculate_gev_mixture_model_cdf(q = results,
+#                                 locations,
+#                                 scales,
+#                                 shapes,
 #                                 weights,
-#                                 kind = c("geometric", "arithmetic")[2])
+#                                 kind = c("geometric", "arithmetic", "harmonic")[2])
+# p
+# 
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p,
+#                                                    locations,
+#                                                    scales,
+#                                                    shapes,
+#                                                    weights,
+#                                                    iterations = 100,
+#                                                    kind = c("geometric", "arithmetic", "harmonic")[3])
+# 
+# results
+# 
+# calculate_gev_mixture_model_cdf(q = results,
+#                                 locations,
+#                                 scales,
+#                                 shapes,
+#                                 weights,
+#                                 kind = c("geometric", "arithmetic", "harmonic")[3])
 # p
 # 
 # 
-# results <- calculate_gev_mixture_model_inverse_cdf(p = p, 
-#                                                    locations, 
-#                                                    scales, 
-#                                                    shapes, 
-#                                                    weights, 
+# 
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p,
+#                                                    locations,
+#                                                    scales,
+#                                                    shapes,
+#                                                    weights,
 #                                                    iterations = 100,
 #                                                    kind = "mix")
 # 
@@ -132,39 +151,56 @@ calculate_gev_mixture_model_inverse_cdf <- function(p,
 # 
 # p <- seq(from = 0.90, to = 0.99, length.out = 10)
 # 
-# results <- calculate_gev_mixture_model_inverse_cdf(p = p, 
-#                                                    locations, 
-#                                                    scales, 
-#                                                    shapes, 
-#                                                    weights, 
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p,
+#                                                    locations,
+#                                                    scales,
+#                                                    shapes,
+#                                                    weights,
 #                                                    iterations = 100,
-#                                                    kind = c("geometric", "arithmetic")[1])
+#                                                    kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # results
 # 
-# calculate_gev_mixture_model_cdf(q = results, 
-#                                 locations, 
-#                                 scales, shapes, 
+# calculate_gev_mixture_model_cdf(q = results,
+#                                 locations,
+#                                 scales, shapes,
 #                                 weights,
-#                                 kind = c("geometric", "arithmetic")[1])
+#                                 kind = c("geometric", "arithmetic", "harmonic")[1])
 # p
 # 
 # 
-# results <- calculate_gev_mixture_model_inverse_cdf(p = p, 
-#                                                    locations, 
-#                                                    scales, 
-#                                                    shapes, 
-#                                                    weights, 
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p,
+#                                                    locations,
+#                                                    scales,
+#                                                    shapes,
+#                                                    weights,
 #                                                    iterations = 100,
-#                                                    kind = c("geometric", "arithmetic")[2])
+#                                                    kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # results
 # 
-# calculate_gev_mixture_model_cdf(q = results, 
-#                                 locations, 
-#                                 scales, 
-#                                 shapes, 
+# calculate_gev_mixture_model_cdf(q = results,
+#                                 locations,
+#                                 scales,
+#                                 shapes,
 #                                 weights,
-#                                 kind = c("geometric", "arithmetic")[2])
+#                                 kind = c("geometric", "arithmetic", "harmonic")[2])
 # p
-
+# 
+# results <- calculate_gev_mixture_model_inverse_cdf(p = p,
+#                                                    locations,
+#                                                    scales,
+#                                                    shapes,
+#                                                    weights,
+#                                                    iterations = 100,
+#                                                    kind = c("geometric", "arithmetic", "harmonic")[3])
+# 
+# results
+# 
+# calculate_gev_mixture_model_cdf(q = results,
+#                                 locations,
+#                                 scales,
+#                                 shapes,
+#                                 weights,
+#                                 kind = c("geometric", "arithmetic", "harmonic")[3])
+# p
