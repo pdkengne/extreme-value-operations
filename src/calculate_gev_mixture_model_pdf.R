@@ -7,68 +7,117 @@ calculate_gev_mixture_model_pdf <- function(x,
                                             scales, 
                                             shapes, 
                                             weights,
-                                            kind = c("geometric", "arithmetic")[1]){
+                                            kind = c("geometric", "arithmetic", "harmonic")[1]){
   # x: vector of observations
   # weights: vector of weights
   # locations, scales, shapes: vectors of location, scale and shape parameters of the considered gev distributions
   # The vectors of parameters must have the same number of elements
-  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic" or "harmonic"
   
   if (kind == "geometric"){
-    S <- sapply(1:length(weights), function(j){
-      dens <- calculate_gev_pdf(x = x, 
-                                loc = locations[j], 
-                                scale = scales[j], 
-                                shape = shapes[j])
+    output <- sapply(x, function(x) {
+      cdf <- calculate_gev_mixture_model_cdf(q = x, 
+                                             locations = locations, 
+                                             scales = scales, 
+                                             shapes = shapes, 
+                                             weights = weights,
+                                             kind = kind)
       
-      prob <- calculate_gev_cdf(q = x, 
-                                loc = locations[j], 
-                                scale = scales[j], 
-                                shape = shapes[j])
+      S <- sapply(1:length(shapes), function(j) {
+        prob <- calculate_gev_cdf(q = x, 
+                                  loc = locations[j], 
+                                  scale = scales[j], 
+                                  shape = shapes[j])
+        
+        prob
+      })
       
-      dens[prob == 0] <- 0
-      prob[prob == 0] <- 1
+      D <- sapply(1:length(shapes), function(j) {
+        dens <- calculate_gev_pdf(x = x, 
+                                  loc = locations[j], 
+                                  scale = scales[j], 
+                                  shape = shapes[j])
+        
+        dens
+      })
       
-      out <- weights[j]*dens/prob
+      Q <- D/(S)
       
-      out
+      if (length(Q[is.na(Q)]) > 1){
+        g <- 0
+      }
+      else if (min(S) == 0){
+        g <- 0
+      }
+      else{
+        g <- (cdf)*sum(weights*D/(S))
+      }
+      
+      g
     })
-    
-    cdf <- calculate_gev_mixture_model_cdf(q = x, 
-                                           locations = locations, 
-                                           scales = scales, 
-                                           shapes = shapes, 
-                                           weights = weights,
-                                           kind = kind)
-    
-    if (length(x) == 1){
-      output <- sum(S)*cdf
-    }
-    else{
-      output <- apply(S, 1, sum)*cdf
-    }
   }
   else if (kind == "arithmetic"){
-    S <- sapply(1:length(weights), function(j){
-      dens <- calculate_gev_pdf(x = x, 
-                                loc = locations[j], 
-                                scale = scales[j], 
-                                shape = shapes[j])
+    output <- sapply(x, function(x) {
+      D <- sapply(1:length(shapes), function(j) {
+        dens <- calculate_gev_pdf(x = x, 
+                                  loc = locations[j], 
+                                  scale = scales[j], 
+                                  shape = shapes[j])
+        
+        dens
+      })
       
-      out <- weights[j]*dens
+      g <- sum(weights*D)
       
-      out
+      g
     })
-    
-    if (length(x) == 1){
-      output <- sum(S)
-    }
-    else{
-      output <- apply(S, 1, sum)
-    }
+  
+  }
+  else if (kind == "harmonic"){
+    output <- sapply(x, function(x) {
+      cdf <- calculate_gev_mixture_model_cdf(q = x, 
+                                             locations = locations, 
+                                             scales = scales, 
+                                             shapes = shapes, 
+                                             weights = weights,
+                                             kind = kind)
+      
+      S <- sapply(1:length(shapes), function(j) {
+        prob <- calculate_gev_cdf(q = x, 
+                                  loc = locations[j], 
+                                  scale = scales[j], 
+                                  shape = shapes[j])
+        
+        prob
+      })
+      
+      D <- sapply(1:length(shapes), function(j) {
+        dens <- calculate_gev_pdf(x = x, 
+                                  loc = locations[j], 
+                                  scale = scales[j], 
+                                  shape = shapes[j])
+        
+        dens
+      })
+      
+      Q <- D/(S^2)
+      
+      if (length(Q[is.na(Q)]) > 1){
+        g <- 0
+      }
+      else if (min(S^2) == 0){
+        g <- 0
+      }
+      else{
+        g <- (cdf^2)*sum(weights*D/(S^2))
+      }
+      
+      g
+      })
+      
   }
   else{
-    stop("Please enter a correct value to the argument 'kind'. Possible values are 'geometric' or 'arithmetic'!")
+    stop("Please enter a correct value to the argument 'kind'. Possible values are 'geometric' or 'arithmetic' or 'harmonic'!")
   }
   
   output
@@ -94,7 +143,7 @@ calculate_gev_mixture_model_pdf <- function(x,
 #                                            scales,
 #                                            shapes,
 #                                            weights,
-#                                            kind = c("geometric", "arithmetic")[1])
+#                                            kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # results
 # 
@@ -103,7 +152,16 @@ calculate_gev_mixture_model_pdf <- function(x,
 #                                            scales,
 #                                            shapes,
 #                                            weights,
-#                                            kind = c("geometric", "arithmetic")[2])
+#                                            kind = c("geometric", "arithmetic", "harmonic")[2])
+# 
+# results
+# 
+# results <- calculate_gev_mixture_model_pdf(x = x,
+#                                            locations,
+#                                            scales,
+#                                            shapes,
+#                                            weights,
+#                                            kind = c("geometric", "arithmetic", "harmonic")[3])
 # 
 # results
 # 
@@ -130,7 +188,7 @@ calculate_gev_mixture_model_pdf <- function(x,
 #                                            scales,
 #                                            shapes,
 #                                            weights,
-#                                            kind = c("geometric", "arithmetic")[1])
+#                                            kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # #results_1
 # 
@@ -140,11 +198,20 @@ calculate_gev_mixture_model_pdf <- function(x,
 #                                            scales,
 #                                            shapes,
 #                                            weights,
-#                                            kind = c("geometric", "arithmetic")[2])
+#                                            kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # #results_2
 # 
-# support <- c(results_1, results_2)
+# results_3 <- calculate_gev_mixture_model_pdf(x = x,
+#                                              locations,
+#                                              scales,
+#                                              shapes,
+#                                              weights,
+#                                              kind = c("geometric", "arithmetic", "harmonic")[3])
+# 
+# #results_3
+# 
+# support <- c(results_1, results_2, results_3)
 # 
 # plot(x = x,
 #      y = results_1,
@@ -156,8 +223,9 @@ calculate_gev_mixture_model_pdf <- function(x,
 #      ylab = "density")
 # 
 # lines(x, results_2, type = "l", col = 7)
+# lines(x, results_3, type = "l", col = 4)
 # 
-# legend("topright", legend = c("geometric", "arithmetic"), col = c(6, 7), lty = c(1, 1))
+# legend("topright", legend = c("geometric", "arithmetic", "harmonic"), col = c(6, 7, 4), lty = c(1, 1, 1))
 # 
 # 
 # # example 3
@@ -175,7 +243,7 @@ calculate_gev_mixture_model_pdf <- function(x,
 #                                            scales,
 #                                            shapes,
 #                                            weights,
-#                                            kind = c("geometric", "arithmetic")[1])
+#                                            kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # #results_1
 # 
@@ -185,11 +253,20 @@ calculate_gev_mixture_model_pdf <- function(x,
 #                                            scales,
 #                                            shapes,
 #                                            weights,
-#                                            kind = c("geometric", "arithmetic")[2])
+#                                            kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # #results_2
 # 
-# support <- c(results_1, results_2)
+# results_3 <- calculate_gev_mixture_model_pdf(x = x,
+#                                              locations,
+#                                              scales,
+#                                              shapes,
+#                                              weights,
+#                                              kind = c("geometric", "arithmetic", "harmonic")[3])
+# 
+# #results_3
+# 
+# support <- c(results_1, results_2, results_3)
 # 
 # plot(x = x,
 #      y = results_1,
@@ -201,7 +278,7 @@ calculate_gev_mixture_model_pdf <- function(x,
 #      ylab = "density")
 # 
 # lines(x, results_2, type = "l", col = 7)
+# lines(x, results_3, type = "l", col = 4)
 # 
-# legend("topright", legend = c("geometric", "arithmetic"), col = c(6, 7), lty = c(1, 1))
-
+# legend("topright", legend = c("geometric", "arithmetic", "harmonic"), col = c(6, 7, 4), lty = c(1, 1, 1))
 
