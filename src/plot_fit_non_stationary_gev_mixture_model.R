@@ -133,6 +133,27 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
   support_0 <- modes_object_0$density_support
   empirical_density_0 <- modes_object_0$density_values
   
+  shapes_weighted_mean <- sum(shapes*weights)
+  scales_weighted_mean <- sum(scales*weights)
+  locations_weighted_mean <- sum(locations*weights)
+  
+  unnormalized_data_00 <- calculate_gev_inverse_cdf(p = unified_standard_uniform_residuals,
+                                                    loc = locations_weighted_mean, 
+                                                    scale = scales_weighted_mean, 
+                                                    shape = shapes_weighted_mean)
+  
+  modes_object_00 <- calculate_modes(x = unnormalized_data_00)
+  
+  support_00 <- modes_object_00$density_support
+  
+  empirical_density_00 <- modes_object_00$density_values
+  
+  theoretical_densities_00 <- calculate_gev_pdf(x = support_00, 
+                                                loc = locations_weighted_mean, 
+                                                scale = scales_weighted_mean, 
+                                                shape = shapes_weighted_mean)
+  
+  
   if (model_index != 0){
     unnormalized_data_3 <- calculate_gev_inverse_cdf(p = unified_standard_uniform_residuals,
                                                      loc = locations[model_index], 
@@ -151,9 +172,10 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
                                                  shape = shapes[model_index])
     
     densities <- c(empirical_density_0, empirical_density_1, empirical_density_2, empirical_density_3, 
-                   theoretical_densities_1, theoretical_densities_2, theoretical_densities_3)
+                   theoretical_densities_1, theoretical_densities_2, theoretical_densities_3,
+                   theoretical_densities_00, empirical_density_00)
     
-    support <- c(support_0, support_1, support_2, support_3)
+    support <- c(support_0, support_00, support_1, support_2, support_3)
     
     plot(x = support_1, 
          y = empirical_density_1, 
@@ -167,6 +189,8 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
          col = 6,
          lwd = 2)  
     
+    lines(support_00, empirical_density_00, col = 4, lwd = 2, lty = "dotted")
+    lines(support_00, theoretical_densities_00, col = 4, lwd = 2)
     lines(support_0, empirical_density_0, col = 1, lwd = 2)
     lines(support_2, empirical_density_2, col = 7, lwd = 2, lty = "dotted")
     lines(support_1, theoretical_densities_1, col = 6, lwd = 2)
@@ -177,15 +201,16 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
     abline(v = threshold, lty = "dotted")
     
     legend(legend_position, 
-           legend = c("empirical_density","empirical_model", "empirical_geometric", "empirical_arithmetic", 
-                      "theoretical_model", "theoretical_geometric", "theoretical_arithmetic"),
-           lty = c(1, 2, 2, 2, 1, 1, 1), col = c(1, 3, 6, 7, 3, 6, 7), lwd = 2)
+           legend = c("empirical_density", "empirical_model", "empirical_harmonic", "empirical_geometric", "empirical_arithmetic", 
+                      "theoretical_model", "theoretical_harmonic", "theoretical_geometric", "theoretical_arithmetic"),
+           lty = c(1, 2, 2, 2, 2, 1, 1, 1), col = c(1, 3, 4, 6, 7, 3, 4, 6, 7), lwd = 2)
   }
   else{
     densities <- c(empirical_density_0, empirical_density_1, empirical_density_2, 
-                   theoretical_densities_1, theoretical_densities_2)
+                   theoretical_densities_1, theoretical_densities_2,
+                   theoretical_densities_00, empirical_density_00)
     
-    support <- c(support_0, support_1, support_2)
+    support <- c(support_0, support_00, support_1, support_2)
     
     plot(x = support_1, 
          y = empirical_density_1, 
@@ -199,6 +224,8 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
          col = 6,
          lwd = 2)  
     
+    lines(support_00, empirical_density_00, col = 4, lwd = 2, lty = "dotted")
+    lines(support_00, theoretical_densities_00, col = 4, lwd = 2)
     lines(support_0, empirical_density_0, col = 1, lwd = 2)
     lines(support_2, empirical_density_2, col = 7, lwd = 2, lty = "dotted")
     lines(support_1, theoretical_densities_1, col = 6, lwd = 2)
@@ -207,9 +234,9 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
     abline(v = threshold, lty = "dotted")
     
     legend(legend_position, 
-           legend = c("empirical_density", "empirical_geometric", "empirical_arithmetic", 
-                      "theoretical_geometric", "theoretical_arithmetic"),
-           lty = c(1, 2, 2, 1, 1), col = c(1, 6, 7, 6, 7), lwd = 2)
+           legend = c("empirical_density", "empirical_harmonic", "empirical_geometric", "empirical_arithmetic", 
+                      "theoretical_harmonic", "theoretical_geometric", "theoretical_arithmetic"),
+           lty = c(1, 2, 2, 2, 1, 1), col = c(1, 4, 6, 7, 4, 6, 7), lwd = 2)
   }
   
 }
@@ -270,7 +297,7 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 # 
 # plot_fit_non_stationary_gev_mixture_model.R(ns_gev_mixture_model_object,
 #                                             data_index = 0,
-#                                             model_index = 4,
+#                                             model_index = 5,
 #                                             iterations = 10,
 #                                             xlab = "support",
 #                                             ylab = "density",
@@ -330,10 +357,10 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 # 
 # plot_fit_non_stationary_gev_mixture_model.R(ns_gev_mixture_model_object,
 #                                             data_index = 0,
-#                                             model_index = 4,
+#                                             model_index = 1,
 #                                             iterations = 10,
 #                                             xlab = "support",
 #                                             ylab = "density",
 #                                             main = "density plot",
 #                                             legend_position = "topright")
-# 
+
