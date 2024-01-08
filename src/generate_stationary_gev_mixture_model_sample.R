@@ -3,9 +3,9 @@ source("./src/generate_gev_mixture_model_sample.R")
 
 generate_stationary_gev_mixture_model_sample <- function(gev_mixture_model_object,
                                                          n = 1,
-                                                         kind = c("geometric", "arithmetic")[1]){
+                                                         kind = c("geometric", "arithmetic", "harmonic")[1]){
   # gev_mixture_model_object: an object associated with a result of the function "fit_stationary_gev_mixture_model()"
-  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic" or "harmonic"
   # n: number of observations to generate
   
   # get the normalized gev parameters
@@ -65,13 +65,19 @@ generate_stationary_gev_mixture_model_sample <- function(gev_mixture_model_objec
 # gev_mixture_model_object$threshold
 # 
 # results_geometric <- generate_stationary_gev_mixture_model_sample(gev_mixture_model_object,
-#                                                                   kind = c("geometric", "arithmetic")[1],
+#                                                                   kind = c("geometric", "arithmetic", "harmonic")[1],
 #                                                                   n = n)
 # 
 # hist(results_geometric)
 # 
 # results_arithmetic <- generate_stationary_gev_mixture_model_sample(gev_mixture_model_object,
-#                                                                    kind = c("geometric", "arithmetic")[2],
+#                                                                    kind = c("geometric", "arithmetic", "harmonic")[2],
 #                                                                    n = n)
 # 
 # hist(results_arithmetic)
+# 
+# results_harmonic <- generate_stationary_gev_mixture_model_sample(gev_mixture_model_object,
+#                                                                    kind = c("geometric", "arithmetic", "harmonic")[3],
+#                                                                    n = n)
+# 
+# hist(results_harmonic)
