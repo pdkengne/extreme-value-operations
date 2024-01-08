@@ -2,10 +2,10 @@ source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 
 calculate_stationary_gev_mixture_model_inverse_cdf <- function(gev_mixture_model_object,
                                                                p,
-                                                               kind = c("geometric", "arithmetic")[1],
+                                                               kind = c("geometric", "arithmetic", "harmonic")[1],
                                                                iterations = 100){
   # gev_mixture_model_object: an object associated with a result of the function "fit_stationary_gev_mixture_model()"
-  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic" or "harmonic"
   # p: vector of probabilities
   # iterations: number of iterations to perform in the the dichotomy algorithm
   
@@ -67,13 +67,18 @@ calculate_stationary_gev_mixture_model_inverse_cdf <- function(gev_mixture_model
 # 
 # results_geometric <- calculate_stationary_gev_mixture_model_inverse_cdf(gev_mixture_model_object,
 #                                                                         p = p,
-#                                                                         kind = c("geometric", "arithmetic")[1])
+#                                                                         kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # results_geometric
 # 
 # results_arithmetic <- calculate_stationary_gev_mixture_model_inverse_cdf(gev_mixture_model_object,
 #                                                                          p = p,
-#                                                                          kind = c("geometric", "arithmetic")[2])
+#                                                                          kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # results_arithmetic
-
+# 
+# results_harmonic <- calculate_stationary_gev_mixture_model_inverse_cdf(gev_mixture_model_object,
+#                                                                          p = p,
+#                                                                          kind = c("geometric", "arithmetic", "harmonic")[3])
+# 
+# results_harmonic
