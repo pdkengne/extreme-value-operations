@@ -151,103 +151,75 @@ estimate_stationary_gev_mixture_model_quantile <- function(gev_mixture_model_obj
 
 
 
-# example 1
-
-source("./src/extract_nlargest_sample.R")
-source("./src/fit_stationary_gev_mixture_model.R")
-source("./src/generate_gev_sample.R")
-source("./src/plot_fit_stationary_gev_mixture_model.R")
-source("./src/plot_estimate_stationary_gev_mixture_model_quantile.R")
-
-n <- 10000
-
-x <- rnorm(n = n)
-
-#x <- rexp(n = n, rate = 1)
-
-#x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.01)
-
-#x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.01)
-
-nlargest <- 3000
-nlargest_data <- extract_nlargest_sample(x = x, n = nlargest)
-DescTools::Desc(nlargest_data)
-
-gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x,
-                                                             nlargest = nlargest,
-                                                             block_sizes = NULL,
-                                                             minimum_nblocks = 50,
-                                                             threshold = NULL,
-                                                             confidence_level = 0.95,
-                                                             use_extremal_index = TRUE,
-                                                             use_uniform_prior = TRUE,
-                                                             method = c("MLE", "GMLE", "Lmoments")[1])
-
-gev_mixture_model_object$unnormalized_gev_parameters_object
-gev_mixture_model_object$weights
-gev_mixture_model_object$threshold
-
-plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
-                                      xlab = "support",
-                                      ylab = "density",
-                                      main = "density plot",
-                                      legend_position = "topright")
-
-alpha <- n^(-2)
-
-true_quantile <- qnorm(p = 1 - alpha)
-true_quantile
-
-results_geometric <- estimate_stationary_gev_mixture_model_quantile(gev_mixture_model_object,
-                                                                    alpha = alpha,
-                                                                    do.ci = TRUE,
-                                                                    confidence_level = 0.95,
-                                                                    kind = c("geometric", "arithmetic", "harmonic")[1],
-                                                                    iterations = 100)
-
-results_geometric
-
-results_arithmetic <- estimate_stationary_gev_mixture_model_quantile(gev_mixture_model_object,
-                                                                     alpha = alpha,
-                                                                     do.ci = TRUE,
-                                                                     confidence_level = 0.95,
-                                                                     kind = c("geometric", "arithmetic", "harmonic")[2],
-                                                                     iterations = 100)
-
-results_arithmetic
-
-results_harmonic <- estimate_stationary_gev_mixture_model_quantile(gev_mixture_model_object,
-                                                                     alpha = alpha,
-                                                                     do.ci = TRUE,
-                                                                     confidence_level = 0.95,
-                                                                     kind = c("geometric", "arithmetic", "harmonic")[3],
-                                                                     iterations = 100)
-
-results_harmonic
-
-plot_estimate_stationary_gev_mixture_model_quantile(gev_mixture_model_object,
-                                                    alpha = alpha,
-                                                    true_quantile = NULL,
-                                                    do.ci = TRUE,
-                                                    confidence_level = 0.95,
-                                                    kind = c("geometric", "arithmetic", "harmonic")[1],
-                                                    iterations = 100,
-                                                    xlab = "block sizes",
-                                                    ylab = "estimates",
-                                                    main = "quantile estimation plot",
-                                                    legend_position = "topright")
-
-
-plot_estimate_stationary_gev_mixture_model_quantile(gev_mixture_model_object,
-                                                    alpha = alpha,
-                                                    true_quantile = true_quantile,
-                                                    do.ci = TRUE,
-                                                    confidence_level = 0.95,
-                                                    kind = c("geometric", "arithmetic", "harmonic")[1],
-                                                    iterations = 100,
-                                                    xlab = "block sizes",
-                                                    ylab = "estimates",
-                                                    main = "quantile estimation plot",
-                                                    legend_position = "topright")
-
-
+# # example 1
+# 
+# source("./src/extract_nlargest_sample.R")
+# source("./src/fit_stationary_gev_mixture_model.R")
+# source("./src/generate_gev_sample.R")
+# source("./src/plot_fit_stationary_gev_mixture_model.R")
+# 
+# n <- 10000
+# 
+# x <- rnorm(n = n)
+# 
+# #x <- rexp(n = n, rate = 1)
+# 
+# #x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.01)
+# 
+# #x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.01)
+# 
+# nlargest <- 3000
+# nlargest_data <- extract_nlargest_sample(x = x, n = nlargest)
+# DescTools::Desc(nlargest_data)
+# 
+# gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x,
+#                                                              nlargest = nlargest,
+#                                                              block_sizes = NULL,
+#                                                              minimum_nblocks = 50,
+#                                                              threshold = NULL,
+#                                                              confidence_level = 0.95,
+#                                                              use_extremal_index = TRUE,
+#                                                              use_uniform_prior = TRUE,
+#                                                              method = c("MLE", "GMLE", "Lmoments")[1])
+# 
+# gev_mixture_model_object$unnormalized_gev_parameters_object
+# gev_mixture_model_object$weights
+# gev_mixture_model_object$threshold
+# 
+# plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
+#                                       xlab = "support",
+#                                       ylab = "density",
+#                                       main = "density plot",
+#                                       legend_position = "topright")
+# 
+# alpha <- n^(-2)
+# 
+# true_quantile <- qnorm(p = 1 - alpha)
+# true_quantile
+# 
+# results_geometric <- estimate_stationary_gev_mixture_model_quantile(gev_mixture_model_object,
+#                                                                     alpha = alpha,
+#                                                                     do.ci = TRUE,
+#                                                                     confidence_level = 0.95,
+#                                                                     kind = c("geometric", "arithmetic", "harmonic")[1],
+#                                                                     iterations = 100)
+# 
+# results_geometric
+# 
+# results_arithmetic <- estimate_stationary_gev_mixture_model_quantile(gev_mixture_model_object,
+#                                                                      alpha = alpha,
+#                                                                      do.ci = TRUE,
+#                                                                      confidence_level = 0.95,
+#                                                                      kind = c("geometric", "arithmetic", "harmonic")[2],
+#                                                                      iterations = 100)
+# 
+# results_arithmetic
+# 
+# results_harmonic <- estimate_stationary_gev_mixture_model_quantile(gev_mixture_model_object,
+#                                                                      alpha = alpha,
+#                                                                      do.ci = TRUE,
+#                                                                      confidence_level = 0.95,
+#                                                                      kind = c("geometric", "arithmetic", "harmonic")[3],
+#                                                                      iterations = 100)
+# 
+# results_harmonic
