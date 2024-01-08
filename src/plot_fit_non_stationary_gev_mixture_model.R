@@ -95,7 +95,7 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
                                                                  scales =  scales,
                                                                  shapes = shapes,
                                                                  weights = weights,
-                                                                 kind = c("geometric", "arithmetic")[1],
+                                                                 kind = c("geometric", "arithmetic", "harmonic")[1],
                                                                  iterations = iterations)
   
   unnormalized_data_2 <- calculate_gev_mixture_model_inverse_cdf(p = unified_standard_uniform_residuals,
@@ -103,100 +103,96 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
                                                                  scales =  scales,
                                                                  shapes = shapes,
                                                                  weights = weights,
-                                                                 kind = c("geometric", "arithmetic")[2],
+                                                                 kind = c("geometric", "arithmetic", "harmonic")[2],
+                                                                 iterations = iterations)
+  
+  unnormalized_data_3 <- calculate_gev_mixture_model_inverse_cdf(p = unified_standard_uniform_residuals,
+                                                                 locations = locations,
+                                                                 scales =  scales,
+                                                                 shapes = shapes,
+                                                                 weights = weights,
+                                                                 kind = c("geometric", "arithmetic", "harmonic")[3],
                                                                  iterations = iterations)
   
   modes_object_1 <- calculate_modes(x = unnormalized_data_1)
   modes_object_2 <- calculate_modes(x = unnormalized_data_2)
+  modes_object_3 <- calculate_modes(x = unnormalized_data_3)
   
   support_1 <- modes_object_1$density_support 
   support_2 <- modes_object_2$density_support
+  support_3 <- modes_object_3$density_support
   
   empirical_density_1 <- modes_object_1$density_values
   empirical_density_2 <- modes_object_2$density_values
+  empirical_density_3 <- modes_object_3$density_values
   
   theoretical_densities_1 <- calculate_gev_mixture_model_pdf(x = support_1,
                                                              locations = locations,
                                                              scales =  scales,
                                                              shapes = shapes,
                                                              weights = weights,
-                                                             kind = c("geometric", "arithmetic")[1])
+                                                             kind = c("geometric", "arithmetic", "harmonic")[1])
   
   theoretical_densities_2 <- calculate_gev_mixture_model_pdf(x = support_2,
                                                              locations = locations,
                                                              scales =  scales,
                                                              shapes = shapes,
                                                              weights = weights,
-                                                             kind = c("geometric", "arithmetic")[2])
+                                                             kind = c("geometric", "arithmetic", "harmonic")[2])
+  
+  theoretical_densities_3 <- calculate_gev_mixture_model_pdf(x = support_3,
+                                                             locations = locations,
+                                                             scales =  scales,
+                                                             shapes = shapes,
+                                                             weights = weights,
+                                                             kind = c("geometric", "arithmetic", "harmonic")[3])
   
   modes_object_0 <- calculate_modes(x = partial_data)
   support_0 <- modes_object_0$density_support
   empirical_density_0 <- modes_object_0$density_values
   
-  shapes_weighted_mean <- sum(shapes*weights)
-  scales_weighted_mean <- sum(scales*weights)
-  locations_weighted_mean <- sum(locations*weights)
-  
-  unnormalized_data_00 <- calculate_gev_inverse_cdf(p = unified_standard_uniform_residuals,
-                                                    loc = locations_weighted_mean, 
-                                                    scale = scales_weighted_mean, 
-                                                    shape = shapes_weighted_mean)
-  
-  modes_object_00 <- calculate_modes(x = unnormalized_data_00)
-  
-  support_00 <- modes_object_00$density_support
-  
-  empirical_density_00 <- modes_object_00$density_values
-  
-  theoretical_densities_00 <- calculate_gev_pdf(x = support_00, 
-                                                loc = locations_weighted_mean, 
-                                                scale = scales_weighted_mean, 
-                                                shape = shapes_weighted_mean)
-  
   
   if (model_index != 0){
-    unnormalized_data_3 <- calculate_gev_inverse_cdf(p = unified_standard_uniform_residuals,
-                                                     loc = locations[model_index], 
-                                                     scale = scales[model_index], 
-                                                     shape = shapes[model_index])
+    unnormalized_data_00 <- calculate_gev_inverse_cdf(p = unified_standard_uniform_residuals,
+                                                      loc = locations[model_index], 
+                                                      scale = scales[model_index], 
+                                                      shape = shapes[model_index])
     
-    modes_object_3 <- calculate_modes(x = unnormalized_data_3)
+    modes_object_00 <- calculate_modes(x = unnormalized_data_00)
     
-    support_3 <- modes_object_3$density_support
+    support_00 <- modes_object_00$density_support
     
-    empirical_density_3 <- modes_object_3$density_values
+    empirical_density_00 <- modes_object_00$density_values
     
-    theoretical_densities_3 <- calculate_gev_pdf(x = support_3, 
-                                                 loc = locations[model_index], 
-                                                 scale = scales[model_index], 
-                                                 shape = shapes[model_index])
+    theoretical_densities_00 <- calculate_gev_pdf(x = support_00, 
+                                                  loc = locations[model_index], 
+                                                  scale = scales[model_index], 
+                                                  shape = shapes[model_index])
     
-    densities <- c(empirical_density_0, empirical_density_1, empirical_density_2, empirical_density_3, 
-                   theoretical_densities_1, theoretical_densities_2, theoretical_densities_3,
-                   theoretical_densities_00, empirical_density_00)
+    densities <- c(empirical_density_0, empirical_density_00, empirical_density_1, empirical_density_2, empirical_density_3, 
+                   theoretical_densities_00, theoretical_densities_1, theoretical_densities_2, theoretical_densities_3)
     
     support <- c(support_0, support_00, support_1, support_2, support_3)
     
-    plot(x = support_1, 
-         y = empirical_density_1, 
+    plot(x = support_0, 
+         y = empirical_density_0, 
          type = "l",
-         lty = "dotted",
          ylim = range(densities),
          xlim = range(support),
          xlab = xlab, 
          ylab = ylab, 
          main = main, 
-         col = 6,
+         col = 1,
          lwd = 2)  
     
-    lines(support_00, empirical_density_00, col = 4, lwd = 2, lty = "dotted")
-    lines(support_00, theoretical_densities_00, col = 4, lwd = 2)
-    lines(support_0, empirical_density_0, col = 1, lwd = 2)
-    lines(support_2, empirical_density_2, col = 7, lwd = 2, lty = "dotted")
+    lines(support_00, empirical_density_00, col = 3, lwd = 2, lty = "dotted")
+    lines(support_00, theoretical_densities_00, col = 3, lwd = 2)
+    lines(support_1, empirical_density_1, col = 6, lwd = 2, lty = "dotted")
     lines(support_1, theoretical_densities_1, col = 6, lwd = 2)
+    lines(support_2, empirical_density_2, col = 7, lwd = 2, lty = "dotted")
     lines(support_2, theoretical_densities_2, col = 7, lwd = 2)
-    lines(support_3, empirical_density_3, col = 3, lwd = 2, lty = "dotted")
-    lines(support_3, theoretical_densities_3, col = 3, lwd = 2)
+    lines(support_3, empirical_density_3, col = 4, lwd = 2, lty = "dotted")
+    lines(support_3, theoretical_densities_3, col = 4, lwd = 2)
     abline(h = 0, lty = "dotted")
     abline(v = threshold, lty = "dotted")
     
@@ -206,30 +202,29 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
            lty = c(1, 2, 2, 2, 2, 1, 1, 1), col = c(1, 3, 4, 6, 7, 3, 4, 6, 7), lwd = 2)
   }
   else{
-    densities <- c(empirical_density_0, empirical_density_1, empirical_density_2, 
-                   theoretical_densities_1, theoretical_densities_2,
-                   theoretical_densities_00, empirical_density_00)
+    densities <- c(empirical_density_0, empirical_density_1, empirical_density_2, empirical_density_3,
+                   theoretical_densities_1, theoretical_densities_2, theoretical_densities_3)
     
-    support <- c(support_0, support_00, support_1, support_2)
+    support <- c(support_0, support_1, support_2, support_3)
     
-    plot(x = support_1, 
-         y = empirical_density_1, 
+    plot(x = support_0, 
+         y = empirical_density_0, 
          type = "l",
-         lty = "dotted",
          ylim = range(densities),
          xlim = range(support),
          xlab = xlab, 
          ylab = ylab, 
          main = main, 
-         col = 6,
+         col = 1,
          lwd = 2)  
     
-    lines(support_00, empirical_density_00, col = 4, lwd = 2, lty = "dotted")
-    lines(support_00, theoretical_densities_00, col = 4, lwd = 2)
-    lines(support_0, empirical_density_0, col = 1, lwd = 2)
-    lines(support_2, empirical_density_2, col = 7, lwd = 2, lty = "dotted")
+    lines(support_1, empirical_density_1, col = 6, lwd = 2, lty = "dotted")
     lines(support_1, theoretical_densities_1, col = 6, lwd = 2)
+    lines(support_2, empirical_density_2, col = 7, lwd = 2, lty = "dotted")
     lines(support_2, theoretical_densities_2, col = 7, lwd = 2)
+    lines(support_3, empirical_density_3, col = 4, lwd = 2, lty = "dotted")
+    lines(support_3, theoretical_densities_3, col = 4, lwd = 2)
+    
     abline(h = 0, lty = "dotted")
     abline(v = threshold, lty = "dotted")
     
@@ -297,7 +292,7 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 # 
 # plot_fit_non_stationary_gev_mixture_model.R(ns_gev_mixture_model_object,
 #                                             data_index = 0,
-#                                             model_index = 5,
+#                                             model_index = 4,
 #                                             iterations = 10,
 #                                             xlab = "support",
 #                                             ylab = "density",
@@ -357,7 +352,7 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 # 
 # plot_fit_non_stationary_gev_mixture_model.R(ns_gev_mixture_model_object,
 #                                             data_index = 0,
-#                                             model_index = 1,
+#                                             model_index = 11,
 #                                             iterations = 10,
 #                                             xlab = "support",
 #                                             ylab = "density",
