@@ -7,9 +7,9 @@ source("./src/get_several_ns_gev_model_normalized_parameters.R")
 calculate_non_stationary_gev_mixture_model_pdf <- function(ns_gev_mixture_model_object,
                                                            x = NULL,
                                                            data = NULL,
-                                                           kind = c("geometric", "arithmetic")[1]){
+                                                           kind = c("geometric", "arithmetic", "harmonic")[1]){
   # ns_gev_mixture_model_object: an object associated with a result of the function "fit_non_stationary_gev_mixture_model()"
-  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic" or "harmonic"
   # x: vector of observations
   # data: dataframe of covariates for linear modeling of the gev model parameters
   #       note that the following condition must be satisfied nrow(data) == length(x) or nrow(data) == 1
@@ -128,7 +128,7 @@ calculate_non_stationary_gev_mixture_model_pdf <- function(ns_gev_mixture_model_
 # results_geometric <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
 #                                                                     x = NULL,
 #                                                                     data = NULL,
-#                                                                     kind = c("geometric", "arithmetic")[1])
+#                                                                     kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # z <- y[y > h]
 # 
@@ -142,14 +142,14 @@ calculate_non_stationary_gev_mixture_model_pdf <- function(ns_gev_mixture_model_
 # results_geometric <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
 #                                                                     x = median(x),
 #                                                                     data = data,
-#                                                                     kind = c("geometric", "arithmetic")[1])
+#                                                                     kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # results_geometric
 # 
 # results_arithmetic <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
 #                                                                      x = NULL,
 #                                                                      data = NULL,
-#                                                                      kind = c("geometric", "arithmetic")[2])
+#                                                                      kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # z <- y[y > h]
 # 
@@ -163,7 +163,7 @@ calculate_non_stationary_gev_mixture_model_pdf <- function(ns_gev_mixture_model_
 # results_arithmetic <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
 #                                                                      x = 1:3,
 #                                                                      data = data,
-#                                                                      kind = c("geometric", "arithmetic")[2])
+#                                                                      kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # results_arithmetic
 # 
@@ -171,6 +171,20 @@ calculate_non_stationary_gev_mixture_model_pdf <- function(ns_gev_mixture_model_
 # results_arithmetic <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
 #                                                                      x = c(3, 3, 3),
 #                                                                      data = data,
-#                                                                      kind = c("geometric", "arithmetic")[2])
+#                                                                      kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # results_arithmetic
+# 
+# results_harmonic <- calculate_non_stationary_gev_mixture_model_pdf(ns_gev_mixture_model_object,
+#                                                                      x = NULL,
+#                                                                      data = NULL,
+#                                                                      kind = c("geometric", "arithmetic", "harmonic")[3])
+# 
+# z <- y[y > h]
+# 
+# ord <- order(z)
+# 
+# support <- sort(z)
+# dens <- results_harmonic[ord]
+# 
+# lines(x = support, y = dens, col = 4)
