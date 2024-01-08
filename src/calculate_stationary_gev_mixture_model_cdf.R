@@ -2,9 +2,9 @@ source("./src/calculate_gev_mixture_model_cdf.R")
 
 calculate_stationary_gev_mixture_model_cdf <- function(gev_mixture_model_object,
                                                        q,
-                                                       kind = c("geometric", "arithmetic")[1]){
+                                                       kind = c("geometric", "arithmetic", "harmonic")[1]){
   # gev_mixture_model_object: an object associated with a result of the function "fit_stationary_gev_mixture_model()"
-  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic" or "harmonic"
   # q: vector of observations
   
   # get the normalized gev parameters
@@ -65,13 +65,18 @@ calculate_stationary_gev_mixture_model_cdf <- function(gev_mixture_model_object,
 # 
 # results_geometric <- calculate_stationary_gev_mixture_model_cdf(gev_mixture_model_object,
 #                                                                 q = q,
-#                                                                 kind = c("geometric", "arithmetic")[1])
+#                                                                 kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # results_geometric
 # 
 # results_arithmetic <- calculate_stationary_gev_mixture_model_cdf(gev_mixture_model_object,
 #                                                                  q = q,
-#                                                                  kind = c("geometric", "arithmetic")[2])
+#                                                                  kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # results_arithmetic
-
+# 
+# results_harmonic <- calculate_stationary_gev_mixture_model_cdf(gev_mixture_model_object,
+#                                                                  q = q,
+#                                                                  kind = c("geometric", "arithmetic", "harmonic")[3])
+# 
+# results_harmonic
