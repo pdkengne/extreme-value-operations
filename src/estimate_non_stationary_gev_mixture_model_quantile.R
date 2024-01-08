@@ -10,10 +10,10 @@ estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixture_mo
                                                                data = NULL,
                                                                do.ci = TRUE,
                                                                confidence_level = 0.95,
-                                                               kind = c("geometric", "arithmetic")[1],
+                                                               kind = c("geometric", "arithmetic", "harmonic")[1],
                                                                iterations = 100){
   # ns_gev_mixture_model_object: an object associated with a result of the function "fit_non_stationary_gev_mixture_model()"
-  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic" or "harmonic"
   # alpha: order of the quantile to estimate
   # data: dataframe of covariates for linear modeling of the gev model parameters
   # do.ci: boolean which indicates whether to return confidence interval or not
@@ -92,7 +92,7 @@ estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixture_mo
       # transform data to be at the specific gev distribution scale
       parameters <- normalized_gev_parameters[[k]]
       unnormalized_maxima <- extRemes::revtrans.evd(z = normalized_maxima,
-                                                    location =parameters$location[i], 
+                                                    location = parameters$location[i], 
                                                     scale = parameters$scale[i], 
                                                     shape = parameters$shape[i],
                                                     type = "GEV")
@@ -121,11 +121,74 @@ estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixture_mo
     # find the maximum of lower bounds associated with all confidence intervals
     largest_upper_ci_bound <- max(quantiles_object)
     
+    
+    # transform data to be at the standard gumbel distribution scale
+    several_standard_gumbel_residuals <- lapply(selected_ns_gev_models, function(model){
+      standard_gumbel_residuals <- extRemes::trans(model)
+      standard_gumbel_residuals
+    })
+    
+    unified_standard_gumbel_residuals <- unlist(several_standard_gumbel_residuals)
+    
+    # extract the current normalized gev model parameters
+    locations <- sapply(normalized_gev_parameters, function(params){
+      params[i, "location"]
+    })
+    
+    scales <- sapply(normalized_gev_parameters, function(params){
+      params[i, "scale"]
+    })
+    
+    shapes <- sapply(normalized_gev_parameters, function(params){
+      params[i, "shape"]
+    })
+    
+    # transform data to be at the specific gev distribution scale
+    unnormalized_maxima_gev_inf <- extRemes::revtrans.evd(z = unified_standard_gumbel_residuals,
+                                                          location = max(locations), 
+                                                          scale = max(scales), 
+                                                          shape = max(shapes),
+                                                          type = "GEV")
+    
+    unnormalized_maxima_gev_sup <- extRemes::revtrans.evd(z = unified_standard_gumbel_residuals,
+                                                          location = min(locations), 
+                                                          scale = min(scales), 
+                                                          shape = min(shapes),
+                                                          type = "GEV")
+    
+    # fit a gev model to the unnormalized maxima
+    model_star_gev_inf <- estimate_gev_parameters(x = unnormalized_maxima_gev_inf,
+                                                  type = c("GEV", "Gumbel")[1],
+                                                  method = c("MLE", "GMLE", "Lmoments")[1])
+    
+    model_star_gev_sup <- estimate_gev_parameters(x = unnormalized_maxima_gev_sup,
+                                                  type = c("GEV", "Gumbel")[1],
+                                                  method = c("MLE", "GMLE", "Lmoments")[1])
+    
+    # estimated the desired quantile with confidence interval
+    quantile_gev_inf <- estimate_gev_model_quantile(gev_model = model_star_gev_inf,
+                                                    alpha = beta,
+                                                    do.ci = do.ci,
+                                                    confidence_level = confidence_level)
+    
+    quantile_gev_inf <- data.frame(quantile_gev_inf)
+    names(quantile_gev_inf) <- c("lower_bound", "estimate", "upper_bound")
+    
+    quantile_gev_sup <- estimate_gev_model_quantile(gev_model = model_star_gev_sup,
+                                                    alpha = beta,
+                                                    do.ci = do.ci,
+                                                    confidence_level = confidence_level)
+    
+    quantile_gev_sup <- data.frame(quantile_gev_sup)
+    names(quantile_gev_sup) <- c("lower_bound", "estimate", "upper_bound")
+    
     # update the output object
     output[["quantiles_object"]] <- quantiles_object
     output[["gev_mixture_model_quantile"]] <- gev_mixture_model_quantile
     output[["smalest_lower_ci_bound"]] <- smalest_lower_ci_bound
     output[["largest_upper_ci_bound"]] <- largest_upper_ci_bound
+    output[["quantile_gev_inf"]] <- quantile_gev_inf
+    output[["quantile_gev_sup"]] <- quantile_gev_sup
     
     output
   })
@@ -184,7 +247,7 @@ estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixture_mo
 #                                                                         data = data,
 #                                                                         do.ci = TRUE,
 #                                                                         confidence_level = 0.95,
-#                                                                         kind = c("geometric", "arithmetic")[1],
+#                                                                         kind = c("geometric", "arithmetic", "harmonic")[1],
 #                                                                         iterations = 100)
 # 
 # results_geometric
@@ -194,25 +257,22 @@ estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixture_mo
 #                                                                          data = NULL,
 #                                                                          do.ci = TRUE,
 #                                                                          confidence_level = 0.95,
-#                                                                          kind = c("geometric", "arithmetic")[2],
+#                                                                          kind = c("geometric", "arithmetic", "harmonic")[2],
 #                                                                          iterations = 100)
 # 
 # results_arithmetic
 # 
 # 
+# results_harmonic <- estimate_non_stationary_gev_mixture_model_quantile(ns_gev_mixture_model_object,
+#                                                                        alpha = alpha,
+#                                                                        data = NULL,
+#                                                                        do.ci = TRUE,
+#                                                                        confidence_level = 0.95,
+#                                                                        kind = c("geometric", "arithmetic", "harmonic")[3],
+#                                                                        iterations = 100)
+# 
+# results_harmonic
+# 
 # 
 # results_geometric <- results_geometric$covariates_1
-# 
-# 
-# matplot(results_geometric$quantiles_object,
-#         type = "l",
-#         lty  = c("dotted", "solid", "dotted"),
-#         lwd = 2,
-#         col = c(3, 1, 3))
-# 
-# abline(h = results_geometric$gev_mixture_model_quantile, col = 6, lwd = 2)
-# abline(h = results_geometric$smalest_lower_ci_bound, col = 7, lwd = 2, lty = "dotted")
-# abline(h = results_geometric$largest_upper_ci_bound, col = 7, lwd = 2, lty = "dotted")
-# 
-# abline(h = true_quantile, col = 4, lwd = 2)
 
