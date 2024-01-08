@@ -7,9 +7,9 @@ source("./src/generate_gev_mixture_model_sample.R")
 generate_non_stationary_gev_mixture_model_sample <- function(ns_gev_mixture_model_object,
                                                              n = 1,
                                                              data = NULL,
-                                                             kind = c("geometric", "arithmetic")[1]){
+                                                             kind = c("geometric", "arithmetic", "harmonic")[1]){
   # ns_gev_mixture_model_object: an object associated with a result of the function "fit_non_stationary_gev_mixture_model()"
-  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic" or "harmonic"
   # n: number of observations to generate
   # data: dataframe of covariates for linear modeling of the gev model parameters
   
@@ -109,7 +109,7 @@ generate_non_stationary_gev_mixture_model_sample <- function(ns_gev_mixture_mode
 # results_geometric <- generate_non_stationary_gev_mixture_model_sample(ns_gev_mixture_model_object,
 #                                                                       n = 1000,
 #                                                                       data = NULL,
-#                                                                       kind = c("geometric", "arithmetic")[1])
+#                                                                       kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # 
 # hist(results_geometric$covariates_1)
@@ -117,14 +117,14 @@ generate_non_stationary_gev_mixture_model_sample <- function(ns_gev_mixture_mode
 # results_geometric <- generate_non_stationary_gev_mixture_model_sample(ns_gev_mixture_model_object,
 #                                                                       n = 2,
 #                                                                       data = data,
-#                                                                       kind = c("geometric", "arithmetic")[1])
+#                                                                       kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # results_geometric
 # 
 # results_arithmetic <- generate_non_stationary_gev_mixture_model_sample(ns_gev_mixture_model_object,
 #                                                                        n = 10,
 #                                                                        data = NULL,
-#                                                                        kind = c("geometric", "arithmetic")[2])
+#                                                                        kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # results_arithmetic
 # 
@@ -132,17 +132,17 @@ generate_non_stationary_gev_mixture_model_sample <- function(ns_gev_mixture_mode
 # results_arithmetic <- generate_non_stationary_gev_mixture_model_sample(ns_gev_mixture_model_object,
 #                                                                        n = 10,
 #                                                                        data = data,
-#                                                                        kind = c("geometric", "arithmetic")[2])
+#                                                                        kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # results_arithmetic
 # 
 # 
-# results_arithmetic <- generate_non_stationary_gev_mixture_model_sample(ns_gev_mixture_model_object,
+# results_harmonic <- generate_non_stationary_gev_mixture_model_sample(ns_gev_mixture_model_object,
 #                                                                        n = 1000,
 #                                                                        data = NULL,
-#                                                                        kind = c("geometric", "arithmetic")[2])
+#                                                                        kind = c("geometric", "arithmetic", "harmonic")[3])
 # 
-# hist(results_arithmetic$covariates_1)
+# hist(results_harmonic$covariates_1)
 
 
 
