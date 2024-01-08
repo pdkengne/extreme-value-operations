@@ -6,10 +6,10 @@ source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 calculate_non_stationary_gev_mixture_model_inverse_cdf <- function(ns_gev_mixture_model_object,
                                                                    p = NULL,
                                                                    data = NULL,
-                                                                   kind = c("geometric", "arithmetic")[1],
+                                                                   kind = c("geometric", "arithmetic", "harmonic")[1],
                                                                    iterations = 100){
   # ns_gev_mixture_model_object: an object associated with a result of the function "fit_non_stationary_gev_mixture_model()"
-  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic"
+  # kind: indicates the type of gev mixture model. Possible values are "geometric" or "arithmetic" or "harmonic"
   # p: vector of probabilities
   # data: dataframe of covariates for linear modeling of the gev model parameters
   #       note that the following condition must be satisfied nrow(data) == length(p) or nrow(data) == 1
@@ -128,7 +128,7 @@ calculate_non_stationary_gev_mixture_model_inverse_cdf <- function(ns_gev_mixtur
 # results_geometric <- calculate_non_stationary_gev_mixture_model_inverse_cdf(ns_gev_mixture_model_object,
 #                                                                             p = NULL,
 #                                                                             data = NULL,
-#                                                                             kind = c("geometric", "arithmetic")[1],
+#                                                                             kind = c("geometric", "arithmetic", "harmonic")[1],
 #                                                                             iterations = 25)
 # 
 # hist(results_geometric, freq = FALSE)
@@ -136,14 +136,14 @@ calculate_non_stationary_gev_mixture_model_inverse_cdf <- function(ns_gev_mixtur
 # results_geometric <- calculate_non_stationary_gev_mixture_model_inverse_cdf(ns_gev_mixture_model_object,
 #                                                                             p = 0.5,
 #                                                                             data = data,
-#                                                                             kind = c("geometric", "arithmetic")[1])
+#                                                                             kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
 # results_geometric
 # 
 # results_arithmetic <- calculate_non_stationary_gev_mixture_model_inverse_cdf(ns_gev_mixture_model_object,
 #                                                                              p = NULL,
 #                                                                              data = NULL,
-#                                                                              kind = c("geometric", "arithmetic")[2],
+#                                                                              kind = c("geometric", "arithmetic", "harmonic")[2],
 #                                                                              iterations = 25)
 # 
 # hist(results_arithmetic, freq = FALSE)
@@ -151,7 +151,7 @@ calculate_non_stationary_gev_mixture_model_inverse_cdf <- function(ns_gev_mixtur
 # results_arithmetic <- calculate_non_stationary_gev_mixture_model_inverse_cdf(ns_gev_mixture_model_object,
 #                                                                              p = c(0.25, 0.5, 0.75),
 #                                                                              data = data,
-#                                                                              kind = c("geometric", "arithmetic")[2])
+#                                                                              kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # results_arithmetic
 # 
@@ -159,7 +159,22 @@ calculate_non_stationary_gev_mixture_model_inverse_cdf <- function(ns_gev_mixtur
 # results_arithmetic <- calculate_non_stationary_gev_mixture_model_inverse_cdf(ns_gev_mixture_model_object,
 #                                                                              p = c(0.99, 0.99, 0.99),
 #                                                                              data = data,
-#                                                                              kind = c("geometric", "arithmetic")[2])
+#                                                                              kind = c("geometric", "arithmetic", "harmonic")[2])
 # 
 # results_arithmetic
-
+# 
+# 
+# results_harmonic <- calculate_non_stationary_gev_mixture_model_inverse_cdf(ns_gev_mixture_model_object,
+#                                                                              p = NULL,
+#                                                                              data = NULL,
+#                                                                              kind = c("geometric", "arithmetic", "harmonic")[3],
+#                                                                              iterations = 25)
+# 
+# hist(results_harmonic, freq = FALSE)
+# 
+# results_harmonic <- calculate_non_stationary_gev_mixture_model_inverse_cdf(ns_gev_mixture_model_object,
+#                                                                              p = c(0.25, 0.5, 0.75),
+#                                                                              data = data,
+#                                                                              kind = c("geometric", "arithmetic", "harmonic")[3])
+# 
+# results_harmonic
