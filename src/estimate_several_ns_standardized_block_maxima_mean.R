@@ -25,9 +25,9 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
   output <- list()
   
   # estimate the confidence intervals
-  estimated_mean_confidence_intervals <- sapply(block_sizes, 
+  estimated_mean_confidence_intervals <- lapply(block_sizes, 
                                                 function(block_size) 
-                                                  estimate_single_ns_standardized_block_maxima_mean(x = x, 
+                                                  try(estimate_single_ns_standardized_block_maxima_mean(x = x, 
                                                                                                     block_size = block_size, 
                                                                                                     confidence_level = confidence_level,
                                                                                                     data = data, 
@@ -36,10 +36,17 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
                                                                                                     shape.fun = shape.fun, 
                                                                                                     use.phi = use.phi,
                                                                                                     type = type,
-                                                                                                    method = method))
+                                                                                                    method = method),
+                                                      silent = TRUE))
+  
+  is_not_error <- sapply(estimated_mean_confidence_intervals, function(x) !inherits(x, "try-error"))
+  
+  estimated_mean_confidence_intervals <- estimated_mean_confidence_intervals[is_not_error]
+  
+  estimated_mean_confidence_intervals <- do.call(cbind, estimated_mean_confidence_intervals)
   
   estimated_mean_confidence_intervals <- data.frame(t(estimated_mean_confidence_intervals))
-  rownames(estimated_mean_confidence_intervals) <- block_sizes
+  rownames(estimated_mean_confidence_intervals) <- block_sizes[is_not_error]
   
   # find the selector of the largest subset of intervals which overlap
   selector_object <- extract_largest_subset_of_overlapping_intervals(estimated_mean_confidence_intervals[, c(1, 3)])
@@ -119,13 +126,13 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# results <- estimate_several_ns_standardized_block_maxima_mean(x, 
-#                                                               block_sizes, 
-#                                                               confidence_level = 0.95, 
-#                                                               data = data, 
+# results <- estimate_several_ns_standardized_block_maxima_mean(x,
+#                                                               block_sizes,
+#                                                               confidence_level = 0.95,
+#                                                               data = data,
 #                                                               location.fun = ~ .,
-#                                                               scale.fun = ~1, 
-#                                                               shape.fun = ~1, 
+#                                                               scale.fun = ~1,
+#                                                               shape.fun = ~1,
 #                                                               use.phi = TRUE,
 #                                                               type = c("GEV", "Gumbel")[1],
 #                                                               method = c("MLE", "GMLE")[2])
@@ -167,13 +174,13 @@ estimate_several_ns_standardized_block_maxima_mean <- function(x,
 # 
 # block_sizes <- seq(from = minimum_block_size, to = maximum_block_size, by = 1)
 # 
-# results <- estimate_several_ns_standardized_block_maxima_mean(x, 
-#                                                               block_sizes, 
-#                                                               confidence_level = 0.95, 
-#                                                               data = data, 
+# results <- estimate_several_ns_standardized_block_maxima_mean(x,
+#                                                               block_sizes,
+#                                                               confidence_level = 0.95,
+#                                                               data = data,
 #                                                               location.fun = ~ .,
-#                                                               scale.fun = ~ ., 
-#                                                               shape.fun = ~1, 
+#                                                               scale.fun = ~ .,
+#                                                               shape.fun = ~1,
 #                                                               use.phi = TRUE,
 #                                                               type = c("GEV", "Gumbel")[1],
 #                                                               method = c("MLE", "GMLE")[1])

@@ -84,6 +84,10 @@ fit_non_stationary_gev_mixture_model <- function(x,
   # get eventual rejected block sizes from the equivalent ones
   unequivalent_block_sizes <- as.numeric(rownames(equivalent_block_sizes_object$rejected))
   
+  # get eventual block sizes associated with failed gev models
+  failed_block_sizes <- candidate_block_sizes[!is.element(el = candidate_block_sizes, 
+                                                          set = c(equivalent_block_sizes, unequivalent_block_sizes))]
+  
   # estimate several non-stationary gev models associated with the equivalent block sizes
   several_ns_gev_models <- estimate_several_ns_gev_models(x = partial_data, 
                                                           block_sizes = equivalent_block_sizes,
@@ -200,10 +204,12 @@ fit_non_stationary_gev_mixture_model <- function(x,
   
   # update the output object
   output[["threshold"]] <- threshold
+  output[["candidate_block_sizes"]] <- candidate_block_sizes
   output[["equivalent_block_sizes"]] <- equivalent_block_sizes
   output[["unequivalent_block_sizes"]] <- unequivalent_block_sizes
   output[["selected_block_sizes"]] <- selected_block_sizes
   output[["unselected_block_sizes"]] <- unselected_block_sizes
+  output[["failed_block_sizes"]] <- failed_block_sizes
   
   output[["use_uniform_prior"]] <- use_uniform_prior
   output[["weights"]] <- weights
@@ -278,17 +284,22 @@ fit_non_stationary_gev_mixture_model <- function(x,
 # 
 # names(results)
 # 
-# # [1] "threshold"                             "equivalent_block_sizes"                "unequivalent_block_sizes"             
-# # [4] "selected_block_sizes"                  "unselected_block_sizes"                "use_uniform_prior"                    
-# # [7] "weights"                               "frequencies"                           "use_extremal_index"                   
-# # [10] "extremal_indexes"                      "negative_log_likelihoods"              "information_criteria"                 
-# # [13] "selected_ns_gev_coefficients"          "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"     
-# # [16] "full_normalized_gev_parameters_object" "selected_model_per_obs"                "all_data_covariates"                  
-# # [19] "partial_data_covariates"               "partial_data"                          "all_data"                             
-# # [22] "selected_ns_gev_models"                "selected_full_ns_gev_models"           "several_residuals"                    
-# # [25] "several_residuals_fit"                 "several_residuals_diagnosics"
+# # [1] "threshold"                             "candidate_block_sizes"                 "equivalent_block_sizes"               
+# # [4] "unequivalent_block_sizes"              "selected_block_sizes"                  "unselected_block_sizes"               
+# # [7] "failed_block_sizes"                    "use_uniform_prior"                     "weights"                              
+# # [10] "frequencies"                           "use_extremal_index"                    "extremal_indexes"                     
+# # [13] "negative_log_likelihoods"              "information_criteria"                  "selected_ns_gev_coefficients"         
+# # [16] "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object"
+# # [19] "selected_model_per_obs"                "all_data_covariates"                   "partial_data_covariates"              
+# # [22] "partial_data"                          "all_data"                              "selected_ns_gev_models"               
+# # [25] "selected_full_ns_gev_models"           "several_residuals"                     "several_residuals_fit"                
+# # [28] "several_residuals_diagnosics"
 # 
 # results$threshold
+# 
+# results$candidate_block_sizes
+# 
+# results$failed_block_sizes
 # 
 # results$equivalent_block_sizes
 # 
@@ -369,17 +380,22 @@ fit_non_stationary_gev_mixture_model <- function(x,
 # 
 # names(results)
 # 
-# # [1] "threshold"                             "equivalent_block_sizes"                "unequivalent_block_sizes"             
-# # [4] "selected_block_sizes"                  "unselected_block_sizes"                "use_uniform_prior"                    
-# # [7] "weights"                               "frequencies"                           "use_extremal_index"                   
-# # [10] "extremal_indexes"                      "negative_log_likelihoods"              "information_criteria"                 
-# # [13] "selected_ns_gev_coefficients"          "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"     
-# # [16] "full_normalized_gev_parameters_object" "selected_model_per_obs"                "all_data_covariates"                  
-# # [19] "partial_data_covariates"               "partial_data"                          "all_data"                             
-# # [22] "selected_ns_gev_models"                "selected_full_ns_gev_models"           "several_residuals"                    
-# # [25] "several_residuals_fit"                 "several_residuals_diagnosics"
+# # [1] "threshold"                             "candidate_block_sizes"                 "equivalent_block_sizes"               
+# # [4] "unequivalent_block_sizes"              "selected_block_sizes"                  "unselected_block_sizes"               
+# # [7] "failed_block_sizes"                    "use_uniform_prior"                     "weights"                              
+# # [10] "frequencies"                           "use_extremal_index"                    "extremal_indexes"                     
+# # [13] "negative_log_likelihoods"              "information_criteria"                  "selected_ns_gev_coefficients"         
+# # [16] "unnormalized_gev_parameters_object"    "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object"
+# # [19] "selected_model_per_obs"                "all_data_covariates"                   "partial_data_covariates"              
+# # [22] "partial_data"                          "all_data"                              "selected_ns_gev_models"               
+# # [25] "selected_full_ns_gev_models"           "several_residuals"                     "several_residuals_fit"                
+# # [28] "several_residuals_diagnosics"
 # 
 # results$threshold
+# 
+# results$candidate_block_sizes
+# 
+# results$failed_block_sizes
 # 
 # results$equivalent_block_sizes
 # 

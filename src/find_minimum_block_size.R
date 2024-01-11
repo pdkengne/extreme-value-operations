@@ -9,15 +9,16 @@ find_minimum_block_size <- function(x, threshold = NULL){
   # threshold: lower bound of block maxima
   
   if (is.null(threshold)){
-    med <- median(x)
-    mod <- calculate_mode(x, data_type = c("continuous", "discrete")[1])
-    threshold = max(med, mod)
+    # med <- median(x)
+    # mod <- calculate_mode(x, data_type = c("continuous", "discrete")[1])
+    # threshold = max(med, mod)
+    threshold = min(x)
   }
   
-  block_size <- 2
+  block_size <- 1
   y <- zoo::rollmax(x, k = block_size)
   
-  while (min(y, na.rm = TRUE) <= threshold){
+  while (min(y, na.rm = TRUE) < threshold){
     block_size <- block_size + 1
     y <- zoo::rollmax(x, k = block_size)
   }
