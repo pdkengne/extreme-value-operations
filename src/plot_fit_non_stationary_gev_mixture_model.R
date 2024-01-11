@@ -90,7 +90,9 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
   
   unified_standard_uniform_residuals <- unlist(several_standard_uniform_residuals)
   
-  unnormalized_data_1 <- calculate_gev_mixture_model_inverse_cdf(p = unified_standard_uniform_residuals,
+  unified_standard_uniform_residuals_range <- range(unified_standard_uniform_residuals)
+  
+  unnormalized_data_1 <- calculate_gev_mixture_model_inverse_cdf(p = unified_standard_uniform_residuals_range,
                                                                  locations = locations,
                                                                  scales =  scales,
                                                                  shapes = shapes,
@@ -98,7 +100,7 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
                                                                  kind = c("geometric", "arithmetic", "harmonic")[1],
                                                                  iterations = iterations)
   
-  unnormalized_data_2 <- calculate_gev_mixture_model_inverse_cdf(p = unified_standard_uniform_residuals,
+  unnormalized_data_2 <- calculate_gev_mixture_model_inverse_cdf(p = unified_standard_uniform_residuals_range,
                                                                  locations = locations,
                                                                  scales =  scales,
                                                                  shapes = shapes,
@@ -106,7 +108,7 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
                                                                  kind = c("geometric", "arithmetic", "harmonic")[2],
                                                                  iterations = iterations)
   
-  unnormalized_data_3 <- calculate_gev_mixture_model_inverse_cdf(p = unified_standard_uniform_residuals,
+  unnormalized_data_3 <- calculate_gev_mixture_model_inverse_cdf(p = unified_standard_uniform_residuals_range,
                                                                  locations = locations,
                                                                  scales =  scales,
                                                                  shapes = shapes,
@@ -114,17 +116,11 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
                                                                  kind = c("geometric", "arithmetic", "harmonic")[3],
                                                                  iterations = iterations)
   
-  modes_object_1 <- calculate_modes(x = unnormalized_data_1)
-  modes_object_2 <- calculate_modes(x = unnormalized_data_2)
-  modes_object_3 <- calculate_modes(x = unnormalized_data_3)
+  size <- 1000
   
-  support_1 <- modes_object_1$density_support 
-  support_2 <- modes_object_2$density_support
-  support_3 <- modes_object_3$density_support
-  
-  empirical_density_1 <- modes_object_1$density_values
-  empirical_density_2 <- modes_object_2$density_values
-  empirical_density_3 <- modes_object_3$density_values
+  support_1 <- seq(from = min(unnormalized_data_1), to = max(unnormalized_data_1), length.out = size) 
+  support_2 <- seq(from = min(unnormalized_data_2), to = max(unnormalized_data_1), length.out = size)
+  support_3 <- seq(from = min(unnormalized_data_3), to = max(unnormalized_data_1), length.out = size)
   
   theoretical_densities_1 <- calculate_gev_mixture_model_pdf(x = support_1,
                                                              locations = locations,
@@ -151,26 +147,20 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
   support_0 <- modes_object_0$density_support
   empirical_density_0 <- modes_object_0$density_values
   
-  
   if (model_index != 0){
-    unnormalized_data_00 <- calculate_gev_inverse_cdf(p = unified_standard_uniform_residuals,
+    unnormalized_data_00 <- calculate_gev_inverse_cdf(p = unified_standard_uniform_residuals_range,
                                                       loc = locations[model_index], 
                                                       scale = scales[model_index], 
                                                       shape = shapes[model_index])
     
-    modes_object_00 <- calculate_modes(x = unnormalized_data_00)
-    
-    support_00 <- modes_object_00$density_support
-    
-    empirical_density_00 <- modes_object_00$density_values
+    support_00 <- seq(from = min(unnormalized_data_00), to = max(unnormalized_data_00), length.out = size)
     
     theoretical_densities_00 <- calculate_gev_pdf(x = support_00, 
                                                   loc = locations[model_index], 
                                                   scale = scales[model_index], 
                                                   shape = shapes[model_index])
     
-    densities <- c(empirical_density_0, empirical_density_00, empirical_density_1, empirical_density_2, empirical_density_3, 
-                   theoretical_densities_00, theoretical_densities_1, theoretical_densities_2, theoretical_densities_3)
+    densities <- c(empirical_density_0, theoretical_densities_00, theoretical_densities_1, theoretical_densities_2, theoretical_densities_3)
     
     support <- c(support_0, support_00, support_1, support_2, support_3)
     
@@ -185,25 +175,19 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
          col = 1,
          lwd = 2)  
     
-    lines(support_00, empirical_density_00, col = 3, lwd = 2, lty = "dotted")
     lines(support_00, theoretical_densities_00, col = 3, lwd = 2)
-    lines(support_1, empirical_density_1, col = 6, lwd = 2, lty = "dotted")
     lines(support_1, theoretical_densities_1, col = 6, lwd = 2)
-    lines(support_2, empirical_density_2, col = 7, lwd = 2, lty = "dotted")
     lines(support_2, theoretical_densities_2, col = 7, lwd = 2)
-    lines(support_3, empirical_density_3, col = 4, lwd = 2, lty = "dotted")
     lines(support_3, theoretical_densities_3, col = 4, lwd = 2)
     abline(h = 0, lty = "dotted")
     abline(v = threshold, lty = "dotted")
     
     legend(legend_position, 
-           legend = c("empirical_density", "empirical_model", "empirical_harmonic", "empirical_geometric", "empirical_arithmetic", 
-                      "theoretical_model", "theoretical_harmonic", "theoretical_geometric", "theoretical_arithmetic"),
-           lty = c(1, 2, 2, 2, 2, 1, 1, 1), col = c(1, 3, 4, 6, 7, 3, 4, 6, 7), lwd = 2)
+           legend = c("empirical_density", "theoretical_model", "theoretical_harmonic", "theoretical_geometric", "theoretical_arithmetic"),
+           lty = c(1, 1, 1, 1, 1), col = c(1, 3, 4, 6, 7), lwd = 2)
   }
   else{
-    densities <- c(empirical_density_0, empirical_density_1, empirical_density_2, empirical_density_3,
-                   theoretical_densities_1, theoretical_densities_2, theoretical_densities_3)
+    densities <- c(empirical_density_0, theoretical_densities_1, theoretical_densities_2, theoretical_densities_3)
     
     support <- c(support_0, support_1, support_2, support_3)
     
@@ -218,20 +202,16 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
          col = 1,
          lwd = 2)  
     
-    lines(support_1, empirical_density_1, col = 6, lwd = 2, lty = "dotted")
     lines(support_1, theoretical_densities_1, col = 6, lwd = 2)
-    lines(support_2, empirical_density_2, col = 7, lwd = 2, lty = "dotted")
     lines(support_2, theoretical_densities_2, col = 7, lwd = 2)
-    lines(support_3, empirical_density_3, col = 4, lwd = 2, lty = "dotted")
     lines(support_3, theoretical_densities_3, col = 4, lwd = 2)
     
     abline(h = 0, lty = "dotted")
     abline(v = threshold, lty = "dotted")
     
     legend(legend_position, 
-           legend = c("empirical_density", "empirical_harmonic", "empirical_geometric", "empirical_arithmetic", 
-                      "theoretical_harmonic", "theoretical_geometric", "theoretical_arithmetic"),
-           lty = c(1, 2, 2, 2, 1, 1), col = c(1, 4, 6, 7, 4, 6, 7), lwd = 2)
+           legend = c("empirical_density", "theoretical_harmonic", "theoretical_geometric", "theoretical_arithmetic"),
+           lty = c(1, 1, 1, 1), col = c(1, 4, 6, 7), lwd = 2)
   }
   
 }
@@ -263,7 +243,7 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 #                                                                     scale.fun = ~ 1,
 #                                                                     shape.fun = ~ 1,
 #                                                                     use.phi = FALSE,
-#                                                                     nlargest = 3000,
+#                                                                     nlargest = Inf,
 #                                                                     block_sizes = NULL,
 #                                                                     minimum_nblocks = 50,
 #                                                                     threshold = NULL,
