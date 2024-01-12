@@ -9,19 +9,11 @@ find_minimum_block_size <- function(x, threshold = NULL){
   # threshold: lower bound of block maxima
   
   if (is.null(threshold)){
-    # med <- median(x)
-    # mod <- calculate_mode(x, data_type = c("continuous", "discrete")[1])
-    # threshold = max(med, mod)
-    threshold = min(x)
+    # threshold <- max(c(median(x), calculate_mode(x)))
+    threshold <- calculate_mode(x)
   }
-  
-  block_size <- 1
-  y <- zoo::rollmax(x, k = block_size)
-  
-  while (min(y, na.rm = TRUE) < threshold){
-    block_size <- block_size + 1
-    y <- zoo::rollmax(x, k = block_size)
-  }
+ 
+  block_size <- max(diff(which(x > threshold))) + 1
   
   block_size
 }
@@ -72,4 +64,18 @@ find_minimum_block_size <- function(x, threshold = NULL){
 # 
 # result <- find_minimum_block_size(x, threshold = threshold)
 # 
+# 
 # result
+# 
+# 
+# # example 5
+# 
+# x <- EnvStats::rzmnorm(n = 1000, mean = 0, sd = 1, p.zero = 0.5)
+# 
+# threshold <- NULL
+# threshold
+# 
+# result <- find_minimum_block_size(x, threshold = threshold)
+# 
+# result
+

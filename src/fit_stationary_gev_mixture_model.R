@@ -142,7 +142,7 @@ fit_stationary_gev_mixture_model <- function(x,
   # calculate model residuals associated with the selected stationary gev models
   several_residuals <- lapply(selected_gev_models, function(model){
     residuals <- extRemes::trans(model)
-    residuals
+    residuals[!is.na(residuals)]
   })
   
   # fit stationary gev model to the calculated model residuals

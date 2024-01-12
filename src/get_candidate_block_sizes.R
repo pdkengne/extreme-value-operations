@@ -10,8 +10,13 @@ get_candidate_block_sizes <- function(x, threshold = NULL, m = 50){
   minimum_block_size <- find_minimum_block_size(x, threshold = threshold)
   maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m)
   
+  while(minimum_block_size > maximum_block_size & m > 10){
+    m <- m - 1
+    maximum_block_size <- find_block_size_associated_with_given_number_of_blocks(x, m)
+  }
+  
   if (maximum_block_size < minimum_block_size){
-    stop(paste("The provided minimum number of blocks,", m, "is too large! Please, consider using a smaller number."))
+    # stop(paste("The provided minimum number of blocks,", m, "is too large! Please, consider using a smaller number."))
     stop(paste("The provided threshold,", threshold, "is too large! Please, consider using a smaller value."))
   }
   
@@ -45,7 +50,9 @@ get_candidate_block_sizes <- function(x, threshold = NULL, m = 50){
 # 
 # result
 # 
-# # example 2
+# 
+# # example 3
+# 
 # x <- rexp(n = 1000)
 # m <- 50
 # threshold <- 1
