@@ -11,14 +11,14 @@ source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 source("./src/get_several_ns_gev_model_normalized_parameters.R")
 
 
-plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_object,
-                                                        data_index = 0,
-                                                        model_index = 0,
-                                                        iterations = 10,
-                                                        xlab = "support",
-                                                        ylab = "density",
-                                                        main = "density plot",
-                                                        legend_position = "topright"){
+plot_fit_non_stationary_gev_mixture_model <- function(ns_gev_mixture_model_object,
+                                                      data_index = 0,
+                                                      model_index = 0,
+                                                      iterations = 10,
+                                                      xlab = "support",
+                                                      ylab = "density",
+                                                      main = "density plot",
+                                                      legend_position = "topright"){
   # ns_gev_mixture_model_object: an object associated with a result of the function "fit_non_stationary_gev_mixture_model()"
   # model_index: indicates the index of the model to display. Possible values are 0, 1, 2, ... 
   # data_index: indicates the index of the data to display. Possible values are 0, 1, 2, ...
@@ -261,23 +261,23 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 # ns_gev_mixture_model_object$weights
 # ns_gev_mixture_model_object$threshold
 # 
-# plot_fit_non_stationary_gev_mixture_model.R(ns_gev_mixture_model_object,
-#                                             data_index = 0,
-#                                             model_index = 0,
-#                                             iterations = 10,
-#                                             xlab = "support",
-#                                             ylab = "density",
-#                                             main = "density plot",
-#                                             legend_position = "topright")
+# plot_fit_non_stationary_gev_mixture_model(ns_gev_mixture_model_object,
+#                                           data_index = 0,
+#                                           model_index = 0,
+#                                           iterations = 10,
+#                                           xlab = "support",
+#                                           ylab = "density",
+#                                           main = "density plot",
+#                                           legend_position = "topright")
 # 
-# plot_fit_non_stationary_gev_mixture_model.R(ns_gev_mixture_model_object,
-#                                             data_index = 0,
-#                                             model_index = 4,
-#                                             iterations = 10,
-#                                             xlab = "support",
-#                                             ylab = "density",
-#                                             main = "density plot",
-#                                             legend_position = "topright")
+# plot_fit_non_stationary_gev_mixture_model(ns_gev_mixture_model_object,
+#                                           data_index = 0,
+#                                           model_index = 4,
+#                                           iterations = 10,
+#                                           xlab = "support",
+#                                           ylab = "density",
+#                                           main = "density plot",
+#                                           legend_position = "topright")
 # 
 # 
 # # example 2
@@ -321,21 +321,21 @@ plot_fit_non_stationary_gev_mixture_model.R <- function(ns_gev_mixture_model_obj
 # ns_gev_mixture_model_object$weights
 # ns_gev_mixture_model_object$threshold
 # 
-# plot_fit_non_stationary_gev_mixture_model.R(ns_gev_mixture_model_object,
-#                                             data_index = 0,
-#                                             model_index = 0,
-#                                             iterations = 10,
-#                                             xlab = "support",
-#                                             ylab = "density",
-#                                             main = "density plot",
-#                                             legend_position = "topright")
+# plot_fit_non_stationary_gev_mixture_model(ns_gev_mixture_model_object,
+#                                           data_index = 0,
+#                                           model_index = 0,
+#                                           iterations = 10,
+#                                           xlab = "support",
+#                                           ylab = "density",
+#                                           main = "density plot",
+#                                           legend_position = "topright")
 # 
-# plot_fit_non_stationary_gev_mixture_model.R(ns_gev_mixture_model_object,
-#                                             data_index = 0,
-#                                             model_index = 11,
-#                                             iterations = 10,
-#                                             xlab = "support",
-#                                             ylab = "density",
-#                                             main = "density plot",
-#                                             legend_position = "topright")
+# plot_fit_non_stationary_gev_mixture_model(ns_gev_mixture_model_object,
+#                                           data_index = 0,
+#                                           model_index = 11,
+#                                           iterations = 10,
+#                                           xlab = "support",
+#                                           ylab = "density",
+#                                           main = "density plot",
+#                                           legend_position = "topright")
 

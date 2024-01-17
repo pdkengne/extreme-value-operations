@@ -86,16 +86,18 @@ plot_estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixtu
          pch = 19,
          lwd = 2)
   
-  lines(x = selected_block_sizes,
-        y = rep(x = true_quantile, times = length(selected_block_sizes)),
-        col = 4, 
-        lwd = 2)
-  
-  points(x = selected_block_sizes,
-         y = rep(x = true_quantile, times = length(selected_block_sizes)),
-         col = 4, 
-         pch = 19,
-         lwd = 2)
+  if (!is.null(true_quantile)){
+    lines(x = selected_block_sizes,
+          y = rep(x = true_quantile, times = length(selected_block_sizes)),
+          col = 4, 
+          lwd = 2)
+    
+    points(x = selected_block_sizes,
+           y = rep(x = true_quantile, times = length(selected_block_sizes)),
+           col = 4, 
+           pch = 19,
+           lwd = 2)
+  }
   
   legend(legend_position, 
          inset = c(0, -0.35),
