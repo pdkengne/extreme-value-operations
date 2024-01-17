@@ -5,7 +5,7 @@ options(digits = 10)
 estimate_ns_gev_parameters <- function(x, 
                                        data = NULL, 
                                        location.fun = ~1,
-                                       scale.fun = ~1, 
+                                       scale.fun = ~ 1, 
                                        shape.fun = ~1, 
                                        use.phi = FALSE,
                                        type = c("GEV", "Gumbel")[1],
@@ -17,6 +17,11 @@ estimate_ns_gev_parameters <- function(x,
   # use.phi: boolean which indicates whether to use the log of the scale parameter in numerical optimization
   # type: type of model to use
   # method: estimation method to use
+  
+  # check constant scale and update the use.phi argument
+  if (scale.fun == ~1){
+    use.phi = FALSE
+  }
   
   # check if the provided dataset is null
   if (is.null(data)){
@@ -49,7 +54,7 @@ estimate_ns_gev_parameters <- function(x,
 # 
 # results <- estimate_ns_gev_parameters(x,
 #                                       data = NULL,
-#                                       location.fun = ~ times,
+#                                       location.fun = ~ 1,
 #                                       scale.fun = ~1,
 #                                       shape.fun = ~1,
 #                                       use.phi = TRUE,
