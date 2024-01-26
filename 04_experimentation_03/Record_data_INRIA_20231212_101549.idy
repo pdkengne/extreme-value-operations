@@ -1,0 +1,10 @@
+RTMaps Runtime Release v4.10.4 (build 264708) for Win64
+Copyright (c) 2000-2023 INTEMPORA S.A.S.
+This product is licensed to: VALEO (RLM).
+Session: unspecified
+Launched at 10:15:49.228 (12/12/2023) UTC+01:00 - 09:15:49.228 (12/12/2023) UTC
+[Misc]
+00:12.511864 @ Record alias_gnss(resampler.output[0x1,AUTO_Gnss,,16,106]) as RRMGnss
+00:12.528971 @ Record map_matching_gnss(resampler.output[0x1,AUTO_Gnss,,16,106]) as RRMGnss
+00:12.535710 @ Record localization_errors(resampler.output[0x8000000000010000,,,16,3]) as tabbed_text
+00:12.537246 @ Record resampler_locs.output_4(resampler.output[0x20,,,16,0]) as jpeg
