@@ -16,8 +16,6 @@ source("./eva_pipeline/src/save_several_model_aic.R")
 
 
 # use created function
-setwd("~/Documents/Doc-perso-2023/Job-Valeo/evops-project/extreme-value-operations")
-
 defaultW <- getOption("warn") 
 options(warn = -1) 
 
@@ -26,10 +24,17 @@ main_dir  <- "./04_experimentation_01"
 
 response_var <- "lateral_error"
 
+variable_vector <- c(~1, ~velocity, ~area, ~object, ~name_car, ~name_street.light, 
+                     ~name_traffic.sign, ~name_tree, ~name_tenement, ~name_tree..group.,
+                     ~name_traffic.light, ~name_electric.pole, ~name_fence, ~name_person,
+                     ~name_truck, ~name_car..group., ~name_house..group., ~name_house..group.,
+                     ~name_house, ~name_bus, ~name_special.building)
+
+
 save_several_model_aic(main_dir = main_dir,
                        response_var = response_var,
                        response_abs = FALSE,
-                       variable_vetor = c(~name_car, ~name_street.light), 
+                       variable_vector = variable_vector[7], 
                        scale_predictors = TRUE,
                        coefficient_iqr = 9, 
                        remove_outliers = FALSE,
@@ -41,9 +46,6 @@ options(warn = defaultW)
 
 
 extract_aic(main_dir)
-
-
-
 
 
 

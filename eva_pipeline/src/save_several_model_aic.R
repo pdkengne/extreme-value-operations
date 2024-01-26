@@ -6,7 +6,7 @@ load_functions()
 save_several_model_aic <- function(main_dir, 
                                    response_var,
                                    response_abs = FALSE,
-                                   variable_vetor = c(~1),
+                                   variable_vector = c(~1),
                                    scale_predictors = TRUE,
                                    coefficient_iqr = Inf, 
                                    remove_outliers = FALSE,
@@ -14,7 +14,7 @@ save_several_model_aic <- function(main_dir,
   # main_dir:
   # response_var:
   # response_abs:
-  # variable_vetor:
+  # variable_vector:
   # scale_predictors:
   # coefficient_iqr:
   # remove_outliers:
@@ -36,7 +36,7 @@ save_several_model_aic <- function(main_dir,
   
   main_aic_dir <- file.path(main_dir, "aic")
   
-  lapply(variable_vetor, function(variable){
+  lapply(variable_vector, function(variable){
     folder_name <- as.character(variable)[-1]
     
     output_csv_folder <- file.path(main_aic_dir, folder_name)
