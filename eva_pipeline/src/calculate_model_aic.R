@@ -1,3 +1,7 @@
+source("./eva_pipeline/src/load_functions.R")
+
+load_functions()
+
 calculate_model_aic <- function(x, data, models){
   # x:
   # data:

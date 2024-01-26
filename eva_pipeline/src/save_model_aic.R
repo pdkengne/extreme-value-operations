@@ -1,3 +1,7 @@
+source("./eva_pipeline/src/load_functions.R")
+
+load_functions()
+
 # load created function
 save_model_aic <- function(main_dir, 
                            response_var,
@@ -24,7 +28,7 @@ save_model_aic <- function(main_dir,
   output_csv_folder <- file.path(main_aic_dir, folder_name)
   
   if (!dir.exists(output_csv_folder)){
-    dir.create(output_csv_folder)
+    dir.create(output_csv_folder, recursive = TRUE)
   }
   
   output_csv_file <- file.path(output_csv_folder, "fitted_models_information.csv")

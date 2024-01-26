@@ -1,3 +1,7 @@
+source("./eva_pipeline/src/load_functions.R")
+
+load_functions()
+
 # load created function
 transform_data <- function(data_path, 
                            response_var,
