@@ -8,11 +8,10 @@ source("./eva_pipeline/src/transform_data.R")
 
 source("./eva_pipeline/src/calculate_model_aic.R")
 
-source("./eva_pipeline/src/save_model_aic.R")
+source("./eva_pipeline/src/save_multiple_model_aic.R")
 
-source("./eva_pipeline/src/extract_aic.R")
+source("./eva_pipeline/src/extract_multiple_model_aic.R")
 
-source("./eva_pipeline/src/save_several_model_aic.R")
 
 
 # use created function
@@ -22,30 +21,31 @@ options(warn = -1)
 
 main_dir  <- "./04_experimentation_01"
 
-response_var <- "lateral_error"
+response_var_vector <- c("lateral_error", "longitudinal_error")
 
 variable_vector <- c(~1, ~velocity, ~area, ~object, ~name_car, ~name_street.light, 
                      ~name_traffic.sign, ~name_tree, ~name_tenement, ~name_tree..group.,
                      ~name_traffic.light, ~name_electric.pole, ~name_fence, ~name_person,
-                     ~name_truck, ~name_car..group., ~name_house..group., ~name_house..group.,
-                     ~name_house, ~name_bus, ~name_special.building)
+                     ~name_truck, ~name_car..group., ~name_house..group., ~name_house, 
+                     ~name_bus, ~name_special.building, ~horizontal_left, ~horizontal_right, 
+                     ~vertical_up, ~vertical_down)
 
 
-save_several_model_aic(main_dir = main_dir,
-                       response_var = response_var,
-                       response_abs = FALSE,
-                       variable_vector = variable_vector[7], 
-                       scale_predictors = TRUE,
-                       coefficient_iqr = 9, 
-                       remove_outliers = FALSE,
-                       method = c("interpolate", "mode", "median", "mean")[1])
+save_multiple_model_aic(main_dir = main_dir,
+                        response_var_vector = response_var_vector[1],
+                        response_abs = TRUE,
+                        variable_vector = variable_vector, 
+                        scale_predictors = TRUE,
+                        coefficient_iqr = 9, 
+                        remove_outliers = FALSE,
+                        method = c("interpolate", "mode", "median", "mean")[1])
 
 
 options(warn = defaultW)
 
 
 
-extract_aic(main_dir)
+extract_multiple_model_aic(main_dir, response_var_vector)
 
 
 
