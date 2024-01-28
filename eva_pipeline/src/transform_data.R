@@ -3,22 +3,20 @@ source("./eva_pipeline/src/load_functions.R")
 load_functions()
 
 # load created function
-transform_data <- function(data_path, 
+transform_data <- function(data, 
                            response_var,
                            response_abs = FALSE,
                            scale_predictors = TRUE,
                            coefficient_iqr = Inf, 
                            remove_outliers = FALSE,
                            method = c("interpolate", "mode", "median", "mean")[1]){
-  # data_path:
+  # data:
   # response_var:
   # response_abs:
   # scale_predictors:
   # coefficient_iqr:
   # remove_outliers:
   # method:
-  
-  data <- read.csv(data_path)
   
   response <- data %>% select(all_of(response_var))
   

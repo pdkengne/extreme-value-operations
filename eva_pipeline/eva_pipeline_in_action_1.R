@@ -1,5 +1,8 @@
 setwd("~/Documents/Doc-perso-2023/Job-Valeo/evops-project/extreme-value-operations")
 
+
+source("./eva_pipeline/src/read_data.R")
+
 source("./eva_pipeline/src/load_functions.R")
 
 source("./eva_pipeline/src/make_models.R")
