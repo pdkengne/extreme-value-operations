@@ -1,8 +1,0 @@
-"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
-"model_01","~name_electric.pole","~name_electric.pole","~name_electric.pole","-9995.56426155267","-8135.29644558281"
-"model_02","~name_electric.pole","~1","~1","-8843.17535015072","-7768.83463472626"
-"model_03","~1","~name_electric.pole","~1","-9277.72075828293","-8095.22493727883"
-"model_04","~1","~1","~name_electric.pole","-9476.61372647429","-8149.91109803068"
-"model_05","~name_electric.pole","~name_electric.pole","~1","-8929.85221190683","-7422.8910741638"
-"model_06","~name_electric.pole","~1","~name_electric.pole","-9831.49344801859","-8281.27026804371"
-"model_07","~1","~name_electric.pole","~name_electric.pole","-11253.731926087","-9660.24670388028"

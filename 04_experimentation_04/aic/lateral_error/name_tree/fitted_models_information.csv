@@ -1,0 +1,5 @@
+"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
+"model_01","~name_tree","~name_tree","~name_tree","8348.3363524141","9754.35272494945"
+"model_02","~name_tree","~1","~1","6724.72076727458","7330.38935852058"
+"model_03","~1","~name_tree","~1","9040.34354564872","9754.16724247436"
+"model_05","~name_tree","~name_tree","~1","10268.8468688635","11819.0700488384"

@@ -1,0 +1,4 @@
+"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
+"model_02","~name_traffic.sign","~1","~1","-5314.80747086902","-4132.31164986492"
+"model_03","~1","~name_traffic.sign","~1","-3066.42237473517","-1956.02995745084"
+"model_05","~name_traffic.sign","~name_traffic.sign","~1","-1576.67000217621","-112.970906665045"

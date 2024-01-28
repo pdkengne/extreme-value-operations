@@ -1,0 +1,5 @@
+"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
+"model_02","~name_car..group.","~1","~1","6689.45660845663","7259.07349784275"
+"model_03","~1","~name_car..group.","~1","7798.64050335748","8404.30909460348"
+"model_04","~1","~1","~name_car..group.","6856.82798609391","7462.49657733991"
+"model_05","~name_car..group.","~name_car..group.","~1","8448.49610965559","9566.0988673119"

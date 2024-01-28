@@ -1,0 +1,4 @@
+"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
+"model_02","~name_truck","~1","~1","7943.29684067063","8729.22394121603"
+"model_03","~1","~name_truck","~1","10242.0673822091","11244.3046939138"
+"model_05","~name_truck","~name_truck","~1","11870.5282953703","13507.2755598089"

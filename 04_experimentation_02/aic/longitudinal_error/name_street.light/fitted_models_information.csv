@@ -1,0 +1,6 @@
+"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
+"model_02","~name_street.light","~1","~1","-13303.4162014866","-12553.5408028011"
+"model_03","~1","~name_street.light","~1","-12778.5371745772","-12064.7134777516"
+"model_04","~1","~1","~name_street.light","-17842.8075916722","-16804.5185781077"
+"model_05","~name_street.light","~name_street.light","~1","-13203.9992978569","-12086.3965402006"
+"model_07","~1","~name_street.light","~name_street.light","-14841.256479241","-13507.3435104254"
