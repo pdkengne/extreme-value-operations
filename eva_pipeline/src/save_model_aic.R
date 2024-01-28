@@ -1,4 +1,6 @@
+source("./eva_pipeline/src/read_data.R")
 source("./eva_pipeline/src/load_functions.R")
+
 
 load_functions()
 
@@ -35,7 +37,9 @@ save_model_aic <- function(main_dir,
   
   input_csv_file <- file.path(main_dir, "merged_data.csv")
   
-  data_object <- transform_data(data_path = input_csv_file, 
+  data <- read_data(input_csv_file)
+  
+  data_object <- transform_data(data = data, 
                                 response_var = response_var,
                                 response_abs = response_abs,
                                 scale_predictors = scale_predictors,
