@@ -8,6 +8,7 @@ load_functions()
 save_model_aic <- function(main_dir, 
                            response_var,
                            response_abs = FALSE,
+                           nrow_skip = 0,
                            variable = ~1,
                            scale_predictors = TRUE,
                            coefficient_iqr = Inf, 
@@ -16,6 +17,7 @@ save_model_aic <- function(main_dir,
   # main_dir:
   # response_var:
   # response_abs:
+  # nrow_skip:
   # variable:
   # scale_predictors:
   # coefficient_iqr:
@@ -37,7 +39,7 @@ save_model_aic <- function(main_dir,
   
   input_csv_file <- file.path(main_dir, "merged_data.csv")
   
-  data <- read_data(input_csv_file)
+  data <- read_data(input_csv_file, nrow_skip = nrow_skip)
   
   data_object <- transform_data(data = data, 
                                 response_var = response_var,

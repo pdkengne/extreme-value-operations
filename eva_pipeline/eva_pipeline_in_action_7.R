@@ -22,7 +22,7 @@ defaultW <- getOption("warn")
 options(warn = -1) 
 
 
-main_dir  <- "./04_experimentation_02"
+main_dir  <- "./04_experimentation_03"
 
 response_var_vector <- c("lateral_error", "longitudinal_error")
 
@@ -35,8 +35,8 @@ variable_vector <- c(~1, ~velocity, ~area, ~object, ~name_car, ~name_street.ligh
                      ~vertical_up, ~vertical_down)
 
 
-# skip <- 14394
-skip <- 0
+skip <- 14394
+# skip <- 0
 
 
 save_multiple_model_aic(main_dir = main_dir,

@@ -8,7 +8,7 @@ calculate_model_aic <- function(x, data, models){
   # models:
   
   use.phi <- TRUE
-  nlargest <- 10000
+  nlargest <- 20000
   block_sizes <- NULL
   minimum_nblocks <- 50
   threshold <- min(x)

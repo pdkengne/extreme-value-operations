@@ -8,7 +8,7 @@ extract_multiple_model_aic <- function(main_dir, response_var_vector){
     main_csv_dir <- file.path(main_dir, "aic")
     main_csv_dir <- file.path(main_csv_dir, response_var)
     
-    output_csv_file <- file.path(main_dir, paste(response_var, "model_aic.csv"))
+    output_csv_file <- file.path(main_dir, paste(response_var, "model_aic.csv", sep = "_"))
     
     if (file.exists(output_csv_file)){
       print(paste("The following file already exists:", output_csv_file))

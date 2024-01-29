@@ -1,9 +1,9 @@
 setwd("~/Documents/Doc-perso-2023/Job-Valeo/evops-project/extreme-value-operations")
 
 
-source("./eva_pipeline/src/read_data.R")
-
 source("./eva_pipeline/src/load_functions.R")
+
+source("./eva_pipeline/src/read_data.R")
 
 source("./eva_pipeline/src/make_models.R")
 
@@ -35,14 +35,20 @@ variable_vector <- c(~1, ~velocity, ~area, ~object, ~name_car, ~name_street.ligh
                      ~vertical_up, ~vertical_down)
 
 
+# skip <- 14394
+skip <- 0
+
+
 save_multiple_model_aic(main_dir = main_dir,
                         response_var_vector = response_var_vector[2],
                         response_abs = TRUE,
+                        nrow_skip = skip,
                         variable_vector = variable_vector, 
                         scale_predictors = TRUE,
                         coefficient_iqr = 9, 
                         remove_outliers = FALSE,
                         method = c("interpolate", "mode", "median", "mean")[1])
+
 
 
 options(warn = defaultW)
