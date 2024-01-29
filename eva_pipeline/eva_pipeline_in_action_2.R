@@ -22,10 +22,9 @@ defaultW <- getOption("warn")
 options(warn = -1) 
 
 
-main_dir  <- "./04_experimentation_03"
+main_dir  <- "./04_experimentation_01"
 
-# response_var_vector <- c("lateral_error", "longitudinal_error")
-response_var_vector <- c("latitude_error", "longitude_error")
+response_var_vector <- c("lateral_error", "longitudinal_error")
 
 
 variable_vector <- c(~1, ~velocity, ~area, ~object, ~name_car, ~name_street.light, 

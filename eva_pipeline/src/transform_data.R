@@ -20,11 +20,20 @@ transform_data <- function(data,
   
   response <- data %>% select(all_of(response_var))
   
-  response <- response[, 1]
+  if (response_abs){
+    response <- abs(response[, 1])
+  }
+  else{
+    response <- response[, 1]
+  }
   
   response_var_object <- impute_outliers(x = response, coefficient_iqr = coefficient_iqr, method = method)
   
   outlier_positions <- response_var_object$outlier_positions
+  outlier_values <- response_var_object$outlier_values
+  outlier_substitutes <- response_var_object$outlier_substitutes
+  
+  outlier_values
   
   if (remove_outliers & length(outlier_positions) != 0){
     x <- response[-outlier_positions]
@@ -33,10 +42,6 @@ transform_data <- function(data,
   else{
     x <- response_var_object$imputed_data
     data_clean <- data
-  }
-  
-  if (response_abs){
-    x <- abs(x)
   }
   
   detection_vars <- names(data_clean)[c(11:45)]
@@ -52,7 +57,10 @@ transform_data <- function(data,
   }
   
   output <- list(response = x,
-                 predictors = data_covariates_clean)
+                 predictors = data_covariates_clean,
+                 outlier_positions = outlier_positions,
+                 outlier_values = outlier_values,
+                 outlier_substitutes = outlier_substitutes)
   
 }
 
