@@ -1,3 +1,4 @@
 "model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
-"model_02","~name_special.building","~1","~1","-25179.9011981857","-24249.7672902008"
-"model_06","~name_special.building","~1","~name_special.building","-29147.0681855135","-27077.7004987563"
+"model_02","~name_special.building","~1","~1","-8814.17662555751","-7201.86516484014"
+"model_03","~1","~name_special.building","~1","-16478.1611243348","-14431.157848228"
+"model_04","~1","~1","~name_special.building","-16300.2948410406","-13660.5299984935"

@@ -4,31 +4,31 @@ load_functions()
 
 
 # load functions
-read_data <- function(data_path, nrow_skip = 0){
+read_data <- function(data_path, nrow_skip = 0, header = TRUE, sep = ",", dec = "."){
   # data_path:
   # nrow_skip:
   
-  # data <- read.csv(file = data_path, header = TRUE, sep = ",", dec = ".")
+  data <- read.csv(file = data_path, header = header, sep = sep, dec = dec)
   
   
-  data <- vroom::vroom(file = data_path,
-                       delim = NULL,
-                       col_names = TRUE,
-                       col_types = NULL,
-                       col_select = NULL,
-                       id = NULL,
-                       skip = 0,
-                       n_max = Inf,
-                       na = c("", "NA"),
-                       quote = "\"",
-                       comment = "",
-                       skip_empty_rows = TRUE,
-                       trim_ws = TRUE,
-                       escape_double = TRUE,
-                       escape_backslash = FALSE,
-                       guess_max = 100,
-                       show_col_types = TRUE,
-                       .name_repair = "unique")
+  # data <- vroom::vroom(file = data_path,
+  #                      delim = NULL,
+  #                      col_names = TRUE,
+  #                      col_types = NULL,
+  #                      col_select = NULL,
+  #                      id = NULL,
+  #                      skip = 0,
+  #                      n_max = Inf,
+  #                      na = c("", "NA"),
+  #                      quote = "\"",
+  #                      comment = "",
+  #                      skip_empty_rows = TRUE,
+  #                      trim_ws = TRUE,
+  #                      escape_double = TRUE,
+  #                      escape_backslash = FALSE,
+  #                      guess_max = 100,
+  #                      show_col_types = TRUE,
+  #                      .name_repair = "unique")
     
   
   if (nrow_skip + 1 > nrow(data) | nrow_skip < 0){

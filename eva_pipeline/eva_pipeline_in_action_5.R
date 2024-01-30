@@ -38,6 +38,8 @@ variable_vector <- c(~1, ~velocity, ~area, ~object, ~name_car, ~name_street.ligh
 # skip <- 14394
 skip <- 0
 
+iqr <- 9
+
 
 save_multiple_model_aic(main_dir = main_dir,
                         response_var_vector = response_var_vector[1],
@@ -45,7 +47,7 @@ save_multiple_model_aic(main_dir = main_dir,
                         nrow_skip = skip,
                         variable_vector = variable_vector, 
                         scale_predictors = TRUE,
-                        coefficient_iqr = 9, 
+                        coefficient_iqr = iqr, 
                         remove_outliers = FALSE,
                         method = c("interpolate", "mode", "median", "mean")[1])
 

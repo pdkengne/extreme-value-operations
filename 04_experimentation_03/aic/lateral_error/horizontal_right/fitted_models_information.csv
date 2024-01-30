@@ -1,0 +1,8 @@
+"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
+"model_01","~horizontal_right","~horizontal_right","~horizontal_right","209.614120765855","3073.4241120176"
+"model_02","~horizontal_right","~1","~1","-268.058423621383","885.205599882698"
+"model_03","~1","~horizontal_right","~1","-411.238525433659","548.524822985845"
+"model_04","~1","~1","~horizontal_right","-71.6323226564763","1507.33318603367"
+"model_05","~horizontal_right","~horizontal_right","~1","-195.251194013984","1515.29477373368"
+"model_06","~horizontal_right","~1","~horizontal_right","-604.640268998682","1709.62780501286"
+"model_07","~1","~horizontal_right","~horizontal_right","5.57048545344941","1901.87710128231"
