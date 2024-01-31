@@ -22,7 +22,7 @@ make_data_path <- function(main_dir, csv_file_name){
 
 
 transform_data <- function(data, 
-                           response_var,
+                           response_vars,
                            response_abs = FALSE,
                            scale_predictors = TRUE,
                            coefficient_iqr = Inf, 
@@ -34,7 +34,7 @@ transform_data <- function(data,
 }
 
 
-make_models <- function(predictor_name = ~1){
+make_models <- function(predictor_names = ~1){
   
   print("make_models: ok")
   
@@ -49,7 +49,7 @@ calculate_models_aic <- function(transformed_data, models){
 
 
 
-make_aic_path <- function(main_dir, predictor_name = ~1){
+make_aic_path <- function(main_dir, predictor_names = ~1){
   
   print("make_aic_path: ok")
   
@@ -113,50 +113,49 @@ list(
              pattern = NULL),
   
   
-  tar_target(name = response_var, command = "response_var_name", pattern = NULL),
+  tar_target(name = response_vars, command = c("response_var_name_1", "response_var_name_2"), 
+             pattern = NULL),
   
   
   tar_target(name = transformed_data, 
              command = transform_data(data = data, 
-                                      response_var = response_var,
+                                      response_vars = response_vars,
                                       response_abs = TRUE,
                                       scale_predictors = TRUE,
                                       coefficient_iqr = 9, 
                                       remove_outliers = FALSE,
                                       method = c("interpolate", "mode", "median", "mean")[1]), 
+             pattern = cross(predictor_names, response_vars)),
+  
+  
+  tar_target(name = predictor_names, command = c(~var_name_1, ~var_name_2, ~var_name_3), 
              pattern = NULL),
-  
-  
-  tar_target(name = predictor_name, command = ~var_name, pattern = NULL),
   
   
   tar_target(name = models, 
-             command = make_models(predictor_name = predictor_name), 
-             pattern = NULL),
+             command = make_models(predictor_names = predictor_names), 
+             pattern = cross(predictor_names, response_vars)),
   
   
   tar_target(name = models_aic, 
              command = calculate_models_aic(transformed_data = transformed_data, 
                                             models = models), 
-             pattern = NULL),
+             pattern = map(models, transformed_data)),
   
   
   tar_target(name = aic_path, 
              command = make_aic_path(main_dir = main_dir, 
-                                     predictor_name = predictor_name), 
-             pattern = NULL),
+                                     predictor_names = predictor_names), 
+             pattern = cross(predictor_names, response_vars)),
   
   
   tar_target(name = saved_aic, 
              command = save_models_aic(models_aic = models_aic, 
-                                       aic_path = aic_path), 
-             pattern = NULL)
+                                       aic_path = aic_path),
+             pattern = map(models_aic, aic_path))
   
-  
-  
-  
-  
-  
+  #-----------------------------------------------------------------------------
+
   
   
   
