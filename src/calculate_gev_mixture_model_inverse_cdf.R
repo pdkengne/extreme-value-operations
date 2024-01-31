@@ -45,7 +45,11 @@ calculate_gev_mixture_model_inverse_cdf <- function(p,
                                                                                            shape = shapes[j])) 
       
       # estimate the root of the nonlinear equation to solve
-      answer <- dichotomy(func = nle, a = min(q_initial_guesses), b = max(q_initial_guesses), n = iterations)
+      q_initial_guesses <- q_initial_guesses[is.finite(q_initial_guesses)]
+      answer <- dichotomy(func = nle, 
+                          a = min(q_initial_guesses), 
+                          b = max(q_initial_guesses), 
+                          n = iterations)
       
       answer
     })
@@ -204,3 +208,4 @@ calculate_gev_mixture_model_inverse_cdf <- function(p,
 #                                 weights,
 #                                 kind = c("geometric", "arithmetic", "harmonic")[3])
 # p
+
