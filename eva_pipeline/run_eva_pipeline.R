@@ -1,5 +1,4 @@
-setwd("~/Documents/Doc-perso-2023/Job-Valeo/evops-project/extreme-value-operations/etl_pipeline")
-
+setwd("~/Documents/Doc-perso-2023/Job-Valeo/evops-project/extreme-value-operations/eva_pipeline")
 
 library(targets)
 library(tarchetypes)
@@ -35,18 +34,6 @@ tar_delete(donnees)
 
 # permet de supprimer les cibles qui ne sont plus présentes dans le pipeline
 tar_prune() 
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

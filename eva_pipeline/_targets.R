@@ -64,6 +64,13 @@ save_models_aic <- function(models_aic, aic_path){
 }
 
 
+combine_models_aic <- function(saved_aic, aic_path){
+  
+  print("combine_models_aic: ok")
+  
+}
+
+
 
 
 
@@ -152,7 +159,14 @@ list(
   tar_target(name = saved_aic, 
              command = save_models_aic(models_aic = models_aic, 
                                        aic_path = aic_path),
-             pattern = map(models_aic, aic_path))
+             pattern = map(models_aic, aic_path)),
+  
+  
+  tar_target(name = combined_aic, 
+             command = combine_models_aic(saved_aic = saved_aic, 
+                                          aic_path = aic_path),
+             pattern = NULL)
+  
   
   #-----------------------------------------------------------------------------
 

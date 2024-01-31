@@ -6,13 +6,38 @@ calculate_gev_inverse_cdf <- function(p, loc = 0, scale = 1, shape = 0){
   # p: vector of probabilities
   # loc, scale, shape: location, scale and shape parameters of the considered gev distribution
   
-  gev_inverse_cdf <- extRemes::qevd(p = p, 
-                                    loc = loc, 
-                                    scale = scale, 
-                                    shape = shape, 
-                                    type = "GEV")
+  gev_inverse_cdf_output <- sapply(p, function(p){
+    if (p == 0){
+      if (shape == 0){
+        gev_inverse_cdf <- loc
+      }
+      else if (shape < 0){
+        gev_inverse_cdf <- -Inf
+      }
+      else if (shape > 0){
+        gev_inverse_cdf <- loc - scale/shape
+      } 
+    }
+    else if (p == 1){
+      if (shape == 0 | shape > 0){
+        gev_inverse_cdf <- Inf
+      }
+      else if (shape < 0){
+        gev_inverse_cdf <- loc - scale/shape
+      } 
+    }
+    else {
+      gev_inverse_cdf <- extRemes::qevd(p = p, 
+                                        loc = loc, 
+                                        scale = scale, 
+                                        shape = shape, 
+                                        type = "GEV")
+    }
+    
+    gev_inverse_cdf
+  })
   
-  gev_inverse_cdf
+  gev_inverse_cdf_output
 }
 
 
@@ -67,4 +92,37 @@ calculate_gev_inverse_cdf <- function(p, loc = 0, scale = 1, shape = 0){
 #                             loc = 1, scale = 0.5, shape = -0.2)
 # 
 # result
-
+# 
+# 
+# # example 6
+# 
+# probabilities <- 0
+# 
+# result <- calculate_gev_inverse_cdf(p = probabilities, loc = 1, scale = 0.5, shape = +0.2)
+# 
+# result
+# 
+# result <- calculate_gev_inverse_cdf(p = probabilities, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# result
+# 
+# result <- calculate_gev_inverse_cdf(p = probabilities, loc = 1, scale = 0.5, shape = 0)
+# 
+# result
+# 
+# 
+# # example 7
+# 
+# probabilities <- 1
+# 
+# result <- calculate_gev_inverse_cdf(p = probabilities, loc = 1, scale = 0.5, shape = +0.2)
+# 
+# result
+# 
+# result <- calculate_gev_inverse_cdf(p = probabilities, loc = 1, scale = 0.5, shape = -0.2)
+# 
+# result
+# 
+# result <- calculate_gev_inverse_cdf(p = probabilities, loc = 1, scale = 0.5, shape = 0)
+# 
+# result

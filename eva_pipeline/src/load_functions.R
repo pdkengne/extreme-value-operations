@@ -1,3 +1,8 @@
+# Options pour les différentes étapes
+options(tidyverse.quiet = TRUE)
+options(caret.quiet = TRUE)
+
+
 # load functions
 load_functions <- function(){
   
