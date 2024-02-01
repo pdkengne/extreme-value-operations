@@ -11,7 +11,7 @@ source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 
 plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
                                                   model_index = 0,
-                                                  zoom_thresholds = c(NA, NA),
+                                                  zoom_thresholds = c(-Inf, +Inf),
                                                   iterations = 10,
                                                   xlab = "support",
                                                   ylab = "density",
@@ -90,17 +90,17 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
   
   size <- 1000
   
-  if (!is.na(zoom_thresholds[1]) & is.na(zoom_thresholds[2])){
+  if (!is.infinite(zoom_thresholds[1]) & is.infinite(zoom_thresholds[2])){
     support_1 <- seq(from = zoom_thresholds[1], to = max(unnormalized_data_1), length.out = size) 
     support_2 <- seq(from = zoom_thresholds[1], to = max(unnormalized_data_2), length.out = size)
     support_3 <- seq(from = zoom_thresholds[1], to = max(unnormalized_data_3), length.out = size)
   }
-  else if (is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+  else if (is.infinite(zoom_thresholds[1]) & !is.infinite(zoom_thresholds[2])){
     support_1 <- seq(from = min(unnormalized_data_1), to = zoom_thresholds[2], length.out = size) 
     support_2 <- seq(from = min(unnormalized_data_2), to = zoom_thresholds[2], length.out = size)
     support_3 <- seq(from = min(unnormalized_data_3), to = zoom_thresholds[2], length.out = size)
   }
-  else if (!is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+  else if (!is.infinite(zoom_thresholds[1]) & !is.infinite(zoom_thresholds[2])){
     support_1 <- seq(from = zoom_thresholds[1], to = zoom_thresholds[2], length.out = size) 
     support_2 <- seq(from = zoom_thresholds[1], to = zoom_thresholds[2], length.out = size)
     support_3 <- seq(from = zoom_thresholds[1], to = zoom_thresholds[2], length.out = size)
@@ -136,17 +136,17 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
   support_0 <- modes_object_0$density_support
   empirical_density_0 <- modes_object_0$density_values
   
-  if (!is.na(zoom_thresholds[1]) & is.na(zoom_thresholds[2])){
+  if (!is.infinite(zoom_thresholds[1]) & is.infinite(zoom_thresholds[2])){
     positions <- support_0 > zoom_thresholds[1]
     support_0 <- support_0[positions]
     empirical_density_0 <- empirical_density_0[positions]
   }
-  else if (is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+  else if (is.infinite(zoom_thresholds[1]) & !is.infinite(zoom_thresholds[2])){
     positions <- support_0 < zoom_thresholds[2]
     support_0 <- support_0[positions]
     empirical_density_0 <- empirical_density_0[positions]
   }
-  else if (!is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+  else if (!is.infinite(zoom_thresholds[1]) & !is.infinite(zoom_thresholds[2])){
     positions <- (support_0 > zoom_thresholds[1]) & (support_0 < zoom_thresholds[2])
     support_0 <- support_0[positions]
     empirical_density_0 <- empirical_density_0[positions]
@@ -159,13 +159,13 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
                                                       scale = scales[model_index], 
                                                       shape = shapes[model_index])
     
-    if (!is.na(zoom_thresholds[1]) & is.na(zoom_thresholds[2])){
+    if (!is.infinite(zoom_thresholds[1]) & is.infinite(zoom_thresholds[2])){
       support_00 <- seq(from = zoom_thresholds[1], to = max(unnormalized_data_00), length.out = size)
     }
-    else if (is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+    else if (is.infinite(zoom_thresholds[1]) & !is.infinite(zoom_thresholds[2])){
       support_00 <- seq(from = min(unnormalized_data_00), to = zoom_thresholds[2], length.out = size)
     }
-    else if (!is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+    else if (!is.infinite(zoom_thresholds[1]) & !is.infinite(zoom_thresholds[2])){
       support_00 <- seq(from = zoom_thresholds[1], to = zoom_thresholds[2], length.out = size)
     }
     else{
@@ -270,7 +270,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 0,
-#                                       zoom_thresholds = c(NA, NA),
+#                                       zoom_thresholds = c(-Inf, +Inf),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
@@ -280,7 +280,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 0,
-#                                       zoom_thresholds = c(1, NA),
+#                                       zoom_thresholds = c(1, +Inf),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
@@ -290,7 +290,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 6,
-#                                       zoom_thresholds = c(NA, NA),
+#                                       zoom_thresholds = c(-Inf, +Inf),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
@@ -300,7 +300,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 6,
-#                                       zoom_thresholds = c(1, NA),
+#                                       zoom_thresholds = c(1, +Inf),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
@@ -345,7 +345,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 0,
-#                                       zoom_thresholds = c(NA, NA),
+#                                       zoom_thresholds = c(-Inf, +Inf),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
@@ -355,7 +355,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 0,
-#                                       zoom_thresholds = c(8, NA),
+#                                       zoom_thresholds = c(8, +Inf),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
