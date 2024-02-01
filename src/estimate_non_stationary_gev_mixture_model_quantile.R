@@ -88,6 +88,7 @@ estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixture_mo
     quantiles_object <- sapply(1:length(selected_ns_gev_models), function(k){
       # transform data to be at the standard gumbel distribution scale
       normalized_maxima <- extRemes::trans(selected_ns_gev_models[[k]])
+      normalized_maxima <- normalized_maxima[is.finite(normalized_maxima)]
       
       # transform data to be at the specific gev distribution scale
       parameters <- normalized_gev_parameters[[k]]
@@ -129,6 +130,7 @@ estimate_non_stationary_gev_mixture_model_quantile <- function(ns_gev_mixture_mo
     })
     
     unified_standard_gumbel_residuals <- unlist(several_standard_gumbel_residuals)
+    unified_standard_gumbel_residuals <- unified_standard_gumbel_residuals[is.finite(unified_standard_gumbel_residuals)]
     
     # extract the current normalized gev model parameters
     locations <- sapply(normalized_gev_parameters, function(params){

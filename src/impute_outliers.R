@@ -34,7 +34,7 @@ impute_outliers <- function(x,
     stop("Please enter appropriate information in the argument: iterate! (iterate > 0)")
   }
   
-  while (k <= iterate & length(current_outlier_positions) > 0){
+  while (k <= iterate - 1 & length(current_outlier_positions) > 0){
     # update iterator
     k <- k + 1
     
@@ -57,7 +57,7 @@ impute_outliers <- function(x,
   }
   
   # deduce the number of iterations
-  iterate <- k - 1
+  iterate <- k
   
   # impute outlier values
   if (method == "mean"){

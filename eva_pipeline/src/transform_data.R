@@ -37,6 +37,7 @@ transform_data <- function(data,
   outlier_positions <- response_var_object$outlier_positions
   outlier_values <- response_var_object$outlier_values
   outlier_substitutes <- response_var_object$outlier_substitutes
+  iterate <- response_var_object$iterate
   
   outlier_values
   
@@ -65,7 +66,8 @@ transform_data <- function(data,
                  predictors = data_covariates_clean,
                  outlier_positions = outlier_positions,
                  outlier_values = outlier_values,
-                 outlier_substitutes = outlier_substitutes)
+                 outlier_substitutes = outlier_substitutes,
+                 iterate = iterate)
   
 }
 

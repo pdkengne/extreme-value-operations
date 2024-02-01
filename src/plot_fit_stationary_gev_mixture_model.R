@@ -11,7 +11,7 @@ source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 
 plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
                                                   model_index = 0,
-                                                  zoom_threshold = NULL,
+                                                  zoom_thresholds = c(NA, NA),
                                                   iterations = 10,
                                                   xlab = "support",
                                                   ylab = "density",
@@ -19,7 +19,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
                                                   legend_position = "topright"){
   # gev_mixture_model_object: an object associated with a result of the function "fit_stationary_gev_mixture_model()"
   # model_index: indicates the index of the model to display. Possible values are 0, 1, 2, ... 
-  # zoom_threshold: indicates the lower bound of the support
+  # zoom_thresholds: indicates the lower and/or upper bound of the support to display
   # iterations: number of iterations to perform in the the dichotomy algorithm
   # xlab: label of the x-axis
   # ylab: label of the y-axis
@@ -90,10 +90,20 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
   
   size <- 1000
   
-  if (!is.null(zoom_threshold)){
-    support_1 <- seq(from = zoom_threshold, to = max(unnormalized_data_1), length.out = size) 
-    support_2 <- seq(from = zoom_threshold, to = max(unnormalized_data_2), length.out = size)
-    support_3 <- seq(from = zoom_threshold, to = max(unnormalized_data_3), length.out = size)
+  if (!is.na(zoom_thresholds[1]) & is.na(zoom_thresholds[2])){
+    support_1 <- seq(from = zoom_thresholds[1], to = max(unnormalized_data_1), length.out = size) 
+    support_2 <- seq(from = zoom_thresholds[1], to = max(unnormalized_data_2), length.out = size)
+    support_3 <- seq(from = zoom_thresholds[1], to = max(unnormalized_data_3), length.out = size)
+  }
+  else if (is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+    support_1 <- seq(from = min(unnormalized_data_1), to = zoom_thresholds[2], length.out = size) 
+    support_2 <- seq(from = min(unnormalized_data_2), to = zoom_thresholds[2], length.out = size)
+    support_3 <- seq(from = min(unnormalized_data_3), to = zoom_thresholds[2], length.out = size)
+  }
+  else if (!is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+    support_1 <- seq(from = zoom_thresholds[1], to = zoom_thresholds[2], length.out = size) 
+    support_2 <- seq(from = zoom_thresholds[1], to = zoom_thresholds[2], length.out = size)
+    support_3 <- seq(from = zoom_thresholds[1], to = zoom_thresholds[2], length.out = size)
   }
   else{
     support_1 <- seq(from = min(unnormalized_data_1), to = max(unnormalized_data_1), length.out = size) 
@@ -126,11 +136,22 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
   support_0 <- modes_object_0$density_support
   empirical_density_0 <- modes_object_0$density_values
   
-  if (!is.null(zoom_threshold)){
-    positions <- support_0 > zoom_threshold
+  if (!is.na(zoom_thresholds[1]) & is.na(zoom_thresholds[2])){
+    positions <- support_0 > zoom_thresholds[1]
     support_0 <- support_0[positions]
     empirical_density_0 <- empirical_density_0[positions]
   }
+  else if (is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+    positions <- support_0 < zoom_thresholds[2]
+    support_0 <- support_0[positions]
+    empirical_density_0 <- empirical_density_0[positions]
+  }
+  else if (!is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+    positions <- (support_0 > zoom_thresholds[1]) & (support_0 < zoom_thresholds[2])
+    support_0 <- support_0[positions]
+    empirical_density_0 <- empirical_density_0[positions]
+  }
+  
   
   if (model_index != 0){
     unnormalized_data_00 <- calculate_gev_inverse_cdf(p = unified_standard_uniform_residuals_range,
@@ -138,8 +159,14 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
                                                       scale = scales[model_index], 
                                                       shape = shapes[model_index])
     
-    if (!is.null(zoom_threshold)){
-      support_00 <- seq(from = zoom_threshold, to = max(unnormalized_data_00), length.out = size)
+    if (!is.na(zoom_thresholds[1]) & is.na(zoom_thresholds[2])){
+      support_00 <- seq(from = zoom_thresholds[1], to = max(unnormalized_data_00), length.out = size)
+    }
+    else if (is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+      support_00 <- seq(from = min(unnormalized_data_00), to = zoom_thresholds[2], length.out = size)
+    }
+    else if (!is.na(zoom_thresholds[1]) & !is.na(zoom_thresholds[2])){
+      support_00 <- seq(from = zoom_thresholds[1], to = zoom_thresholds[2], length.out = size)
     }
     else{
       support_00 <- seq(from = min(unnormalized_data_00), to = max(unnormalized_data_00), length.out = size)
@@ -153,6 +180,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
     densities <- c(empirical_density_0, theoretical_densities_00, theoretical_densities_1, theoretical_densities_2, theoretical_densities_3)
     
     support <- c(support_0, support_00, support_1, support_2, support_3)
+    
     
     plot(x = support_0, 
          y = empirical_density_0, 
@@ -171,7 +199,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
     lines(support_3, theoretical_densities_3, col = 4, lwd = 2)
     abline(h = 0, lty = "dotted")
     abline(v = threshold, lty = "dotted")
-    abline(v = zoom_threshold, lty = "dotted", col = )
+    abline(v = zoom_thresholds, lty = "dotted", col = )
     
     legend(legend_position, 
            legend = c("empirical_density", "theoretical_model", "theoretical_harmonic", "theoretical_geometric", "theoretical_arithmetic"),
@@ -199,7 +227,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
     
     abline(h = 0, lty = "dotted")
     abline(v = threshold, lty = "dotted")
-    abline(v = zoom_threshold, lty = "dotted")
+    abline(v = zoom_thresholds, lty = "dotted")
     
     legend(legend_position, 
            legend = c("empirical_density", "theoretical_harmonic", "theoretical_geometric", "theoretical_arithmetic"),
@@ -242,7 +270,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 0,
-#                                       zoom_threshold = NULL,
+#                                       zoom_thresholds = c(NA, NA),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
@@ -252,7 +280,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 0,
-#                                       zoom_threshold = 1,
+#                                       zoom_thresholds = c(1, NA),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
@@ -262,7 +290,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 6,
-#                                       zoom_threshold = NULL,
+#                                       zoom_thresholds = c(NA, NA),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
@@ -272,7 +300,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 6,
-#                                       zoom_threshold = 1,
+#                                       zoom_thresholds = c(1, NA),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
@@ -317,7 +345,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 0,
-#                                       zoom_threshold = NULL,
+#                                       zoom_thresholds = c(NA, NA),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
@@ -327,7 +355,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
 #                                       model_index = 0,
-#                                       zoom_threshold = 8,
+#                                       zoom_thresholds = c(8, NA),
 #                                       iterations = 10,
 #                                       xlab = "support",
 #                                       ylab = "density",
