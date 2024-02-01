@@ -4,7 +4,7 @@ source("./src/calculate_mode.R")
 
 impute_outliers <- function(x, 
                             coefficient_iqr = 1.5, 
-                            iterate = 10,
+                            iterate = 1,
                             method = c("interpolate", "mode", "median", "mean")[1]){
   # x: vector of observations
   # method: indicates the method of outlier values imputation

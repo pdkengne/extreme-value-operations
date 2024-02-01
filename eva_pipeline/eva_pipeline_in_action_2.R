@@ -48,6 +48,7 @@ save_multiple_model_aic(main_dir = main_dir,
                         variable_vector = variable_vector, 
                         scale_predictors = TRUE,
                         coefficient_iqr = iqr, 
+                        iterate = 1,
                         remove_outliers = FALSE,
                         method = c("interpolate", "mode", "median", "mean")[1])
 

@@ -8,6 +8,7 @@ transform_data <- function(data,
                            response_abs = FALSE,
                            scale_predictors = TRUE,
                            coefficient_iqr = Inf, 
+                           iterate = 1,
                            remove_outliers = FALSE,
                            method = c("interpolate", "mode", "median", "mean")[1]){
   # data:
@@ -15,6 +16,7 @@ transform_data <- function(data,
   # response_abs:
   # scale_predictors:
   # coefficient_iqr:
+  # iterate:
   # remove_outliers:
   # method:
   
@@ -27,7 +29,10 @@ transform_data <- function(data,
     response <- response[, 1]
   }
   
-  response_var_object <- impute_outliers(x = response, coefficient_iqr = coefficient_iqr, method = method)
+  response_var_object <- impute_outliers(x = response, 
+                                         coefficient_iqr = coefficient_iqr, 
+                                         iterate = iterate,
+                                         method = method)
   
   outlier_positions <- response_var_object$outlier_positions
   outlier_values <- response_var_object$outlier_values

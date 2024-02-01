@@ -12,6 +12,7 @@ save_model_aic <- function(main_dir,
                            variable = ~1,
                            scale_predictors = TRUE,
                            coefficient_iqr = Inf, 
+                           iterate = 1,
                            remove_outliers = FALSE,
                            method = c("interpolate", "mode", "median", "mean")[1]){
   # main_dir:
@@ -21,6 +22,7 @@ save_model_aic <- function(main_dir,
   # variable:
   # scale_predictors:
   # coefficient_iqr:
+  # iterate:
   # remove_outliers:
   # method:
   
@@ -46,6 +48,7 @@ save_model_aic <- function(main_dir,
                                 response_abs = response_abs,
                                 scale_predictors = scale_predictors,
                                 coefficient_iqr = coefficient_iqr, 
+                                iterate = iterate,
                                 remove_outliers = remove_outliers,
                                 method = method)
   
