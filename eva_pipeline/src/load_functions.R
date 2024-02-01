@@ -1,6 +1,8 @@
 # Options pour les différentes étapes
 options(tidyverse.quiet = TRUE)
 options(caret.quiet = TRUE)
+options(Hmisc.quiet = TRUE)
+options(vroom.quiet = TRUE)
 
 
 # load functions

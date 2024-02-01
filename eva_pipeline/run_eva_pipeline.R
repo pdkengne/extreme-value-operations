@@ -36,9 +36,9 @@ tar_delete(donnees)
 tar_prune() 
 
 
+tar_load(aic_path)
 
-
-
+aic_path
 
 
 
