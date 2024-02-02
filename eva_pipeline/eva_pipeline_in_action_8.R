@@ -38,7 +38,7 @@ variable_vector <- c(~1, ~velocity, ~area, ~object, ~name_car, ~name_street.ligh
 skip <- 14394
 # skip <- 0
 
-iqr <- 9
+iqr <- 3
 
 
 save_multiple_model_aic(main_dir = main_dir,
@@ -48,7 +48,7 @@ save_multiple_model_aic(main_dir = main_dir,
                         variable_vector = variable_vector, 
                         scale_predictors = TRUE,
                         coefficient_iqr = iqr, 
-                        iterate = 1,
+                        iterate = 10,
                         remove_outliers = FALSE,
                         method = c("interpolate", "mode", "median", "mean")[1])
 

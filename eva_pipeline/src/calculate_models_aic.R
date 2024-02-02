@@ -8,9 +8,10 @@ calculate_model_aic <- function(transformed_data, models){
   
   use.phi <- TRUE
   nlargest <- 20000
+  y <- extract_nlargest_sample(x, n = nlargest)
   block_sizes <- NULL
   minimum_nblocks <- 50
-  threshold <- min(x)
+  threshold <- min(y)
   confidence_level <- 0.95
   use_extremal_index <- TRUE
   use_uniform_prior <- TRUE
