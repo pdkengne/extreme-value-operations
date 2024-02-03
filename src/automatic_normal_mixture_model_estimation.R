@@ -29,26 +29,24 @@ initial_cluster_data <- initialize_cluster_data(x = x, nclusters = 3)
 initial_cluster_data
 
 
-
-estimate_cluster_models <- function(cluster_data){
-  cluster_models <- lapply(cluster_data, function(data){
-    model <- fitdistrplus::fitdist(data = data, distr = "norm", method = "mle")
-    model$estimate
-  })
-  
-  cluster_models
-}
-
-
-cluster_models <- estimate_cluster_models(cluster_data = initial_cluster_data)
+cluster_models <- estimate_normal_cluster_models(cluster_data = initial_cluster_data)
 
 cluster_models
 
+cluster_models_parameters <- do.call(what = rbind, cluster_models)
+locations <- cluster_models_parameters[, "mean"]
+scales <- cluster_models_parameters[, "sd"]
 
-
-support <- seq(from = min(x), to = max(x), by = 1)
 hist(x, probability = TRUE)
 lines(density(x))
+
+support <- seq(from = min(x), to = max(x), length.out = 1000)
+
+density_geometric <- calculate_normal_mixture_model_pdf(x = support, 
+                                                        locations, 
+                                                        scales, 
+                                                        weights,
+                                                        kind = c("geometric", "arithmetic")[1])
 
 
 lapply(1:length(cluster_models), function(k){
@@ -155,7 +153,7 @@ cluster_attractors$cluster_data_list
 
 # loop
 
-cluster_models <- estimate_cluster_models(cluster_data = cluster_attractors$cluster_data_list)
+cluster_models <- estimate_normal_cluster_models(cluster_data = cluster_attractors$cluster_data_list)
 
 cluster_models
 
