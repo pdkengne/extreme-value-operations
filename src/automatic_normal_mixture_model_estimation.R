@@ -11,7 +11,9 @@ library(bmixture)
 
 
 source("./src/get_knn.R")
+source("./src/make_weights.R")
 source("./src/initialize_cluster_data.R")
+source("./src/calculate_normal_cluster_attractors.R")
 source("./src/calculate_normal_mixture_model_cdf.R")
 source("./src/calculate_normal_mixture_model_pdf.R")
 source("./src/calculate_normal_mixture_model_inverse_cdf.R")
@@ -34,19 +36,43 @@ cluster_models <- estimate_normal_cluster_models(cluster_data = initial_cluster_
 cluster_models
 
 cluster_models_parameters <- do.call(what = rbind, cluster_models)
+
 locations <- cluster_models_parameters[, "mean"]
 scales <- cluster_models_parameters[, "sd"]
 
-hist(x, probability = TRUE)
-lines(density(x))
+prior_cluster_weights <- make_weights(positives_values = rep(1, times = nclusters))
 
-support <- seq(from = min(x), to = max(x), length.out = 1000)
+prior_cluster_weights
+
+density_empirical <- density(x)$y
+
+support_empirical <- density(x)$x
+
+support <- seq(from = min(support_empirical), 
+               to = max(support_empirical), 
+               length.out = 1000)
+
 
 density_geometric <- calculate_normal_mixture_model_pdf(x = support, 
-                                                        locations, 
-                                                        scales, 
-                                                        weights,
+                                                        locations = locations, 
+                                                        scales = scales, 
+                                                        weights = prior_cluster_weights,
                                                         kind = c("geometric", "arithmetic")[1])
+
+density_arithmetic <- calculate_normal_mixture_model_pdf(x = support, 
+                                                         locations = locations, 
+                                                         scales = scales, 
+                                                         weights = prior_cluster_weights,
+                                                         kind = c("geometric", "arithmetic")[2])
+
+density_range <- range(c(density_empirical, density_geometric, density_arithmetic))
+
+
+hist(x, probability = TRUE, ylim = density_range, xlim = range(support))
+lines(support_empirical, density_empirical, lwd = 2)
+
+lines(support, density_geometric, col = 6, lwd = 2)
+lines(support, density_arithmetic, col = 7, lwd = 2)
 
 
 lapply(1:length(cluster_models), function(k){
@@ -58,83 +84,9 @@ lapply(1:length(cluster_models), function(k){
 })
 
 
-make_weights <- function(positives_values){
-  weights <- positives_values/sum(positives_values)
-}
 
 
-get_knn <- function(data, k, query = NULL, search = "kdtree"){
-  # data: a data matrix
-  # k: the maximum number of nearest neighbors to search
-  # query: a data matrix with the points to query
-  # search: nearest neighbor search strategy (one of "kdtree", "linear" or "dist")
-  
-  output <- dbscan::kNN(x = data,
-                        k = k, 
-                        query = query, 
-                        search = search,
-                        sort = TRUE)
-  
-  output
-}
-
-
-
-
-calculate_cluster_attractors <- function(x, cluster_models, prior_cluster_weights){
-  nclusters <- length(cluster_models)
-  cluster_attractors_matrix <- sapply(1:nclusters, function(k){
-    parameters <- cluster_models[[k]]
-    densities <- dnorm(x = x, 
-                       mean = parameters["mean"], 
-                       sd = parameters["sd"])
-    
-    densities*prior_cluster_weights[k]
-  })
-  
-  mass <- apply(cluster_attractors_matrix, 1, sum)
-  cluster_attractors_matrix <- cluster_attractors_matrix/mass
-  
-  cluster_attractors_frequencies <- apply(cluster_attractors_matrix, 2, sum)
-  
-  cluster_attractors_weights <- make_weights(positives_values = cluster_attractors_frequencies)
-  
-  cluster_attractors_centers <- sapply(1:nclusters, function(k){
-    sum(cluster_attractors_matrix[, k]*x)
-  })
-  
-  data <- data.frame(x = x)
-  
-  cluster_data_list <- lapply(1:nclusters, function(k){
-    center <- cluster_attractors_centers[k]
-    size <- ceiling(cluster_attractors_frequencies[k])
-    cluster_data_object <- get_knn(data = data, k = size, query = center)
-    cluster_data <- x[cluster_data_object$id[1, ]]
-      
-    cluster_data
-  })
-  
-  class(cluster_data_object$id[1, ])
-  
-  output <- list()
-  
-  output[["cluster_attractors_matrix"]] <- cluster_attractors_matrix
-  output[["cluster_attractors_frequencies"]] <- cluster_attractors_frequencies
-  output[["cluster_attractors_weights"]] <- cluster_attractors_weights
-  output[["cluster_attractors_centers"]] <- cluster_attractors_centers
-  output[["cluster_data_list"]] <- cluster_data_list
-  
-  output
-}
-
-
-
-prior_cluster_weights <- make_weights(positives_values = rep(1, times = n))
-
-prior_cluster_weights
-
-
-cluster_attractors <- calculate_cluster_attractors(x = x, 
+cluster_attractors <- calculate_normal_cluster_attractors(x = x, 
                                                    cluster_models = cluster_models, 
                                                    prior_cluster_weights = prior_cluster_weights)
 
@@ -170,7 +122,7 @@ lapply(1:length(cluster_models), function(k){
 })
 
 
-cluster_attractors <- calculate_cluster_attractors(x = x, 
+cluster_attractors <- calculate_normal_cluster_attractors(x = x, 
                                                    cluster_models = cluster_models, 
                                                    prior_cluster_weights = cluster_attractors$cluster_attractors_weights)
 
