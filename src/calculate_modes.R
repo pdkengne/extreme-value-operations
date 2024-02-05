@@ -15,6 +15,7 @@ calculate_modes <- function(x){
   
   # estimate the empirical density
   density_object <- density(x, n = m)
+  #density_object <- stats::density(x)
   
   # extract the empirical density
   pdf <- density_object$y
@@ -43,7 +44,6 @@ calculate_modes <- function(x){
   output[["density_maxima_argument"]] <- density_argmax
   output[["density_minima"]] <- density_min
   output[["density_minima_argument"]] <- density_argmin
-  #output[["clusters"]] <- clusters
   
   output
 }

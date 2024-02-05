@@ -1,13 +1,41 @@
-initialize_cluster_data <- function(x, nclusters = 3){
+# library(ggplot2)
+
+source("./src/calculate_modes.R")
+
+initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL){
   # x:
   # nclusters:
+  # centers:
   
   n <- length(x)
   
+  if (is.null(centers) & is.null(nclusters)){
+    modes_object <- calculate_modes(x = x)
+    centers <- modes_object$density_maxima_argument
+  }
+  else if (is.null(centers) & !is.null(nclusters)){
+    y <- sort(x)
+    split_indicators <- as.numeric(ggplot2::cut_number(x = 1:n, n = nclusters))
+    centers <- sapply(1:nclusters, function(k){
+      mean(y[which(split_indicators == k)])
+    })
+  }
+  
+  nclusters <- length(centers)
+  
+  data <- data.frame(x = x)
+
   cluster_data <- lapply(1:nclusters, function(k){
-    set.seed(k)
-    posistions <- sort(unique(sample.int(n = n, replace = TRUE)))
-    x[posistions]
+    center <- centers[k]
+    
+    size <- ifelse(test = nclusters == 1,
+                   yes = ceiling(n - 1),
+                   no = ceiling(n/nclusters))
+    
+    cluster_data_object <- get_knn(data = data, k = size, query = center)
+    cluster_data <- x[cluster_data_object$id[1, ]]
+    
+    cluster_data
   })
   
   cluster_data

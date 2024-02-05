@@ -1,26 +1,35 @@
-source("./src/initialize_cluster_data.R")
-
-estimate_normal_cluster_models <- function(cluster_data){
+estimate_normal_cluster_models <- function(x, cluster_data){
+  # x:
   # cluster_data:
   
-  cluster_models <- lapply(cluster_data, function(data){
-    model <- fitdistrplus::fitdist(data = data, distr = "norm", method = "mle")
-    model$estimate
-  })
-  
+  if (length(cluster_data) == 1){
+    cluster_models <- lapply(1:1, function(data){
+      model <- fitdistrplus::fitdist(data = x, distr = "norm", method = "mle")
+      model
+    })
+  }
+  else {
+    cluster_models <- lapply(cluster_data, function(data){
+      model <- fitdistrplus::fitdist(data = data, distr = "norm", method = "mle")
+      model
+    })
+  }
+
   cluster_models
 }
 
 
 # # example 1
 # 
+# source("./src/initialize_cluster_data.R")
+# 
 # n <- 100
 # x <- bmixture::rmixnorm(n = n, weight = c(1/2, 1/2), mean = c(-10, +10), sd = c(1, 1))
 # 
 # 
-# nclusters <- 3
+# nclusters <- 2
 # 
-# initial_cluster_data <- initialize_cluster_data(x = x, nclusters = 3)
+# initial_cluster_data <- initialize_cluster_data(x = x, nclusters = nclusters)
 # 
 # initial_cluster_data
 # 

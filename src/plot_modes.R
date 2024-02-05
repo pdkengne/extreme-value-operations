@@ -9,7 +9,8 @@ plot_modes <- function(modes_object,
   # ylab: label of the y-axis
   # main: title of the plot
   
-  pdf <- modes_object$denity_values
+  pdf <- modes_object$density_values
+  positions <- is.finite(pdf)
   support <- modes_object$density_support
   density_maxima <- modes_object$density_maxima
   density_minima <- modes_object$density_minima
@@ -48,6 +49,6 @@ plot_modes <- function(modes_object,
 # 
 # modes_object <- calculate_modes(x = x)
 # 
-# plot_modes(modes_object)     
+# plot_modes(modes_object)
 
 
