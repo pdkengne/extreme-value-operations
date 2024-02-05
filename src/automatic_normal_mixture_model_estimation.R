@@ -23,6 +23,7 @@ source("./src/calculate_normal_mixture_model_cdf.R")
 source("./src/calculate_normal_mixture_model_pdf.R")
 source("./src/calculate_normal_mixture_model_inverse_cdf.R")
 source("./src/fit_stationary_normal_mixture_model.R")
+source("./src/plot_fit_stationary_normal_mixture_model.R")
 
 
 # generate data from a Normal mixture model
@@ -320,4 +321,30 @@ lines(support, density_geometric, col = 6, lwd = 2)
 lines(support, density_arithmetic, col = 7, lwd = 2)
 
 
+
+
+
+
+normal_mixture_model_object <- fit_stationary_normal_mixture_model(x = x,
+                                                                   nclusters = 2,
+                                                                   centers = NULL,
+                                                                   sizes = NULL,
+                                                                   minimum_cluster_size = 20,
+                                                                   prior_cluster_weights = NULL,
+                                                                   confidence_level = 0.95)
+
+names(normal_mixture_model_object)
+
+# [1] "x"                              "cluster_data_list"              "cluster_models"
+# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# [10] "loglik"                         "cluster_information_criteria"
+
+normal_mixture_model_object
+
+plot_fit_stationary_normal_mixture_model(normal_mixture_model_object = normal_mixture_model_object,
+                                         xlab = "support",
+                                         ylab = "density",
+                                         main = "density plot",
+                                         legend_position = "topleft")
 
