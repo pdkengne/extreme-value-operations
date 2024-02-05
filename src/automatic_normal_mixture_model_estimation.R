@@ -23,15 +23,22 @@ source("./src/calculate_normal_mixture_model_cdf.R")
 source("./src/calculate_normal_mixture_model_pdf.R")
 source("./src/calculate_normal_mixture_model_inverse_cdf.R")
 
+
 # generate data from a Normal mixture model
 library(mixR)
 set.seed(102)
 x = rmixnormal(1000, c(0.3, 0.7), c(-2, 3), c(2, 1))
 
+mod1 = mixfit(x, ncomp = 2) 
+mod1
+
 library(mixtools)
 data(faithful)
 
 x <- faithful$waiting
+
+mod1 = mixfit(x, ncomp = 2) 
+mod1
 
 x <- faithful$eruptions
 
@@ -54,7 +61,7 @@ centers
 
 nclusters <- length(centers)
 
-# nclusters <- 10
+# nclusters <- 2
 
 initial_cluster_data <- initialize_cluster_data(x = x, 
                                                 nclusters = nclusters,
@@ -195,7 +202,15 @@ cluster_attractors$cluster_attractors_centers
 
 cluster_attractors$cluster_attractors_frequencies
 
+sum(cluster_attractors$cluster_attractors_frequencies)
+
+n
+
 cluster_attractors$cluster_attractors_weights
+
+cluster_attractors$loglik
+
+cluster_attractors$cluster_information_criteria
 
 # cluster_attractors$cluster_attractors_matrix
 
@@ -289,7 +304,7 @@ hist(x = x,
      ylim = density_range, 
      xlim = range(support))
 
-#lines(support_empirical, density_empirical, lwd = 2)
+# lines(support_empirical, density_empirical, lwd = 2)
 
 lines(support, density_geometric, col = 6, lwd = 2)
 lines(support, density_arithmetic, col = 7, lwd = 2)

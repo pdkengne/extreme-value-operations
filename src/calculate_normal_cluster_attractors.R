@@ -1,11 +1,16 @@
 source("./src/get_knn.R")
 source("./src/make_weights.R")
+source("./src/calculate_normal_mixture_model_pdf.R")
 
 
-calculate_normal_cluster_attractors <- function(x, cluster_models, prior_cluster_weights){
+calculate_normal_cluster_attractors <- function(x, 
+                                                cluster_models, 
+                                                prior_cluster_weights,
+                                                confidence_level = 0.95){
   # x:
   # cluster_models:
   # prior_cluster_weights:
+  # confidence_level:
   
   nclusters <- length(cluster_models)
   
@@ -13,25 +18,6 @@ calculate_normal_cluster_attractors <- function(x, cluster_models, prior_cluster
     model <- cluster_models[[k]]
     model$estimate
   })
-  
-  cluster_models_coefficients <- do.call(what = rbind, cluster_models_parameters)
-  
-  nllh <- sapply(1:nclusters, function(k){
-    model <- cluster_models[[k]]
-    -1*model$loglik
-  })
-  
-  names(nllh) <- 1:nclusters
-  
-  p <- nclusters
-  q <- ncol(cluster_models_coefficients)
-  n <- length(x)
-  
-  aic <- 2*sum(nllh) + 2*(q*p + p - 1)
-  bic <- 2*sum(nllh) + log(n)*(q*p + p - 1)
-  
-  cluster_information_criteria <- c(aic, bic)
-  names(cluster_information_criteria) <- c("AIC", "BIC")
   
   cluster_attractors_matrix <- sapply(1:nclusters, function(k){
     parameters <- cluster_models_parameters[[k]]
@@ -53,6 +39,35 @@ calculate_normal_cluster_attractors <- function(x, cluster_models, prior_cluster
   
   
   cluster_attractors_weights <- make_weights(positives_values = cluster_attractors_frequencies)
+  
+  cluster_models_coefficients <- do.call(what = rbind, cluster_models_parameters)
+  
+  cluster_models_coefficients_ci <- lapply(1:nclusters, function(k){
+    model <- cluster_models[[k]]
+    confint(object = model, level = confidence_level)
+  })
+    
+  locations <- cluster_models_coefficients[, "mean"]
+  scales <- cluster_models_coefficients[, "sd"]
+  
+  densities <- calculate_normal_mixture_model_pdf(x = x, 
+                                                  locations = locations, 
+                                                  scales = scales, 
+                                                  weights = cluster_attractors_weights,
+                                                  kind = c("geometric", "arithmetic")[2])
+  
+  loglik <- sum(log(densities))
+  
+  p <- nclusters
+  q <- ncol(cluster_models_coefficients)
+  n <- length(x)
+  
+  aic <- -2*loglik + 2*(q*p + p - 1)
+  bic <- -2*loglik + log(n)*(q*p + p - 1)
+  
+  cluster_information_criteria <- c(aic, bic)
+  names(cluster_information_criteria) <- c("AIC", "BIC")
+  
   
   cluster_attractors_centers <- sapply(1:nclusters, function(k){
     mean(x[which(cluster_attractors_frequencies_table == k)])
@@ -82,13 +97,13 @@ calculate_normal_cluster_attractors <- function(x, cluster_models, prior_cluster
   output[["cluster_data_list"]] <- cluster_data_list
   output[["cluster_models"]] <- cluster_models
   output[["cluster_models_coefficients"]] <- cluster_models_coefficients
+  output[["cluster_models_coefficients_ci"]] <- cluster_models_coefficients_ci
+  output[["loglik"]] <- loglik
   output[["cluster_information_criteria"]] <- cluster_information_criteria
   
   output
 }
 
-
-cluster_models_coefficients
 
 # # example 1
 # 
