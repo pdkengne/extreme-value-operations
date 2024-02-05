@@ -2,10 +2,11 @@
 
 source("./src/calculate_modes.R")
 
-initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL){
+initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL, sizes = NULL){
   # x:
   # nclusters:
   # centers:
+  # sizes:
   
   n <- length(x)
   
@@ -23,14 +24,24 @@ initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL){
   
   nclusters <- length(centers)
   
+  if (is.null(sizes)){
+    if (nclusters == 1){
+      sizes <- n - 1
+    }
+    else {
+      sizes <- rep(x = ceiling(n/nclusters), times = nclusters)
+    }
+  }
+  else if (length(centers) != length(sizes)){
+    stop("Sorry, the arguments 'centers' and 'sizes' must have the same length!")
+  }
+  
   data <- data.frame(x = x)
 
   cluster_data <- lapply(1:nclusters, function(k){
     center <- centers[k]
     
-    size <- ifelse(test = nclusters == 1,
-                   yes = ceiling(n - 1),
-                   no = ceiling(n/nclusters))
+    size <- sizes[k]
     
     cluster_data_object <- get_knn(data = data, k = size, query = center)
     cluster_data <- x[cluster_data_object$id[1, ]]

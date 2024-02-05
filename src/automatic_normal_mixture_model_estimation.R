@@ -22,6 +22,7 @@ source("./src/calculate_normal_cluster_attractors.R")
 source("./src/calculate_normal_mixture_model_cdf.R")
 source("./src/calculate_normal_mixture_model_pdf.R")
 source("./src/calculate_normal_mixture_model_inverse_cdf.R")
+source("./src/fit_stationary_normal_mixture_model.R")
 
 
 # generate data from a Normal mixture model
@@ -29,7 +30,7 @@ library(mixR)
 set.seed(102)
 x = rmixnormal(1000, c(0.3, 0.7), c(-2, 3), c(2, 1))
 
-mod1 = mixfit(x, ncomp = 2) 
+mod1 = mixfit(x, ncomp = 3) 
 mod1
 
 library(mixtools)
@@ -65,7 +66,8 @@ nclusters <- length(centers)
 
 initial_cluster_data <- initialize_cluster_data(x = x, 
                                                 nclusters = nclusters,
-                                                centers = NULL)
+                                                centers = NULL,
+                                                sizes = NULL)
 
 # initial_cluster_data
 
@@ -185,8 +187,6 @@ cluster_attractors$cluster_attractors_weights
 # loop
 
 # condition
-current_cluster_models_parameters <- cluster_models_parameters
-
 
 cluster_models <- estimate_normal_cluster_models(cluster_data = cluster_attractors$cluster_data_list)
 
@@ -212,11 +212,16 @@ cluster_attractors$loglik
 
 cluster_attractors$cluster_information_criteria
 
+cluster_attractors$cluster_models
+
 cluster_attractors$cluster_models_coefficients
 
 cluster_attractors$cluster_models_coefficients_ci
 
-# cluster_attractors$cluster_data_list
+cluster_attractors$selected_cluster_id
+
+
+current_cluster_models_parameters <- cluster_models_parameters[cluster_attractors$selected_cluster_id, ]
 
 cluster_models_parameters <- cluster_attractors$cluster_models_coefficients
 
@@ -227,8 +232,19 @@ cluster_models_parameters_variation <- cluster_models_parameters - current_clust
 cluster_models_parameters_variation
 
 
-locations <- cluster_models_parameters[, "mean"]
-scales <- cluster_models_parameters[, "sd"]
+all(apply(apply(cluster_models_parameters_variation, 2, function(x) x != 0), 2, any))
+
+all(apply(cluster_models_parameters_variation, 2, function(x) x != 0))
+
+cluster_models_parameters_variation <- data.frame(cluster_models_parameters_variation)
+cluster_models_parameters_variation <- cluster_models_parameters_variation %>% select_if(colSums(.) != 0)
+
+is.null(ncol(dim(cluster_models_parameters_variation)))
+
+
+
+locations <- cluster_models_parameters[1:length(cluster_attractors$selected_cluster_id), "mean"]
+scales <- cluster_models_parameters[1:length(cluster_attractors$selected_cluster_id), "sd"]
 
 density_empirical <- density(x)$y
 
@@ -241,17 +257,17 @@ support <- seq(from = min(support_empirical),
 density_geometric <- calculate_normal_mixture_model_pdf(x = support, 
                                                         locations = locations, 
                                                         scales = scales, 
-                                                        weights = prior_cluster_weights,
+                                                        weights = cluster_attractors$cluster_attractors_weights,
                                                         kind = c("geometric", "arithmetic")[1])
 
 density_arithmetic <- calculate_normal_mixture_model_pdf(x = support, 
                                                          locations = locations, 
                                                          scales = scales, 
-                                                         weights = prior_cluster_weights,
+                                                         weights = cluster_attractors$cluster_attractors_weights,
                                                          kind = c("geometric", "arithmetic")[2])
 
 
-cluster_densities <- sapply(1:length(cluster_models), function(k){
+cluster_densities <- sapply(1:length(cluster_attractors$selected_cluster_id), function(k){
   parameters <- cluster_models_parameters[k, ]
   densities <- dnorm(x = support, 
                      mean = parameters["mean"], 
@@ -276,7 +292,7 @@ lines(support, density_geometric, col = 6, lwd = 2)
 lines(support, density_arithmetic, col = 7, lwd = 2)
 
 
-lapply(1:length(cluster_models), function(k){
+lapply(1:length(cluster_attractors$cluster_models), function(k){
   parameters <- cluster_models_parameters[k, ]
   densities <- dnorm(x = support, 
                      mean = parameters["mean"], 
@@ -294,7 +310,7 @@ density_range <- range(c(density_empirical,
 
 hist(x = x, 
      probability = TRUE,
-     nclass = 40,
+     #nclass = 40,
      ylim = density_range, 
      xlim = range(support))
 

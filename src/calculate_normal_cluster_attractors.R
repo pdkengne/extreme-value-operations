@@ -4,15 +4,21 @@ source("./src/calculate_normal_mixture_model_pdf.R")
 
 
 calculate_normal_cluster_attractors <- function(x, 
-                                                cluster_models, 
-                                                prior_cluster_weights,
+                                                cluster_models,
+                                                minimum_cluster_size = 20,
+                                                prior_cluster_weights = NULL,
                                                 confidence_level = 0.95){
   # x:
   # cluster_models:
+  # minimum_cluster_size:
   # prior_cluster_weights:
   # confidence_level:
   
   nclusters <- length(cluster_models)
+  
+  if (is.null(prior_cluster_weights)){
+    prior_cluster_weights <- make_weights(positives_values = rep(1, times = nclusters))
+  }
   
   cluster_models_parameters <- lapply(1:nclusters, function(k){
     model <- cluster_models[[k]]
@@ -33,16 +39,33 @@ calculate_normal_cluster_attractors <- function(x,
   cluster_attractors_matrix <- cluster_attractors_matrix/mass
   
   cluster_attractors_frequencies_table <- apply(cluster_attractors_matrix, 1, which.max)
+  
   cluster_attractors_frequencies <- sapply(1:nclusters, function(k){
     length(which(cluster_attractors_frequencies_table == k))
   })
   
+  selected_cluster_id <- sort(which(cluster_attractors_frequencies >= minimum_cluster_size))
+  
+  nclusters <- length(selected_cluster_id)
+  
+  cluster_attractors_frequencies <- cluster_attractors_frequencies[selected_cluster_id]
   
   cluster_attractors_weights <- make_weights(positives_values = cluster_attractors_frequencies)
   
-  cluster_models_coefficients <- do.call(what = rbind, cluster_models_parameters)
+  # extract the selected gev models
+  selected_cluster_models <- lapply(selected_cluster_id, function(k){
+    model <- cluster_models[[k]]
+    model
+  })
   
-  cluster_models_coefficients_ci <- lapply(1:nclusters, function(k){
+  cluster_models_coefficients <- lapply(selected_cluster_id, function(k){
+    model <- cluster_models[[k]]
+    model$estimate
+  })
+  
+  cluster_models_coefficients <- do.call(what = rbind, cluster_models_coefficients)
+  
+  cluster_models_coefficients_ci <- lapply(selected_cluster_id, function(k){
     model <- cluster_models[[k]]
     confint(object = model, level = confidence_level)
   })
@@ -69,7 +92,7 @@ calculate_normal_cluster_attractors <- function(x,
   names(cluster_information_criteria) <- c("AIC", "BIC")
   
   
-  cluster_attractors_centers <- sapply(1:nclusters, function(k){
+  cluster_attractors_centers <- sapply(selected_cluster_id, function(k){
     mean(x[which(cluster_attractors_frequencies_table == k)])
   })
   
@@ -95,11 +118,12 @@ calculate_normal_cluster_attractors <- function(x,
   output[["cluster_attractors_weights"]] <- cluster_attractors_weights
   output[["cluster_attractors_centers"]] <- cluster_attractors_centers
   output[["cluster_data_list"]] <- cluster_data_list
-  output[["cluster_models"]] <- cluster_models
+  output[["cluster_models"]] <- selected_cluster_models
   output[["cluster_models_coefficients"]] <- cluster_models_coefficients
   output[["cluster_models_coefficients_ci"]] <- cluster_models_coefficients_ci
   output[["loglik"]] <- loglik
   output[["cluster_information_criteria"]] <- cluster_information_criteria
+  output[["selected_cluster_id"]] <- selected_cluster_id
   
   output
 }
