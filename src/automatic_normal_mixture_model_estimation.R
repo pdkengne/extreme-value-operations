@@ -212,19 +212,13 @@ cluster_attractors$loglik
 
 cluster_attractors$cluster_information_criteria
 
-# cluster_attractors$cluster_attractors_matrix
+cluster_attractors$cluster_models_coefficients
+
+cluster_attractors$cluster_models_coefficients_ci
 
 # cluster_attractors$cluster_data_list
 
-nclusters <- length(cluster_models)
-
-cluster_models_parameters <- lapply(1:nclusters, function(k){
-  model <- cluster_models[[k]]
-  model$estimate
-})
-
-
-cluster_models_parameters <- do.call(what = rbind, cluster_models_parameters)
+cluster_models_parameters <- cluster_attractors$cluster_models_coefficients
 
 cluster_models_parameters
 

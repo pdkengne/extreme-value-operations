@@ -7,6 +7,7 @@ source("./src/get_candidate_block_sizes.R")
 source("./src/estimate_several_gev_models.R")
 source("./src/estimate_several_standardized_block_maxima_mean.R")
 source("./src/estimate_gev_mixture_model_automatic_weights.R")
+source("./src/calculate_gev_mixture_model_pdf.R")
 
 
 fit_stationary_gev_mixture_model <- function(x,
@@ -121,20 +122,21 @@ fit_stationary_gev_mixture_model <- function(x,
   full_normalized_gev_parameters_object <- gev_models$full_normalized_gev_parameters_object[selected_model_labels, ]
   
   # extract the negative log-likelihood associated with the selected gev models
-  nllh <- sapply(selected_gev_models, function(model){
-    res <- summary(model, silent = TRUE)
-    res$nllh
-  })
-  
-  names(nllh) <- selected_block_sizes
+  densities <- calculate_gev_mixture_model_pdf(x = partial_data, 
+                                               locations = normalized_gev_parameters_object[, "loc_star"], 
+                                               scales = normalized_gev_parameters_object[, "scale_star"], 
+                                               shapes = normalized_gev_parameters_object[, "shape_star"], 
+                                               weights = weights,
+                                               kind = c("geometric", "arithmetic", "harmonic")[2])
   
   # calculate the information criteria, namely aic and bic
+  nloglik <- -1*sum(log(densities))
   p <- nrow(normalized_gev_parameters_object)
   q <- ncol(normalized_gev_parameters_object)
   n <- length(partial_data)
   
-  aic <- 2*sum(nllh) + 2*(q*p + p - 1)
-  bic <- 2*sum(nllh) + log(n)*(q*p + p - 1)
+  aic <- 2*nloglik + 2*(q*p + p - 1)
+  bic <- 2*nloglik + log(n)*(q*p + p - 1)
   
   information_criteria <- c(aic, bic)
   names(information_criteria) <- c("AIC", "BIC")
@@ -175,7 +177,7 @@ fit_stationary_gev_mixture_model <- function(x,
   output[["use_extremal_index"]] <- use_extremal_index
   output[["extremal_indexes"]] <- extremal_indexes
   
-  output[["negative_log_likelihoods"]] <- nllh
+  output[["negative_log_likelihoods"]] <- nloglik
   output[["information_criteria"]] <- information_criteria
   
   output[["unnormalized_gev_parameters_object"]] <- unnormalized_gev_parameters_object
@@ -231,13 +233,13 @@ fit_stationary_gev_mixture_model <- function(x,
 # 
 # names(results)
 # 
-# # [1] "threshold"                             "candidate_block_sizes"                 "equivalent_block_sizes"               
-# # [4] "unequivalent_block_sizes"              "selected_block_sizes"                  "unselected_block_sizes"               
-# # [7] "failed_block_sizes"                    "use_uniform_prior"                     "weights"                              
-# # [10] "frequencies"                           "use_extremal_index"                    "extremal_indexes"                     
-# # [13] "negative_log_likelihoods"              "information_criteria"                  "unnormalized_gev_parameters_object"   
-# # [16] "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object" "partial_data"                         
-# # [19] "all_data"                              "selected_model_per_obs"                "selected_gev_models"                  
+# # [1] "threshold"                             "candidate_block_sizes"                 "equivalent_block_sizes"
+# # [4] "unequivalent_block_sizes"              "selected_block_sizes"                  "unselected_block_sizes"
+# # [7] "failed_block_sizes"                    "use_uniform_prior"                     "weights"
+# # [10] "frequencies"                           "use_extremal_index"                    "extremal_indexes"
+# # [13] "negative_log_likelihoods"              "information_criteria"                  "unnormalized_gev_parameters_object"
+# # [16] "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object" "partial_data"
+# # [19] "all_data"                              "selected_model_per_obs"                "selected_gev_models"
 # # [22] "several_residuals"                     "several_residuals_fit"                 "several_residuals_diagnosics"
 # 
 # results$threshold
@@ -319,13 +321,13 @@ fit_stationary_gev_mixture_model <- function(x,
 # 
 # names(results)
 # 
-# # [1] "threshold"                             "candidate_block_sizes"                 "equivalent_block_sizes"               
-# # [4] "unequivalent_block_sizes"              "selected_block_sizes"                  "unselected_block_sizes"               
-# # [7] "failed_block_sizes"                    "use_uniform_prior"                     "weights"                              
-# # [10] "frequencies"                           "use_extremal_index"                    "extremal_indexes"                     
-# # [13] "negative_log_likelihoods"              "information_criteria"                  "unnormalized_gev_parameters_object"   
-# # [16] "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object" "partial_data"                         
-# # [19] "all_data"                              "selected_model_per_obs"                "selected_gev_models"                  
+# # [1] "threshold"                             "candidate_block_sizes"                 "equivalent_block_sizes"
+# # [4] "unequivalent_block_sizes"              "selected_block_sizes"                  "unselected_block_sizes"
+# # [7] "failed_block_sizes"                    "use_uniform_prior"                     "weights"
+# # [10] "frequencies"                           "use_extremal_index"                    "extremal_indexes"
+# # [13] "negative_log_likelihoods"              "information_criteria"                  "unnormalized_gev_parameters_object"
+# # [16] "normalized_gev_parameters_object"      "full_normalized_gev_parameters_object" "partial_data"
+# # [19] "all_data"                              "selected_model_per_obs"                "selected_gev_models"
 # # [22] "several_residuals"                     "several_residuals_fit"                 "several_residuals_diagnosics"
 # 
 # results$threshold
