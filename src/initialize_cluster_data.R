@@ -2,39 +2,37 @@
 
 source("./src/calculate_modes.R")
 
-initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL, sizes = NULL){
+initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL){
   # x:
   # nclusters:
   # centers:
-  # sizes:
   
   n <- length(x)
   
   if (is.null(centers) & is.null(nclusters)){
     modes_object <- calculate_modes(x = x)
-    centers <- modes_object$density_maxima_argument
+    modes <- modes_object$density_maxima_argument
+    kmeans_object <- kmeans(x = x, centers = length(modes))
   }
   else if (is.null(centers) & !is.null(nclusters)){
-    y <- sort(x)
-    split_indicators <- as.numeric(ggplot2::cut_number(x = 1:n, n = nclusters))
-    centers <- sapply(1:nclusters, function(k){
-      mean(y[which(split_indicators == k)])
-    })
+    kmeans_object <- kmeans(x = x, centers = nclusters)
+  }
+  else if (!is.null(centers) & is.null(nclusters)){
+    kmeans_object <- kmeans(x = x, centers = centers)
+  }
+  else if (!is.null(centers) & !is.null(nclusters)){
+    kmeans_object <- kmeans(x = x, centers = nclusters)
+  }
+  
+  centers <- kmeans_object$centers
+  
+  sizes <- kmeans_object$sizes
+  
+  if (length(sizes) == 1){
+    sizes <- n - 1
   }
   
   nclusters <- length(centers)
-  
-  if (is.null(sizes)){
-    if (nclusters == 1){
-      sizes <- n - 1
-    }
-    else {
-      sizes <- rep(x = ceiling(n/nclusters), times = nclusters)
-    }
-  }
-  else if (length(centers) != length(sizes)){
-    stop("Sorry, the arguments 'centers' and 'sizes' must have the same length!")
-  }
   
   data <- data.frame(x = x)
 

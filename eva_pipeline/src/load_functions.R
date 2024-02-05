@@ -80,5 +80,8 @@ load_functions <- function(){
   source("./src/plot_estimate_stationary_gev_mixture_model_quantile.R")
   source("./src/plot_estimate_non_stationary_gev_mixture_model_quantile.R")
   
+  source("./src/fit_stationary_normal_mixture_model.R")
+  source("./src/plot_fit_stationary_normal_mixture_model.R")
+  
 }
 

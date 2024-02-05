@@ -20,14 +20,12 @@ source("./src/calculate_normal_mixture_model_inverse_cdf.R")
 fit_stationary_normal_mixture_model <- function(x, 
                                                 nclusters = NULL, 
                                                 centers = NULL, 
-                                                sizes = NULL,
                                                 minimum_cluster_size = 20,
                                                 prior_cluster_weights = NULL,
                                                 confidence_level = 0.95){
   # x:
   # nclusters:
   # centers:
-  # sizes:
   # minimum_cluster_size:
   # prior_cluster_weights:
   # confidence_level:
