@@ -1,5 +1,6 @@
 # library(ggplot2)
 
+source("./src/get_knn.R")
 source("./src/calculate_modes.R")
 
 initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL){
