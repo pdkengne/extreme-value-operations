@@ -86,5 +86,8 @@ load_functions <- function(){
   source("./src/fit_stationary_weibull_mixture_model.R")
   source("./src/plot_fit_stationary_weibull_mixture_model.R")
   
+  source("./src/fit_stationary_gamma_mixture_model.R")
+  source("./src/plot_fit_stationary_gamma_mixture_model.R")
+  
 }
 

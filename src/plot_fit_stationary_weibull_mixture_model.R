@@ -18,11 +18,13 @@ source("./src/calculate_weibull_mixture_model_inverse_cdf.R")
 
 
 plot_fit_stationary_weibull_mixture_model <- function(weibull_mixture_model_object,
+                                                      nclass = NULL,
                                                      xlab = "support",
                                                      ylab = "density",
                                                      main = "density plot",
                                                      legend_position = "topleft"){
   # weibull_mixture_model_object: an object associated with a result of the function "fit_stationary_weibull_mixture_model()"
+  # nclass:
   # xlab: label of the x-axis
   # ylab: label of the y-axis
   # main: title of the plot
@@ -63,6 +65,7 @@ plot_fit_stationary_weibull_mixture_model <- function(weibull_mixture_model_obje
   
   hist(x = x, 
        probability = TRUE,
+       nclass = nclass,
        ylim = density_range, 
        xlim = range(support),
        xlab = xlab,
