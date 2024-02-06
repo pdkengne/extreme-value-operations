@@ -109,22 +109,21 @@ fit_stationary_normal_mixture_model <- function(x,
 # set.seed(102)
 # x = rmixnormal(1000, c(0.3, 0.7), c(-2, 3), c(2, 1))
 # 
-# mod1 = mixfit(x, ncomp = 2) 
+# mod1 = mixfit(x, ncomp = 2)
 # mod1
 # 
-# results <- fit_stationary_normal_mixture_model(x = x, 
-#                                                nclusters = 2, 
-#                                                centers = NULL, 
-#                                                sizes = NULL,
+# results <- fit_stationary_normal_mixture_model(x = x,
+#                                                nclusters = 2,
+#                                                centers = NULL,
 #                                                minimum_cluster_size = 20,
 #                                                prior_cluster_weights = NULL,
 #                                                confidence_level = 0.95)
 # 
 # names(results)
 # 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"                
+# # [1] "x"                              "cluster_data_list"              "cluster_models"
 # # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"   
+# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
 # # [10] "loglik"                         "cluster_information_criteria"
 # 
 # results
@@ -141,22 +140,21 @@ fit_stationary_normal_mixture_model <- function(x,
 # 
 # x <- faithful$eruptions
 # 
-# mod1 = mixfit(x, ncomp = 2) 
+# mod1 = mixfit(x, ncomp = 2)
 # mod1
 # 
-# results <- fit_stationary_normal_mixture_model(x = x, 
-#                                                nclusters = 2, 
-#                                                centers = NULL, 
-#                                                sizes = NULL,
+# results <- fit_stationary_normal_mixture_model(x = x,
+#                                                nclusters = 2,
+#                                                centers = NULL,
 #                                                minimum_cluster_size = 20,
 #                                                prior_cluster_weights = NULL,
 #                                                confidence_level = 0.95)
 # 
 # names(results)
 # 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"                
+# # [1] "x"                              "cluster_data_list"              "cluster_models"
 # # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"   
+# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
 # # [10] "loglik"                         "cluster_information_criteria"
 # 
 # results
@@ -166,22 +164,21 @@ fit_stationary_normal_mixture_model <- function(x,
 # 
 # x <- bmixture::rmixnorm(n = 1000, weight = c(2/4, 1/4, 1/4), mean = c(-2, +2, +10), sd = c(1, 1, 1))
 # 
-# mod1 = mixfit(x, ncomp = 3) 
+# mod1 = mixfit(x, ncomp = 3)
 # mod1
 # 
-# results <- fit_stationary_normal_mixture_model(x = x, 
-#                                                nclusters = 3, 
-#                                                centers = NULL, 
-#                                                sizes = NULL,
+# results <- fit_stationary_normal_mixture_model(x = x,
+#                                                nclusters = 3,
+#                                                centers = NULL,
 #                                                minimum_cluster_size = 20,
 #                                                prior_cluster_weights = NULL,
 #                                                confidence_level = 0.95)
 # 
 # names(results)
 # 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"                
+# # [1] "x"                              "cluster_data_list"              "cluster_models"
 # # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"   
+# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
 # # [10] "loglik"                         "cluster_information_criteria"
 # 
 # results

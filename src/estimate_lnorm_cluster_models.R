@@ -1,4 +1,4 @@
-estimate_llnorm_cluster_models <- function(x, cluster_data){
+estimate_lnorm_cluster_models <- function(x, cluster_data){
   # x:
   # cluster_data:
   
@@ -41,6 +41,6 @@ estimate_llnorm_cluster_models <- function(x, cluster_data){
 # initial_cluster_data
 # 
 # 
-# cluster_models <- estimate_llnorm_cluster_models(cluster_data = initial_cluster_data)
+# cluster_models <- estimate_lnorm_cluster_models(cluster_data = initial_cluster_data)
 # 
 # cluster_models

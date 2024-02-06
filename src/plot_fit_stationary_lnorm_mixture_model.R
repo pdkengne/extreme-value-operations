@@ -83,110 +83,130 @@ plot_fit_stationary_lnorm_mixture_model <- function(lnorm_mixture_model_object,
 }
 
 
-# # example 1
-# 
-# source("./src/fit_stationary_lnorm_mixture_model.R")
-# 
-# library(mixR)
-# 
-# set.seed(102)
-# x = rmixlnorm(1000, c(0.3, 0.7), c(-2, 3), c(2, 1))
-# 
-# mod1 = mixfit(x, ncomp = 2)
-# mod1
-# 
-# lnorm_mixture_model_object <- fit_stationary_lnorm_mixture_model(x = x,
-#                                                                    nclusters = 2,
-#                                                                    centers = NULL,
-#                                                                    minimum_cluster_size = 20,
-#                                                                    prior_cluster_weights = NULL,
-#                                                                    confidence_level = 0.95)
-# 
-# names(lnorm_mixture_model_object)
-# 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"
-# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# # [10] "loglik"                         "cluster_information_criteria"
-# 
-# lnorm_mixture_model_object
-# 
-# plot_fit_stationary_lnorm_mixture_model(lnorm_mixture_model_object = lnorm_mixture_model_object,
-#                                          xlab = "support",
-#                                          ylab = "density",
-#                                          main = "density plot",
-#                                          legend_position = "topleft")
-# 
-# 
-# # example 2
-# 
-# source("./src/fit_stationary_lnorm_mixture_model.R")
-# 
-# library(mixtools)
-# library(mixR)
-# 
-# data(faithful)
-# 
-# x <- faithful$waiting
-# 
-# x <- faithful$eruptions
-# 
-# mod1 = mixfit(x, ncomp = 2)
-# mod1
-# 
-# lnorm_mixture_model_object <- fit_stationary_lnorm_mixture_model(x = x,
-#                                                                    nclusters = 2,
-#                                                                    centers = NULL,
-#                                                                    minimum_cluster_size = 20,
-#                                                                    prior_cluster_weights = NULL,
-#                                                                    confidence_level = 0.95)
-# 
-# names(lnorm_mixture_model_object)
-# 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"
-# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# # [10] "loglik"                         "cluster_information_criteria"
-# 
-# lnorm_mixture_model_object
-# 
-# plot_fit_stationary_lnorm_mixture_model(lnorm_mixture_model_object = lnorm_mixture_model_object,
-#                                          xlab = "support",
-#                                          ylab = "density",
-#                                          main = "density plot",
-#                                          legend_position = "topleft")
-# 
-# 
-# 
-# # example 3
-# 
-# source("./src/fit_stationary_lnorm_mixture_model.R")
-# 
-# x <- bmixture::rmixnorm(n = 1000, weight = c(2/4, 1/4, 1/4), mean = c(-2, +2, +10), sd = c(1, 1, 1))
-# 
-# mod1 = mixfit(x, ncomp = 3)
-# mod1
-# 
-# lnorm_mixture_model_object <- fit_stationary_lnorm_mixture_model(x = x,
-#                                                                    nclusters = 3,
-#                                                                    centers = NULL,
-#                                                                    minimum_cluster_size = 20,
-#                                                                    prior_cluster_weights = NULL,
-#                                                                    confidence_level = 0.95)
-# 
-# names(lnorm_mixture_model_object)
-# 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"
-# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# # [10] "loglik"                         "cluster_information_criteria"
-# 
-# lnorm_mixture_model_object
-# 
-# plot_fit_stationary_lnorm_mixture_model(lnorm_mixture_model_object = lnorm_mixture_model_object,
-#                                          xlab = "support",
-#                                          ylab = "density",
-#                                          main = "density plot",
-#                                          legend_position = "topleft")
+# example 1
+
+source("./src/fit_stationary_lnorm_mixture_model.R")
+source("./src/initialize_cluster_data.R")
+source("./src/generate_lnorm_mixture_model_sample.R")
+
+library(mixR)
+
+n <- 1000
+x <- generate_lnorm_mixture_model_sample(n = n,
+                                         locations = c(0, 1),
+                                         scales = c(0.5, 0.25),
+                                         weights = c(1/2, 1/2),
+                                         kind = c("geometric", "arithmetic")[2])
+
+hist(x, nclass = 30)
+
+
+mod1 = mixfit(x, ncomp = 2, family = "lnorm")
+mod1
+
+lnorm_mixture_model_object <- fit_stationary_lnorm_mixture_model(x = x,
+                                                                   nclusters = 2,
+                                                                   centers = NULL,
+                                                                   minimum_cluster_size = 20,
+                                                                   prior_cluster_weights = NULL,
+                                                                   confidence_level = 0.95)
+
+names(lnorm_mixture_model_object)
+
+# [1] "x"                              "cluster_data_list"              "cluster_models"
+# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# [10] "loglik"                         "cluster_information_criteria"
+
+lnorm_mixture_model_object
+
+plot_fit_stationary_lnorm_mixture_model(lnorm_mixture_model_object = lnorm_mixture_model_object,
+                                         xlab = "support",
+                                         ylab = "density",
+                                         main = "density plot",
+                                         legend_position = "topleft")
+
+
+# example 2
+
+source("./src/fit_stationary_lnorm_mixture_model.R")
+
+library(mixtools)
+library(mixR)
+
+data(faithful)
+
+x <- faithful$waiting
+
+x <- faithful$eruptions
+
+mod1 = mixfit(x, ncomp = 2, family = "lnorm")
+mod1
+
+lnorm_mixture_model_object <- fit_stationary_lnorm_mixture_model(x = x,
+                                                                   nclusters = 2,
+                                                                   centers = NULL,
+                                                                   minimum_cluster_size = 20,
+                                                                   prior_cluster_weights = NULL,
+                                                                   confidence_level = 0.95)
+
+names(lnorm_mixture_model_object)
+
+# [1] "x"                              "cluster_data_list"              "cluster_models"
+# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# [10] "loglik"                         "cluster_information_criteria"
+
+lnorm_mixture_model_object
+
+plot_fit_stationary_lnorm_mixture_model(lnorm_mixture_model_object = lnorm_mixture_model_object,
+                                         xlab = "support",
+                                         ylab = "density",
+                                         main = "density plot",
+                                         legend_position = "topleft")
+
+
+
+# example 3
+
+source("./src/fit_stationary_lnorm_mixture_model.R")
+
+source("./src/initialize_cluster_data.R")
+source("./src/generate_lnorm_mixture_model_sample.R")
+
+n <- 2000
+x <- generate_lnorm_mixture_model_sample(n = n,
+                                         locations = c(0, 0, 1),
+                                         scales = c(0.5, 0.25, 0.125),
+                                         weights = c(2/4, 1/4, 1/4),
+                                         kind = c("geometric", "arithmetic")[2])
+
+hist(x, nclass = 30)
+
+
+mod1 = mixfit(x, ncomp = 2, family = "lnorm")
+mod1
+
+lnorm_mixture_model_object <- fit_stationary_lnorm_mixture_model(x = x,
+                                                                   nclusters = 3,
+                                                                   centers = NULL,
+                                                                   minimum_cluster_size = 20,
+                                                                   prior_cluster_weights = NULL,
+                                                                   confidence_level = 0.95)
+
+names(lnorm_mixture_model_object)
+
+# [1] "x"                              "cluster_data_list"              "cluster_models"
+# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# [10] "loglik"                         "cluster_information_criteria"
+
+lnorm_mixture_model_object
+
+plot_fit_stationary_lnorm_mixture_model(lnorm_mixture_model_object = lnorm_mixture_model_object,
+                                         xlab = "support",
+                                         ylab = "density",
+                                         main = "density plot",
+                                         legend_position = "topleft")
 
 
