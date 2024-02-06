@@ -102,87 +102,84 @@ fit_stationary_weibull_mixture_model <- function(x,
 }
 
 
-# example 1
-
-library(mixR)
-
-set.seed(102)
-x = rmixweibull(1000, c(0.3, 0.7), c(-2, 3), c(2, 1))
-
-mod1 = mixfit(x, ncomp = 2)
-mod1
-
-results <- fit_stationary_weibull_mixture_model(x = x,
-                                                nclusters = 2,
-                                                centers = NULL,
-                                                sizes = NULL,
-                                                minimum_cluster_size = 20,
-                                                prior_cluster_weights = NULL,
-                                                confidence_level = 0.95)
-
-names(results)
-
-# [1] "x"                              "cluster_data_list"              "cluster_models"
-# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# [10] "loglik"                         "cluster_information_criteria"
-
-results
-
-
-# example 2
-
-library(mixtools)
-library(mixR)
-
-data(faithful)
-
-x <- faithful$waiting
-
-x <- faithful$eruptions
-
-mod1 = mixfit(x, ncomp = 2)
-mod1
-
-results <- fit_stationary_weibull_mixture_model(x = x,
-                                                nclusters = 2,
-                                                centers = NULL,
-                                                sizes = NULL,
-                                                minimum_cluster_size = 20,
-                                                prior_cluster_weights = NULL,
-                                                confidence_level = 0.95)
-
-names(results)
-
-# [1] "x"                              "cluster_data_list"              "cluster_models"
-# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# [10] "loglik"                         "cluster_information_criteria"
-
-results
-
-
-# example 3
-
-x <- mixR::rmixweibull(n = 2000, pi = c(2/4, 1/4, 1/4), mu = c(0.6, 1.3, 2.6), sd = c(0.1, 0.1, 0.1))
-
-mod1 = mixfit(x, ncomp = 3)
-mod1
-
-results <- fit_stationary_weibull_mixture_model(x = x,
-                                                nclusters = 3,
-                                                centers = NULL,
-                                                sizes = NULL,
-                                                minimum_cluster_size = 20,
-                                                prior_cluster_weights = NULL,
-                                                confidence_level = 0.95)
-
-names(results)
-
-# [1] "x"                              "cluster_data_list"              "cluster_models"
-# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# [10] "loglik"                         "cluster_information_criteria"
-
-results
+# # example 1
+# 
+# library(mixR)
+# 
+# set.seed(102)
+# x = mixR::rmixweibull(1000, c(0.3, 0.7), c(0.6, 1.3), c(0.1, 0.1))
+# 
+# mod1 = mixfit(x, ncomp = 2, family = 'weibull')
+# mod1
+# 
+# results <- fit_stationary_weibull_mixture_model(x = x,
+#                                                 nclusters = 2,
+#                                                 centers = NULL,
+#                                                 minimum_cluster_size = 20,
+#                                                 prior_cluster_weights = NULL,
+#                                                 confidence_level = 0.95)
+# 
+# names(results)
+# 
+# # [1] "x"                              "cluster_data_list"              "cluster_models"
+# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# # [10] "loglik"                         "cluster_information_criteria"
+# 
+# results
+# 
+# 
+# # example 2
+# 
+# library(mixtools)
+# library(mixR)
+# 
+# data(faithful)
+# 
+# x <- faithful$waiting
+# 
+# x <- faithful$eruptions
+# 
+# mod1 = mixfit(x, ncomp = 2, family = 'weibull')
+# mod1
+# 
+# results <- fit_stationary_weibull_mixture_model(x = x,
+#                                                 nclusters = 2,
+#                                                 centers = NULL,
+#                                                 minimum_cluster_size = 20,
+#                                                 prior_cluster_weights = NULL,
+#                                                 confidence_level = 0.95)
+# 
+# names(results)
+# 
+# # [1] "x"                              "cluster_data_list"              "cluster_models"
+# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# # [10] "loglik"                         "cluster_information_criteria"
+# 
+# results
+# 
+# 
+# # example 3
+# 
+# x <- mixR::rmixweibull(n = 2000, pi = c(2/4, 1/4, 1/4), mu = c(0.6, 1.3, 2.6), sd = c(0.1, 0.1, 0.1))
+# 
+# mod1 = mixfit(x, ncomp = 3, family = 'weibull')
+# mod1
+# 
+# results <- fit_stationary_weibull_mixture_model(x = x,
+#                                                 nclusters = 3,
+#                                                 centers = NULL,
+#                                                 minimum_cluster_size = 20,
+#                                                 prior_cluster_weights = NULL,
+#                                                 confidence_level = 0.95)
+# 
+# names(results)
+# 
+# # [1] "x"                              "cluster_data_list"              "cluster_models"
+# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# # [10] "loglik"                         "cluster_information_criteria"
+# 
+# results
 

@@ -89,7 +89,7 @@ library(mixR)
 set.seed(102)
 x = rmixweibull(1000, c(0.3, 0.7), c(-2, 3), c(2, 1))
 
-mod1 = mixfit(x, ncomp = 2)
+mod1 = mixfit(x, ncomp = 2, family = 'weibull')
 mod1
 
 weibull_mixture_model_object <- fit_stationary_weibull_mixture_model(x = x,
@@ -128,7 +128,7 @@ x <- faithful$waiting
 
 x <- faithful$eruptions
 
-mod1 = mixfit(x, ncomp = 2)
+mod1 = mixfit(x, ncomp = 2, family = 'weibull')
 mod1
 
 weibull_mixture_model_object <- fit_stationary_weibull_mixture_model(x = x,
@@ -161,7 +161,7 @@ source("./src/fit_stationary_weibull_mixture_model.R")
 
 x <- mixR::rmixweibull(n = 2000, pi = c(2/4, 1/4, 1/4), mu = c(0.6, 1.3, 2.6), sd = c(0.1, 0.1, 0.1))
 
-mod1 = mixfit(x, ncomp = 3)
+mod1 = mixfit(x, ncomp = 3, family = 'weibull')
 mod1
 
 weibull_mixture_model_object <- fit_stationary_weibull_mixture_model(x = x,
