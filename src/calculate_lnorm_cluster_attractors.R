@@ -5,10 +5,10 @@ source("./src/calculate_lnorm_mixture_model_pdf.R")
 
 
 calculate_lnorm_cluster_attractors <- function(x, 
-                                                cluster_models,
-                                                minimum_cluster_size = 20,
-                                                prior_cluster_weights = NULL,
-                                                confidence_level = 0.95){
+                                               cluster_models,
+                                               minimum_cluster_size = 20,
+                                               prior_cluster_weights = NULL,
+                                               confidence_level = 0.95){
   # x:
   # cluster_models:
   # minimum_cluster_size:
@@ -34,9 +34,9 @@ calculate_lnorm_cluster_attractors <- function(x,
   
   cluster_attractors_matrix <- sapply(1:nclusters, function(k){
     parameters <- cluster_models_parameters[[k]]
-    densities <- dnorm(x = x, 
-                       mean = parameters["mean"], 
-                       sd = parameters["sd"])
+    densities <- dlnorm(x = x, 
+                        meanlog = parameters["meanlog"], 
+                        sdlog = parameters["sdlog"])
     
     densities*prior_cluster_weights[k]
   })
@@ -76,15 +76,15 @@ calculate_lnorm_cluster_attractors <- function(x,
     model <- cluster_models[[k]]
     confint(object = model, level = confidence_level)
   })
-    
-  locations <- cluster_models_coefficients[, "mean"]
-  scales <- cluster_models_coefficients[, "sd"]
+  
+  locations <- cluster_models_coefficients[, "meanlog"]
+  scales <- cluster_models_coefficients[, "sdlog"]
   
   densities <- calculate_lnorm_mixture_model_pdf(x = x, 
-                                                  locations = locations, 
-                                                  scales = scales, 
-                                                  weights = cluster_attractors_weights,
-                                                  kind = c("geometric", "arithmetic")[2])
+                                                 locations = locations, 
+                                                 scales = scales, 
+                                                 weights = cluster_attractors_weights,
+                                                 kind = c("geometric", "arithmetic")[2])
   
   loglik <- sum(log(densities))
   
@@ -107,7 +107,7 @@ calculate_lnorm_cluster_attractors <- function(x,
   
   cluster_data_list <- lapply(1:nclusters, function(k){
     center <- cluster_attractors_centers[k]
-
+    
     size <- ifelse(test = nclusters == 1, 
                    yes = ceiling(n - 1), 
                    no = ceiling(cluster_attractors_frequencies[k]))
@@ -139,15 +139,21 @@ calculate_lnorm_cluster_attractors <- function(x,
 # # example 1
 # 
 # source("./src/initialize_cluster_data.R")
-# source("./src/calculate_lnorm_mixture_model_cdf.R")
+# source("./src/generate_lnorm_mixture_model_sample.R")
 # 
-# n <- 100
-# x <- bmixture::rmixnorm(n = n, weight = c(1/2, 1/2), mean = c(-10, +10), sd = c(1, 1))
+# n <- 1000
+# x <- generate_lnorm_mixture_model_sample(n = n,
+#                                          locations = c(0, 1),
+#                                          scales = c(0.5, 0.25),
+#                                          weights = c(1/2, 1/2),
+#                                          kind = c("geometric", "arithmetic")[2])
+# 
+# hist(x, nclass = 30)
 # 
 # 
-# nclusters <- 3
+# nclusters <- 2
 # 
-# initial_cluster_data <- initialize_cluster_data(x = x, nclusters = 3)
+# initial_cluster_data <- initialize_cluster_data(x = x, nclusters = 2)
 # 
 # initial_cluster_data
 # 
@@ -160,9 +166,9 @@ calculate_lnorm_cluster_attractors <- function(x,
 # 
 # prior_cluster_weights
 # 
-# cluster_attractors <- calculate_lnorm_cluster_attractors(x = x, 
-#                                                           cluster_models = cluster_models, 
-#                                                           prior_cluster_weights = prior_cluster_weights)
+# cluster_attractors <- calculate_lnorm_cluster_attractors(x = x,
+#                                                          cluster_models = cluster_models,
+#                                                          prior_cluster_weights = prior_cluster_weights)
 # 
 # names(cluster_attractors)
 # 
