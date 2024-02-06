@@ -129,43 +129,43 @@ calculate_weibull_cluster_attractors <- function(x,
 }
 
 
-# example 1
-
-source("./src/initialize_cluster_data.R")
-source("./src/calculate_weibull_mixture_model_cdf.R")
-
-n <- 1000
-x <- mixR::rmixweibull(n = n, pi = c(1/2, 1/2), mu = c(0.6, 1.3), sd = c(0.1, 0.1))
-
-
-nclusters <- 2
-
-initial_cluster_data <- initialize_cluster_data(x = x, nclusters = 2)
-
-initial_cluster_data
-
-
-cluster_models <- estimate_weibull_cluster_models(cluster_data = initial_cluster_data)
-
-cluster_models
-
-prior_cluster_weights <- make_weights(positives_values = rep(1, times = nclusters))
-
-prior_cluster_weights
-
-cluster_attractors <- calculate_weibull_cluster_attractors(x = x,
-                                                           cluster_models = cluster_models,
-                                                           prior_cluster_weights = prior_cluster_weights)
-
-names(cluster_attractors)
-
-cluster_attractors$cluster_attractors_centers
-
-cluster_attractors$cluster_attractors_frequencies
-
-cluster_attractors$cluster_attractors_weights
-
-cluster_attractors$cluster_data_list
+# # example 1
+# 
+# source("./src/initialize_cluster_data.R")
+# source("./src/calculate_weibull_mixture_model_cdf.R")
+# 
+# n <- 1000
+# x <- mixR::rmixweibull(n = n, pi = c(1/2, 1/2), mu = c(0.6, 1.3), sd = c(0.1, 0.1))
+# 
+# 
+# nclusters <- 2
+# 
+# initial_cluster_data <- initialize_cluster_data(x = x, nclusters = 2)
+# 
+# initial_cluster_data
+# 
+# 
+# cluster_models <- estimate_weibull_cluster_models(cluster_data = initial_cluster_data)
+# 
+# cluster_models
+# 
+# prior_cluster_weights <- make_weights(positives_values = rep(1, times = nclusters))
+# 
+# prior_cluster_weights
+# 
+# cluster_attractors <- calculate_weibull_cluster_attractors(x = x,
+#                                                            cluster_models = cluster_models,
+#                                                            prior_cluster_weights = prior_cluster_weights)
+# 
+# names(cluster_attractors)
+# 
+# cluster_attractors$cluster_attractors_centers
+# 
+# cluster_attractors$cluster_attractors_frequencies
+# 
+# cluster_attractors$cluster_attractors_weights
+# 
+# cluster_attractors$cluster_data_list
 
 
 
