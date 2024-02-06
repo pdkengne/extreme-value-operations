@@ -1,11 +1,11 @@
 calculate_weibull_mixture_model_cdf <- function(q, 
-                                                locations, 
+                                                shapes, 
                                                 scales,
                                                 weights, 
                                                 kind = c("geometric", "arithmetic")[1]){
   # q: vector of observations
   # weights: vector of weights
-  # locations, scales: vectors of location and scale parameters of the considered distributions
+  # shapes, scales: vectors of shape and scale parameters of the considered distributions
   # The vectors of parameters must have the same number of elements
   # kind: indicates the type of mixture model. Possible values are "geometric" or "arithmetic"
   
@@ -13,7 +13,7 @@ calculate_weibull_mixture_model_cdf <- function(q,
     output <- sapply(q, function(q) {
       S <- sapply(1:length(weights), function(j) {
         prob <- pweibull(q = q, 
-                         shape = locations[j], 
+                         shape = shapes[j], 
                          scale = scales[j])
         
         out <- prob^(weights[j])
@@ -30,7 +30,7 @@ calculate_weibull_mixture_model_cdf <- function(q,
     output <- sapply(q, function(q) {
       S <- sapply(1:length(weights), function(j) {
         prob <- pweibull(q = q, 
-                         shape = locations[j], 
+                         shape = shapes[j], 
                          scale = scales[j])
         
         out <- prob*weights[j]
@@ -60,10 +60,10 @@ calculate_weibull_mixture_model_cdf <- function(q,
 # weights <- as.numeric(extraDistr::rdirichlet(n = 1, alpha = rep(1, times = p)))
 # 
 # scales <- rexp(n = p)
-# locations <- runif(n = p)
+# shapes <- runif(n = p)
 # 
 # results <- calculate_weibull_mixture_model_cdf(q = 1:10,
-#                                               locations,
+#                                               shapes,
 #                                               scales,
 #                                               weights,
 #                                               kind = c("geometric", "arithmetic")[1])
@@ -72,7 +72,7 @@ calculate_weibull_mixture_model_cdf <- function(q,
 # 
 # 
 # results <- calculate_weibull_mixture_model_cdf(q = 1:10,
-#                                               locations,
+#                                               shapes,
 #                                               scales,
 #                                               weights,
 #                                               kind = c("geometric", "arithmetic")[2])
@@ -81,7 +81,7 @@ calculate_weibull_mixture_model_cdf <- function(q,
 # 
 # 
 # results <- calculate_weibull_mixture_model_cdf(q = 10,
-#                                               locations,
+#                                               shapes,
 #                                               scales,
 #                                               weights,
 #                                               kind = "geom")

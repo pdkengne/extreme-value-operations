@@ -1,13 +1,13 @@
 source("./src/calculate_weibull_mixture_model_inverse_cdf.R")
 
 generate_weibull_mixture_model_sample <- function(n = 1, 
-                                                 locations, 
+                                                 shapes, 
                                                  scales, 
                                                  weights, 
                                                  kind = c("geometric", "arithmetic")[1]){
   # n: number of observations to generate
   # weights: vector of weights
-  # locations, scales: vectors of location and scale parameters of the considered distributions
+  # shapes, scales: vectors of shape and scale parameters of the considered distributions
   # The vectors of parameters must have the same number of elements
   # kind: indicates the type of mixture model. Possible values are "geometric" or "arithmetic"
   
@@ -21,7 +21,7 @@ generate_weibull_mixture_model_sample <- function(n = 1,
                   prob = weights)
       
       out <- rweibull(n = 1, 
-                   shape = locations[k], 
+                   shape = shapes[k], 
                    scale = scales[k])
       
       out
@@ -37,7 +37,7 @@ generate_weibull_mixture_model_sample <- function(n = 1,
         }
         
         random_value <- qweibull(p = power_random_variates, 
-                              shape = locations[k], 
+                              shape = shapes[k], 
                               scale = scales[k])
         
         random_value
@@ -63,12 +63,12 @@ generate_weibull_mixture_model_sample <- function(n = 1,
 # weights <- c(0.5, 0.5)
 # 
 # scales <- c(0.1, 0.1)
-# locations <- c(0.6, 1.32)
+# shapes <- c(0.6, 1.32)
 # 
 # n <- 1000
 # 
 # results_1 <- generate_weibull_mixture_model_sample(n = n,
-#                                                   locations,
+#                                                   shapes,
 #                                                   scales,
 #                                                   weights,
 #                                                   kind = c("geometric", "arithmetic")[2])
@@ -76,7 +76,7 @@ generate_weibull_mixture_model_sample <- function(n = 1,
 # #results_1
 # 
 # pdf_1 <- calculate_weibull_mixture_model_pdf(x = sort(results_1),
-#                                             locations,
+#                                             shapes,
 #                                             scales,
 #                                             weights,
 #                                             kind = c("geometric", "arithmetic")[2])
@@ -102,7 +102,7 @@ generate_weibull_mixture_model_sample <- function(n = 1,
 # 
 # 
 # results_2 <- generate_weibull_mixture_model_sample(n = n,
-#                                                   locations,
+#                                                   shapes,
 #                                                   scales,
 #                                                   weights,
 #                                                   kind = c("geometric", "arithmetic")[1])
@@ -110,7 +110,7 @@ generate_weibull_mixture_model_sample <- function(n = 1,
 # #results_2
 # 
 # pdf_2 <- calculate_weibull_mixture_model_pdf(x = sort(results_2),
-#                                             locations,
+#                                             shapes,
 #                                             scales,
 #                                             weights,
 #                                             kind = c("geometric", "arithmetic")[1])
@@ -152,7 +152,7 @@ generate_weibull_mixture_model_sample <- function(n = 1,
 # 
 # 
 # results <- generate_weibull_mixture_model_sample(n = n,
-#                                                 locations,
+#                                                 shapes,
 #                                                 scales,
 #                                                 weights,
 #                                                 kind = "merge")
@@ -166,12 +166,12 @@ generate_weibull_mixture_model_sample <- function(n = 1,
 # weights <- c(1/3, 1/3, 1/3)
 # 
 # scales <- c(0.1, 0.1, 0.1)
-# locations <- c(0.72, 1.4, 2.10)
+# shapes <- c(0.72, 1.4, 2.10)
 # 
 # n <- 1000
 # 
 # results_1 <- generate_weibull_mixture_model_sample(n = n,
-#                                                   locations,
+#                                                   shapes,
 #                                                   scales,
 #                                                   weights,
 #                                                   kind = c("geometric", "arithmetic")[2])
@@ -179,7 +179,7 @@ generate_weibull_mixture_model_sample <- function(n = 1,
 # #results_1
 # 
 # pdf_1 <- calculate_weibull_mixture_model_pdf(x = sort(results_1),
-#                                             locations,
+#                                             shapes,
 #                                             scales,
 #                                             weights,
 #                                             kind = c("geometric", "arithmetic")[2])
@@ -206,7 +206,7 @@ generate_weibull_mixture_model_sample <- function(n = 1,
 # 
 # 
 # results_2 <- generate_weibull_mixture_model_sample(n = n,
-#                                                   locations,
+#                                                   shapes,
 #                                                   scales,
 #                                                   weights,
 #                                                   kind = c("geometric", "arithmetic")[1])
@@ -214,7 +214,7 @@ generate_weibull_mixture_model_sample <- function(n = 1,
 # #results_2
 # 
 # pdf_2 <- calculate_weibull_mixture_model_pdf(x = sort(results_2),
-#                                             locations,
+#                                             shapes,
 #                                             scales,
 #                                             weights,
 #                                             kind = c("geometric", "arithmetic")[1])
@@ -258,7 +258,7 @@ generate_weibull_mixture_model_sample <- function(n = 1,
 # 
 # 
 # results <- generate_weibull_mixture_model_sample(n = n,
-#                                                 locations,
+#                                                 shapes,
 #                                                 scales,
 #                                                 weights,
 #                                                 kind = "merge")

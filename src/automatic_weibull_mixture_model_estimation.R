@@ -100,7 +100,7 @@ cluster_models_parameters <- lapply(1:nclusters, function(k){
 
 cluster_models_parameters <- do.call(what = rbind, cluster_models_parameters)
 
-locations <- cluster_models_parameters[, "mean"]
+shapes <- cluster_models_parameters[, "mean"]
 scales <- cluster_models_parameters[, "sd"]
 
 prior_cluster_weights <- make_weights(positives_values = rep(1, times = nclusters))
@@ -117,13 +117,13 @@ support <- seq(from = min(support_empirical),
 
 
 density_geometric <- calculate_weibull_mixture_model_pdf(x = support, 
-                                                        locations = locations, 
+                                                        shapes = shapes, 
                                                         scales = scales, 
                                                         weights = prior_cluster_weights,
                                                         kind = c("geometric", "arithmetic")[1])
 
 density_arithmetic <- calculate_weibull_mixture_model_pdf(x = support, 
-                                                         locations = locations, 
+                                                         shapes = shapes, 
                                                          scales = scales, 
                                                          weights = prior_cluster_weights,
                                                          kind = c("geometric", "arithmetic")[2])
@@ -258,7 +258,7 @@ is.null(ncol(dim(cluster_models_parameters_variation)))
 
 
 
-locations <- cluster_models_parameters[1:length(cluster_attractors$selected_cluster_id), "mean"]
+shapes <- cluster_models_parameters[1:length(cluster_attractors$selected_cluster_id), "mean"]
 scales <- cluster_models_parameters[1:length(cluster_attractors$selected_cluster_id), "sd"]
 
 density_empirical <- density(x)$y
@@ -270,13 +270,13 @@ support <- seq(from = min(support_empirical),
                length.out = 1000)
 
 density_geometric <- calculate_weibull_mixture_model_pdf(x = support, 
-                                                        locations = locations, 
+                                                        shapes = shapes, 
                                                         scales = scales, 
                                                         weights = cluster_attractors$cluster_attractors_weights,
                                                         kind = c("geometric", "arithmetic")[1])
 
 density_arithmetic <- calculate_weibull_mixture_model_pdf(x = support, 
-                                                         locations = locations, 
+                                                         shapes = shapes, 
                                                          scales = scales, 
                                                          weights = cluster_attractors$cluster_attractors_weights,
                                                          kind = c("geometric", "arithmetic")[2])

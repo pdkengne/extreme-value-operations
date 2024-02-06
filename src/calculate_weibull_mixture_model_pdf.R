@@ -2,24 +2,24 @@ source("./src/calculate_weibull_mixture_model_cdf.R")
 
 
 calculate_weibull_mixture_model_pdf <- function(x, 
-                                                locations, 
+                                                shapes, 
                                                 scales, 
                                                 weights,
                                                 kind = c("geometric", "arithmetic")[1]){
   # x: vector of observations
   # weights: vector of weights
-  # locations, scales: vectors of location, scale and shape parameters of the considered distributions
+  # shapes, scales: vectors of shape, scale and shape parameters of the considered distributions
   # The vectors of parameters must have the same number of elements
   # kind: indicates the type of mixture model. Possible values are "geometric" or "arithmetic"
   
   if (kind == "geometric"){
     S <- sapply(1:length(weights), function(j){
       dens <- dweibull(x = x, 
-                    shape = locations[j], 
+                    shape = shapes[j], 
                     scale = scales[j])
       
       prob <- pweibull(q = x, 
-                    shape = locations[j], 
+                    shape = shapes[j], 
                     scale = scales[j])
       
       dens[prob == 0] <- 0
@@ -31,7 +31,7 @@ calculate_weibull_mixture_model_pdf <- function(x,
     })
     
     cdf <- calculate_weibull_mixture_model_cdf(q = x, 
-                                              locations = locations, 
+                                              shapes = shapes, 
                                               scales = scales, 
                                               weights = weights,
                                               kind = kind)
@@ -46,7 +46,7 @@ calculate_weibull_mixture_model_pdf <- function(x,
   else if (kind == "arithmetic"){
     S <- sapply(1:length(weights), function(j){
       dens <- dweibull(x = x, 
-                    shape = locations[j], 
+                    shape = shapes[j], 
                     scale = scales[j])
       
       out <- weights[j]*dens
@@ -80,12 +80,12 @@ calculate_weibull_mixture_model_pdf <- function(x,
 # weights <- as.numeric(extraDistr::rdirichlet(n = 1, alpha = rep(1, times = p)))
 # 
 # scales <- rexp(n = p)
-# locations <- runif(n = p)
+# shapes <- runif(n = p)
 # 
 # x <- 1:10
 # 
 # results <- calculate_weibull_mixture_model_pdf(x = x,
-#                                               locations,
+#                                               shapes,
 #                                               scales,
 #                                               weights,
 #                                               kind = c("geometric", "arithmetic")[1])
@@ -93,7 +93,7 @@ calculate_weibull_mixture_model_pdf <- function(x,
 # results
 # 
 # results <- calculate_weibull_mixture_model_pdf(x = x,
-#                                               locations,
+#                                               shapes,
 #                                               scales,
 #                                               weights,
 #                                               kind = c("geometric", "arithmetic")[2])
@@ -101,7 +101,7 @@ calculate_weibull_mixture_model_pdf <- function(x,
 # results
 # 
 # results <- calculate_weibull_mixture_model_pdf(x = x,
-#                                               locations,
+#                                               shapes,
 #                                               scales,
 #                                               weights,
 #                                               kind = "arith")
@@ -114,12 +114,12 @@ calculate_weibull_mixture_model_pdf <- function(x,
 # weights <- c(0.5, 0.5)
 # 
 # scales <- c(1, 1)
-# locations <- c(1, +2)
+# shapes <- c(1, +2)
 # 
 # x <- seq(from = 0.0001, to = 5, length.out = 500)
 # 
 # results_1 <- calculate_weibull_mixture_model_pdf(x = x,
-#                                               locations,
+#                                               shapes,
 #                                               scales,
 #                                               weights,
 #                                               kind = c("geometric", "arithmetic")[1])
@@ -127,7 +127,7 @@ calculate_weibull_mixture_model_pdf <- function(x,
 # #results_1
 # 
 # results_2 <- calculate_weibull_mixture_model_pdf(x = x,
-#                                               locations,
+#                                               shapes,
 #                                               scales,
 #                                               weights,
 #                                               kind = c("geometric", "arithmetic")[2])
@@ -157,12 +157,12 @@ calculate_weibull_mixture_model_pdf <- function(x,
 # weights <- c(1/3, 1/3, 1/3)
 # 
 # scales <- c(1, 1, 1)
-# locations <- c(0.2, 0.4, 0.6)
+# shapes <- c(0.2, 0.4, 0.6)
 # 
 # x <- seq(from = 0.0001, to = 8, length.out = 500)
 # 
 # results_1 <- calculate_weibull_mixture_model_pdf(x = x,
-#                                                 locations,
+#                                                 shapes,
 #                                                 scales,
 #                                                 weights,
 #                                                 kind = c("geometric", "arithmetic")[1])
@@ -170,7 +170,7 @@ calculate_weibull_mixture_model_pdf <- function(x,
 # #results_1
 # 
 # results_2 <- calculate_weibull_mixture_model_pdf(x = x,
-#                                                 locations,
+#                                                 shapes,
 #                                                 scales,
 #                                                 weights,
 #                                                 kind = c("geometric", "arithmetic")[2])

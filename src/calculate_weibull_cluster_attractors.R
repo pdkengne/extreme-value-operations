@@ -70,11 +70,11 @@ calculate_weibull_cluster_attractors <- function(x,
     confint(object = model, level = confidence_level)
   })
     
-  locations <- cluster_models_coefficients[, "shape"]
+  shapes <- cluster_models_coefficients[, "shape"]
   scales <- cluster_models_coefficients[, "scale"]
   
   densities <- calculate_weibull_mixture_model_pdf(x = x, 
-                                                   locations = locations, 
+                                                   shapes = shapes, 
                                                    scales = scales, 
                                                    weights = cluster_attractors_weights,
                                                    kind = c("geometric", "arithmetic")[2])

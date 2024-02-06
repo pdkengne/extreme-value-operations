@@ -32,7 +32,7 @@ plot_fit_stationary_weibull_mixture_model <- function(weibull_mixture_model_obje
   
   cluster_models_parameters <- weibull_mixture_model_object$cluster_models_coefficients
   
-  locations <- cluster_models_parameters[, "shape"]
+  shapes <- cluster_models_parameters[, "shape"]
   scales <- cluster_models_parameters[, "scale"]
   
   cluster_attractors_weights <- weibull_mixture_model_object$cluster_attractors_weights
@@ -48,13 +48,13 @@ plot_fit_stationary_weibull_mixture_model <- function(weibull_mixture_model_obje
                  length.out = 1000)
   
   density_geometric <- calculate_weibull_mixture_model_pdf(x = support, 
-                                                          locations = locations, 
+                                                          shapes = shapes, 
                                                           scales = scales, 
                                                           weights = cluster_attractors_weights,
                                                           kind = c("geometric", "arithmetic")[1])
   
   density_arithmetic <- calculate_weibull_mixture_model_pdf(x = support, 
-                                                           locations = locations, 
+                                                           shapes = shapes, 
                                                            scales = scales, 
                                                            weights = cluster_attractors_weights,
                                                            kind = c("geometric", "arithmetic")[2])

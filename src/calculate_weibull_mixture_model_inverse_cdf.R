@@ -2,14 +2,14 @@ source("./src/calculate_weibull_mixture_model_cdf.R")
 source("./src/dichotomy.R")
 
 calculate_weibull_mixture_model_inverse_cdf <- function(p, 
-                                                       locations, 
+                                                       shapes, 
                                                        scales,
                                                        weights, 
                                                        kind = c("geometric", "arithmetic")[1],
                                                        iterations = 100){
   # p: vector of probabilities
   # weights: vector of weights
-  # locations, scales: vectors of location and scale parameters of the considered distributions
+  # shapes, scales: vectors of shape and scale parameters of the considered distributions
   # The vectors of parameters must have the same number of elements
   # iterations: number of iterations to perform in the the dichotomy algorithm
   
@@ -18,7 +18,7 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
       # define the nonlinear equation to solve
       nle <- function(q){
         f <- -p + calculate_weibull_mixture_model_cdf(q = q, 
-                                                     locations = locations, 
+                                                     shapes = shapes, 
                                                      scales = scales, 
                                                      weights = weights,
                                                      kind = kind)
@@ -29,13 +29,13 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
       position_weights_nonzero <- which(weights > 0)
       
       # extract all parameters for which weights are different from zero
-      locations <- locations[position_weights_nonzero]
+      shapes <- shapes[position_weights_nonzero]
       scales <- scales[position_weights_nonzero]
       weights <- weights[position_weights_nonzero]
       
       # calculates some initial guesses for the root of the nonlinear equation to solve
       q_initial_guesses <- sapply(1:length(weights), function(j) qweibull(p = p, 
-                                                                       shape = locations[j], 
+                                                                       shape = shapes[j], 
                                                                        scale = scales[j])) 
       
       # estimate the root of the nonlinear equation to solve
@@ -60,12 +60,12 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
 # weights <- as.numeric(extraDistr::rdirichlet(n = 1, alpha = rep(1, times = m)))
 # 
 # scales <- rexp(n = m)
-# locations <- runif(n = m)
+# shapes <- runif(n = m)
 # 
 # p <- seq(from = 0.01, to = 0.09, length.out = 9)
 # 
 # results <- calculate_weibull_mixture_model_inverse_cdf(p = p,
-#                                                       locations,
+#                                                       shapes,
 #                                                       scales,
 #                                                       weights,
 #                                                       iterations = 100,
@@ -74,7 +74,7 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
 # results
 # 
 # calculate_weibull_mixture_model_cdf(q = results,
-#                                 locations,
+#                                 shapes,
 #                                 scales,
 #                                 weights,
 #                                 kind = c("geometric", "arithmetic")[1])
@@ -82,7 +82,7 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
 # 
 # 
 # results <- calculate_weibull_mixture_model_inverse_cdf(p = p,
-#                                                       locations,
+#                                                       shapes,
 #                                                       scales,
 #                                                       weights,
 #                                                       iterations = 100,
@@ -91,7 +91,7 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
 # results
 # 
 # calculate_weibull_mixture_model_cdf(q = results,
-#                                    locations,
+#                                    shapes,
 #                                    scales,
 #                                    weights,
 #                                    kind = c("geometric", "arithmetic")[2])
@@ -99,7 +99,7 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
 # 
 # 
 # results <- calculate_weibull_mixture_model_inverse_cdf(p = p,
-#                                                       locations,
+#                                                       shapes,
 #                                                       scales,
 #                                                       weights,
 #                                                       iterations = 100,
@@ -114,12 +114,12 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
 # weights <- as.numeric(extraDistr::rdirichlet(n = 1, alpha = rep(1, times = m)))
 # 
 # scales <- rexp(n = m)
-# locations <- runif(n = m)
+# shapes <- runif(n = m)
 # 
 # p <- seq(from = 0.90, to = 0.99, length.out = 10)
 # 
 # results <- calculate_weibull_mixture_model_inverse_cdf(p = p,
-#                                                       locations,
+#                                                       shapes,
 #                                                       scales,
 #                                                       weights,
 #                                                       iterations = 100,
@@ -128,7 +128,7 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
 # results
 # 
 # calculate_weibull_mixture_model_cdf(q = results,
-#                                    locations,
+#                                    shapes,
 #                                    scales,
 #                                    weights,
 #                                    kind = c("geometric", "arithmetic")[1])
@@ -136,7 +136,7 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
 # 
 # 
 # results <- calculate_weibull_mixture_model_inverse_cdf(p = p,
-#                                                       locations,
+#                                                       shapes,
 #                                                       scales,
 #                                                       weights,
 #                                                       iterations = 100,
@@ -145,7 +145,7 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
 # results
 # 
 # calculate_weibull_mixture_model_cdf(q = results,
-#                                    locations,
+#                                    shapes,
 #                                    scales,
 #                                    weights,
 #                                    kind = c("geometric", "arithmetic")[2])
@@ -153,7 +153,7 @@ calculate_weibull_mixture_model_inverse_cdf <- function(p,
 # 
 # 
 # results <- calculate_weibull_mixture_model_inverse_cdf(p = p,
-#                                                       locations,
+#                                                       shapes,
 #                                                       scales,
 #                                                       weights,
 #                                                       iterations = 100,
