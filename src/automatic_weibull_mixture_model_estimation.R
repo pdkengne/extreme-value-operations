@@ -82,6 +82,10 @@ initial_cluster_data <- initialize_cluster_data(x = x,
 
 # initial_cluster_data
 
+x <- abs(x)
+
+fit <- fitdist(data = x, distr = "weibull")
+
 
 cluster_models <- estimate_weibull_cluster_models(cluster_data = initial_cluster_data)
 
@@ -338,7 +342,6 @@ lines(support, density_arithmetic, col = 7, lwd = 2)
 weibull_mixture_model_object <- fit_stationary_weibull_mixture_model(x = x,
                                                                    nclusters = 2,
                                                                    centers = NULL,
-                                                                   sizes = NULL,
                                                                    minimum_cluster_size = 20,
                                                                    prior_cluster_weights = NULL,
                                                                    confidence_level = 0.95)

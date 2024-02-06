@@ -95,7 +95,6 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # normal_mixture_model_object <- fit_stationary_normal_mixture_model(x = x,
 #                                                                    nclusters = 2,
 #                                                                    centers = NULL,
-#                                                                    sizes = NULL,
 #                                                                    minimum_cluster_size = 20,
 #                                                                    prior_cluster_weights = NULL,
 #                                                                    confidence_level = 0.95)
@@ -118,7 +117,7 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # 
 # # example 2
 # 
-# source("./src/plot_fit_stationary_normal_mixture_model.R")
+# source("./src/fit_stationary_normal_mixture_model.R")
 # 
 # library(mixtools)
 # library(mixR)
@@ -135,7 +134,6 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # normal_mixture_model_object <- fit_stationary_normal_mixture_model(x = x,
 #                                                                    nclusters = 2,
 #                                                                    centers = NULL,
-#                                                                    sizes = NULL,
 #                                                                    minimum_cluster_size = 20,
 #                                                                    prior_cluster_weights = NULL,
 #                                                                    confidence_level = 0.95)
@@ -159,7 +157,7 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # 
 # # example 3
 # 
-# source("./src/plot_fit_stationary_normal_mixture_model.R")
+# source("./src/fit_stationary_normal_mixture_model.R")
 # 
 # x <- bmixture::rmixnorm(n = 1000, weight = c(2/4, 1/4, 1/4), mean = c(-2, +2, +10), sd = c(1, 1, 1))
 # 
@@ -169,7 +167,6 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # normal_mixture_model_object <- fit_stationary_normal_mixture_model(x = x,
 #                                                                    nclusters = 3,
 #                                                                    centers = NULL,
-#                                                                    sizes = NULL,
 #                                                                    minimum_cluster_size = 20,
 #                                                                    prior_cluster_weights = NULL,
 #                                                                    confidence_level = 0.95)

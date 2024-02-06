@@ -24,9 +24,9 @@ initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL){
     kmeans_object <- kmeans(x = x, centers = nclusters)
   }
   
-  centers <- kmeans_object$centers
+  centers <- kmeans_object$centers[, 1]
   
-  sizes <- kmeans_object$sizes
+  sizes <- kmeans_object$size
   
   if (length(sizes) == 1){
     sizes <- n - 1

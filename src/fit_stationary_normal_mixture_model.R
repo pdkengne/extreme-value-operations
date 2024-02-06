@@ -32,8 +32,7 @@ fit_stationary_normal_mixture_model <- function(x,
   
   initial_cluster_data <- initialize_cluster_data(x = x, 
                                                   nclusters = nclusters,
-                                                  centers = centers,
-                                                  sizes = sizes)
+                                                  centers = centers)
   
   cluster_models <- estimate_normal_cluster_models(x = x, cluster_data = initial_cluster_data)
   
