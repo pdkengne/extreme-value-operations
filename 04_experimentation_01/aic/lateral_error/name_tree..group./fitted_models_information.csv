@@ -1,8 +1,0 @@
-"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
-"model_01","~name_tree..group.","~name_tree..group.","~name_tree..group.","6915.93334176369","10227.4946262763"
-"model_02","~name_tree..group.","~1","~1","3519.33500491281","4617.91977471533"
-"model_03","~1","~name_tree..group.","~1","3836.30264074927","5053.43972383984"
-"model_04","~1","~1","~name_tree..group.","3809.72953591808","4947.83174348328"
-"model_05","~name_tree..group.","~name_tree..group.","~1","4690.64760396366","6437.31835307414"
-"model_06","~name_tree..group.","~1","~name_tree..group.","4900.70902121678","6694.80069564248"
-"model_07","~1","~name_tree..group.","~name_tree..group.","5171.40058437822","7202.59688538001"

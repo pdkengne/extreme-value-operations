@@ -17,17 +17,17 @@ source("./src/calculate_modes.R")
 source("./src/plot_modes.R")
 source("./src/make_weights.R")
 source("./src/initialize_cluster_data.R")
-source("./src/estimate_weibull_cluster_models.R")
-source("./src/calculate_weibull_cluster_attractors.R")
-source("./src/calculate_weibull_mixture_model_cdf.R")
-source("./src/calculate_weibull_mixture_model_pdf.R")
-source("./src/calculate_weibull_mixture_model_inverse_cdf.R")
-source("./src/fit_stationary_weibull_mixture_model.R")
-source("./src/plot_fit_stationary_weibull_mixture_model.R")
-source("./src/generate_weibull_mixture_model_sample.R")
+source("./src/estimate_evd_cluster_models.R")
+source("./src/calculate_evd_cluster_attractors.R")
+source("./src/calculate_evd_mixture_model_cdf.R")
+source("./src/calculate_evd_mixture_model_pdf.R")
+source("./src/calculate_evd_mixture_model_inverse_cdf.R")
+source("./src/fit_stationary_evd_mixture_model.R")
+source("./src/plot_fit_stationary_evd_mixture_model.R")
+source("./src/generate_evd_mixture_model_sample.R")
 
 
-# generate data from a weibull mixture model
+# generate data from a evd mixture model
 library(mixR)
 
 x <- rmixnormal(1500, c(0.5, 0.5), c(2, 5), c(1, 0.7))
@@ -40,7 +40,7 @@ cl <- kmeans(x = x, 2)
 cl$centers
 
 set.seed(102)
-x = rmixweibull(1000, c(0.3, 0.7), c(-2, 3), c(2, 1))
+x = rmixevd(1000, c(0.3, 0.7), c(-2, 3), c(2, 1))
 
 mod1 = mixfit(x, ncomp = 3) 
 mod1
@@ -85,10 +85,10 @@ initial_cluster_data <- initialize_cluster_data(x = x,
 
 x <- abs(x)
 
-fit <- fitdist(data = x, distr = "weibull")
+fit <- fitdist(data = x, distr = "evd")
 
 
-cluster_models <- estimate_weibull_cluster_models(cluster_data = initial_cluster_data)
+cluster_models <- estimate_evd_cluster_models(cluster_data = initial_cluster_data)
 
 cluster_models
 
@@ -117,13 +117,13 @@ support <- seq(from = min(support_empirical),
                length.out = 1000)
 
 
-density_geometric <- calculate_weibull_mixture_model_pdf(x = support, 
+density_geometric <- calculate_evd_mixture_model_pdf(x = support, 
                                                         shapes = shapes, 
                                                         scales = scales, 
                                                         weights = prior_cluster_weights,
                                                         kind = c("geometric", "arithmetic")[1])
 
-density_arithmetic <- calculate_weibull_mixture_model_pdf(x = support, 
+density_arithmetic <- calculate_evd_mixture_model_pdf(x = support, 
                                                          shapes = shapes, 
                                                          scales = scales, 
                                                          weights = prior_cluster_weights,
@@ -182,7 +182,7 @@ lines(support, density_geometric, col = 6, lwd = 2)
 lines(support, density_arithmetic, col = 7, lwd = 2)
 
 
-cluster_attractors <- calculate_weibull_cluster_attractors(x = x, 
+cluster_attractors <- calculate_evd_cluster_attractors(x = x, 
                                                           cluster_models = cluster_models, 
                                                           prior_cluster_weights = prior_cluster_weights)
 
@@ -204,11 +204,11 @@ cluster_attractors$cluster_attractors_weights
 
 # condition
 
-cluster_models <- estimate_weibull_cluster_models(cluster_data = cluster_attractors$cluster_data_list)
+cluster_models <- estimate_evd_cluster_models(cluster_data = cluster_attractors$cluster_data_list)
 
 cluster_models
 
-cluster_attractors <- calculate_weibull_cluster_attractors(x = x, 
+cluster_attractors <- calculate_evd_cluster_attractors(x = x, 
                                                           cluster_models = cluster_models, 
                                                           prior_cluster_weights = cluster_attractors$cluster_attractors_weights)
 
@@ -270,13 +270,13 @@ support <- seq(from = min(support_empirical),
                to = max(support_empirical), 
                length.out = 1000)
 
-density_geometric <- calculate_weibull_mixture_model_pdf(x = support, 
+density_geometric <- calculate_evd_mixture_model_pdf(x = support, 
                                                         shapes = shapes, 
                                                         scales = scales, 
                                                         weights = cluster_attractors$cluster_attractors_weights,
                                                         kind = c("geometric", "arithmetic")[1])
 
-density_arithmetic <- calculate_weibull_mixture_model_pdf(x = support, 
+density_arithmetic <- calculate_evd_mixture_model_pdf(x = support, 
                                                          shapes = shapes, 
                                                          scales = scales, 
                                                          weights = cluster_attractors$cluster_attractors_weights,
@@ -340,23 +340,23 @@ lines(support, density_arithmetic, col = 7, lwd = 2)
 
 
 
-weibull_mixture_model_object <- fit_stationary_weibull_mixture_model(x = x,
+evd_mixture_model_object <- fit_stationary_evd_mixture_model(x = x,
                                                                    nclusters = 2,
                                                                    centers = NULL,
                                                                    minimum_cluster_size = 20,
                                                                    prior_cluster_weights = NULL,
                                                                    confidence_level = 0.95)
 
-names(weibull_mixture_model_object)
+names(evd_mixture_model_object)
 
 # [1] "x"                              "cluster_data_list"              "cluster_models"
 # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
 # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
 # [10] "loglik"                         "cluster_information_criteria"
 
-weibull_mixture_model_object
+evd_mixture_model_object
 
-plot_fit_stationary_weibull_mixture_model(weibull_mixture_model_object = weibull_mixture_model_object,
+plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
                                          xlab = "support",
                                          ylab = "density",
                                          main = "density plot",

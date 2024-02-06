@@ -1,5 +1,0 @@
-"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
-"model_01","~name_house","~name_house","~name_house","-15838.0594758519","-10811.441392439"
-"model_02","~name_house","~1","~1","-16337.3978976079","-14843.6387501785"
-"model_03","~1","~name_house","~1","-20640.1335370615","-19304.4441406828"
-"model_05","~name_house","~name_house","~1","-21915.3547938446","-19836.7375675276"

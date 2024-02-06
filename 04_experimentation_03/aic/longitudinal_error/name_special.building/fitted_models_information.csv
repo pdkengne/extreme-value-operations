@@ -1,7 +1,0 @@
-"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
-"model_02","~name_special.building","~1","~1","-8292.3987833478","-7061.73448980989"
-"model_03","~1","~name_special.building","~1","-8468.05340467123","-7353.48951618407"
-"model_04","~1","~1","~name_special.building","-10172.1698913001","-8748.0049226776"
-"model_05","~name_special.building","~name_special.building","~1","-11148.483978633","-8834.21590462147"
-"model_06","~name_special.building","~1","~name_special.building","-7480.89912845403","-5305.95154050338"
-"model_07","~1","~name_special.building","~name_special.building","-9024.61289765276","-7174.7464438442"

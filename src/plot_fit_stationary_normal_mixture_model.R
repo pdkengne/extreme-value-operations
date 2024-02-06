@@ -92,7 +92,7 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # set.seed(102)
 # x = rmixnormal(1000, c(0.3, 0.7), c(-2, 3), c(2, 1))
 # 
-# mod1 = mixfit(x, ncomp = 2)
+# mod1 = mixfit(x, ncomp = 2, family = "normal")
 # mod1
 # 
 # normal_mixture_model_object <- fit_stationary_normal_mixture_model(x = x,
@@ -132,7 +132,7 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # 
 # x <- faithful$eruptions
 # 
-# mod1 = mixfit(x, ncomp = 2)
+# mod1 = mixfit(x, ncomp = 2, family = "normal")
 # mod1
 # 
 # normal_mixture_model_object <- fit_stationary_normal_mixture_model(x = x,
@@ -166,7 +166,7 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # 
 # x <- bmixture::rmixnorm(n = 1000, weight = c(2/4, 1/4, 1/4), mean = c(-2, +2, +10), sd = c(1, 1, 1))
 # 
-# mod1 = mixfit(x, ncomp = 3)
+# mod1 = mixfit(x, ncomp = 3, family = "normal")
 # mod1
 # 
 # normal_mixture_model_object <- fit_stationary_normal_mixture_model(x = x,

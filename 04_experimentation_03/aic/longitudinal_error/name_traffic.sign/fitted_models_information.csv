@@ -1,8 +1,0 @@
-"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
-"model_01","~name_traffic.sign","~name_traffic.sign","~name_traffic.sign","-15606.4385332157","-13663.6917553665"
-"model_02","~name_traffic.sign","~1","~1","-8481.75991583911","-7328.49589233503"
-"model_03","~1","~name_traffic.sign","~1","-7572.81755566553","-6535.65393721219"
-"model_04","~1","~1","~name_traffic.sign","-9728.27356084349","-8265.40845720408"
-"model_05","~name_traffic.sign","~name_traffic.sign","~1","-7562.87851398279","-6130.97351835692"
-"model_06","~name_traffic.sign","~1","~name_traffic.sign","-11912.7183488778","-10248.6125431504"
-"model_07","~1","~name_traffic.sign","~name_traffic.sign","-16899.1408884472","-15049.2744346387"

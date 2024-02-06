@@ -1,4 +1,0 @@
-"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
-"model_02","~name_fence","~1","~1","3008.48689621679","3949.00191496859"
-"model_03","~1","~name_fence","~1","3911.91555443493","5129.05263752549"
-"model_05","~name_fence","~name_fence","~1","5883.88415329518","8009.9223049274"

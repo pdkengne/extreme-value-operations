@@ -10,19 +10,19 @@ source("./src/calculate_modes.R")
 source("./src/plot_modes.R")
 source("./src/make_weights.R")
 source("./src/initialize_cluster_data.R")
-source("./src/estimate_normal_cluster_models.R")
-source("./src/calculate_normal_cluster_attractors.R")
-source("./src/calculate_normal_mixture_model_cdf.R")
-source("./src/calculate_normal_mixture_model_pdf.R")
-source("./src/calculate_normal_mixture_model_inverse_cdf.R")
+source("./src/estimate_evd_cluster_models.R")
+source("./src/calculate_evd_cluster_attractors.R")
+source("./src/calculate_evd_mixture_model_cdf.R")
+source("./src/calculate_evd_mixture_model_pdf.R")
+source("./src/calculate_evd_mixture_model_inverse_cdf.R")
 
 
-fit_stationary_normal_mixture_model <- function(x, 
-                                                nclusters = NULL, 
-                                                centers = NULL, 
-                                                minimum_cluster_size = 20,
-                                                prior_cluster_weights = NULL,
-                                                confidence_level = 0.95){
+fit_stationary_evd_mixture_model <- function(x, 
+                                                 nclusters = NULL, 
+                                                 centers = NULL, 
+                                                 minimum_cluster_size = 20,
+                                                 prior_cluster_weights = NULL,
+                                                 confidence_level = 0.95){
   # x:
   # nclusters:
   # centers:
@@ -34,11 +34,11 @@ fit_stationary_normal_mixture_model <- function(x,
                                                   nclusters = nclusters,
                                                   centers = centers)
   
-  cluster_models <- estimate_normal_cluster_models(x = x, cluster_data = initial_cluster_data)
+  cluster_models <- estimate_evd_cluster_models(x = x, cluster_data = initial_cluster_data)
   
   nclusters <- length(cluster_models)
   
-  cluster_attractors <- calculate_normal_cluster_attractors(x = x, 
+  cluster_attractors <- calculate_evd_cluster_attractors(x = x, 
                                                             cluster_models = cluster_models, 
                                                             minimum_cluster_size = minimum_cluster_size,
                                                             prior_cluster_weights = prior_cluster_weights,
@@ -57,9 +57,9 @@ fit_stationary_normal_mixture_model <- function(x,
     
     cluster_attractors_weights <- cluster_attractors$cluster_attractors_weights
     
-    cluster_models <- estimate_normal_cluster_models(x = x, cluster_data = cluster_data_list)
+    cluster_models <- estimate_evd_cluster_models(x = x, cluster_data = cluster_data_list)
     
-    cluster_attractors <- calculate_normal_cluster_attractors(x = x, 
+    cluster_attractors <- calculate_evd_cluster_attractors(x = x, 
                                                               cluster_models = cluster_models, 
                                                               minimum_cluster_size = minimum_cluster_size,
                                                               prior_cluster_weights = cluster_attractors_weights,
@@ -107,17 +107,17 @@ fit_stationary_normal_mixture_model <- function(x,
 # library(mixR)
 # 
 # set.seed(102)
-# x = rmixnormal(1000, c(0.3, 0.7), c(-2, 3), c(2, 1))
+# x = mixR::rmixevd(1000, c(0.3, 0.7), c(0.6, 1.3), c(0.1, 0.1))
 # 
-# mod1 = mixfit(x, ncomp = 2, family = "normal")
+# mod1 = mixfit(x, ncomp = 2, family = 'evd')
 # mod1
 # 
-# results <- fit_stationary_normal_mixture_model(x = x,
-#                                                nclusters = 2,
-#                                                centers = NULL,
-#                                                minimum_cluster_size = 20,
-#                                                prior_cluster_weights = NULL,
-#                                                confidence_level = 0.95)
+# results <- fit_stationary_evd_mixture_model(x = x,
+#                                                 nclusters = 2,
+#                                                 centers = NULL,
+#                                                 minimum_cluster_size = 20,
+#                                                 prior_cluster_weights = NULL,
+#                                                 confidence_level = 0.95)
 # 
 # names(results)
 # 
@@ -140,15 +140,15 @@ fit_stationary_normal_mixture_model <- function(x,
 # 
 # x <- faithful$eruptions
 # 
-# mod1 = mixfit(x, ncomp = 2, family = "normal")
+# mod1 = mixfit(x, ncomp = 2, family = 'evd')
 # mod1
 # 
-# results <- fit_stationary_normal_mixture_model(x = x,
-#                                                nclusters = 2,
-#                                                centers = NULL,
-#                                                minimum_cluster_size = 20,
-#                                                prior_cluster_weights = NULL,
-#                                                confidence_level = 0.95)
+# results <- fit_stationary_evd_mixture_model(x = x,
+#                                                 nclusters = 2,
+#                                                 centers = NULL,
+#                                                 minimum_cluster_size = 20,
+#                                                 prior_cluster_weights = NULL,
+#                                                 confidence_level = 0.95)
 # 
 # names(results)
 # 
@@ -162,17 +162,17 @@ fit_stationary_normal_mixture_model <- function(x,
 # 
 # # example 3
 # 
-# x <- bmixture::rmixnorm(n = 1000, weight = c(2/4, 1/4, 1/4), mean = c(-2, +2, +10), sd = c(1, 1, 1))
+# x <- mixR::rmixevd(n = 2000, pi = c(2/4, 1/4, 1/4), mu = c(0.6, 1.3, 2.6), sd = c(0.1, 0.1, 0.1))
 # 
-# mod1 = mixfit(x, ncomp = 3, family = "normal")
+# mod1 = mixfit(x, ncomp = 3, family = 'evd')
 # mod1
 # 
-# results <- fit_stationary_normal_mixture_model(x = x,
-#                                                nclusters = 3,
-#                                                centers = NULL,
-#                                                minimum_cluster_size = 20,
-#                                                prior_cluster_weights = NULL,
-#                                                confidence_level = 0.95)
+# results <- fit_stationary_evd_mixture_model(x = x,
+#                                                 nclusters = 3,
+#                                                 centers = NULL,
+#                                                 minimum_cluster_size = 20,
+#                                                 prior_cluster_weights = NULL,
+#                                                 confidence_level = 0.95)
 # 
 # names(results)
 # 
