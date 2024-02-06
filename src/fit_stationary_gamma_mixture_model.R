@@ -18,11 +18,11 @@ source("./src/calculate_gamma_mixture_model_inverse_cdf.R")
 
 
 fit_stationary_gamma_mixture_model <- function(x, 
-                                                 nclusters = NULL, 
-                                                 centers = NULL, 
-                                                 minimum_cluster_size = 20,
-                                                 prior_cluster_weights = NULL,
-                                                 confidence_level = 0.95){
+                                               nclusters = NULL, 
+                                               centers = NULL, 
+                                               minimum_cluster_size = 20,
+                                               prior_cluster_weights = NULL,
+                                               confidence_level = 0.95){
   # x:
   # nclusters:
   # centers:
@@ -39,10 +39,10 @@ fit_stationary_gamma_mixture_model <- function(x,
   nclusters <- length(cluster_models)
   
   cluster_attractors <- calculate_gamma_cluster_attractors(x = x, 
-                                                            cluster_models = cluster_models, 
-                                                            minimum_cluster_size = minimum_cluster_size,
-                                                            prior_cluster_weights = prior_cluster_weights,
-                                                            confidence_level = confidence_level)
+                                                           cluster_models = cluster_models, 
+                                                           minimum_cluster_size = minimum_cluster_size,
+                                                           prior_cluster_weights = prior_cluster_weights,
+                                                           confidence_level = confidence_level)
   
   previous_cluster_models_parameters <- cluster_attractors$cluster_models_coefficients
   
@@ -60,10 +60,10 @@ fit_stationary_gamma_mixture_model <- function(x,
     cluster_models <- estimate_gamma_cluster_models(x = x, cluster_data = cluster_data_list)
     
     cluster_attractors <- calculate_gamma_cluster_attractors(x = x, 
-                                                              cluster_models = cluster_models, 
-                                                              minimum_cluster_size = minimum_cluster_size,
-                                                              prior_cluster_weights = cluster_attractors_weights,
-                                                              confidence_level = confidence_level)
+                                                             cluster_models = cluster_models, 
+                                                             minimum_cluster_size = minimum_cluster_size,
+                                                             prior_cluster_weights = cluster_attractors_weights,
+                                                             confidence_level = confidence_level)
     
     selected_cluster_id <- cluster_attractors$selected_cluster_id
     
@@ -96,7 +96,7 @@ fit_stationary_gamma_mixture_model <- function(x,
   output[["cluster_models_coefficients"]] <- cluster_attractors$cluster_models_coefficients
   output[["loglik"]] <- cluster_attractors$loglik
   output[["cluster_information_criteria"]] <- cluster_attractors$cluster_information_criteria
-
+  
   output
   
 }
@@ -106,18 +106,21 @@ fit_stationary_gamma_mixture_model <- function(x,
 # 
 # library(mixR)
 # 
-# set.seed(102)
-# x = mixR::rmixgamma(1000, c(0.3, 0.7), c(0.6, 1.3), c(0.1, 0.1))
+# n <- 2000
+# 
+# x <- bmixture::rmixgamma(n = n, weight = c(2/5, 3/5), alpha = c(9, 7), beta = c(0.5, 1))
+# 
+# hist(x, nclass = 30)
 # 
 # mod1 = mixfit(x, ncomp = 2, family = 'gamma')
 # mod1
 # 
 # results <- fit_stationary_gamma_mixture_model(x = x,
-#                                                 nclusters = 2,
-#                                                 centers = NULL,
-#                                                 minimum_cluster_size = 20,
-#                                                 prior_cluster_weights = NULL,
-#                                                 confidence_level = 0.95)
+#                                               nclusters = 2,
+#                                               centers = NULL,
+#                                               minimum_cluster_size = 20,
+#                                               prior_cluster_weights = NULL,
+#                                               confidence_level = 0.95)
 # 
 # names(results)
 # 
@@ -144,11 +147,11 @@ fit_stationary_gamma_mixture_model <- function(x,
 # mod1
 # 
 # results <- fit_stationary_gamma_mixture_model(x = x,
-#                                                 nclusters = 2,
-#                                                 centers = NULL,
-#                                                 minimum_cluster_size = 20,
-#                                                 prior_cluster_weights = NULL,
-#                                                 confidence_level = 0.95)
+#                                               nclusters = 2,
+#                                               centers = NULL,
+#                                               minimum_cluster_size = 20,
+#                                               prior_cluster_weights = NULL,
+#                                               confidence_level = 0.95)
 # 
 # names(results)
 # 
@@ -162,17 +165,20 @@ fit_stationary_gamma_mixture_model <- function(x,
 # 
 # # example 3
 # 
-# x <- mixR::rmixgamma(n = 2000, pi = c(2/4, 1/4, 1/4), mu = c(0.6, 1.3, 2.6), sd = c(0.1, 0.1, 0.1))
+# n <- 2000
+# x <- bmixture::rmixgamma(n = n, weight = c(2/4, 1/4, 1/4), alpha = c(9, 7, 8), beta = c(0.5, 1, 2))
+# 
+# hist(x, nclass = 30)
 # 
 # mod1 = mixfit(x, ncomp = 3, family = 'gamma')
 # mod1
 # 
 # results <- fit_stationary_gamma_mixture_model(x = x,
-#                                                 nclusters = 3,
-#                                                 centers = NULL,
-#                                                 minimum_cluster_size = 20,
-#                                                 prior_cluster_weights = NULL,
-#                                                 confidence_level = 0.95)
+#                                               nclusters = 3,
+#                                               centers = NULL,
+#                                               minimum_cluster_size = 20,
+#                                               prior_cluster_weights = NULL,
+#                                               confidence_level = 0.95)
 # 
 # names(results)
 # 
