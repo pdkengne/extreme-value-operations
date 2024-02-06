@@ -1,13 +1,14 @@
 source("./src/get_knn.R")
 source("./src/make_weights.R")
+source("./src/initialize_cluster_data.R")
 source("./src/calculate_gamma_mixture_model_pdf.R")
 
 
 calculate_gamma_cluster_attractors <- function(x, 
-                                                 cluster_models,
-                                                 minimum_cluster_size = 20,
-                                                 prior_cluster_weights = NULL,
-                                                 confidence_level = 0.95){
+                                               cluster_models,
+                                               minimum_cluster_size = 20,
+                                               prior_cluster_weights = NULL,
+                                               confidence_level = 0.95){
   # x:
   # cluster_models:
   # minimum_cluster_size:
@@ -17,7 +18,13 @@ calculate_gamma_cluster_attractors <- function(x,
   nclusters <- length(cluster_models)
   
   if (is.null(prior_cluster_weights)){
-    prior_cluster_weights <- make_weights(positives_values = rep(1, times = nclusters))
+    initial_cluster_data <- initialize_cluster_data(x = x, nclusters = nclusters)
+    
+    prior_cluster_sizes <- sapply(initial_cluster_data, function(data){
+      length(data)
+    })
+    
+    prior_cluster_weights <-  make_weights(positives_values = prior_cluster_sizes)
   }
   
   cluster_models_parameters <- lapply(1:nclusters, function(k){
@@ -28,8 +35,8 @@ calculate_gamma_cluster_attractors <- function(x,
   cluster_attractors_matrix <- sapply(1:nclusters, function(k){
     parameters <- cluster_models_parameters[[k]]
     densities <- dgamma(x = x, 
-                          shape = parameters["shape"], 
-                          scale = parameters["scale"])
+                        shape = parameters["shape"], 
+                        scale = 1/parameters["rate"])
     
     densities*prior_cluster_weights[k]
   })
@@ -69,15 +76,15 @@ calculate_gamma_cluster_attractors <- function(x,
     model <- cluster_models[[k]]
     confint(object = model, level = confidence_level)
   })
-    
+  
   shapes <- cluster_models_coefficients[, "shape"]
-  scales <- cluster_models_coefficients[, "scale"]
+  scales <- 1/cluster_models_coefficients[, "rate"]
   
   densities <- calculate_gamma_mixture_model_pdf(x = x, 
-                                                   shapes = shapes, 
-                                                   scales = scales, 
-                                                   weights = cluster_attractors_weights,
-                                                   kind = c("geometric", "arithmetic")[2])
+                                                 shapes = shapes, 
+                                                 scales = scales, 
+                                                 weights = cluster_attractors_weights,
+                                                 kind = c("geometric", "arithmetic")[2])
   
   loglik <- sum(log(densities))
   
@@ -100,7 +107,7 @@ calculate_gamma_cluster_attractors <- function(x,
   
   cluster_data_list <- lapply(1:nclusters, function(k){
     center <- cluster_attractors_centers[k]
-
+    
     size <- ifelse(test = nclusters == 1, 
                    yes = ceiling(n - 1), 
                    no = ceiling(cluster_attractors_frequencies[k]))
@@ -135,7 +142,9 @@ calculate_gamma_cluster_attractors <- function(x,
 # source("./src/calculate_gamma_mixture_model_cdf.R")
 # 
 # n <- 1000
-# x <- mixR::rmixgamma(n = n, pi = c(1/2, 1/2), mu = c(0.6, 1.3), sd = c(0.1, 0.1))
+# x <- bmixture::rmixgamma(n = n, weight = c(1/2, 1/2), alpha = c(9, 7), beta = c(0.5, 1))
+# 
+# hist(x, nclass = 30)
 # 
 # 
 # nclusters <- 2
@@ -149,13 +158,19 @@ calculate_gamma_cluster_attractors <- function(x,
 # 
 # cluster_models
 # 
-# prior_cluster_weights <- make_weights(positives_values = rep(1, times = nclusters))
+# prior_cluster_sizes <- sapply(initial_cluster_data, function(data){
+#   length(data)
+# })
+# 
+# prior_cluster_sizes
+# 
+# prior_cluster_weights <-  make_weights(positives_values = prior_cluster_sizes)
 # 
 # prior_cluster_weights
 # 
 # cluster_attractors <- calculate_gamma_cluster_attractors(x = x,
-#                                                            cluster_models = cluster_models,
-#                                                            prior_cluster_weights = prior_cluster_weights)
+#                                                          cluster_models = cluster_models,
+#                                                          prior_cluster_weights = prior_cluster_weights)
 # 
 # names(cluster_attractors)
 # 

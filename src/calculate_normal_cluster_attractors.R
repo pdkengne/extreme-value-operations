@@ -1,5 +1,6 @@
 source("./src/get_knn.R")
 source("./src/make_weights.R")
+source("./src/initialize_cluster_data.R")
 source("./src/calculate_normal_mixture_model_pdf.R")
 
 
@@ -17,7 +18,13 @@ calculate_normal_cluster_attractors <- function(x,
   nclusters <- length(cluster_models)
   
   if (is.null(prior_cluster_weights)){
-    prior_cluster_weights <- make_weights(positives_values = rep(1, times = nclusters))
+    initial_cluster_data <- initialize_cluster_data(x = x, nclusters = nclusters)
+    
+    prior_cluster_sizes <- sapply(initial_cluster_data, function(data){
+      length(data)
+    })
+    
+    prior_cluster_weights <-  make_weights(positives_values = prior_cluster_sizes)
   }
   
   cluster_models_parameters <- lapply(1:nclusters, function(k){

@@ -99,7 +99,7 @@ cluster_models_parameters <- lapply(1:nclusters, function(k){
 cluster_models_parameters <- do.call(what = rbind, cluster_models_parameters)
 
 shapes <- cluster_models_parameters[, "shape"]
-scales <- cluster_models_parameters[, "scale"]
+scales <- cluster_models_parameters[, "rate"]
 
 prior_cluster_weights <- make_weights(positives_values = rep(1, times = nclusters))
 
@@ -130,7 +130,7 @@ cluster_densities <- sapply(1:length(cluster_models), function(k){
   parameters <- cluster_models_parameters[k, ]
   densities <- dgamma(x = support, 
                       shape = parameters["shape"], 
-                      scale = parameters["scale"])
+                      scale = parameters["rate"])
   densities
 })
 
@@ -156,7 +156,7 @@ lapply(1:length(cluster_models), function(k){
   parameters <- cluster_models_parameters[k, ]
   densities <- dgamma(x = support, 
                       shape = parameters["shape"], 
-                      scale = parameters["scale"])
+                      scale = parameters["rate"])
   lines(x = support, y = densities, col = k + 1)
 })
 

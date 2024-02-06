@@ -33,7 +33,7 @@ plot_fit_stationary_gamma_mixture_model <- function(gamma_mixture_model_object,
   cluster_models_parameters <- gamma_mixture_model_object$cluster_models_coefficients
   
   shapes <- cluster_models_parameters[, "shape"]
-  scales <- cluster_models_parameters[, "scale"]
+  scales <- 1/cluster_models_parameters[, "rate"]
   
   cluster_attractors_weights <- gamma_mixture_model_object$cluster_attractors_weights
   
