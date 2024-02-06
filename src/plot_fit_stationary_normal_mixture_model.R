@@ -112,6 +112,7 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # normal_mixture_model_object
 # 
 # plot_fit_stationary_normal_mixture_model(normal_mixture_model_object = normal_mixture_model_object,
+#                                          nclass = NULL,
 #                                          xlab = "support",
 #                                          ylab = "density",
 #                                          main = "density plot",
@@ -151,6 +152,7 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # normal_mixture_model_object
 # 
 # plot_fit_stationary_normal_mixture_model(normal_mixture_model_object = normal_mixture_model_object,
+#                                          nclass = NULL,
 #                                          xlab = "support",
 #                                          ylab = "density",
 #                                          main = "density plot",
@@ -184,6 +186,7 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # normal_mixture_model_object
 # 
 # plot_fit_stationary_normal_mixture_model(normal_mixture_model_object = normal_mixture_model_object,
+#                                          nclass = NULL,
 #                                          xlab = "support",
 #                                          ylab = "density",
 #                                          main = "density plot",
