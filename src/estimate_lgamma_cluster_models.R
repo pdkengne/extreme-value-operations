@@ -1,22 +1,14 @@
 library(actuar)
 
 
-estimate_lgamma_cluster_models <- function(x, cluster_data){
+estimate_lgamma_cluster_models <- function(cluster_data){
   # x:
   # cluster_data:
   
-  if (length(cluster_data) == 1){
-    cluster_models <- lapply(1:1, function(data){
-      model <- fitdistrplus::fitdist(data = x, distr = "lgamma", method = "mle")
-      model
-    })
-  }
-  else {
-    cluster_models <- lapply(cluster_data, function(data){
-      model <- fitdistrplus::fitdist(data = data, distr = "lgamma", method = "mle")
-      model
-    })
-  }
+  cluster_models <- lapply(cluster_data, function(data){
+    model <- fitdistrplus::fitdist(data = data, distr = "lgamma", method = "mle")
+    model
+  })
   
   cluster_models
 }

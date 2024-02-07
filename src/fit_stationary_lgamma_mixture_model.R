@@ -36,7 +36,7 @@ fit_stationary_lgamma_mixture_model <- function(x,
                                                   nclusters = nclusters,
                                                   centers = centers)
   
-  cluster_models <- estimate_lgamma_cluster_models(x = x, cluster_data = initial_cluster_data)
+  cluster_models <- estimate_lgamma_cluster_models(cluster_data = initial_cluster_data)
   
   nclusters <- length(cluster_models)
   
@@ -59,7 +59,7 @@ fit_stationary_lgamma_mixture_model <- function(x,
     
     cluster_attractors_weights <- cluster_attractors$cluster_attractors_weights
     
-    cluster_models <- estimate_lgamma_cluster_models(x = x, cluster_data = cluster_data_list)
+    cluster_models <- estimate_lgamma_cluster_models(cluster_data = cluster_data_list)
     
     cluster_attractors <- calculate_lgamma_cluster_attractors(x = x, 
                                                               cluster_models = cluster_models, 
