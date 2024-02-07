@@ -80,7 +80,7 @@ calculate_lgamma_cluster_attractors <- function(x,
   })
   
   shapes <- cluster_models_coefficients[, "shapelog"]
-  scales <- 1/cluster_models_coefficients[, "ratelog"]
+  scales <- cluster_models_coefficients[, "ratelog"]
   
   densities <- calculate_lgamma_mixture_model_pdf(x = x, 
                                                   shapes = shapes, 

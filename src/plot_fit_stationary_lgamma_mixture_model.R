@@ -4,6 +4,8 @@
 # library(dbscan)
 # library(bmixture)
 
+# library(actuar)
+
 
 source("./src/get_knn.R")
 source("./src/calculate_modes.R")
@@ -18,11 +20,11 @@ source("./src/calculate_lgamma_mixture_model_inverse_cdf.R")
 
 
 plot_fit_stationary_lgamma_mixture_model <- function(lgamma_mixture_model_object,
-                                                    nclass = NULL,
-                                                    xlab = "support",
-                                                    ylab = "density",
-                                                    main = "density plot",
-                                                    legend_position = "topleft"){
+                                                     nclass = NULL,
+                                                     xlab = "support",
+                                                     ylab = "density",
+                                                     main = "density plot",
+                                                     legend_position = "topleft"){
   # lgamma_mixture_model_object: an object associated with a result of the function "fit_stationary_lgamma_mixture_model()"
   # nclass:
   # xlab: label of the x-axis
@@ -34,8 +36,8 @@ plot_fit_stationary_lgamma_mixture_model <- function(lgamma_mixture_model_object
   
   cluster_models_parameters <- lgamma_mixture_model_object$cluster_models_coefficients
   
-  shapes <- cluster_models_parameters[, "shape"]
-  scales <- 1/cluster_models_parameters[, "rate"]
+  shapes <- cluster_models_parameters[, "shapelog"]
+  scales <- cluster_models_parameters[, "ratelog"]
   
   cluster_attractors_weights <- lgamma_mixture_model_object$cluster_attractors_weights
   
@@ -50,16 +52,16 @@ plot_fit_stationary_lgamma_mixture_model <- function(lgamma_mixture_model_object
                  length.out = 1000)
   
   density_geometric <- calculate_lgamma_mixture_model_pdf(x = support, 
-                                                         shapes = shapes, 
-                                                         scales = scales, 
-                                                         weights = cluster_attractors_weights,
-                                                         kind = c("geometric", "arithmetic")[1])
-  
-  density_arithmetic <- calculate_lgamma_mixture_model_pdf(x = support, 
                                                           shapes = shapes, 
                                                           scales = scales, 
                                                           weights = cluster_attractors_weights,
-                                                          kind = c("geometric", "arithmetic")[2])
+                                                          kind = c("geometric", "arithmetic")[1])
+  
+  density_arithmetic <- calculate_lgamma_mixture_model_pdf(x = support, 
+                                                           shapes = shapes, 
+                                                           scales = scales, 
+                                                           weights = cluster_attractors_weights,
+                                                           kind = c("geometric", "arithmetic")[2])
   
   density_range <- range(c(density_empirical, density_geometric, density_arithmetic))
   
@@ -91,51 +93,11 @@ plot_fit_stationary_lgamma_mixture_model <- function(lgamma_mixture_model_object
 # 
 # n <- 2000
 # 
-# x <- bmixture::rmixlgamma(n = n, weight = c(2/5, 3/5), alpha = c(9, 7), beta = c(0.5, 1))
+# x <- bmixture::rmixgamma(n = n, weight = c(2/5, 3/5), alpha = c(9, 7), beta = c(0.5, 1))
 # 
 # hist(x, nclass = 30)
 # 
-# mod1 = mixfit(x, ncomp = 2, family = 'lgamma')
-# mod1
-# 
-# lgamma_mixture_model_object <- fit_stationary_lgamma_mixture_model(x = x,
-#                                                                  nclusters = 2,
-#                                                                  centers = NULL,
-#                                                                  minimum_cluster_size = 20,
-#                                                                  prior_cluster_weights = NULL,
-#                                                                  confidence_level = 0.95)
-# 
-# names(lgamma_mixture_model_object)
-# 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"
-# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# # [10] "loglik"                         "cluster_information_criteria"
-# 
-# lgamma_mixture_model_object
-# 
-# plot_fit_stationary_lgamma_mixture_model(lgamma_mixture_model_object = lgamma_mixture_model_object,
-#                                         nclass = 30,
-#                                         xlab = "support",
-#                                         ylab = "density",
-#                                         main = "density plot",
-#                                         legend_position = "topright")
-# 
-# 
-# # example 2
-# 
-# source("./src/fit_stationary_lgamma_mixture_model.R")
-# 
-# library(mixtools)
-# library(mixR)
-# 
-# data(faithful)
-# 
-# x <- faithful$waiting
-# 
-# x <- faithful$eruptions
-# 
-# mod1 = mixfit(x, ncomp = 2, family = 'lgamma')
+# mod1 = mixfit(x, ncomp = 2, family = 'gamma')
 # mod1
 # 
 # lgamma_mixture_model_object <- fit_stationary_lgamma_mixture_model(x = x,
@@ -162,22 +124,25 @@ plot_fit_stationary_lgamma_mixture_model <- function(lgamma_mixture_model_object
 #                                         legend_position = "topright")
 # 
 # 
-# 
-# # example 3
+# # example 2
 # 
 # source("./src/fit_stationary_lgamma_mixture_model.R")
 # 
-# n <- 2000
-# x <- bmixture::rmixlgamma(n = n, weight = c(2/4, 1/4, 1/4), alpha = c(9, 7, 8), beta = c(0.5, 1, 2))
+# library(mixtools)
+# library(mixR)
 # 
-# hist(x, nclass = 30)
+# data(faithful)
 # 
-# mod1 = mixfit(x, ncomp = 3, family = 'lgamma')
+# x <- faithful$waiting
+# 
+# x <- faithful$eruptions
+# 
+# mod1 = mixfit(x, ncomp = 2, family = 'gamma')
 # mod1
 # 
 # lgamma_mixture_model_object <- fit_stationary_lgamma_mixture_model(x = x,
-#                                                                  nclusters = 3,
-#                                                                  centers = 30,
+#                                                                  nclusters = 2,
+#                                                                  centers = NULL,
 #                                                                  minimum_cluster_size = 20,
 #                                                                  prior_cluster_weights = NULL,
 #                                                                  confidence_level = 0.95)
@@ -192,10 +157,9 @@ plot_fit_stationary_lgamma_mixture_model <- function(lgamma_mixture_model_object
 # lgamma_mixture_model_object
 # 
 # plot_fit_stationary_lgamma_mixture_model(lgamma_mixture_model_object = lgamma_mixture_model_object,
-#                                         nclass = 30,
+#                                         nclass = NULL,
 #                                         xlab = "support",
 #                                         ylab = "density",
 #                                         main = "density plot",
 #                                         legend_position = "topright")
-
 
