@@ -26,6 +26,16 @@ source("./src/fit_stationary_normal_mixture_model.R")
 source("./src/plot_fit_stationary_normal_mixture_model.R")
 
 
+cluster_data_list <- lapply(1:nclusters, function(k){
+  positions <- which(cluster_attractors_frequencies_table == k)
+  
+  cluster_data <- x[positions]
+  
+  cluster_data
+})
+
+
+
 # generate data from a Normal mixture model
 library(mixR)
 set.seed(102)

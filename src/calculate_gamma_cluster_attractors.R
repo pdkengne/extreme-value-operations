@@ -103,17 +103,10 @@ calculate_gamma_cluster_attractors <- function(x,
     mean(x[which(cluster_attractors_frequencies_table == k)])
   })
   
-  data <- data.frame(x = x)
-  
   cluster_data_list <- lapply(1:nclusters, function(k){
-    center <- cluster_attractors_centers[k]
+    positions <- which(cluster_attractors_frequencies_table == k)
     
-    size <- ifelse(test = nclusters == 1, 
-                   yes = ceiling(n - 1), 
-                   no = ceiling(cluster_attractors_frequencies[k]))
-    
-    cluster_data_object <- get_knn(data = data, k = size, query = center)
-    cluster_data <- x[cluster_data_object$id[1, ]]
+    cluster_data <- x[positions]
     
     cluster_data
   })
@@ -139,7 +132,7 @@ calculate_gamma_cluster_attractors <- function(x,
 # # example 1
 # 
 # source("./src/initialize_cluster_data.R")
-# source("./src/calculate_gamma_mixture_model_cdf.R")
+# source("./src/estimate_gamma_cluster_models.R")
 # 
 # n <- 1000
 # x <- bmixture::rmixgamma(n = n, weight = c(1/2, 1/2), alpha = c(9, 7), beta = c(0.5, 1))
