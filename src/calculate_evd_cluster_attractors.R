@@ -109,8 +109,6 @@ calculate_evd_cluster_attractors <- function(x,
     mean(x[which(cluster_attractors_frequencies_table == k)])
   })
   
-  data <- data.frame(x = x)
-  
   cluster_data_list <- lapply(1:nclusters, function(k){
     positions <- which(cluster_attractors_frequencies_table == k)
     
