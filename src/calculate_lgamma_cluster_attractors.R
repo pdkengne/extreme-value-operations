@@ -1,3 +1,5 @@
+# library(actuar)
+
 source("./src/get_knn.R")
 source("./src/make_weights.R")
 source("./src/initialize_cluster_data.R")
@@ -5,10 +7,10 @@ source("./src/calculate_lgamma_mixture_model_pdf.R")
 
 
 calculate_lgamma_cluster_attractors <- function(x, 
-                                               cluster_models,
-                                               minimum_cluster_size = 20,
-                                               prior_cluster_weights = NULL,
-                                               confidence_level = 0.95){
+                                                cluster_models,
+                                                minimum_cluster_size = 20,
+                                                prior_cluster_weights = NULL,
+                                                confidence_level = 0.95){
   # x:
   # cluster_models:
   # minimum_cluster_size:
@@ -34,9 +36,9 @@ calculate_lgamma_cluster_attractors <- function(x,
   
   cluster_attractors_matrix <- sapply(1:nclusters, function(k){
     parameters <- cluster_models_parameters[[k]]
-    densities <- dlgamma(x = x, 
-                        shape = parameters["shape"], 
-                        scale = 1/parameters["rate"])
+    densities <- actuar::dlgamma(x = x, 
+                                 shapelog = parameters["shapelog"], 
+                                 ratelog = parameters["ratelog"])
     
     densities*prior_cluster_weights[k]
   })
@@ -77,14 +79,14 @@ calculate_lgamma_cluster_attractors <- function(x,
     confint(object = model, level = confidence_level)
   })
   
-  shapes <- cluster_models_coefficients[, "shape"]
-  scales <- 1/cluster_models_coefficients[, "rate"]
+  shapes <- cluster_models_coefficients[, "shapelog"]
+  scales <- 1/cluster_models_coefficients[, "ratelog"]
   
   densities <- calculate_lgamma_mixture_model_pdf(x = x, 
-                                                 shapes = shapes, 
-                                                 scales = scales, 
-                                                 weights = cluster_attractors_weights,
-                                                 kind = c("geometric", "arithmetic")[2])
+                                                  shapes = shapes, 
+                                                  scales = scales, 
+                                                  weights = cluster_attractors_weights,
+                                                  kind = c("geometric", "arithmetic")[2])
   
   loglik <- sum(log(densities))
   
@@ -139,10 +141,9 @@ calculate_lgamma_cluster_attractors <- function(x,
 # # example 1
 # 
 # source("./src/initialize_cluster_data.R")
-# source("./src/calculate_lgamma_mixture_model_cdf.R")
 # 
 # n <- 1000
-# x <- bmixture::rmixlgamma(n = n, weight = c(1/2, 1/2), alpha = c(9, 7), beta = c(0.5, 1))
+# x <- bmixture::rmixgamma(n = n, weight = c(1/2, 1/2), alpha = c(9, 7), beta = c(0.5, 1))
 # 
 # hist(x, nclass = 30)
 # 
@@ -169,8 +170,8 @@ calculate_lgamma_cluster_attractors <- function(x,
 # prior_cluster_weights
 # 
 # cluster_attractors <- calculate_lgamma_cluster_attractors(x = x,
-#                                                          cluster_models = cluster_models,
-#                                                          prior_cluster_weights = prior_cluster_weights)
+#                                                           cluster_models = cluster_models,
+#                                                           prior_cluster_weights = prior_cluster_weights)
 # 
 # names(cluster_attractors)
 # 

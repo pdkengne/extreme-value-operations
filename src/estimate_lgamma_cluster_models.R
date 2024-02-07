@@ -28,7 +28,7 @@ estimate_lgamma_cluster_models <- function(x, cluster_data){
 # source("./src/generate_lgamma_mixture_model_sample.R")
 # 
 # n <- 1000
-# x <- generate_lgamma_mixture_model_sample(n = n, weights = c(1/2, 1/2), scales = c(1.6, 1.3), shapes = c(1, 1))
+# x <- bmixture::rmixgamma(n = n, weight = c(1/2, 1/2), alpha = c(9, 7), beta = c(0.5, 1))
 # 
 # hist(x, nclass = 30)
 # 
