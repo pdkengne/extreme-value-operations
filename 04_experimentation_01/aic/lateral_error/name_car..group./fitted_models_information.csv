@@ -1,0 +1,6 @@
+"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
+"model_02","~name_car..group.","~1","~1","72675.6834296245","73695.2333239017"
+"model_03","~1","~name_car..group.","~1","71202.8022521965","72182.834708711"
+"model_04","~1","~1","~name_car..group.","71334.945544979","72196.4256882054"
+"model_05","~name_car..group.","~name_car..group.","~1","72020.3550667873","73387.6584133761"
+"model_07","~1","~name_car..group.","~name_car..group.","67042.1613546126","69547.5669087666"

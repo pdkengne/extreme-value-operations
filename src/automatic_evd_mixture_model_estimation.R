@@ -10,6 +10,7 @@ library(fitdistrplus)
 library(dplyr)
 library(dbscan)
 library(bmixture)
+library(extRemes)
 
 
 source("./src/get_knn.R")
@@ -19,12 +20,13 @@ source("./src/make_weights.R")
 source("./src/initialize_cluster_data.R")
 source("./src/estimate_evd_cluster_models.R")
 source("./src/calculate_evd_cluster_attractors.R")
-source("./src/calculate_evd_mixture_model_cdf.R")
-source("./src/calculate_evd_mixture_model_pdf.R")
-source("./src/calculate_evd_mixture_model_inverse_cdf.R")
+source("./src/calculate_gev_mixture_model_cdf.R")
+source("./src/calculate_gev_mixture_model_pdf.R")
+source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 source("./src/fit_stationary_evd_mixture_model.R")
 source("./src/plot_fit_stationary_evd_mixture_model.R")
-source("./src/generate_evd_mixture_model_sample.R")
+source("./src/generate_gev_sample.R")
+source("./src/generate_gev_mixture_model_sample.R")
 
 
 # generate data from a evd mixture model
@@ -117,13 +119,13 @@ support <- seq(from = min(support_empirical),
                length.out = 1000)
 
 
-density_geometric <- calculate_evd_mixture_model_pdf(x = support, 
+density_geometric <- calculate_gev_mixture_model_pdf(x = support, 
                                                         shapes = shapes, 
                                                         scales = scales, 
                                                         weights = prior_cluster_weights,
                                                         kind = c("geometric", "arithmetic")[1])
 
-density_arithmetic <- calculate_evd_mixture_model_pdf(x = support, 
+density_arithmetic <- calculate_gev_mixture_model_pdf(x = support, 
                                                          shapes = shapes, 
                                                          scales = scales, 
                                                          weights = prior_cluster_weights,
@@ -270,13 +272,13 @@ support <- seq(from = min(support_empirical),
                to = max(support_empirical), 
                length.out = 1000)
 
-density_geometric <- calculate_evd_mixture_model_pdf(x = support, 
+density_geometric <- calculate_gev_mixture_model_pdf(x = support, 
                                                         shapes = shapes, 
                                                         scales = scales, 
                                                         weights = cluster_attractors$cluster_attractors_weights,
                                                         kind = c("geometric", "arithmetic")[1])
 
-density_arithmetic <- calculate_evd_mixture_model_pdf(x = support, 
+density_arithmetic <- calculate_gev_mixture_model_pdf(x = support, 
                                                          shapes = shapes, 
                                                          scales = scales, 
                                                          weights = cluster_attractors$cluster_attractors_weights,

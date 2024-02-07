@@ -1,0 +1,4 @@
+"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
+"model_02","~name_electric.pole","~1","~1","72709.8018984742","73808.3866682767"
+"model_03","~1","~name_electric.pole","~1","73626.4939584644","74764.5961660296"
+"model_05","~name_electric.pole","~name_electric.pole","~1","75906.4278758416","77985.0451021586"

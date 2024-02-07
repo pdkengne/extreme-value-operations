@@ -1,0 +1,8 @@
+"model_names","location.fun","scale.fun","shape.fun","AIC","BIC"
+"model_01","~name_electric.pole","~name_electric.pole","~name_electric.pole","2915.37009805361","6890.82433697928"
+"model_02","~name_electric.pole","~1","~1","1536.92737267038","3228.27370891311"
+"model_03","~1","~name_electric.pole","~1","1091.50348718184","2940.9195744753"
+"model_04","~1","~1","~name_electric.pole","2995.74822360328","5635.51306615035"
+"model_05","~name_electric.pole","~name_electric.pole","~1","1531.03053712433","4226.11979253915"
+"model_06","~name_electric.pole","~1","~name_electric.pole","2600.47454280607","5580.08935011219"
+"model_07","~1","~name_electric.pole","~name_electric.pole","2621.74878432555","5459.10081568602"
