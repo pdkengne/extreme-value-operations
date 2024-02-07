@@ -27,25 +27,16 @@ initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL){
   
   centers <- kmeans_object$centers[, 1]
   
-  sizes <- kmeans_object$size
-  
-  if (length(sizes) == 1){
-    sizes <- n - 1
-  }
+  clusters <- kmeans_object$cluster
   
   nclusters <- length(centers)
   
-  data <- data.frame(x = x)
-
   cluster_data <- lapply(1:nclusters, function(k){
-    center <- centers[k]
+    positions <- which(clusters == k)
     
-    size <- sizes[k]
+    data <- x[positions]
     
-    cluster_data_object <- get_knn(data = data, k = size, query = center)
-    cluster_data <- x[cluster_data_object$id[1, ]]
-    
-    cluster_data
+    data
   })
   
   cluster_data
@@ -60,6 +51,6 @@ initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL){
 # 
 # nclusters <- 3
 # 
-# initial_cluster_data <- initialize_cluster_data(x = x, nclusters = 3)
+# initial_cluster_data <- initialize_cluster_data(x = x, nclusters = nclusters)
 # 
 # initial_cluster_data

@@ -112,14 +112,9 @@ calculate_evd_cluster_attractors <- function(x,
   data <- data.frame(x = x)
   
   cluster_data_list <- lapply(1:nclusters, function(k){
-    center <- cluster_attractors_centers[k]
+    positions <- which(cluster_attractors_frequencies_table == k)
     
-    size <- ifelse(test = nclusters == 1, 
-                   yes = ceiling(n - 1), 
-                   no = ceiling(cluster_attractors_frequencies[k]))
-    
-    cluster_data_object <- get_knn(data = data, k = size, query = center)
-    cluster_data <- x[cluster_data_object$id[1, ]]
+    cluster_data <- x[positions]
     
     cluster_data
   })
@@ -145,6 +140,7 @@ calculate_evd_cluster_attractors <- function(x,
 # # example 1
 # 
 # source("./src/initialize_cluster_data.R")
+# source("./src/estimate_evd_cluster_models.R")
 # 
 # n <- 1000
 # x <- bmixture::rmixnorm(n = n, weight = c(1/2, 1/2), mean = c(0.6, 1.3), sd = c(0.1, 0.1))
@@ -185,6 +181,7 @@ calculate_evd_cluster_attractors <- function(x,
 # 
 # source("./src/initialize_cluster_data.R")
 # source("./src/generate_gev_mixture_model_sample.R")
+# source("./src/estimate_evd_cluster_models.R")
 # 
 # n <- 1000
 # x <- generate_gev_mixture_model_sample(n = n,

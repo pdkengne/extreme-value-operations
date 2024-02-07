@@ -188,4 +188,31 @@ fit_stationary_exp_mixture_model <- function(x,
 # # [10] "loglik"                         "cluster_information_criteria"
 # 
 # results
-
+# 
+# 
+# 
+# # example 4
+# 
+# n <- 2000
+# x <- bmixture::rmixgamma(n = n, weight = c(2/4, 1/4, 1/4), alpha = c(1, 1, 1), beta = c(0.5, 1, 2))
+# 
+# hist(x, nclass = 30)
+# 
+# mod1 = mixfit(x, ncomp = 3, family = 'gamma')
+# mod1
+# 
+# results <- fit_stationary_exp_mixture_model(x = x,
+#                                             nclusters = 3,
+#                                             centers = NULL,
+#                                             minimum_cluster_size = 20,
+#                                             prior_cluster_weights = NULL,
+#                                             confidence_level = 0.95)
+# 
+# names(results)
+# 
+# # [1] "x"                              "cluster_data_list"              "cluster_models"
+# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# # [10] "loglik"                         "cluster_information_criteria"
+# 
+# results

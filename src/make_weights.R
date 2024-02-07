@@ -2,6 +2,8 @@ make_weights <- function(positives_values){
   # positives_values:
   
   weights <- positives_values/sum(positives_values)
+  
+  weights
 }
 
 

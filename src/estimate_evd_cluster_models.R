@@ -1,22 +1,13 @@
 source("./src/estimate_gev_parameters.R")
 
 
-estimate_evd_cluster_models <- function(x, cluster_data){
-  # x:
+estimate_evd_cluster_models <- function(cluster_data){
   # cluster_data:
   
-  if (length(cluster_data) == 1){
-    cluster_models <- lapply(1:1, function(data){
-      model <- estimate_gev_parameters(x = x, method = "MLE")
-      model
-    })
-  }
-  else {
-    cluster_models <- lapply(cluster_data, function(data){
-      model <- estimate_gev_parameters(x = data, method = "MLE")
-      model
-    })
-  }
+  cluster_models <- lapply(cluster_data, function(data){
+    model <- estimate_gev_parameters(x = data, method = "MLE")
+    model
+  })
   
   cluster_models
 }

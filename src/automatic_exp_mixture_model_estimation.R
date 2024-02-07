@@ -35,12 +35,93 @@ mod1 = mixfit(x, ncomp = 3)
 mod1
 
 
+
+
+x <- bmixture::rmixgamma(n = n, weight = c(2/4, 1/4, 1/4), alpha = c(1, 1, 1), beta = c(0.5, 1, 2))
+
+initial_cluster_data <- initialize_cluster_data(x = x, nclusters = nclusters)
+
+
 x <- rexp(n = 1000)
 
 fit <- fitdistrplus::fitdist(data = x, distr = "exp")
 
 fit
 
+ed <- dexp(x = sort(x), rate = fit$estimate)
+
+
+cluster_models_sizes_object <- lapply(initial_cluster_data, function(data){
+  length(data)
+})
+
+
+cluster_models_sizes <- unlist(cluster_models_sizes_object)
+cluster_models_sizes
+
+we <- make_weights(cluster_models_sizes)
+
+
+
+cluster_models_parameters <- lapply(initial_cluster_data, function(data){
+  model <- fitdistrplus::fitdist(data = data, distr = "exp")
+  model$estimate
+})
+
+
+
+extract_cluster_infos <- function(x){
+  
+}
+
+
+vs <- unlist(cluster_models_parameters)
+vs
+
+w <- make_weights(vs)
+w
+
+de <- calculate_gamma_mixture_model_pdf(x = sort(x),
+                                        scales = 1/vs,
+                                        shapes = rep(x = 1, times = length(vs)),
+                                        weights = w, 
+                                        kind = c("geometric", "arithmetic")[1])
+
+
+dee <- calculate_gamma_mixture_model_pdf(x = sort(x),
+                                        scales = 1/vs,
+                                        shapes = rep(x = 1, times = length(vs)),
+                                        weights = we, 
+                                        kind = c("geometric", "arithmetic")[1])
+
+
+hist(x, probability = TRUE)
+
+lines(sort(x), de, col = 6)
+
+lines(sort(x), dee, col = 5)
+
+lines(density(x))
+
+lines(sort(x), ed, col = 3)
+
+
+fit$aic
+
+fit$bic
+
+loglik <- sum(log(de))
+
+logliks <- sum(log(dee))
+
+p <- 2
+q <- 1
+
+aic <- -2*loglik + 2*(q*p + p - 1)
+aic
+
+aic <- -2*logliks + 2*(q*p + p - 1)
+aic
 
 library(mixtools)
 data(faithful)
