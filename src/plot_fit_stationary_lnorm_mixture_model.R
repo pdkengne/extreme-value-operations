@@ -142,6 +142,7 @@ plot_fit_stationary_lnorm_mixture_model <- function(lnorm_mixture_model_object,
 # x <- faithful$eruptions
 # 
 # mod1 = mixfit(x, ncomp = 2, family = "lnorm")
+# 
 # mod1
 # 
 # lnorm_mixture_model_object <- fit_stationary_lnorm_mixture_model(x = x,

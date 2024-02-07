@@ -103,17 +103,10 @@ calculate_lnorm_cluster_attractors <- function(x,
     mean(x[which(cluster_attractors_frequencies_table == k)])
   })
   
-  data <- data.frame(x = x)
-  
   cluster_data_list <- lapply(1:nclusters, function(k){
-    center <- cluster_attractors_centers[k]
+    positions <- which(cluster_attractors_frequencies_table == k)
     
-    size <- ifelse(test = nclusters == 1, 
-                   yes = ceiling(n - 1), 
-                   no = ceiling(cluster_attractors_frequencies[k]))
-    
-    cluster_data_object <- get_knn(data = data, k = size, query = center)
-    cluster_data <- x[cluster_data_object$id[1, ]]
+    cluster_data <- x[positions]
     
     cluster_data
   })
@@ -140,6 +133,7 @@ calculate_lnorm_cluster_attractors <- function(x,
 # 
 # source("./src/initialize_cluster_data.R")
 # source("./src/generate_lnorm_mixture_model_sample.R")
+# source("./src/estimate_lnorm_cluster_models.R")
 # 
 # n <- 1000
 # x <- generate_lnorm_mixture_model_sample(n = n,
