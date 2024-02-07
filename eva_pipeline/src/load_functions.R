@@ -95,5 +95,8 @@ load_functions <- function(){
   source("./src/fit_stationary_evd_mixture_model.R")
   source("./src/plot_fit_stationary_evd_mixture_model.R")
   
+  source("./src/fit_stationary_lgamma_mixture_model.R")
+  source("./src/plot_fit_stationary_lgamma_mixture_model.R")
+  
 }
 
