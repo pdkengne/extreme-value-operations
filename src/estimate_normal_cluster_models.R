@@ -1,19 +1,10 @@
-estimate_normal_cluster_models <- function(x, cluster_data){
-  # x:
+estimate_normal_cluster_models <- function(cluster_data){
   # cluster_data:
   
-  if (length(cluster_data) == 1){
-    cluster_models <- lapply(1:1, function(data){
-      model <- fitdistrplus::fitdist(data = x, distr = "norm", method = "mle")
-      model
-    })
-  }
-  else {
-    cluster_models <- lapply(cluster_data, function(data){
-      model <- fitdistrplus::fitdist(data = data, distr = "norm", method = "mle")
-      model
-    })
-  }
+  cluster_models <- lapply(cluster_data, function(data){
+    model <- fitdistrplus::fitdist(data = data, distr = "norm", method = "mle")
+    model
+  })
 
   cluster_models
 }

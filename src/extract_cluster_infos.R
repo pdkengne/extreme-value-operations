@@ -1,6 +1,5 @@
 # library(ggplot2)
 
-source("./src/get_knn.R")
 source("./src/calculate_modes.R")
 source("./src/make_weights.R")
 
@@ -11,50 +10,56 @@ extract_cluster_infos <- function(x, nclusters = NULL){
   
   n <- length(x)
   
+  Fn <- ecdf(x = x)
+  
+  empirical_cdf_object <- EnvStats::ecdfPlot(x = x, plot.pos.con = 0.375, plot.it = FALSE)  
+  
+  empirical_cdf <- empirical_cdf_object$Cumulative.Probabilities
+  
+  exponential_sample <- qexp(p = empirical_cdf, rate = 1)
+  
   if (is.null(nclusters)){
     modes_object <- calculate_modes(x = x)
     modes <- modes_object$density_maxima_argument
-    kmeans_object <- kmeans(x = x, centers = length(modes))
+    kmeans_object <- kmeans(x = exponential_sample, centers = length(modes))
   }
   else {
-    kmeans_object <- kmeans(x = x, centers = nclusters)
+    kmeans_object <- kmeans(x = exponential_sample, centers = nclusters)
   }
   
   centers <- kmeans_object$centers[, 1]
   
   sizes <- kmeans_object$size
   
-  if (length(sizes) == 1){
-    sizes <- n - 1
-  }
+  clusters <- kmeans_object$cluster
   
-  nclusters <- length(centers)
-  
-  data <- data.frame(x = x)
+  cluster_weights <- make_weights(positives_values = sizes)
 
   cluster_data <- lapply(1:nclusters, function(k){
-    center <- centers[k]
+    positions <- which(clusters == k)
     
-    size <- sizes[k]
+    data <- x[positions]
     
-    cluster_data_object <- get_knn(data = data, k = size, query = center)
-    cluster_data <- x[cluster_data_object$id[1, ]]
-    
-    cluster_data
+    data
   })
   
-  cluster_data
+  output <- list()
+  
+  output[["cluster_data"]] <- cluster_data
+  output[["cluster_weights"]] <- cluster_weights
+  
+  output
 }
 
 
-# example 1
-
-n <- 100
-x <- bmixture::rmixnorm(n = n, weight = c(1/2, 1/2), mean = c(-10, +10), sd = c(1, 1))
-
-
-nclusters <- 3
-
-initial_cluster_data <- extract_cluster_infos(x = x, nclusters = 3)
-
-initial_cluster_data
+# # example 1
+# 
+# n <- 1000
+# x <- rnorm(n = n)
+# 
+# 
+# nclusters <- 3
+# 
+# cluster_infos <- extract_cluster_infos(x = x, nclusters = nclusters)
+# 
+# cluster_infos

@@ -52,7 +52,17 @@ x <- bmixture::rmixgamma(n = n, weight = c(2/4, 1/4, 1/4), alpha = c(1, 1, 1), b
 initial_cluster_data <- initialize_cluster_data(x = x, nclusters = nclusters)
 
 
-x <- rexp(n = 1000)
+x <- rnorm(n = 1000)
+
+Fn <- ecdf(x = x)
+
+empirical_cdf <- Fn(x)
+
+exponential_sample <- qexp(p = empirical_cdf, rate = 1)
+
+
+hist(exponential_sample)
+
 
 fit <- fitdistrplus::fitdist(data = x, distr = "exp")
 

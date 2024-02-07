@@ -2,7 +2,6 @@ library(actuar)
 
 
 estimate_lgamma_cluster_models <- function(cluster_data){
-  # x:
   # cluster_data:
   
   cluster_models <- lapply(cluster_data, function(data){
