@@ -112,6 +112,7 @@ plot_fit_stationary_weibull_mixture_model <- function(weibull_mixture_model_obje
 # weibull_mixture_model_object
 # 
 # plot_fit_stationary_weibull_mixture_model(weibull_mixture_model_object = weibull_mixture_model_object,
+#                                           nclass = NULL,
 #                                           xlab = "support",
 #                                           ylab = "density",
 #                                           main = "density plot",
@@ -151,6 +152,7 @@ plot_fit_stationary_weibull_mixture_model <- function(weibull_mixture_model_obje
 # weibull_mixture_model_object
 # 
 # plot_fit_stationary_weibull_mixture_model(weibull_mixture_model_object = weibull_mixture_model_object,
+#                                           nclass = NULL,
 #                                           xlab = "support",
 #                                           ylab = "density",
 #                                           main = "density plot",
@@ -184,6 +186,7 @@ plot_fit_stationary_weibull_mixture_model <- function(weibull_mixture_model_obje
 # weibull_mixture_model_object
 # 
 # plot_fit_stationary_weibull_mixture_model(weibull_mixture_model_object = weibull_mixture_model_object,
+#                                           nclass = NULL,
 #                                           xlab = "support",
 #                                           ylab = "density",
 #                                           main = "density plot",

@@ -364,3 +364,13 @@ plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_mod
                                          main = "density plot",
                                          legend_position = "topleft")
 
+
+x <- rnorm(n = 1000)
+
+model <- fitdistrplus::fitdist(data = x, 
+                               distr = "evd", 
+                               method = "mle",
+                               start = list("loc" = mean(x),
+                                            "scale" = sd(x),
+                                            "shape" = 0.001))
+model
