@@ -187,13 +187,15 @@ plot_fit_stationary_evd_mixture_model <- function(evd_mixture_model_object,
 # source("./src/fit_stationary_evd_mixture_model.R")
 # source("./src/generate_gev_mixture_model_sample.R")
 # 
-# n <- 1000
+# n <- 10000
 # x <- generate_gev_mixture_model_sample(n = n,
 #                                        weights = c(1/2, 1/2),
 #                                        locations = c(+3, +9),
 #                                        scales = c(1, 1),
 #                                        shapes = c(-0.01, +0.01),
 #                                        kind = c("geometric", "arithmetic", "harmonic")[2])
+# 
+# library(mixR)
 # 
 # hist(x, nclass = 30)
 # 
@@ -217,7 +219,7 @@ plot_fit_stationary_evd_mixture_model <- function(evd_mixture_model_object,
 # evd_mixture_model_object
 # 
 # plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
-#                                       nclass = NULL,
+#                                       nclass = 30,
 #                                       xlab = "support",
 #                                       ylab = "density",
 #                                       main = "density plot",
