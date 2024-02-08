@@ -99,7 +99,7 @@ fit_stationary_unimodal_normal_mixture_model <- function(x,
 # mod1
 # 
 # results <- fit_stationary_unimodal_normal_mixture_model(x = x,
-#                                                         nclusters = 2,
+#                                                         nclusters = 3,
 #                                                         confidence_level = 0.95)
 # 
 # names(results)
