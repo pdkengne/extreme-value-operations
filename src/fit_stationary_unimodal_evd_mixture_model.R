@@ -18,16 +18,26 @@ source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 
 fit_stationary_unimodal_evd_mixture_model <- function(x, 
                                                       nclusters = NULL,
+                                                      minimum_cluster_size = 20,
                                                       confidence_level = 0.95){
   # x:
   # nclusters:
   # confidence_level:
+  # minimum_cluster_size:
   
   cluster_infos_object <- extract_cluster_infos(x = x, nclusters = nclusters)
   
-  cluster_weights <- cluster_infos_object$cluster_weights
-  
   cluster_sizes <- cluster_infos_object$cluster_sizes
+  
+  nclusters <- length(cluster_sizes)
+  
+  while (min(cluster_sizes) < minimum_cluster_size & nclusters > 2){
+    nclusters <- nclusters - 1
+    cluster_infos_object <- extract_cluster_infos(x = x, nclusters = nclusters)
+    cluster_sizes <- cluster_infos_object$cluster_sizes
+  }
+  
+  cluster_weights <- cluster_infos_object$cluster_weights
   
   cluster_centers <- cluster_infos_object$cluster_centers
   

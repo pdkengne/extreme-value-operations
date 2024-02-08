@@ -51,6 +51,26 @@ extract_cluster_infos <- function(x, nclusters = NULL){
   
   cluster_centers <- unlist(cluster_centers_object)
   
+  
+  #----
+  # cluster_exponential_sample <- lapply(1:nclusters, function(k){
+  #   positions <- which(clusters == k)
+  #   
+  #   data <- exponential_sample[positions]
+  #   
+  #   data
+  # })
+  # 
+  # cluster_exponential_parameters <- lapply(cluster_exponential_sample, function(data){
+  #   model <- fitdistrplus::fitdist(data = data, distr = "exp")
+  #   model$estimate
+  # })
+  # 
+  # cluster_exponential_parameters <- unlist(cluster_exponential_parameters)
+  # 
+  # cluster_weights <- make_weights(cluster_exponential_parameters)
+  #---
+  
   output <- list()
   
   output[["cluster_data"]] <- cluster_data
@@ -62,17 +82,17 @@ extract_cluster_infos <- function(x, nclusters = NULL){
 }
 
 
-# # example 1
-# 
-# n <- 1000
-# x <- rnorm(n = n)
-# 
-# nclusters <- 3
-# 
-# cluster_infos <- extract_cluster_infos(x = x, nclusters = nclusters)
-# 
-# names(cluster_infos)
-# 
-# cluster_infos
+# example 1
+
+n <- 1000
+x <- rnorm(n = n)
+
+nclusters <- 3
+
+cluster_infos <- extract_cluster_infos(x = x, nclusters = nclusters)
+
+names(cluster_infos)
+
+cluster_infos
 
 
