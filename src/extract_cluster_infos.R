@@ -29,11 +29,11 @@ extract_cluster_infos <- function(x, nclusters = NULL){
   
   centers <- kmeans_object$centers[, 1]
   
-  sizes <- kmeans_object$size
+  cluster_sizes <- kmeans_object$size
   
   clusters <- kmeans_object$cluster
   
-  cluster_weights <- make_weights(positives_values = sizes)
+  cluster_weights <- make_weights(positives_values = cluster_sizes)
 
   cluster_data <- lapply(1:nclusters, function(k){
     positions <- which(clusters == k)
@@ -43,9 +43,19 @@ extract_cluster_infos <- function(x, nclusters = NULL){
     data
   })
   
+  cluster_centers_object <- lapply(cluster_data, function(data){
+    
+    mean(data)
+    
+  })
+  
+  cluster_centers <- unlist(cluster_centers_object)
+  
   output <- list()
   
   output[["cluster_data"]] <- cluster_data
+  output[["cluster_centers"]] <- cluster_centers
+  output[["cluster_sizes"]] <- cluster_sizes
   output[["cluster_weights"]] <- cluster_weights
   
   output
@@ -57,9 +67,12 @@ extract_cluster_infos <- function(x, nclusters = NULL){
 # n <- 1000
 # x <- rnorm(n = n)
 # 
-# 
 # nclusters <- 3
 # 
 # cluster_infos <- extract_cluster_infos(x = x, nclusters = nclusters)
 # 
+# names(cluster_infos)
+# 
 # cluster_infos
+
+
