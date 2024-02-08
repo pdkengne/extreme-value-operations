@@ -94,135 +94,173 @@ plot_fit_stationary_evd_mixture_model <- function(evd_mixture_model_object,
 }
 
 
-# # example 1
-# 
-# source("./src/fit_stationary_evd_mixture_model.R")
-# 
-# library(mixR)
-# 
-# n <- 2000
-# x <- bmixture::rmixnorm(n = n, weight = c(1/2, 1/2), mean = c(0.6, 1.3), sd = c(0.1, 0.1))
-# 
-# hist(x, nclass = NULL)
-# 
-# mod1 = mixfit(x, ncomp = 2, family = 'normal')
-# mod1
-# 
-# evd_mixture_model_object <- fit_stationary_evd_mixture_model(x = x,
-#                                                              nclusters = 2,
-#                                                              centers = NULL,
-#                                                              minimum_cluster_size = 20,
-#                                                              prior_cluster_weights = NULL,
-#                                                              confidence_level = 0.95)
-# 
-# names(evd_mixture_model_object)
-# 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"
-# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# # [10] "loglik"                         "cluster_information_criteria"
-# 
-# evd_mixture_model_object
-# 
-# plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
-#                                       nclass = NULL,
-#                                       xlab = "support",
-#                                       ylab = "density",
-#                                       main = "density plot",
-#                                       legend_position = "topleft")
-# 
-# 
-# # example 2
-# 
-# source("./src/fit_stationary_evd_mixture_model.R")
-# 
-# library(mixtools)
-# library(mixR)
-# 
-# data(faithful)
-# 
-# x <- faithful$waiting
-# 
-# x <- faithful$eruptions
-# 
-# mod1 = mixfit(x, ncomp = 2, family = 'normal')
-# mod1
-# 
-# mod1 = mixfit(x, ncomp = 2, family = 'lnorm')
-# mod1
-# 
-# mod1 = mixfit(x, ncomp = 2, family = 'gamma')
-# mod1
-# 
-# mod1 = mixfit(x, ncomp = 2, family = 'weibull')
-# mod1
-# 
-# evd_mixture_model_object <- fit_stationary_evd_mixture_model(x = x,
-#                                                              nclusters = 2,
-#                                                              centers = NULL,
-#                                                              minimum_cluster_size = 20,
-#                                                              prior_cluster_weights = NULL,
-#                                                              confidence_level = 0.95)
-# 
-# names(evd_mixture_model_object)
-# 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"
-# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# # [10] "loglik"                         "cluster_information_criteria"
-# 
-# evd_mixture_model_object
-# 
-# plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
-#                                       nclass = NULL,
-#                                       xlab = "support",
-#                                       ylab = "density",
-#                                       main = "density plot",
-#                                       legend_position = "topleft")
-# 
-# 
-# 
-# # example 3
-# 
-# source("./src/fit_stationary_evd_mixture_model.R")
-# source("./src/generate_gev_mixture_model_sample.R")
-# 
-# n <- 10000
-# x <- generate_gev_mixture_model_sample(n = n,
-#                                        weights = c(1/2, 1/2),
-#                                        locations = c(+3, +9),
-#                                        scales = c(1, 1),
-#                                        shapes = c(-0.01, +0.01),
-#                                        kind = c("geometric", "arithmetic", "harmonic")[2])
-# 
-# library(mixR)
-# 
-# hist(x, nclass = 30)
-# 
-# mod1 = mixfit(x, ncomp = 2, family = 'lnorm')
-# mod1
-# 
-# evd_mixture_model_object <- fit_stationary_evd_mixture_model(x = x,
-#                                                              nclusters = 2,
-#                                                              centers = NULL,
-#                                                              minimum_cluster_size = 20,
-#                                                              prior_cluster_weights = NULL,
-#                                                              confidence_level = 0.95)
-# 
-# names(evd_mixture_model_object)
-# 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"
-# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# # [10] "loglik"                         "cluster_information_criteria"
-# 
-# evd_mixture_model_object
-# 
-# plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
-#                                       nclass = 30,
-#                                       xlab = "support",
-#                                       ylab = "density",
-#                                       main = "density plot",
-#                                       legend_position = "topleft")
+# example 1
+
+source("./src/fit_stationary_evd_mixture_model.R")
+
+library(mixR)
+
+n <- 2000
+x <- bmixture::rmixnorm(n = n, weight = c(1/2, 1/2), mean = c(0.6, 1.3), sd = c(0.1, 0.1))
+
+hist(x, nclass = NULL)
+
+mod1 = mixfit(x, ncomp = 2, family = 'normal')
+mod1
+
+evd_mixture_model_object <- fit_stationary_evd_mixture_model(x = x,
+                                                             nclusters = 2,
+                                                             centers = NULL,
+                                                             minimum_cluster_size = 20,
+                                                             prior_cluster_weights = NULL,
+                                                             confidence_level = 0.95)
+
+names(evd_mixture_model_object)
+
+# [1] "x"                              "cluster_data_list"              "cluster_models"
+# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# [10] "loglik"                         "cluster_information_criteria"
+
+evd_mixture_model_object
+
+plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
+                                      nclass = NULL,
+                                      xlab = "support",
+                                      ylab = "density",
+                                      main = "density plot",
+                                      legend_position = "topleft")
+
+
+# example 2
+
+source("./src/fit_stationary_evd_mixture_model.R")
+
+library(mixtools)
+library(mixR)
+
+data(faithful)
+
+x <- faithful$waiting
+
+x <- faithful$eruptions
+
+mod1 = mixfit(x, ncomp = 2, family = 'normal')
+mod1
+
+mod1 = mixfit(x, ncomp = 2, family = 'lnorm')
+mod1
+
+mod1 = mixfit(x, ncomp = 2, family = 'gamma')
+mod1
+
+mod1 = mixfit(x, ncomp = 2, family = 'weibull')
+mod1
+
+evd_mixture_model_object <- fit_stationary_evd_mixture_model(x = x,
+                                                             nclusters = 2,
+                                                             centers = NULL,
+                                                             minimum_cluster_size = 20,
+                                                             prior_cluster_weights = NULL,
+                                                             confidence_level = 0.95)
+
+names(evd_mixture_model_object)
+
+# [1] "x"                              "cluster_data_list"              "cluster_models"
+# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# [10] "loglik"                         "cluster_information_criteria"
+
+evd_mixture_model_object
+
+plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
+                                      nclass = NULL,
+                                      xlab = "support",
+                                      ylab = "density",
+                                      main = "density plot",
+                                      legend_position = "topleft")
+
+
+
+# example 3
+
+source("./src/fit_stationary_evd_mixture_model.R")
+source("./src/generate_gev_mixture_model_sample.R")
+
+n <- 10000
+x <- generate_gev_mixture_model_sample(n = n,
+                                       weights = c(1/2, 1/2),
+                                       locations = c(+3, +9),
+                                       scales = c(1, 1),
+                                       shapes = c(-0.01, +0.01),
+                                       kind = c("geometric", "arithmetic", "harmonic")[2])
+
+library(mixR)
+
+hist(x, nclass = 30)
+
+mod1 = mixfit(x, ncomp = 2, family = 'lnorm')
+mod1
+
+evd_mixture_model_object <- fit_stationary_evd_mixture_model(x = x,
+                                                             nclusters = 2,
+                                                             centers = NULL,
+                                                             minimum_cluster_size = 20,
+                                                             prior_cluster_weights = NULL,
+                                                             confidence_level = 0.95)
+
+names(evd_mixture_model_object)
+
+# [1] "x"                              "cluster_data_list"              "cluster_models"
+# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# [10] "loglik"                         "cluster_information_criteria"
+
+evd_mixture_model_object
+
+plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
+                                      nclass = 30,
+                                      xlab = "support",
+                                      ylab = "density",
+                                      main = "density plot",
+                                      legend_position = "topleft")
+
+
+# example 4
+
+source("./src/fit_stationary_unimodal_evd_mixture_model.R")
+
+library(mixR)
+
+x = rnorm(n = 1000)
+
+x = rgamma(n = 1000, shape = 2, rate = 3)
+
+mod1 = mixfit(x, ncomp = 1, family = "normal")
+mod1
+
+mod1 = mixfit(x, ncomp = 1, family = "gamma")
+mod1
+
+evd_mixture_model_object <- fit_stationary_unimodal_evd_mixture_model(x = x,
+                                                                      nclusters = 1,
+                                                                      confidence_level = 0.95)
+
+names(evd_mixture_model_object)
+
+# [1] "x"                              "cluster_data_list"              "cluster_models"
+# [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# [10] "loglik"                         "cluster_information_criteria"
+
+evd_mixture_model_object
+
+
+plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
+                                      nclass = 30,
+                                      xlab = "support",
+                                      ylab = "density",
+                                      main = "density plot",
+                                      legend_position = "topright")
 
 

@@ -10,15 +10,15 @@ source("./src/calculate_modes.R")
 source("./src/plot_modes.R")
 source("./src/make_weights.R")
 source("./src/extract_cluster_infos.R")
-source("./src/estimate_normal_cluster_models.R")
-source("./src/calculate_normal_mixture_model_cdf.R")
-source("./src/calculate_normal_mixture_model_pdf.R")
-source("./src/calculate_normal_mixture_model_inverse_cdf.R")
+source("./src/estimate_evd_cluster_models.R")
+source("./src/calculate_gev_mixture_model_cdf.R")
+source("./src/calculate_gev_mixture_model_pdf.R")
+source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 
 
-fit_stationary_unimodal_normal_mixture_model <- function(x, 
-                                                         nclusters = NULL,
-                                                         confidence_level = 0.95){
+fit_stationary_unimodal_evd_mixture_model <- function(x, 
+                                                      nclusters = NULL,
+                                                      confidence_level = 0.95){
   # x:
   # nclusters:
   # confidence_level:
@@ -33,30 +33,35 @@ fit_stationary_unimodal_normal_mixture_model <- function(x,
   
   cluster_data <- cluster_infos_object$cluster_data
   
-  cluster_models <- estimate_normal_cluster_models(cluster_data = cluster_data)
+  cluster_models <- estimate_evd_cluster_models(cluster_data = cluster_data)
   
   nclusters <- length(cluster_models)
   
   cluster_models_coefficients <- lapply(1:nclusters, function(k){
     model <- cluster_models[[k]]
-    model$estimate
+    model$results$par
   })
   
   cluster_models_coefficients <- do.call(what = rbind, cluster_models_coefficients)
   
   cluster_models_coefficients_ci <- lapply(1:nclusters, function(k){
     model <- cluster_models[[k]]
-    confint(object = model, level = confidence_level)
+    extRemes::ci.fevd(x = model, 
+                      type = "parameter",
+                      alpha = 1 - confidence_level)
   })
   
-  locations <- cluster_models_coefficients[, "mean"]
-  scales <- cluster_models_coefficients[, "sd"]
   
-  densities <- calculate_normal_mixture_model_pdf(x = x, 
-                                                  locations = locations, 
-                                                  scales = scales, 
-                                                  weights = cluster_weights,
-                                                  kind = c("geometric", "arithmetic")[1])
+  shapes <- cluster_models_coefficients[, "shape"]
+  scales <- cluster_models_coefficients[, "scale"]
+  locations <- cluster_models_coefficients[, "location"]
+  
+  densities <- calculate_gev_mixture_model_pdf(x = x, 
+                                               shapes = shapes, 
+                                               scales = scales,
+                                               locations = locations,
+                                               weights = cluster_weights,
+                                               kind = c("geometric", "arithmetic", "harmonic")[1])
   
   loglik <- sum(log(densities))
   
@@ -97,9 +102,9 @@ fit_stationary_unimodal_normal_mixture_model <- function(x,
 # mod1 = mixfit(x, ncomp = 1, family = "normal")
 # mod1
 # 
-# results <- fit_stationary_unimodal_normal_mixture_model(x = x,
-#                                                         nclusters = 3,
-#                                                         confidence_level = 0.95)
+# results <- fit_stationary_unimodal_evd_mixture_model(x = x,
+#                                                      nclusters = 2,
+#                                                      confidence_level = 0.95)
 # 
 # names(results)
 # 
