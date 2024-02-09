@@ -9,11 +9,13 @@ calculate_evd_cluster_attractors <- function(x,
                                              cluster_models,
                                              minimum_cluster_size = 20,
                                              prior_cluster_weights = NULL,
+                                             do.ci = FALSE,
                                              confidence_level = 0.95){
   # x:
   # cluster_models:
   # minimum_cluster_size:
   # prior_cluster_weights:
+  # do.ci:
   # confidence_level:
   
   nclusters <- length(cluster_models)
@@ -74,12 +76,20 @@ calculate_evd_cluster_attractors <- function(x,
   
   cluster_models_coefficients <- do.call(what = rbind, cluster_models_coefficients)
   
-  cluster_models_coefficients_ci <- lapply(selected_cluster_id, function(k){
-    model <- cluster_models[[k]]
-    extRemes::ci.fevd(x = model, 
-                      type = "parameter",
-                      alpha = 1 - confidence_level)
-  })
+  
+  if (do.ci){
+    cluster_models_coefficients_ci <- lapply(selected_cluster_id, function(k){
+      model <- cluster_models[[k]]
+      extRemes::ci.fevd(x = model, 
+                        type = "parameter",
+                        alpha = 1 - confidence_level)
+    })
+  }
+  else {
+    cluster_models_coefficients_ci <- NULL
+  }
+  
+  
   
   shapes <- cluster_models_coefficients[, "shape"]
   scales <- cluster_models_coefficients[, "scale"]

@@ -22,12 +22,14 @@ fit_stationary_evd_mixture_model <- function(x,
                                              centers = NULL, 
                                              minimum_cluster_size = 20,
                                              prior_cluster_weights = NULL,
+                                             do.ci = FALSE,
                                              confidence_level = 0.95){
   # x:
   # nclusters:
   # centers:
   # minimum_cluster_size:
   # prior_cluster_weights:
+  # do.ci,
   # confidence_level:
   
   initial_cluster_data <- initialize_cluster_data(x = x, 
@@ -42,6 +44,7 @@ fit_stationary_evd_mixture_model <- function(x,
                                                          cluster_models = cluster_models, 
                                                          minimum_cluster_size = minimum_cluster_size,
                                                          prior_cluster_weights = prior_cluster_weights,
+                                                         do.ci = do.ci,
                                                          confidence_level = confidence_level)
   
   previous_cluster_models_parameters <- cluster_attractors$cluster_models_coefficients
@@ -63,6 +66,7 @@ fit_stationary_evd_mixture_model <- function(x,
                                                            cluster_models = cluster_models, 
                                                            minimum_cluster_size = minimum_cluster_size,
                                                            prior_cluster_weights = cluster_attractors_weights,
+                                                           do.ci = do.ci,
                                                            confidence_level = confidence_level)
     
     selected_cluster_id <- cluster_attractors$selected_cluster_id

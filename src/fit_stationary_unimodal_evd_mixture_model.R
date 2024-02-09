@@ -19,10 +19,12 @@ source("./src/calculate_gev_mixture_model_inverse_cdf.R")
 fit_stationary_unimodal_evd_mixture_model <- function(x, 
                                                       nclusters = NULL,
                                                       minimum_cluster_size = 20,
+                                                      do.ci = FALSE,
                                                       confidence_level = 0.95){
   # x:
   # nclusters:
   # confidence_level:
+  # do.ci:
   # minimum_cluster_size:
   
   cluster_infos_object <- extract_cluster_infos(x = x, nclusters = nclusters)
@@ -54,12 +56,18 @@ fit_stationary_unimodal_evd_mixture_model <- function(x,
   
   cluster_models_coefficients <- do.call(what = rbind, cluster_models_coefficients)
   
-  cluster_models_coefficients_ci <- lapply(1:nclusters, function(k){
-    model <- cluster_models[[k]]
-    extRemes::ci.fevd(x = model, 
-                      type = "parameter",
-                      alpha = 1 - confidence_level)
-  })
+  if (do.ci){
+    cluster_models_coefficients_ci <- lapply(1:nclusters, function(k){
+      model <- cluster_models[[k]]
+      extRemes::ci.fevd(x = model, 
+                        type = "parameter",
+                        alpha = 1 - confidence_level)
+    })
+  }
+  else {
+    cluster_models_coefficients_ci <- NULL
+  }
+  
   
   
   shapes <- cluster_models_coefficients[, "shape"]

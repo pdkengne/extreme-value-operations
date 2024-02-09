@@ -1,0 +1,177 @@
+---
+title: "Non Stationary GEV Mixture Model Selection"
+subtitle: "Mixture of block maxima models"
+author: "Pascal Alain Dkengne Sielenou and Stephane Girard"
+toc: true
+toc-depth: 4
+toc-location: right
+toc-title: "Contents"
+toc-expand: true
+number-sections: true
+cap-location: bottom
+fig-cap-location: bottom
+highlight-style: pygments
+format:
+  html: 
+    link-external-newwindow: true
+    smooth-scroll: true
+    df-print: paged
+    code-fold: true
+    code-tools: true
+    code-link: true
+    code-overflow: scroll
+    html-math-method: katex
+  pdf:
+    code-line-numbers: true
+    colorlinks: true
+  docx: default
+---
+
+
+```{r}
+#| label: load-packages
+#| echo: true
+#| code-summary: "Packages"
+#| message: false
+
+library(DT)
+library(tidyverse)
+library(readr)
+library(DescTools)
+library(Hmisc)
+```
+
+
+```{r}
+#| label: load-modules
+#| echo: true
+#| code-summary: "Modules"
+#| message: false
+
+path <- ".."
+
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/read_data.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/load_functions.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/make_models.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/transform_data.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/calculate_model_aic.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/save_multiple_model_aic.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/extract_multiple_model_aic.R"))
+```
+
+
+```{r}
+#| label: load-data-1
+#| echo: true
+#| code-summary: "Data-1"
+#| message: false
+
+
+experimentation_01_lateral_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_01/lateral_error_model_aic.csv"))
+
+experimentation_02_lateral_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_02/lateral_error_model_aic.csv"))
+
+experimentation_03_lateral_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_03/lateral_error_model_aic.csv"))
+
+experimentation_04_lateral_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_04/lateral_error_model_aic.csv"))
+
+```
+
+
+```{r}
+#| label: load-data-2
+#| echo: true
+#| code-summary: "Data-2"
+#| message: false
+
+
+experimentation_01_longitudinal_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_01/longitudinal_error_model_aic.csv"))
+
+experimentation_02_longitudinal_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_02/longitudinal_error_model_aic.csv"))
+
+experimentation_03_longitudinal_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_03/longitudinal_error_model_aic.csv"))
+
+experimentation_04_longitudinal_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_04/longitudinal_error_model_aic.csv"))
+
+```
+
+
+
+# Experimentation 2023-10-26: 094602
+
+
+## lateral error
+
+```{r}
+DT::datatable(experimentation_01_lateral_error_model_aic)
+```
+
+
+
+## longitudinal error
+
+```{r}
+DT::datatable(experimentation_01_longitudinal_error_model_aic)
+```
+
+
+
+
+# Experimentation 2023-12-11: 165719
+
+
+## lateral error
+
+```{r}
+DT::datatable(experimentation_02_lateral_error_model_aic)
+```
+
+
+
+## longitudinal error
+
+```{r}
+DT::datatable(experimentation_02_longitudinal_error_model_aic)
+```
+
+
+
+
+# Experimentation 2023-12-12: 101549
+
+
+## lateral error
+
+```{r}
+DT::datatable(experimentation_03_lateral_error_model_aic)
+```
+
+
+
+## longitudinal error
+
+```{r}
+DT::datatable(experimentation_03_longitudinal_error_model_aic)
+```
+
+
+
+# Experimentation 2023-12-12: 104522
+
+
+## lateral error
+
+```{r}
+DT::datatable(experimentation_04_lateral_error_model_aic)
+```
+
+
+
+## longitudinal error
+
+```{r}
+DT::datatable(experimentation_04_longitudinal_error_model_aic)
+```
+
+
+

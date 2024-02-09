@@ -1,0 +1,17 @@
+DT
+tidyverse
+ggplot2
+tibble
+tidyr
+readr
+purrr
+dplyr
+stringr
+forcats
+lubridate
+DescTools
+Hmisc
+vroom
+lattice
+caret
+actuar
