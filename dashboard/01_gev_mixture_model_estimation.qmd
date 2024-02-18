@@ -147,7 +147,7 @@ experimentation_01_merged_data_processed_lateral_error <- experimentation_01_mer
 
 experimentation_01_merged_data_processed_lateral_error_model <- fit_stationary_evd_mixture_model(
   x = experimentation_01_merged_data_processed_lateral_error,
-  nclusters = 3,
+  nclusters = NULL,
   minimum_cluster_size = 20,
   do.ci = FALSE,
   confidence_level = 0.95)
@@ -216,7 +216,7 @@ experimentation_01_merged_data_processed_lateral_error_model$cluster_information
 
 plot_fit_stationary_evd_mixture_model(
   evd_mixture_model_object = experimentation_01_merged_data_processed_lateral_error_model,
-  nclass = NULL,
+  nclass = 60,
   xlab = "support",
   ylab = "density",
   main = "density plot",
@@ -262,7 +262,7 @@ experimentation_01_merged_data_processed_longitudinal_error <- experimentation_0
 
 experimentation_01_merged_data_processed_longitudinal_error_model <- fit_stationary_evd_mixture_model(
   x = experimentation_01_merged_data_processed_longitudinal_error,
-  nclusters = 3,
+  nclusters = NULL,
   minimum_cluster_size = 20,
   do.ci = FALSE,
   confidence_level = 0.95)
@@ -327,7 +327,7 @@ experimentation_01_merged_data_processed_longitudinal_error_model$cluster_inform
 
 plot_fit_stationary_evd_mixture_model(
   evd_mixture_model_object = experimentation_01_merged_data_processed_longitudinal_error_model,
-  nclass = NULL,
+  nclass = 60,
   display_all = FALSE,
   xlab = "support",
   ylab = "density",
@@ -376,7 +376,7 @@ experimentation_02_merged_data_processed_lateral_error <- experimentation_02_mer
 
 experimentation_02_merged_data_processed_lateral_error_model <- fit_stationary_evd_mixture_model(
   x = experimentation_02_merged_data_processed_lateral_error,
-  nclusters = 3,
+  nclusters = NULL,
   minimum_cluster_size = 20,
   do.ci = FALSE,
   confidence_level = 0.95)
@@ -441,7 +441,7 @@ experimentation_02_merged_data_processed_lateral_error_model$cluster_information
 
 plot_fit_stationary_evd_mixture_model(
   evd_mixture_model_object = experimentation_02_merged_data_processed_lateral_error_model,
-  nclass = NULL,
+  nclass = 60,
   display_all = FALSE,
   xlab = "support",
   ylab = "density",
@@ -487,7 +487,7 @@ experimentation_02_merged_data_processed_longitudinal_error <- experimentation_0
 
 experimentation_02_merged_data_processed_longitudinal_error_model <- fit_stationary_evd_mixture_model(
   x = experimentation_02_merged_data_processed_longitudinal_error,
-  nclusters = 1,
+  nclusters = NULL,
   minimum_cluster_size = 20,
   do.ci = FALSE,
   confidence_level = 0.95)
@@ -552,7 +552,7 @@ experimentation_02_merged_data_processed_longitudinal_error_model$cluster_inform
 
 plot_fit_stationary_evd_mixture_model(
   evd_mixture_model_object = experimentation_02_merged_data_processed_longitudinal_error_model,
-  nclass = NULL,
+  nclass = 60,
   display_all = FALSE,
   xlab = "support",
   ylab = "density",
@@ -602,7 +602,7 @@ experimentation_03_merged_data_processed_lateral_error <- experimentation_03_mer
 
 experimentation_03_merged_data_processed_lateral_error_model <- fit_stationary_evd_mixture_model(
   x = experimentation_03_merged_data_processed_lateral_error,
-  nclusters = 2,
+  nclusters = NULL,
   minimum_cluster_size = 20,
   do.ci = FALSE,
   confidence_level = 0.95)
@@ -667,7 +667,7 @@ experimentation_03_merged_data_processed_lateral_error_model$cluster_information
 
 plot_fit_stationary_evd_mixture_model(
   evd_mixture_model_object = experimentation_03_merged_data_processed_lateral_error_model,
-  nclass = NULL,
+  nclass = 60,
   display_all = FALSE,
   xlab = "support",
   ylab = "density",
@@ -713,7 +713,7 @@ experimentation_03_merged_data_processed_longitudinal_error <- experimentation_0
 
 experimentation_03_merged_data_processed_longitudinal_error_model <- fit_stationary_evd_mixture_model(
   x = experimentation_03_merged_data_processed_longitudinal_error,
-  nclusters = 3,
+  nclusters = NULL,
   minimum_cluster_size = 20,
   do.ci = FALSE,
   confidence_level = 0.95)
@@ -778,7 +778,7 @@ experimentation_03_merged_data_processed_longitudinal_error_model$cluster_inform
 
 plot_fit_stationary_evd_mixture_model(
   evd_mixture_model_object = experimentation_03_merged_data_processed_longitudinal_error_model,
-  nclass = NULL,
+  nclass = 60,
   display_all = FALSE,
   xlab = "support",
   ylab = "density",
@@ -829,7 +829,7 @@ experimentation_04_merged_data_processed_lateral_error <- experimentation_04_mer
 
 experimentation_04_merged_data_processed_lateral_error_model <- fit_stationary_evd_mixture_model(
   x = experimentation_04_merged_data_processed_lateral_error,
-  nclusters = 3,
+  nclusters = NULL,
   minimum_cluster_size = 20,
   do.ci = FALSE,
   confidence_level = 0.95)
@@ -894,7 +894,7 @@ experimentation_04_merged_data_processed_lateral_error_model$cluster_information
 
 plot_fit_stationary_evd_mixture_model(
   evd_mixture_model_object = experimentation_04_merged_data_processed_lateral_error_model,
-  nclass = NULL,
+  nclass = 60,
   display_all = FALSE,
   xlab = "support",
   ylab = "density",
@@ -939,7 +939,7 @@ experimentation_04_merged_data_processed_longitudinal_error <- experimentation_0
 
 experimentation_04_merged_data_processed_longitudinal_error_model <- fit_stationary_evd_mixture_model(
   x = experimentation_04_merged_data_processed_longitudinal_error,
-  nclusters = 3,
+  nclusters = NULL,
   minimum_cluster_size = 20,
   do.ci = FALSE,
   confidence_level = 0.95)
@@ -1004,7 +1004,7 @@ experimentation_04_merged_data_processed_longitudinal_error_model$cluster_inform
 
 plot_fit_stationary_evd_mixture_model(
   evd_mixture_model_object = experimentation_04_merged_data_processed_longitudinal_error_model,
-  nclass = NULL,
+  nclass = 60,
   display_all = FALSE,
   xlab = "support",
   ylab = "density",

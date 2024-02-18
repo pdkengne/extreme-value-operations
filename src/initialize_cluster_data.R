@@ -7,21 +7,23 @@ initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL){
   # nclusters:
   # centers:
   
+  nstart <- 25
+  
   n <- length(x)
   
   if (is.null(centers) & is.null(nclusters)){
     modes_object <- calculate_modes(x = x)
     modes <- modes_object$density_maxima_argument
-    kmeans_object <- kmeans(x = x, centers = length(modes))
+    kmeans_object <- kmeans(x = x, centers = length(modes), nstart = nstart)
   }
   else if (is.null(centers) & !is.null(nclusters)){
-    kmeans_object <- kmeans(x = x, centers = nclusters)
+    kmeans_object <- kmeans(x = x, centers = nclusters, nstart = nstart)
   }
   else if (!is.null(centers) & is.null(nclusters)){
-    kmeans_object <- kmeans(x = x, centers = centers)
+    kmeans_object <- kmeans(x = x, centers = nclusters, nstart = nstart)
   }
   else if (!is.null(centers) & !is.null(nclusters)){
-    kmeans_object <- kmeans(x = x, centers = nclusters)
+    kmeans_object <- kmeans(x = x, centers = nclusters, nstart = nstart)
   }
   
   centers <- kmeans_object$centers[, 1]

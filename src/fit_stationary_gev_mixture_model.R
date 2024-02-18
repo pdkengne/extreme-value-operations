@@ -129,6 +129,8 @@ fit_stationary_gev_mixture_model <- function(x,
                                                weights = weights,
                                                kind = c("geometric", "arithmetic", "harmonic")[2])
   
+  densities <- densities[is.finite(densities)]
+  
   nloglik <- -1*sum(log(densities))
   
   # calculate the information criteria, namely aic and bic

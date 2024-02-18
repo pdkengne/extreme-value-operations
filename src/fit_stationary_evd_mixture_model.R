@@ -21,6 +21,7 @@ fit_stationary_evd_mixture_model <- function(x,
                                              nclusters = NULL, 
                                              centers = NULL, 
                                              minimum_cluster_size = 20,
+                                             iteration_max = 500,
                                              prior_cluster_weights = NULL,
                                              do.ci = FALSE,
                                              confidence_level = 0.95){
@@ -28,6 +29,7 @@ fit_stationary_evd_mixture_model <- function(x,
   # nclusters:
   # centers:
   # minimum_cluster_size:
+  # iteration_max:
   # prior_cluster_weights:
   # do.ci,
   # confidence_level:
@@ -55,7 +57,7 @@ fit_stationary_evd_mixture_model <- function(x,
   
   iteration <- 1
   
-  while (!condition){
+  while (!condition & iteration < ceiling(iteration_max)){
     cluster_data_list <- cluster_attractors$cluster_data_list
     
     cluster_attractors_weights <- cluster_attractors$cluster_attractors_weights
@@ -89,11 +91,13 @@ fit_stationary_evd_mixture_model <- function(x,
   
   output <- list()
   
+  output[["clusters"]] <- cluster_attractors$clusters
   output[["x"]] <- x
   output[["cluster_data_list"]] <- cluster_attractors$cluster_data_list
   output[["cluster_models"]] <- cluster_attractors$cluster_models
   output[["cluster_models_coefficients_ci"]] <- cluster_attractors$cluster_models_coefficients_ci
   output[["iteration"]] <- iteration
+  output[["cluster_models_parameters_variation"]] <- cluster_models_parameters_variation
   output[["cluster_attractors_frequencies"]] <- cluster_attractors$cluster_attractors_frequencies
   output[["cluster_attractors_weights"]] <- cluster_attractors$cluster_attractors_weights
   output[["cluster_attractors_centers"]] <- cluster_attractors$cluster_attractors_centers

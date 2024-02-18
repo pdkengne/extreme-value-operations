@@ -21,7 +21,7 @@ calculate_non_stationary_gev_mixture_model_pdf_internal <- function(selected_ful
                                                                               use_extremal_index = use_extremal_index,
                                                                               normalize_parameters = TRUE)
   
-  # calculate the vector of cdf
+  # calculate the vector of pdf
   mixture_distributions <- sapply(1:nrow(partial_data_covariates), function(i){
     obs <- partial_data[i]
     

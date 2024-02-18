@@ -1,0 +1,1015 @@
+---
+title: "Stationary GEV Mixture Model Estimation"
+subtitle: "Mixture of non block maxima models (data with imputed outliers)"
+author: "Pascal Alain Dkengne Sielenou and Stephane Girard"
+toc: true
+toc-depth: 4
+toc-location: right
+toc-title: "Contents"
+toc-expand: true
+number-sections: true
+cap-location: bottom
+fig-cap-location: bottom
+highlight-style: pygments
+execute:
+  echo: true
+  eval: true
+  output: true
+  warning: false
+  error: false
+  include: true
+format:
+  html: 
+    link-external-newwindow: true
+    smooth-scroll: true
+    df-print: paged
+    code-fold: true
+    code-tools: true
+    code-link: true
+    code-overflow: scroll
+    html-math-method: katex
+    fig-width: 9.5
+    fig-height: 6.5
+  pdf:
+    code-line-numbers: true
+    colorlinks: true
+    fig-width: 5.5
+    fig-height: 3.5
+  docx: default
+---
+
+
+```{r}
+#| label: load-packages
+#| echo: true
+#| code-summary: "Packages"
+#| message: false
+
+library(DT)
+library(tidyverse)
+library(readr)
+library(DescTools)
+library(Hmisc)
+```
+
+
+```{r}
+#| label: load-modules
+#| echo: true
+#| code-summary: "Modules"
+#| message: false
+
+path <- ".."
+
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/read_data.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/load_functions.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/make_models.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/transform_data.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/calculate_model_aic.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/save_multiple_model_aic.R"))
+xfun::in_dir(dir = path, expr = source("./eva_pipeline/src/extract_multiple_model_aic.R"))
+```
+
+
+```{r}
+#| label: load-data
+#| echo: true
+#| code-summary: "Data"
+#| message: false
+#| cache: true
+
+
+experimentation_01_merged_data <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_01/merged_data.csv"))
+
+experimentation_02_merged_data <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_02/merged_data.csv"))
+
+experimentation_03_merged_data <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_03/merged_data.csv", nrow_skip = 14394))
+
+experimentation_04_merged_data <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_04/merged_data.csv"))
+
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "Settings-1"
+#| message: false
+#| cache: true
+
+
+response_abs <- TRUE
+coefficient_iqr <- 3
+iterate <- 20
+remove_outliers <- FALSE
+scale_predictors <- TRUE
+method <- c("interpolate", "mode", "median", "mean")[1]
+```
+
+
+
+
+
+# Experimentation 2023-10-26: 094602
+
+
+## lateral error
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-lateral_error"
+#| message: false
+#| cache: true
+
+
+# transform data
+response_var <- "lateral_error"
+
+experimentation_01_merged_data_processed_lateral_error_object <- transform_data(
+  data = experimentation_01_merged_data, 
+  response_var = response_var,
+  response_abs = response_abs,
+  scale_predictors = scale_predictors,
+  coefficient_iqr = coefficient_iqr, 
+  iterate = iterate,
+  remove_outliers = remove_outliers,
+  method = method)
+
+experimentation_01_merged_data_processed_lateral_error <- experimentation_01_merged_data_processed_lateral_error_object$response
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-lateral_error-model-estimation"
+#| message: false
+#| cache: true
+
+
+experimentation_01_merged_data_processed_lateral_error_model <- fit_stationary_evd_mixture_model(
+  x = experimentation_01_merged_data_processed_lateral_error,
+  nclusters = NULL,
+  minimum_cluster_size = 20,
+  do.ci = FALSE,
+  confidence_level = 0.95)
+```
+
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-lateral_error-model-iteration"
+#| message: false
+#| cache: false
+
+
+experimentation_01_merged_data_processed_lateral_error_model$iteration
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-lateral_error-model-cluster_attractors_frequencies"
+#| message: false
+#| cache: false
+
+
+experimentation_01_merged_data_processed_lateral_error_model$cluster_attractors_frequencies
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-lateral_error-model-cluster_attractors_weights"
+#| message: false
+#| cache: false
+
+
+experimentation_01_merged_data_processed_lateral_error_model$cluster_attractors_weights
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-lateral_error-model-cluster_models_coefficients"
+#| message: false
+#| cache: false
+
+
+experimentation_01_merged_data_processed_lateral_error_model$cluster_models_coefficients
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-lateral_error-model-cluster_information_criteria"
+#| message: false
+#| cache: false
+
+
+experimentation_01_merged_data_processed_lateral_error_model$cluster_information_criteria
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-lateral_error-model-diagnostic_plot"
+#| message: false
+#| cache: false
+
+
+plot_fit_stationary_evd_mixture_model(
+  evd_mixture_model_object = experimentation_01_merged_data_processed_lateral_error_model,
+  nclass = 50,
+  xlab = "support",
+  ylab = "density",
+  main = "density plot",
+  legend_position = "topright")
+```
+
+
+
+
+
+## longitudinal error
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-longitudinal_error"
+#| message: false
+#| cache: true
+
+
+# transform data
+response_var <- "longitudinal_error"
+
+experimentation_01_merged_data_processed_longitudinal_error_object <- transform_data(
+  data = experimentation_01_merged_data, 
+  response_var = response_var,
+  response_abs = response_abs,
+  scale_predictors = scale_predictors,
+  coefficient_iqr = coefficient_iqr, 
+  iterate = iterate,
+  remove_outliers = remove_outliers,
+  method = method)
+
+experimentation_01_merged_data_processed_longitudinal_error <- experimentation_01_merged_data_processed_longitudinal_error_object$response
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-longitudinal_error-model-estimation"
+#| message: false
+#| cache: true
+
+
+experimentation_01_merged_data_processed_longitudinal_error_model <- fit_stationary_evd_mixture_model(
+  x = experimentation_01_merged_data_processed_longitudinal_error,
+  nclusters = NULL,
+  minimum_cluster_size = 20,
+  do.ci = FALSE,
+  confidence_level = 0.95)
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-longitudinal_error-model-iteration"
+#| message: false
+#| cache: false
+
+
+experimentation_01_merged_data_processed_longitudinal_error_model$iteration
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-longitudinal_error-model-cluster_attractors_frequencies"
+#| message: false
+#| cache: false
+
+
+experimentation_01_merged_data_processed_longitudinal_error_model$cluster_attractors_frequencies
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-longitudinal_error-model-cluster_attractors_weights"
+#| message: false
+#| cache: false
+
+
+experimentation_01_merged_data_processed_longitudinal_error_model$cluster_attractors_weights
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-longitudinal_error-model-cluster_models_coefficients"
+#| message: false
+#| cache: false
+
+
+experimentation_01_merged_data_processed_longitudinal_error_model$cluster_models_coefficients
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-longitudinal_error-model-cluster_information_criteria"
+#| message: false
+#| cache: false
+
+
+experimentation_01_merged_data_processed_longitudinal_error_model$cluster_information_criteria
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_01-processed-longitudinal_error-model-diagnostic_plot"
+#| message: false
+#| cache: false
+
+
+plot_fit_stationary_evd_mixture_model(
+  evd_mixture_model_object = experimentation_01_merged_data_processed_longitudinal_error_model,
+  nclass = 50,
+  display_all = FALSE,
+  xlab = "support",
+  ylab = "density",
+  main = "density plot",
+  legend_position = "topright")
+```
+
+
+
+
+# Experimentation 2023-12-11: 165719
+
+
+## lateral error
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-lateral_error"
+#| message: false
+#| cache: false
+
+
+# transform data
+response_var <- "lateral_error"
+
+experimentation_02_merged_data_processed_lateral_error_object <- transform_data(
+  data = experimentation_02_merged_data, 
+  response_var = response_var,
+  response_abs = response_abs,
+  scale_predictors = scale_predictors,
+  coefficient_iqr = coefficient_iqr, 
+  iterate = iterate,
+  remove_outliers = remove_outliers,
+  method = method)
+
+experimentation_02_merged_data_processed_lateral_error <- experimentation_02_merged_data_processed_lateral_error_object$response
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-lateral_error-model-estimation"
+#| message: false
+#| cache: true
+
+
+experimentation_02_merged_data_processed_lateral_error_model <- fit_stationary_evd_mixture_model(
+  x = experimentation_02_merged_data_processed_lateral_error,
+  nclusters = NULL,
+  minimum_cluster_size = 20,
+  do.ci = FALSE,
+  confidence_level = 0.95)
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-lateral_error-model-iteration"
+#| message: false
+#| cache: false
+
+
+experimentation_02_merged_data_processed_lateral_error_model$iteration
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-lateral_error-model-cluster_attractors_frequencies"
+#| message: false
+#| cache: false
+
+
+experimentation_02_merged_data_processed_lateral_error_model$cluster_attractors_frequencies
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-lateral_error-model-cluster_attractors_weights"
+#| message: false
+#| cache: false
+
+
+experimentation_02_merged_data_processed_lateral_error_model$cluster_attractors_weights
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-lateral_error-model-cluster_models_coefficients"
+#| message: false
+#| cache: false
+
+
+experimentation_02_merged_data_processed_lateral_error_model$cluster_models_coefficients
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-lateral_error-model-cluster_information_criteria"
+#| message: false
+#| cache: false
+
+
+experimentation_02_merged_data_processed_lateral_error_model$cluster_information_criteria
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-lateral_error-model-diagnostic_plot"
+#| message: false
+#| cache: false
+
+
+plot_fit_stationary_evd_mixture_model(
+  evd_mixture_model_object = experimentation_02_merged_data_processed_lateral_error_model,
+  nclass = 50,
+  display_all = FALSE,
+  xlab = "support",
+  ylab = "density",
+  main = "density plot",
+  legend_position = "topright")
+```
+
+
+
+
+## longitudinal error
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-longitudinal_error"
+#| message: false
+#| cache: false
+
+
+# transform data
+response_var <- "longitudinal_error"
+
+experimentation_02_merged_data_processed_longitudinal_error_object <- transform_data(
+  data = experimentation_02_merged_data, 
+  response_var = response_var,
+  response_abs = response_abs,
+  scale_predictors = scale_predictors,
+  coefficient_iqr = coefficient_iqr, 
+  iterate = iterate,
+  remove_outliers = remove_outliers,
+  method = method)
+
+experimentation_02_merged_data_processed_longitudinal_error <- experimentation_02_merged_data_processed_longitudinal_error_object$response
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-longitudinal_error-model-estimation"
+#| message: false
+#| cache: true
+
+
+experimentation_02_merged_data_processed_longitudinal_error_model <- fit_stationary_evd_mixture_model(
+  x = experimentation_02_merged_data_processed_longitudinal_error,
+  nclusters = NULL,
+  minimum_cluster_size = 20,
+  do.ci = FALSE,
+  confidence_level = 0.95)
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-longitudinal_error-model-iteration"
+#| message: false
+#| cache: false
+
+
+experimentation_02_merged_data_processed_longitudinal_error_model$iteration
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-longitudinal_error-model-cluster_attractors_frequencies"
+#| message: false
+#| cache: false
+
+
+experimentation_02_merged_data_processed_longitudinal_error_model$cluster_attractors_frequencies
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-longitudinal_error-model-cluster_attractors_weights"
+#| message: false
+#| cache: false
+
+
+experimentation_02_merged_data_processed_longitudinal_error_model$cluster_attractors_weights
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-longitudinal_error-model-cluster_models_coefficients"
+#| message: false
+#| cache: false
+
+
+experimentation_02_merged_data_processed_longitudinal_error_model$cluster_models_coefficients
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-longitudinal_error-model-cluster_information_criteria"
+#| message: false
+#| cache: false
+
+
+experimentation_02_merged_data_processed_longitudinal_error_model$cluster_information_criteria
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_02-processed-longitudinal_error-model-diagnostic_plot"
+#| message: false
+#| cache: false
+
+
+plot_fit_stationary_evd_mixture_model(
+  evd_mixture_model_object = experimentation_02_merged_data_processed_longitudinal_error_model,
+  nclass = 50,
+  display_all = FALSE,
+  xlab = "support",
+  ylab = "density",
+  main = "density plot",
+  legend_position = "topright")
+```
+
+
+
+
+
+# Experimentation 2023-12-12: 101549
+
+
+## lateral error
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-lateral_error"
+#| message: false
+#| cache: true
+
+
+# transform data
+response_var <- "lateral_error"
+
+experimentation_03_merged_data_processed_lateral_error_object <- transform_data(
+  data = experimentation_03_merged_data, 
+  response_var = response_var,
+  response_abs = response_abs,
+  scale_predictors = scale_predictors,
+  coefficient_iqr = coefficient_iqr, 
+  iterate = iterate,
+  remove_outliers = remove_outliers,
+  method = method)
+
+experimentation_03_merged_data_processed_lateral_error <- experimentation_03_merged_data_processed_lateral_error_object$response
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-lateral_error-model-estimation"
+#| message: false
+#| cache: true
+
+
+experimentation_03_merged_data_processed_lateral_error_model <- fit_stationary_evd_mixture_model(
+  x = experimentation_03_merged_data_processed_lateral_error,
+  nclusters = NULL,
+  minimum_cluster_size = 20,
+  do.ci = FALSE,
+  confidence_level = 0.95)
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-lateral_error-model-iteration"
+#| message: false
+#| cache: false
+
+
+experimentation_03_merged_data_processed_lateral_error_model$iteration
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-lateral_error-model-cluster_attractors_frequencies"
+#| message: false
+#| cache: false
+
+
+experimentation_03_merged_data_processed_lateral_error_model$cluster_attractors_frequencies
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-lateral_error-model-cluster_attractors_weights"
+#| message: false
+#| cache: false
+
+
+experimentation_03_merged_data_processed_lateral_error_model$cluster_attractors_weights
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-lateral_error-model-cluster_models_coefficients"
+#| message: false
+#| cache: false
+
+
+experimentation_03_merged_data_processed_lateral_error_model$cluster_models_coefficients
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-lateral_error-model-cluster_information_criteria"
+#| message: false
+#| cache: false
+
+
+experimentation_03_merged_data_processed_lateral_error_model$cluster_information_criteria
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-lateral_error-model-diagnostic_plot"
+#| message: false
+#| cache: false
+
+
+plot_fit_stationary_evd_mixture_model(
+  evd_mixture_model_object = experimentation_03_merged_data_processed_lateral_error_model,
+  nclass = 50,
+  display_all = FALSE,
+  xlab = "support",
+  ylab = "density",
+  main = "density plot",
+  legend_position = "topright")
+```
+
+
+
+
+## longitudinal error
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-longitudinal_error"
+#| message: false
+#| cache: true
+
+
+# transform data
+response_var <- "longitudinal_error"
+
+experimentation_03_merged_data_processed_longitudinal_error_object <- transform_data(
+  data = experimentation_03_merged_data, 
+  response_var = response_var,
+  response_abs = response_abs,
+  scale_predictors = scale_predictors,
+  coefficient_iqr = coefficient_iqr, 
+  iterate = iterate,
+  remove_outliers = remove_outliers,
+  method = method)
+
+experimentation_03_merged_data_processed_longitudinal_error <- experimentation_03_merged_data_processed_longitudinal_error_object$response
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-longitudinal_error-model-estimation"
+#| message: false
+#| cache: true
+
+
+experimentation_03_merged_data_processed_longitudinal_error_model <- fit_stationary_evd_mixture_model(
+  x = experimentation_03_merged_data_processed_longitudinal_error,
+  nclusters = NULL,
+  minimum_cluster_size = 20,
+  do.ci = FALSE,
+  confidence_level = 0.95)
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-longitudinal_error-model-iteration"
+#| message: false
+#| cache: false
+
+
+experimentation_03_merged_data_processed_longitudinal_error_model$iteration
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-longitudinal_error-model-cluster_attractors_frequencies"
+#| message: false
+#| cache: false
+
+
+experimentation_03_merged_data_processed_longitudinal_error_model$cluster_attractors_frequencies
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-longitudinal_error-model-cluster_attractors_weights"
+#| message: false
+#| cache: false
+
+
+experimentation_03_merged_data_processed_longitudinal_error_model$cluster_attractors_weights
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-longitudinal_error-model-cluster_models_coefficients"
+#| message: false
+#| cache: false
+
+
+experimentation_03_merged_data_processed_longitudinal_error_model$cluster_models_coefficients
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-longitudinal_error-model-cluster_information_criteria"
+#| message: false
+#| cache: false
+
+
+experimentation_03_merged_data_processed_longitudinal_error_model$cluster_information_criteria
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_03-processed-longitudinal_error-model-diagnostic_plot"
+#| message: false
+#| cache: false
+
+
+plot_fit_stationary_evd_mixture_model(
+  evd_mixture_model_object = experimentation_03_merged_data_processed_longitudinal_error_model,
+  nclass = 50,
+  display_all = FALSE,
+  xlab = "support",
+  ylab = "density",
+  main = "density plot",
+  legend_position = "topright")
+```
+
+
+
+
+
+
+# Experimentation 2023-12-12: 104522
+
+
+## lateral error
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-lateral_error"
+#| message: false
+#| cache: true
+
+
+# transform data
+response_var <- "lateral_error"
+
+experimentation_04_merged_data_processed_lateral_error_object <- transform_data(
+  data = experimentation_04_merged_data, 
+  response_var = response_var,
+  response_abs = response_abs,
+  scale_predictors = scale_predictors,
+  coefficient_iqr = coefficient_iqr, 
+  iterate = iterate,
+  remove_outliers = remove_outliers,
+  method = method)
+
+experimentation_04_merged_data_processed_lateral_error <- experimentation_04_merged_data_processed_lateral_error_object$response
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-lateral_error-model-estimation"
+#| message: false
+#| cache: true
+
+
+experimentation_04_merged_data_processed_lateral_error_model <- fit_stationary_evd_mixture_model(
+  x = experimentation_04_merged_data_processed_lateral_error,
+  nclusters = NULL,
+  minimum_cluster_size = 20,
+  do.ci = FALSE,
+  confidence_level = 0.95)
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-lateral_error-model-iteration"
+#| message: false
+#| cache: false
+
+
+experimentation_04_merged_data_processed_lateral_error_model$iteration
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-lateral_error-model-cluster_attractors_frequencies"
+#| message: false
+#| cache: false
+
+
+experimentation_04_merged_data_processed_lateral_error_model$cluster_attractors_frequencies
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-lateral_error-model-cluster_attractors_weights"
+#| message: false
+#| cache: false
+
+
+experimentation_04_merged_data_processed_lateral_error_model$cluster_attractors_weights
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-lateral_error-model-cluster_models_coefficients"
+#| message: false
+#| cache: false
+
+
+experimentation_04_merged_data_processed_lateral_error_model$cluster_models_coefficients
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-lateral_error-model-cluster_information_criteria"
+#| message: false
+#| cache: false
+
+
+experimentation_04_merged_data_processed_lateral_error_model$cluster_information_criteria
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-lateral_error-model-diagnostic_plot"
+#| message: false
+#| cache: false
+
+
+plot_fit_stationary_evd_mixture_model(
+  evd_mixture_model_object = experimentation_04_merged_data_processed_lateral_error_model,
+  nclass = 50,
+  display_all = FALSE,
+  xlab = "support",
+  ylab = "density",
+  main = "density plot",
+  legend_position = "topright")
+```
+
+
+
+## longitudinal error
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-longitudinal_error"
+#| message: false
+#| cache: true
+
+
+# transform data
+response_var <- "longitudinal_error"
+
+experimentation_04_merged_data_processed_longitudinal_error_object <- transform_data(
+  data = experimentation_04_merged_data, 
+  response_var = response_var,
+  response_abs = response_abs,
+  scale_predictors = scale_predictors,
+  coefficient_iqr = coefficient_iqr, 
+  iterate = iterate,
+  remove_outliers = remove_outliers,
+  method = method)
+
+experimentation_04_merged_data_processed_longitudinal_error <- experimentation_04_merged_data_processed_longitudinal_error_object$response
+```
+
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-longitudinal_error-model-estimation"
+#| message: false
+#| cache: true
+
+
+experimentation_04_merged_data_processed_longitudinal_error_model <- fit_stationary_evd_mixture_model(
+  x = experimentation_04_merged_data_processed_longitudinal_error,
+  nclusters = NULL,
+  minimum_cluster_size = 20,
+  do.ci = FALSE,
+  confidence_level = 0.95)
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-longitudinal_error-model-iteration"
+#| message: false
+#| cache: false
+
+
+experimentation_04_merged_data_processed_longitudinal_error_model$iteration
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-longitudinal_error-model-cluster_attractors_frequencies"
+#| message: false
+#| cache: false
+
+
+experimentation_04_merged_data_processed_longitudinal_error_model$cluster_attractors_frequencies
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-longitudinal_error-model-cluster_attractors_weights"
+#| message: false
+#| cache: false
+
+
+experimentation_04_merged_data_processed_longitudinal_error_model$cluster_attractors_weights
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-longitudinal_error-model-cluster_models_coefficients"
+#| message: false
+#| cache: false
+
+
+experimentation_04_merged_data_processed_longitudinal_error_model$cluster_models_coefficients
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-longitudinal_error-model-cluster_information_criteria"
+#| message: false
+#| cache: false
+
+
+experimentation_04_merged_data_processed_longitudinal_error_model$cluster_information_criteria
+```
+
+```{r}
+#| echo: true
+#| code-summary: "experimentation_04-processed-longitudinal_error-model-diagnostic_plot"
+#| message: false
+#| cache: false
+
+
+plot_fit_stationary_evd_mixture_model(
+  evd_mixture_model_object = experimentation_04_merged_data_processed_longitudinal_error_model,
+  nclass = 50,
+  display_all = FALSE,
+  xlab = "support",
+  ylab = "density",
+  main = "density plot",
+  legend_position = "topright")
+```
+
+

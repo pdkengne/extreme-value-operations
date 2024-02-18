@@ -173,6 +173,8 @@ fit_non_stationary_gev_mixture_model <- function(x,
                                                                        partial_data_covariates = partial_data_covariates,
                                                                        use_extremal_index = use_extremal_index)
   
+  densities <- densities[is.finite(densities)]
+  
   nloglik <- -1*sum(log(densities))
   
   # calculate the information criteria, namely aic and bic
@@ -246,7 +248,6 @@ fit_non_stationary_gev_mixture_model <- function(x,
 
   output
 }
-
 
 
 # # example 1

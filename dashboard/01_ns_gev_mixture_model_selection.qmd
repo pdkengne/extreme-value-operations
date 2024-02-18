@@ -75,6 +75,14 @@ experimentation_03_lateral_error_model_aic <- xfun::in_dir(dir = path, expr = re
 
 experimentation_04_lateral_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_04/lateral_error_model_aic.csv"))
 
+
+lateral_error_model_information_criterion_list <- list(
+  "experimentation_01" = experimentation_01_lateral_error_model_aic,
+  "experimentation_02" = experimentation_02_lateral_error_model_aic,
+  "experimentation_03" = experimentation_03_lateral_error_model_aic,
+  "experimentation_04" = experimentation_04_lateral_error_model_aic
+)
+
 ```
 
 
@@ -92,6 +100,15 @@ experimentation_02_longitudinal_error_model_aic <- xfun::in_dir(dir = path, expr
 experimentation_03_longitudinal_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_03/longitudinal_error_model_aic.csv"))
 
 experimentation_04_longitudinal_error_model_aic <- xfun::in_dir(dir = path, expr = read_data("./04_experimentation_04/longitudinal_error_model_aic.csv"))
+
+
+longitudinal_error_model_information_criterion_list <- list(
+  "experimentation_01" = experimentation_01_longitudinal_error_model_aic,
+  "experimentation_02" = experimentation_02_longitudinal_error_model_aic,
+  "experimentation_03" = experimentation_03_longitudinal_error_model_aic,
+  "experimentation_04" = experimentation_04_longitudinal_error_model_aic
+)
+
 
 ```
 
@@ -173,5 +190,223 @@ DT::datatable(experimentation_04_lateral_error_model_aic)
 DT::datatable(experimentation_04_longitudinal_error_model_aic)
 ```
 
+
+
+
+
+# Information criteria
+
+
+## lateral error
+
+
+### Merged
+
+
+```{r}
+#| echo: true
+#| code-summary: "information_criteria_lateral_error_merged"
+#| message: false
+
+
+experimentation_names <- names(lateral_error_model_information_criterion_list)
+
+lateral_error_model_names  <- lapply(lateral_error_model_information_criterion_list, function(experimentation){
+  experimentation$model_names
+})
+
+lateral_error_model_names <- unique(unlist(lateral_error_model_names))
+
+
+lateral_error_model_variables  <- lapply(lateral_error_model_information_criterion_list, function(experimentation){
+  experimentation$variable
+})
+
+lateral_error_model_variables <- unique(unlist(lateral_error_model_variables))
+
+lateral_error_model_information_criterion_df_values  <- c()
+  
+for (name in lateral_error_model_names){
+  for (variable in lateral_error_model_variables){
+    for (experimentation in experimentation_names){
+      data <- lateral_error_model_information_criterion_list[[experimentation]]
+      data$experimentation <- experimentation
+      if (name %in% data$model_name & variable %in% data$variable){
+        row_id <- which(data$model_name == name & data$variable == variable)
+        lateral_error_model_information_criterion_df_values <- rbind(lateral_error_model_information_criterion_df_values, data[row_id, ])
+      }
+    }
+  }
+}
+
+
+lateral_error_model_information_criterion_df_values <- data.frame(lateral_error_model_information_criterion_df_values)
+
+
+lateral_error_model_information_criterion_df_uid <- sapply(1:nrow(lateral_error_model_information_criterion_df_values), function(row){
+  paste(
+    lateral_error_model_information_criterion_df_values$experimentation[row],
+    lateral_error_model_information_criterion_df_values$model_names[row], 
+    lateral_error_model_information_criterion_df_values$variable[row], sep = "_")
+})
+
+
+lateral_error_model_information_criterion_df_id <- sapply(1:nrow(lateral_error_model_information_criterion_df_values), function(row){
+  paste(
+    lateral_error_model_information_criterion_df_values$model_names[row], 
+    lateral_error_model_information_criterion_df_values$variable[row], sep = "_")
+})
+
+
+lateral_error_model_information_criterion_merged <- lateral_error_model_information_criterion_df_values %>%
+  mutate(model_uid = lateral_error_model_information_criterion_df_uid, .before = 1) %>%
+  mutate(model_id = lateral_error_model_information_criterion_df_id, .before = 2) %>%
+  select(!c(model_names))
+
+
+DT::datatable(lateral_error_model_information_criterion_merged)
+```
+
+
+### Aggregated
+
+```{r}
+#| echo: true
+#| code-summary: "information_criteria_lateral_error_aggregated"
+#| message: false
+
+
+lateral_error_model_aggregated_aic <- tapply(
+  X = lateral_error_model_information_criterion_merged[, c("AIC")], 
+  INDEX = list(lateral_error_model_information_criterion_merged$model_id), 
+  FUN = "mean",
+  na.rm = TRUE,
+  default = NA, 
+  simplify = TRUE)
+
+
+lateral_error_model_aggregated_bic <- tapply(
+  X = lateral_error_model_information_criterion_merged[, c("BIC")], 
+  INDEX = list(lateral_error_model_information_criterion_merged$model_id), 
+  FUN = "mean",
+  na.rm = TRUE,
+  default = NA, 
+  simplify = TRUE)
+
+
+lateral_error_model_information_criterion_aggregated <- data.frame(
+  "AIC" = lateral_error_model_aggregated_aic,
+  "BIC" = lateral_error_model_aggregated_bic)
+
+DT::datatable(lateral_error_model_information_criterion_aggregated)
+```
+
+
+
+
+## longitudinal error
+
+
+### Merged
+
+
+```{r}
+#| echo: true
+#| code-summary: "information_criteria_longitudinal_error_merged"
+#| message: false
+
+
+experimentation_names <- names(longitudinal_error_model_information_criterion_list)
+
+longitudinal_error_model_names  <- lapply(longitudinal_error_model_information_criterion_list, function(experimentation){
+  experimentation$model_names
+})
+
+longitudinal_error_model_names <- unique(unlist(longitudinal_error_model_names))
+
+
+longitudinal_error_model_variables  <- lapply(longitudinal_error_model_information_criterion_list, function(experimentation){
+  experimentation$variable
+})
+
+longitudinal_error_model_variables <- unique(unlist(longitudinal_error_model_variables))
+
+longitudinal_error_model_information_criterion_df_values  <- c()
+
+for (name in longitudinal_error_model_names){
+  for (variable in longitudinal_error_model_variables){
+    for (experimentation in experimentation_names){
+      data <- longitudinal_error_model_information_criterion_list[[experimentation]]
+      data$experimentation <- experimentation
+      if (name %in% data$model_name & variable %in% data$variable){
+        row_id <- which(data$model_name == name & data$variable == variable)
+        longitudinal_error_model_information_criterion_df_values <- rbind(longitudinal_error_model_information_criterion_df_values, data[row_id, ])
+      }
+    }
+  }
+}
+
+
+longitudinal_error_model_information_criterion_df_values <- data.frame(longitudinal_error_model_information_criterion_df_values)
+
+
+longitudinal_error_model_information_criterion_df_uid <- sapply(1:nrow(longitudinal_error_model_information_criterion_df_values), function(row){
+  paste(
+    longitudinal_error_model_information_criterion_df_values$experimentation[row],
+    longitudinal_error_model_information_criterion_df_values$model_names[row], 
+    longitudinal_error_model_information_criterion_df_values$variable[row], sep = "_")
+})
+
+
+longitudinal_error_model_information_criterion_df_id <- sapply(1:nrow(longitudinal_error_model_information_criterion_df_values), function(row){
+  paste(
+    longitudinal_error_model_information_criterion_df_values$model_names[row], 
+    longitudinal_error_model_information_criterion_df_values$variable[row], sep = "_")
+})
+
+
+longitudinal_error_model_information_criterion_merged <- longitudinal_error_model_information_criterion_df_values %>%
+  mutate(model_uid = longitudinal_error_model_information_criterion_df_uid, .before = 1) %>%
+  mutate(model_id = longitudinal_error_model_information_criterion_df_id, .before = 2) %>%
+  select(!c(model_names))
+
+
+DT::datatable(longitudinal_error_model_information_criterion_merged)
+```
+
+
+### Aggregated
+
+
+```{r}
+#| echo: true
+#| code-summary: "information_criteria_longitudinal_error_aggregated"
+#| message: false
+
+
+longitudinal_error_model_aggregated_aic <- tapply(
+  X = longitudinal_error_model_information_criterion_merged[, c("AIC")], 
+  INDEX = list(longitudinal_error_model_information_criterion_merged$model_id), 
+  FUN = "mean",
+  na.rm = TRUE,
+  default = NA, 
+  simplify = TRUE)
+
+
+longitudinal_error_model_aggregated_bic <- tapply(
+  X = longitudinal_error_model_information_criterion_merged[, c("BIC")], 
+  INDEX = list(longitudinal_error_model_information_criterion_merged$model_id), 
+  FUN = "mean",
+  na.rm = TRUE,
+  default = NA, 
+  simplify = TRUE)
+
+
+longitudinal_error_model_information_criterion_aggregated <- data.frame(
+  "AIC" = longitudinal_error_model_aggregated_aic,
+  "BIC" = longitudinal_error_model_aggregated_bic)
+
+DT::datatable(longitudinal_error_model_information_criterion_aggregated)
+```
 
 

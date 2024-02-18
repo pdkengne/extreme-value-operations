@@ -56,14 +56,15 @@ transform_data <- function(data,
   
   data_covariates <- data_clean %>% select(all_of(predictor_vars))
   
-  data_covariates_clean <- data_covariates %>% select_if(colSums(.) != 0)
+  data_covariates_unscaled <- data_covariates %>% select_if(colSums(.) != 0)
   
   if (scale_predictors){
-    data_covariates_clean <- get_standard_scaled_data(data_covariates_clean, newdata = NULL)
+    data_covariates_scaled <- get_standard_scaled_data(data = data_covariates_unscaled, newdata = NULL)
   }
   
   output <- list(response = x,
-                 predictors = data_covariates_clean,
+                 predictors = data_covariates_scaled,
+                 unscaled_predictors = data_covariates_unscaled,
                  outlier_positions = outlier_positions,
                  outlier_values = outlier_values,
                  outlier_substitutes = outlier_substitutes,

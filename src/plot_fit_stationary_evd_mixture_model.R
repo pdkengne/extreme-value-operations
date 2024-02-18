@@ -148,7 +148,7 @@ plot_fit_stationary_evd_mixture_model <- function(evd_mixture_model_object,
 # evd_mixture_model_object
 # 
 # plot_fit_stationary_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
-#                                       nclass = 30,
+#                                       nclass = NULL,
 #                                       display_all = FALSE,
 #                                       xlab = "support",
 #                                       ylab = "density",

@@ -46,6 +46,11 @@ calculate_evd_cluster_attractors <- function(x,
   })
   
   cluster_attractors_matrix <- exp(cluster_attractors_matrix)
+  
+  if (class(cluster_attractors_matrix)[1] != "matrix"){
+    cluster_attractors_matrix <- t(cluster_attractors_matrix)
+  }
+  
   mass <- apply(cluster_attractors_matrix, 1, sum)
   cluster_attractors_matrix <- cluster_attractors_matrix/mass
   
@@ -127,9 +132,12 @@ calculate_evd_cluster_attractors <- function(x,
     cluster_data
   })
   
+  clusters <- as.numeric(cluster_attractors_frequencies_table)
+  
   output <- list()
   
   # output[["cluster_attractors_matrix"]] <- cluster_attractors_matrix
+  output[["clusters"]] <- clusters
   output[["cluster_attractors_frequencies"]] <- cluster_attractors_frequencies
   output[["cluster_attractors_weights"]] <- cluster_attractors_weights
   output[["cluster_attractors_centers"]] <- cluster_attractors_centers
@@ -183,6 +191,8 @@ calculate_evd_cluster_attractors <- function(x,
 # cluster_attractors$cluster_attractors_weights
 # 
 # cluster_attractors$cluster_data_list
+# 
+# cluster_attractors$clusters
 # 
 # 
 # # example 2

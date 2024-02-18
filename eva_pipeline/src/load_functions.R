@@ -101,5 +101,8 @@ load_functions <- function(){
   source("./src/fit_stationary_unimodal_evd_mixture_model.R")
   source("./src/plot_fit_stationary_unimodal_evd_mixture_model.R")
   
+  source("./src/fit_non_stationary_evd_mixture_model.R")
+  source("./src/plot_fit_non_stationary_evd_mixture_model.R")
+  
 }
 
