@@ -3,6 +3,6 @@
 .RData
 _targets
 .ipynb
-computations-complete_cache
-01_gev_mixture_model_estimation_with_removed_outliers_cache
-01_gev_mixture_model_estimation_with_imputed_outliers_cache
+computations-complete_cache/html
+01_gev_mixture_model_estimation_with_removed_outliers_cache/html
+01_gev_mixture_model_estimation_with_imputed_outliers_cache/html
