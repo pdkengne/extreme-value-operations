@@ -1,6 +1,6 @@
-source("./src/calculate_gev_mixture_model_inverse_cdf.R")
-source("./src/calculate_gev_inverse_cdf.R")
-source("./src/generate_gev_sample.R")
+source("./src/calculate_gp_mixture_model_inverse_cdf.R")
+source("./src/calculate_gp_inverse_cdf.R")
+source("./src/generate_gp_sample.R")
 
 generate_gev_mixture_model_sample <- function(n = 1, 
                                               locations, 

@@ -88,7 +88,8 @@ calculate_gev_mixture_model_inverse_cdf <- function(p,
 # 
 # calculate_gev_mixture_model_cdf(q = results,
 #                                 locations,
-#                                 scales, shapes,
+#                                 scales, 
+#                                 shapes,
 #                                 weights,
 #                                 kind = c("geometric", "arithmetic", "harmonic")[1])
 # p

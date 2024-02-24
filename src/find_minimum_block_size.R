@@ -2,6 +2,7 @@
 #library(EnvStats)
 
 source("./src/calculate_mode.R")
+source("./src/extract_block_maxima.R")
 
 
 find_minimum_block_size <- function(x, threshold = NULL){
@@ -9,12 +10,19 @@ find_minimum_block_size <- function(x, threshold = NULL){
   # threshold: lower bound of block maxima
   
   if (is.null(threshold)){
-    # threshold <- max(c(median(x), calculate_mode(x)))
-    threshold <- calculate_mode(x)
+    block_size <- 1
+  }
+  else {
+    block_size <- max(diff(which(x > threshold))) + 1
+    maxima <- extract_block_maxima(x, block_size = block_size)
+    
+    while(min(maxima) <= threshold){
+      block_size <- block_size + 1
+      maxima <- extract_block_maxima(x, block_size = block_size)
+    }
+    
   }
  
-  block_size <- max(diff(which(x > threshold))) + 1
-  
   block_size
 }
 
@@ -27,8 +35,11 @@ find_minimum_block_size <- function(x, threshold = NULL){
 # threshold
 # 
 # result <- find_minimum_block_size(x, threshold = threshold)
-# 
 # result
+# 
+# maxima <- extract_block_maxima(x, block_size = result)
+# 
+# min(maxima) > threshold
 # 
 # 
 # # example 2
@@ -42,6 +53,10 @@ find_minimum_block_size <- function(x, threshold = NULL){
 # 
 # result
 # 
+# maxima <- extract_block_maxima(x, block_size = result)
+# 
+# min(maxima) > threshold
+# 
 # 
 # # example 3
 # 
@@ -54,6 +69,10 @@ find_minimum_block_size <- function(x, threshold = NULL){
 # 
 # result
 # 
+# maxima <- extract_block_maxima(x, block_size = result)
+# 
+# min(maxima) > threshold
+# 
 # 
 # # example 4
 # 
@@ -64,18 +83,24 @@ find_minimum_block_size <- function(x, threshold = NULL){
 # 
 # result <- find_minimum_block_size(x, threshold = threshold)
 # 
-# 
 # result
+# 
+# maxima <- extract_block_maxima(x, block_size = result)
+# 
+# min(maxima) > threshold
 # 
 # 
 # # example 5
 # 
 # x <- EnvStats::rzmnorm(n = 1000, mean = 0, sd = 1, p.zero = 0.5)
 # 
-# threshold <- NULL
+# threshold <- 0
 # threshold
 # 
 # result <- find_minimum_block_size(x, threshold = threshold)
 # 
 # result
-
+# 
+# maxima <- extract_block_maxima(x, block_size = result)
+# 
+# min(maxima) > threshold
