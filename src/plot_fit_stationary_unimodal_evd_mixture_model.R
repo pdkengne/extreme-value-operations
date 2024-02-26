@@ -123,14 +123,55 @@ plot_fit_stationary_unimodal_evd_mixture_model <- function(evd_mixture_model_obj
 # library(mixR)
 # 
 # n <- 2000
+# 
 # x <- rnorm(n = n)
+# 
+# 
+# library(mixtools)
+# library(mixR)
+# 
+# 
+# mod1 = mixfit(x, ncomp = 1, family = 'normal')
+# mod1
+# plot(mod1)
+# 
+# n <- 10000
+# 
+# x <- bmixture::rmixnorm(n = n, weight = c(1/2, 1/2), mean = c(0.6, 1.3), sd = c(0.1, 0.1))
+# 
 # 
 # hist(x, nclass = NULL)
 # 
-# mod1 = mixfit(x, ncomp = 2, family = 'normal')
-# mod1
 # 
-# evd_mixture_model_object <- fit_stationary_unimodal_evd_mixture_model(x = x,
+# x <- rnorm(n = n)
+# 
+# x <- rt(n = n, df = 5)
+# 
+# y <- x[x > quantile(x = x, probs = 0.75)]
+# 
+# empirical_cdf_object <- EnvStats::ecdfPlot(x = y, plot.pos.con = 0.375, plot.it = FALSE)
+# 
+# empirical_cdf <- empirical_cdf_object$Cumulative.Probabilities
+# 
+# exponential_sample <- qexp(p = empirical_cdf, rate = 1)
+# 
+# # exponential_sample <- rexp(n, rate = 1)
+# 
+# res.km <- kmeans(x = exponential_sample, centers = 4, nstart = 25)
+# 
+# d <- dexp(x = exponential_sample, rate = 1)
+# 
+# cl <- res.km$cluster
+# 
+# table(cl)
+# 
+# plot(exponential_sample, d, col = cl)
+# 
+# plot(y, d, col = cl)
+# 
+# hist(y[which(cl == 1)])
+# 
+# evd_mixture_model_object <- fit_stationary_unimodal_evd_mixture_model(x = y,
 #                                                                       nclusters = 10,
 #                                                                       minimum_cluster_size = 20,
 #                                                                       do.ci = FALSE,
@@ -143,15 +184,18 @@ plot_fit_stationary_unimodal_evd_mixture_model <- function(evd_mixture_model_obj
 # # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
 # # [10] "loglik"                         "cluster_information_criteria"
 # 
-# evd_mixture_model_object
+# evd_mixture_model_object$cluster_attractors_frequencies
+# evd_mixture_model_object$cluster_attractors_weights
+# evd_mixture_model_object$cluster_models_coefficients
+# evd_mixture_model_object$cluster_information_criteria
 # 
 # plot_fit_stationary_unimodal_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
 #                                                nclass = NULL,
-#                                                display_all = FALSE,
+#                                                display_all = TRUE,
 #                                                xlab = "support",
 #                                                ylab = "density",
 #                                                main = "density plot",
-#                                                legend_position = "topleft")
+#                                                legend_position = "topright")
 # 
 # 
 # # example 2
@@ -177,7 +221,7 @@ plot_fit_stationary_unimodal_evd_mixture_model <- function(evd_mixture_model_obj
 # mod1
 # 
 # evd_mixture_model_object <- fit_stationary_unimodal_evd_mixture_model(x = x,
-#                                                                       nclusters = 10,
+#                                                                       nclusters = 2,
 #                                                                       minimum_cluster_size = 20,
 #                                                                       do.ci = FALSE,
 #                                                                       confidence_level = 0.95)
@@ -214,15 +258,15 @@ plot_fit_stationary_unimodal_evd_mixture_model <- function(evd_mixture_model_obj
 #                                        shapes = c(-0.01, +0.01),
 #                                        kind = c("geometric", "arithmetic", "harmonic")[1])
 # 
-# library(mixR)
 # 
-# hist(x, nclass = NULL)
 # 
 # mod1 = mixfit(x, ncomp = 2, family = 'lnorm')
 # mod1
 # 
+# y <- x[x > median(x)]
+# 
 # evd_mixture_model_object <- fit_stationary_unimodal_evd_mixture_model(x = x,
-#                                                                       nclusters = 10,
+#                                                                       nclusters = 5,
 #                                                                       minimum_cluster_size = 20,
 #                                                                       do.ci = FALSE,
 #                                                                       confidence_level = 0.95)
@@ -237,13 +281,14 @@ plot_fit_stationary_unimodal_evd_mixture_model <- function(evd_mixture_model_obj
 # evd_mixture_model_object
 # 
 # plot_fit_stationary_unimodal_evd_mixture_model(evd_mixture_model_object = evd_mixture_model_object,
-#                                                nclass = NULL,
+#                                                nclass = 30,
 #                                                display_all = FALSE,
 #                                                xlab = "support",
 #                                                ylab = "density",
 #                                                main = "density plot",
-#                                                legend_position = "topleft")
-
-
-
-
+#                                                legend_position = "topright")
+# 
+# lines(density(y))
+# 
+# 
+# 
