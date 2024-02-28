@@ -39,53 +39,57 @@ estimate_ns_gev_mixture_model_automatic_weights <- function(gev_models,
                                                                               use_extremal_index = use_extremal_index,
                                                                               normalize_parameters = TRUE)
 
-  # calculate the prior probability w.r.t. every gev model
-  if (use_uniform_prior){
-    unnormalized_prior <- block_sizes/block_sizes
-    prior <- unnormalized_prior/sum(unnormalized_prior)
-  } 
-  else{
-    highest_shapes <- sapply(1:length(normalized_gev_parameters), function(k){
-      shape <- max(normalized_gev_parameters[[k]]$shape)
-      shape
-    })
-    unnormalized_prior <- exp(highest_shapes)
-    prior <- unnormalized_prior/sum(unnormalized_prior)
-  }
+  # # calculate the prior probability w.r.t. every gev model
+  # if (use_uniform_prior){
+  #   unnormalized_prior <- block_sizes/block_sizes
+  #   prior <- unnormalized_prior/sum(unnormalized_prior)
+  # } 
+  # else{
+  #   highest_shapes <- sapply(1:length(normalized_gev_parameters), function(k){
+  #     shape <- max(normalized_gev_parameters[[k]]$shape)
+  #     shape
+  #   })
+  #   unnormalized_prior <- exp(highest_shapes)
+  #   prior <- unnormalized_prior/sum(unnormalized_prior)
+  # }
+  # 
+  # # calculate the posterior probability w.r.t. every gev model
+  # normalized_posterior <- sapply(1:length(x), function(i){
+  #   obs <- x[i]
+  #   unnormalized_posterior <- sapply(1:length(block_sizes), function(k){
+  #     parameters <- normalized_gev_parameters[[k]]
+  #     
+  #     location <- parameters$location[i]
+  #     scale <- parameters$scale[i]
+  #     shape <- parameters$shape[i]
+  #     
+  #     likelihood <- calculate_gev_pdf(x = obs,
+  #                                     loc = location,
+  #                                     scale = scale,
+  #                                     shape = shape)
+  #     # likelihood*prior[k]
+  #     exp(likelihood*prior[k])
+  #   })
+  #   unnormalized_posterior/sum(unnormalized_posterior)
+  # })
+  # 
+  # # check the consistency of the estimated gev models
+  # posterior_nb_na <- sum(is.na(normalized_posterior))
+  # if (posterior_nb_na != 0){
+  #   stop("Sorry, at least one of the estimated GEV models is inconsistent!")
+  # }
+  # 
+  # # calculate the vector of weights
+  # if (class(normalized_posterior)[1] == "numeric"){
+  #   selected_model_per_obs <- normalized_posterior
+  # }
+  # else{
+  #   selected_model_per_obs <- apply(normalized_posterior, 2, which.max)
+  # }
   
-  # calculate the posterior probability w.r.t. every gev model
-  normalized_posterior <- sapply(1:length(x), function(i){
-    obs <- x[i]
-    unnormalized_posterior <- sapply(1:length(block_sizes), function(k){
-      parameters <- normalized_gev_parameters[[k]]
-      
-      location <- parameters$location[i]
-      scale <- parameters$scale[i]
-      shape <- parameters$shape[i]
-      
-      likelihood <- calculate_gev_pdf(x = obs,
-                                      loc = location,
-                                      scale = scale,
-                                      shape = shape)
-      # likelihood*prior[k]
-      exp(likelihood*prior[k])
-    })
-    unnormalized_posterior/sum(unnormalized_posterior)
-  })
-  
-  # check the consistency of the estimated gev models
-  posterior_nb_na <- sum(is.na(normalized_posterior))
-  if (posterior_nb_na != 0){
-    stop("Sorry, at least one of the estimated GEV models is inconsistent!")
-  }
-  
-  # calculate the vector of weights
-  if (class(normalized_posterior)[1] == "numeric"){
-    selected_model_per_obs <- normalized_posterior
-  }
-  else{
-    selected_model_per_obs <- apply(normalized_posterior, 2, which.max)
-  }
+  # to be considered (in all situations)
+  set.seed(length(x))
+  selected_model_per_obs <- sample(x = 1:length(block_sizes), size = length(x), replace = TRUE)
   
   selected_model_freq <- table(selected_model_per_obs)
   selected_model_labels <- as.numeric(names(selected_model_freq))

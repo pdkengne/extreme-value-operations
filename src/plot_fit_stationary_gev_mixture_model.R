@@ -192,7 +192,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # source("./src/fit_stationary_gev_mixture_model.R")
 # source("./src/generate_gev_sample.R")
 # 
-# n <- 10000
+# n <- 2000
 # 
 # #x <- bmixture::rmixnorm(n = n, weight = c(1/3, 1/3, 1/3), mean = c(-5, 0, +5), sd = c(1, 1, 1))
 # 
@@ -200,14 +200,15 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # x <- rexp(n = n, rate = 1)
 # 
-# 
-# 
 # x <- generate_gev_sample(n = n, loc = 1, scale = 0.5, shape = 0.5)
 # 
 # 
 # hist(x, nclass = 30, probability = TRUE)
 # 
-# gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = x,
+# 
+# y <- x[x > median(x)]
+# 
+# gev_mixture_model_object <- fit_stationary_gev_mixture_model(x = y,
 #                                                              nlargest = Inf,
 #                                                              block_sizes = NULL,
 #                                                              minimum_nblocks = 50,
@@ -221,10 +222,11 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # gev_mixture_model_object$full_normalized_gev_parameters_object
 # gev_mixture_model_object$weights
 # gev_mixture_model_object$threshold
+# gev_mixture_model_object$information_criteria
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
-#                                       model_index = 10,
-#                                       zoom_thresholds = c(10, +Inf),
+#                                       model_index = 0,
+#                                       zoom_thresholds = c(-Inf, +Inf),
 #                                       xlab = "support",
 #                                       ylab = "density",
 #                                       main = "density plot",
@@ -232,8 +234,8 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # 
 # 
 # plot_fit_stationary_gev_mixture_model(gev_mixture_model_object,
-#                                       model_index = 5,
-#                                       zoom_thresholds = c(2, +Inf),
+#                                       model_index = 11,
+#                                       zoom_thresholds = c(-Inf, +Inf),
 #                                       xlab = "support",
 #                                       ylab = "density",
 #                                       main = "density plot",
@@ -269,7 +271,7 @@ plot_fit_stationary_gev_mixture_model <- function(gev_mixture_model_object,
 # scales <- c(1, 1, 1)
 # locations <- c(-2, +2, +6)
 # 
-# n <- 10000
+# n <- 3000
 # 
 # x <- generate_gev_mixture_model_sample(n = n,
 #                                        locations,

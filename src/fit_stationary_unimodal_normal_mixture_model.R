@@ -118,7 +118,10 @@ fit_stationary_unimodal_normal_mixture_model <- function(x,
 # # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
 # # [10] "loglik"                         "cluster_information_criteria"
 # 
-# results
+# results$cluster_attractors_frequencies
+# results$cluster_attractors_weights
+# results$cluster_models_coefficients
+# results$cluster_information_criteria
 
 
 

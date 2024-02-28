@@ -82,17 +82,17 @@ extract_cluster_infos <- function(x, nclusters = NULL){
 }
 
 
-# example 1
-
-n <- 1000
-x <- rnorm(n = n)
-
-nclusters <- 3
-
-cluster_infos <- extract_cluster_infos(x = x, nclusters = nclusters)
-
-names(cluster_infos)
-
-cluster_infos
+# # example 1
+# 
+# n <- 1000
+# x <- rnorm(n = n)
+# 
+# nclusters <- 3
+# 
+# cluster_infos <- extract_cluster_infos(x = x, nclusters = nclusters)
+# 
+# names(cluster_infos)
+# 
+# cluster_infos
 
 

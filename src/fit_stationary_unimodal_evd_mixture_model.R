@@ -121,17 +121,17 @@ fit_stationary_unimodal_evd_mixture_model <- function(x,
 # mod1
 # 
 # results <- fit_stationary_unimodal_evd_mixture_model(x = x,
-#                                                      nclusters = 2,
+#                                                      nclusters = 10,
 #                                                      confidence_level = 0.95)
 # 
 # names(results)
 # 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"
-# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
-# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
-# # [10] "loglik"                         "cluster_information_criteria"
+# # [1] "x"                              "cluster_data_list"              "cluster_models"                
+# # [4] "cluster_attractors_frequencies" "cluster_attractors_weights"     "cluster_attractors_centers"    
+# # [7] "cluster_models_coefficients"    "loglik"                         "cluster_information_criteria"  
 # 
-# results
-
-
+# results$cluster_attractors_frequencies
+# results$cluster_attractors_weights
+# results$cluster_models_coefficients
+# results$cluster_information_criteria
 

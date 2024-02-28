@@ -203,9 +203,10 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # 
 # mod1 = mixfit(x, ncomp = 1, family = "normal")
 # mod1
+# plot(mod1)
 # 
 # normal_mixture_model_object <- fit_stationary_unimodal_normal_mixture_model(x = x,
-#                                                                             nclusters = 2,
+#                                                                             nclusters = 10,
 #                                                                             confidence_level = 0.95)
 # 
 # names(normal_mixture_model_object)
@@ -215,11 +216,14 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
 # # [10] "loglik"                         "cluster_information_criteria"
 # 
-# normal_mixture_model_object
+# normal_mixture_model_object$cluster_attractors_frequencies
+# normal_mixture_model_object$cluster_attractors_weights
+# normal_mixture_model_object$cluster_models_coefficients
+# normal_mixture_model_object$cluster_information_criteria
 # 
 # 
 # plot_fit_stationary_normal_mixture_model(normal_mixture_model_object = normal_mixture_model_object,
-#                                          nclass = NULL,
+#                                          nclass = 30,
 #                                          xlab = "support",
 #                                          ylab = "density",
 #                                          main = "density plot",
@@ -250,9 +254,10 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # 
 # mod1 = mixfit(x, ncomp = 1, family = "normal")
 # mod1
+# plot(mod1)
 # 
 # normal_mixture_model_object <- fit_stationary_unimodal_normal_mixture_model(x = x,
-#                                                                             nclusters = 2,
+#                                                                             nclusters = 5,
 #                                                                             confidence_level = 0.95)
 # 
 # names(normal_mixture_model_object)
@@ -262,15 +267,20 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
 # # [10] "loglik"                         "cluster_information_criteria"
 # 
-# normal_mixture_model_object
+# normal_mixture_model_object$cluster_attractors_frequencies
+# normal_mixture_model_object$cluster_attractors_weights
+# normal_mixture_model_object$cluster_models_coefficients
+# normal_mixture_model_object$cluster_information_criteria
+# 
 # 
 # 
 # plot_fit_stationary_normal_mixture_model(normal_mixture_model_object = normal_mixture_model_object,
-#                                          nclass = NULL,
+#                                          nclass = 40,
 #                                          xlab = "support",
 #                                          ylab = "density",
 #                                          main = "density plot",
 #                                          legend_position = "topleft")
+# 
 # 
 # # example 6
 # 
@@ -278,10 +288,15 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # 
 # library(mixR)
 # 
-# x = rgamma(n = 1000, shape = 2, rate = 3)
+# x = rgamma(n = 5000, shape = 2, rate = 3)
+# 
+# x <- rlogis(n = 10000, location = 0, scale = 1)
+# 
+# hist(x, nclass = 30)
 # 
 # mod1 = mixfit(x, ncomp = 1, family = "normal")
 # mod1
+# plot(mod1)
 # 
 # normal_mixture_model_object <- fit_stationary_unimodal_normal_mixture_model(x = x,
 #                                                                             nclusters = 10,
@@ -295,7 +310,11 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 # # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
 # # [10] "loglik"                         "cluster_information_criteria"
 # 
-# normal_mixture_model_object
+# normal_mixture_model_object$cluster_attractors_frequencies
+# normal_mixture_model_object$cluster_attractors_weights
+# normal_mixture_model_object$cluster_models_coefficients
+# normal_mixture_model_object$cluster_information_criteria
+# 
 # 
 # 
 # plot_fit_stationary_normal_mixture_model(normal_mixture_model_object = normal_mixture_model_object,
@@ -304,4 +323,55 @@ plot_fit_stationary_normal_mixture_model <- function(normal_mixture_model_object
 #                                          ylab = "density",
 #                                          main = "density plot",
 #                                          legend_position = "topleft")
-
+# 
+# 
+# # example 7
+# 
+# source("./src/fit_stationary_unimodal_normal_mixture_model.R")
+# source("./src/generate_normal_mixture_model_sample.R")
+# 
+# library(mixR)
+# 
+# weights <- c(0.2, 0.5, 0.3)
+# 
+# scales <- c(1, 1, 1)
+# locations <- c(-10, 0, +10)
+# 
+# n <- 10000
+# 
+# x <- generate_normal_mixture_model_sample(n = n,
+#                                           locations,
+#                                           scales,
+#                                           weights,
+#                                           kind = c("geometric", "arithmetic")[1])
+# 
+# hist(x, nclass = NULL)
+# 
+# mod1 = mixfit(x, ncomp = 1, family = "normal")
+# mod1
+# plot(mod1)
+# 
+# normal_mixture_model_object <- fit_stationary_unimodal_normal_mixture_model(x = x,
+#                                                                             nclusters = 10,
+#                                                                             confidence_level = 0.95)
+# 
+# names(normal_mixture_model_object)
+# 
+# # [1] "x"                              "cluster_data_list"              "cluster_models"
+# # [4] "cluster_models_coefficients_ci" "iteration"                      "cluster_attractors_frequencies"
+# # [7] "cluster_attractors_weights"     "cluster_attractors_centers"     "cluster_models_coefficients"
+# # [10] "loglik"                         "cluster_information_criteria"
+# 
+# normal_mixture_model_object$cluster_attractors_frequencies
+# normal_mixture_model_object$cluster_attractors_weights
+# normal_mixture_model_object$cluster_models_coefficients
+# normal_mixture_model_object$cluster_information_criteria
+# 
+# 
+# 
+# plot_fit_stationary_normal_mixture_model(normal_mixture_model_object = normal_mixture_model_object,
+#                                          nclass = 30,
+#                                          xlab = "support",
+#                                          ylab = "density",
+#                                          main = "density plot",
+#                                          legend_position = "topleft")

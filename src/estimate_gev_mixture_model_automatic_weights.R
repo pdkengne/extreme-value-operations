@@ -38,42 +38,46 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models,
   # extract the largest data to use
   x <- x[x > threshold]
   
-  # calculate the prior probability w.r.t. every gev model
-  if (use_uniform_prior){
-    unnormalized_prior <- block_sizes/block_sizes
-    prior <- unnormalized_prior/sum(unnormalized_prior)
-  } 
-  else{
-    unnormalized_prior <- exp(shapes)
-    prior <- unnormalized_prior/sum(unnormalized_prior)
-  }
+  # # calculate the prior probability w.r.t. every gev model
+  # if (use_uniform_prior){
+  #   unnormalized_prior <- block_sizes/block_sizes
+  #   prior <- unnormalized_prior/sum(unnormalized_prior)
+  # } 
+  # else{
+  #   unnormalized_prior <- exp(shapes)
+  #   prior <- unnormalized_prior/sum(unnormalized_prior)
+  # }
+  # 
+  # # calculate the posterior probability w.r.t. every gev model
+  # normalized_posterior <- sapply(x, function(obs){
+  #   unnormalized_posterior <- sapply(1:length(block_sizes), function(k){
+  #     likelihood <- calculate_gev_pdf(x = obs,
+  #                                     loc = locations[k],
+  #                                     scale = scales[k],
+  #                                     shape = shapes[k])
+  #     # likelihood*prior[k]
+  #     exp(likelihood*prior[k])
+  #   })
+  #   unnormalized_posterior/sum(unnormalized_posterior)
+  # })
+  # 
+  # # check the consistency of the estimated gev models
+  # posterior_nb_na <- sum(is.na(normalized_posterior))
+  # if (posterior_nb_na != 0){
+  #   stop("Sorry, at least one of the estimated GEV models is inconsistent!")
+  # }
+  # 
+  # # calculate the vector of weights
+  # if (class(normalized_posterior)[1] == "numeric"){
+  #   selected_model_per_obs <- normalized_posterior
+  # }
+  # else{
+  #   selected_model_per_obs <- apply(normalized_posterior, 2, which.max)
+  # }
   
-  # calculate the posterior probability w.r.t. every gev model
-  normalized_posterior <- sapply(x, function(obs){
-    unnormalized_posterior <- sapply(1:length(block_sizes), function(k){
-      likelihood <- calculate_gev_pdf(x = obs,
-                                      loc = locations[k],
-                                      scale = scales[k],
-                                      shape = shapes[k])
-      # likelihood*prior[k]
-      exp(likelihood*prior[k])
-    })
-    unnormalized_posterior/sum(unnormalized_posterior)
-  })
-  
-  # check the consistency of the estimated gev models
-  posterior_nb_na <- sum(is.na(normalized_posterior))
-  if (posterior_nb_na != 0){
-    stop("Sorry, at least one of the estimated GEV models is inconsistent!")
-  }
-
-  # calculate the vector of weights
-  if (class(normalized_posterior)[1] == "numeric"){
-    selected_model_per_obs <- normalized_posterior
-  }
-  else{
-    selected_model_per_obs <- apply(normalized_posterior, 2, which.max)
-  }
+  # to be considered (in all situations)
+  set.seed(length(x))
+  selected_model_per_obs <- sample(x = 1:length(block_sizes), size = length(x), replace = TRUE)
   
   selected_model_freq <- table(selected_model_per_obs)
   selected_model_labels <- as.numeric(names(selected_model_freq))
@@ -139,8 +143,8 @@ estimate_gev_mixture_model_automatic_weights <- function(gev_models,
 # 
 # names(results)
 # 
-# # [1] "threshold"              "selected_model_per_obs" "unselected_block_sizes" "selected_block_sizes"   "selected_model_labels" 
-# # [6] "weights"  
+# # [1] "threshold"              "selected_model_per_obs" "unselected_block_sizes" "selected_block_sizes"   "selected_model_labels"
+# # [6] "weights"
 # 
 # # example 2
 # 
