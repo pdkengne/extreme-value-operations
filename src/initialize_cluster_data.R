@@ -7,6 +7,8 @@ initialize_cluster_data <- function(x, nclusters = NULL, centers = NULL){
   # nclusters:
   # centers:
   
+  set.seed(length(x))
+  
   nstart <- 25
   
   n <- length(x)

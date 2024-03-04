@@ -8,6 +8,8 @@ extract_cluster_infos <- function(x, nclusters = NULL){
   # x:
   # nclusters:
   
+  set.seed(length(x))
+  
   n <- length(x)
   
   Fn <- ecdf(x = x)
@@ -19,13 +21,10 @@ extract_cluster_infos <- function(x, nclusters = NULL){
   exponential_sample <- qexp(p = empirical_cdf, rate = 1)
   
   if (is.null(nclusters)){
-    modes_object <- calculate_modes(x = x)
-    modes <- modes_object$density_maxima_argument
-    kmeans_object <- kmeans(x = exponential_sample, centers = length(modes))
+    nclusters <- 1
   }
-  else {
-    kmeans_object <- kmeans(x = exponential_sample, centers = nclusters)
-  }
+  
+  kmeans_object <- kmeans(x = exponential_sample, centers = nclusters)
   
   centers <- kmeans_object$centers[, 1]
   

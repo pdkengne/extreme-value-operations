@@ -2,6 +2,9 @@ source("./eva_pipeline/src/load_functions.R")
 
 load_functions()
 
+library(dplyr)
+library(tidyr)
+
 # load created function
 transform_data <- function(data, 
                            response_var,
@@ -50,16 +53,18 @@ transform_data <- function(data,
     data_clean <- data
   }
   
-  detection_vars <- names(data_clean)[c(11:45)]
-  predictor_vars <- c("velocity", "object", "area", "horizontal_left", "horizontal_right", 
-                      "vertical_down", "vertical_up", detection_vars)
-  
-  data_covariates <- data_clean %>% select(all_of(predictor_vars))
-  
-  data_covariates_unscaled <- data_covariates %>% select_if(colSums(.) != 0)
+  data_covariates_unscaled <- data_clean %>% select(!c(file, timestamp, latitude, longitude, 
+                                                       lateral_error, longitudinal_error, latitude_error,
+                                                       longitude_error, velocity_latitude, velocity_longitude))
   
   if (scale_predictors){
-    data_covariates_scaled <- get_standard_scaled_data(data = data_covariates_unscaled, newdata = NULL)
+    data_covariates_scaled <- data_covariates_unscaled[, !apply(is.na(data_covariates_unscaled), 2, all)]
+    # data_covariates_scaled <- na.omit(data_covariates_scaled)
+    # data_covariates_scaled <- data_covariates_scaled %>% mutate_if(is.numeric, ~replace_na(., mean(., na.rm = TRUE)))
+    # data_covariates_scaled <- data_covariates_scaled %>% mutate_at(all_of(names(data_covariates_scaled)), 
+    #                                                                ~replace_na(., mean(., na.rm = TRUE)))
+    data_covariates_scaled <- data_covariates_scaled %>% mutate_all(~ifelse(is.na(.x), mean(.x, na.rm = TRUE), .x))
+    data_covariates_scaled <- get_standard_scaled_data(data = data_covariates_scaled, newdata = NULL)
   }
   
   output <- list(response = x,

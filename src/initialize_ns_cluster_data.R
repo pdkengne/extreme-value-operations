@@ -12,6 +12,8 @@ initialize_ns_cluster_data <- function(x,
   # covariates:
   # centers:
   
+  set.seed(length(x))
+  
   nstart <- 25
   
   n <- length(x)

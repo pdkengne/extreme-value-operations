@@ -107,6 +107,10 @@ transform_data <- function(detections, classes){
                          detections_ycenter_mean_df,
                          detections_ycenter_sd_df)
   
+  # add total object count and area
+  detections_df <- detections_df %>% mutate(object = nrow(detections), 
+                                            area = sum(detections$area), .before = 1)
+  
   # extract the classes of undetected objects
   undetected_object_classes <- classes[!(classes %in% detected_object_classes)]
   

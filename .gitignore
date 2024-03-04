@@ -7,3 +7,5 @@ _targets
 computations-complete_cache
 01_gev_mixture_model_estimation_with_removed_outliers_cache
 01_gev_mixture_model_estimation_with_imputed_outliers_cache
+01_arithmetic_gev_mixture_models.ipynb
+01_eva_model_selection.ipynb

@@ -115,7 +115,7 @@ fit_stationary_unimodal_evd_mixture_model <- function(x,
 # 
 # library(mixR)
 # 
-# x = rnorm(n = 1000)
+# x = rnorm(n = 2000)
 # 
 # mod1 = mixfit(x, ncomp = 1, family = "normal")
 # mod1
@@ -126,12 +126,12 @@ fit_stationary_unimodal_evd_mixture_model <- function(x,
 # 
 # names(results)
 # 
-# # [1] "x"                              "cluster_data_list"              "cluster_models"                
-# # [4] "cluster_attractors_frequencies" "cluster_attractors_weights"     "cluster_attractors_centers"    
-# # [7] "cluster_models_coefficients"    "loglik"                         "cluster_information_criteria"  
+# # [1] "x"                              "cluster_data_list"              "cluster_models"
+# # [4] "cluster_attractors_frequencies" "cluster_attractors_weights"     "cluster_attractors_centers"
+# # [7] "cluster_models_coefficients"    "loglik"                         "cluster_information_criteria"
 # 
 # results$cluster_attractors_frequencies
 # results$cluster_attractors_weights
 # results$cluster_models_coefficients
 # results$cluster_information_criteria
-
+# 
